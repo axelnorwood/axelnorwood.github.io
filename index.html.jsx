@@ -1,0 +1,545 @@
+// VERSION: 2026-04-22 — engagement removed, tier strip on top, Five-Finger Rule guide, sharpness fixes applied
+import React, { useState, useMemo } from "react";
+import { BookOpen, Bookmark, Check, ChevronDown, HelpCircle } from "lucide-react";
+
+// ============================================================
+// DATA — 200 series, 5 grades × (20 fiction + 20 non-fiction)
+// tier: "hook" = graphic/visual · "core" = on-grade chapter · "stretch" = above-grade
+// Each series appears at ONE primary grade; cross-grade echoes live in `similar`.
+// ============================================================
+const mk = (grade, type, genre, tier, title, why, challenges, similar, level) =>
+  ({ grade, type, genre, tier, title, why, challenges, similar, level });
+
+const BOOKS = [
+  // ============ GRADE 1 — FICTION ============
+  mk(1, "fiction", "Humor", "hook", "Elephant & Piggie", "Big clear speech bubbles teach emotion and dialogue.", "Dialogue-only format takes practice to track.", ["Frog and Toad", "Charlie & Mouse"], "Early Reader"),
+  mk(1, "fiction", "Humor", "hook", "Fly Guy", "Silly premise and short sentences hook reluctant readers.", "Nonsense logic can confuse literal readers.", ["Bad Kitty", "Pete the Cat"], "Early Reader"),
+  mk(1, "fiction", "Humor", "hook", "Narwhal and Jelly", "Gentle comic-format humor builds panel-reading skills.", "Panel order can be tricky for new readers.", ["Elephant & Piggie", "InvestiGators"], "Early Reader"),
+  mk(1, "fiction", "Humor", "hook", "Bad Kitty (Early Readers)", "Funny alphabet and wordplay build decoding confidence.", "Busy pages can overwhelm.", ["Fly Guy", "Pete the Cat"], "Early Reader"),
+  mk(1, "fiction", "Friendship", "core", "Frog and Toad", "Deep, gentle friendship lessons in simple language.", "Subtle humor requires inference.", ["Little Bear", "Charlie & Mouse"], "Transitional"),
+  mk(1, "fiction", "Friendship", "core", "Little Bear", "Warm storytelling with gentle cadence.", "Longer sentences than most early readers.", ["Frog and Toad", "Henry and Mudge"], "Transitional"),
+  mk(1, "fiction", "Friendship", "core", "Henry and Mudge", "Real-life situations with a lovable dog.", "More text per page than beginner readers.", ["Mr. Putter & Tabby", "Biscuit"], "Transitional"),
+  mk(1, "fiction", "Friendship", "core", "Mr. Putter & Tabby", "Calm, reflective stories for thoughtful readers.", "Slower pace can lose fast readers.", ["Henry and Mudge", "Charlie & Mouse"], "Transitional"),
+  mk(1, "fiction", "Friendship", "core", "Charlie & Mouse", "Family life in short, approachable chapters.", "Subtle tone — humor is quiet.", ["Frog and Toad", "Henry and Mudge"], "Transitional"),
+  mk(1, "fiction", "Imagination", "core", "Pinkalicious", "Encourages creative thinking and rich vocabulary.", "Some words are above grade level.", ["Fancy Nancy", "Pete the Cat"], "Transitional"),
+  mk(1, "fiction", "Imagination", "core", "Fancy Nancy", "Intentionally introduces fancy vocabulary in context.", "Hard words require support.", ["Pinkalicious", "Pete the Cat"], "Transitional"),
+  mk(1, "fiction", "Imagination", "hook", "Pete the Cat", "Confidence-building repetition and catchy refrains.", "Abstract 'be cool' moral is subtle.", ["Groovy Joe", "Fly Guy"], "Early Reader"),
+  mk(1, "fiction", "Fantasy", "core", "Princess in Black", "Action and humor in an easy chapter format.", "Chapter length is a jump from picture books.", ["Dragon Masters", "Unicorn Diaries"], "Early Chapter"),
+  mk(1, "fiction", "Fantasy", "core", "Unicorn Diaries", "Gentle fantasy with emotional growth.", "New vocabulary requires support.", ["Owl Diaries", "Princess in Black"], "Early Chapter"),
+  mk(1, "fiction", "Fantasy", "core", "Owl Diaries", "Diary format supports new chapter readers.", "Longer text than early readers.", ["Unicorn Diaries", "Princess in Black"], "Early Chapter"),
+  mk(1, "fiction", "Mystery", "core", "Nate the Great", "Builds inference and problem-solving skills.", "Subtle clues require careful reading.", ["Cam Jansen", "The Critter Club"], "Early Chapter"),
+  mk(1, "fiction", "Mystery", "core", "Cam Jansen", "Memory and logic puzzles embedded in stories.", "Requires recall across pages.", ["Nate the Great", "A to Z Mysteries"], "Early Chapter"),
+  mk(1, "fiction", "Early Reader", "hook", "Biscuit", "Extremely accessible, builds reading confidence.", "Very repetitive — limited stretch.", ["Spot", "Fly Guy"], "Pre-Reader"),
+  mk(1, "fiction", "Early Reader", "core", "The Critter Club", "A gentle introduction to chapter books.", "More text than early readers.", ["Owl Diaries", "Unicorn Diaries"], "Early Chapter"),
+  mk(1, "fiction", "Friendship", "core", "Amelia Bedelia (I Can Read)", "Wordplay and idioms build language awareness.", "Figurative language is confusing at first.", ["Fancy Nancy", "Pinkalicious"], "Transitional"),
+
+  // ============ GRADE 1 — NON-FICTION ============
+  mk(1, "nonfiction", "Animals", "core", "National Geographic Kids Readers", "High-interest animal content with real photos.", "Fact density can overwhelm.", ["Scholastic Readers", "DK Readers"], "Early Reader"),
+  mk(1, "nonfiction", "Animals", "core", "Amazing Animals", "Simple layout with engaging visuals.", "Light on depth.", ["Nat Geo Kids", "Pebble Plus"], "Early Reader"),
+  mk(1, "nonfiction", "Animals", "core", "Nature All Around", "Builds environmental awareness early.", "Some vocabulary is above grade level.", ["Nat Geo Kids", "Seedlings"], "Early Reader"),
+  mk(1, "nonfiction", "Science", "core", "Rookie Read-About Science", "Core science concepts in short bursts.", "Some abstract ideas without support.", ["Let's-Read-and-Find-Out", "DK Readers"], "Early Reader"),
+  mk(1, "nonfiction", "Science", "core", "Let's-Read-and-Find-Out Science", "Strong explanations of how things work.", "Longer text than early readers.", ["Rookie Science", "DK Readers"], "Transitional"),
+  mk(1, "nonfiction", "Science", "core", "DK Readers Level 1", "Visual learning with strong photography.", "Vocabulary can be difficult.", ["Usborne Beginners", "Scholastic Readers"], "Transitional"),
+  mk(1, "nonfiction", "Science", "core", "DK Super Readers", "Updated info with scaffolded difficulty.", "Slight text complexity.", ["DK Readers", "Usborne Beginners"], "Transitional"),
+  mk(1, "nonfiction", "Science", "hook", "Baby University", "Playful early STEM exposure.", "Abstract for true comprehension.", ["Rookie Science", "Pebble Plus"], "Pre-Reader"),
+  mk(1, "nonfiction", "Social Studies", "core", "Time for Kids Readers", "Real-world topics at an accessible level.", "Needs background knowledge.", ["Scholastic News", "Exploring Our World"], "Transitional"),
+  mk(1, "nonfiction", "Social Studies", "core", "Scholastic News Readers", "Short current-events pieces.", "Requires context from adults.", ["Time for Kids", "Nat Geo Kids"], "Transitional"),
+  mk(1, "nonfiction", "Social Studies", "core", "Exploring Our World", "Geography basics in a simple frame.", "Big ideas can feel abstract.", ["Time for Kids", "Nat Geo Kids"], "Transitional"),
+  mk(1, "nonfiction", "Leveled", "core", "Scholastic Readers", "Structured levels support steady progression.", "Mixed difficulty across titles.", ["DK Readers", "Nat Geo Kids"], "Early Reader"),
+  mk(1, "nonfiction", "Leveled", "core", "Usborne Beginners", "Clear explanations with tight layout.", "UK terminology in places.", ["DK Readers", "Scholastic Readers"], "Transitional"),
+  mk(1, "nonfiction", "Leveled", "core", "Pebble Plus", "Short, focused informational texts.", "Limited depth for curious kids.", ["Blastoff Readers", "Seedlings"], "Early Reader"),
+  mk(1, "nonfiction", "Leveled", "core", "Blastoff Readers", "Simple topics in a predictable format.", "Very basic — low stretch.", ["Pebble Plus", "Seedlings"], "Early Reader"),
+  mk(1, "nonfiction", "Leveled", "hook", "Seedlings", "Beginner-friendly with gentle layout.", "Limited challenge for stronger readers.", ["Pebble Plus", "Blastoff Readers"], "Pre-Reader"),
+  mk(1, "nonfiction", "Leveled", "hook", "My First I Can Read Nonfiction", "Very accessible entry to nonfiction.", "Limited information per book.", ["Pebble Plus", "Nat Geo Kids"], "Pre-Reader"),
+  mk(1, "nonfiction", "High-Interest", "core", "Who Would Win?", "Hooks reluctant readers with animal matchups.", "Competitive framing oversimplifies.", ["Nat Geo Kids", "Weird but True"], "Transitional"),
+  mk(1, "nonfiction", "Animals", "core", "Rookie Read-About Animals", "Focused, easy-to-scan animal facts.", "Light content for strong readers.", ["Nat Geo Kids", "Pebble Plus"], "Early Reader"),
+  mk(1, "nonfiction", "Science", "core", "I'm a Scientist (Early Readers)", "Introduces STEM through simple experiments.", "Needs adult help for activities.", ["Rookie Science", "Let's-Read-and-Find-Out"], "Transitional"),
+
+  // ============ GRADE 2 — FICTION ============
+  mk(2, "fiction", "Humor", "hook", "Dog Man", "Extremely engaging visuals hook reluctant readers.", "Low text depth for strong readers.", ["Captain Underpants", "Bad Guys"], "Graphic Novel"),
+  mk(2, "fiction", "Humor", "hook", "Captain Underpants", "Fast-paced humor hooks strugglers.", "Crude humor; chaotic pacing.", ["Dog Man", "Bad Guys"], "Early Chapter"),
+  mk(2, "fiction", "Humor", "hook", "The Bad Guys", "Comic chapters combine action and humor.", "Kids may skip text for pictures.", ["InvestiGators", "Dog Man"], "Graphic Novel"),
+  mk(2, "fiction", "Humor", "hook", "InvestiGators", "Graphic format plus problem solving.", "Panel navigation takes practice.", ["Bad Guys", "Narwhal and Jelly"], "Graphic Novel"),
+  mk(2, "fiction", "School Life", "core", "Junie B. Jones", "Realistic kid voice; strong emotional stakes.", "Models incorrect grammar.", ["Judy Moody", "Ivy and Bean"], "Early Chapter"),
+  mk(2, "fiction", "School Life", "core", "Judy Moody", "Emotional relatability with clear arcs.", "More complex vocabulary.", ["Clementine", "Junie B. Jones"], "Early Chapter"),
+  mk(2, "fiction", "School Life", "core", "Ivy and Bean", "Friendship and mischief with strong pacing.", "Longer chapters than earliest series.", ["Dory Fantasmagory", "Judy Moody"], "Early Chapter"),
+  mk(2, "fiction", "Imagination", "core", "Dory Fantasmagory", "Creative thinking; illustrated throughout.", "Blends reality and fantasy.", ["Ivy and Bean", "My Weird School"], "Early Chapter"),
+  mk(2, "fiction", "Imagination", "core", "My Weird School", "Absurd humor in school settings.", "Repetitive jokes lose appeal fast.", ["Wayside School", "Judy Moody"], "Early Chapter"),
+  mk(2, "fiction", "Fantasy", "core", "Magic Tree House", "Strong mix of fact and adventure — core growth series.", "Denser text than early chapters.", ["Time Warp Trio", "Dragon Masters"], "Chapter Book"),
+  mk(2, "fiction", "Fantasy", "core", "Dragon Masters", "Strong plot hooks; accessible fantasy.", "Tracking multiple characters.", ["Kingdom of Wrenly", "Magic Tree House"], "Early Chapter"),
+  mk(2, "fiction", "Fantasy", "core", "Kingdom of Wrenly", "Simple fantasy world; bright illustrations.", "New fantasy vocabulary.", ["Dragon Masters", "The Last Firehawk"], "Early Chapter"),
+  mk(2, "fiction", "Fantasy", "core", "The Last Firehawk", "Action-driven quest narrative.", "Plot can feel complex.", ["Dragon Masters", "Kingdom of Wrenly"], "Early Chapter"),
+  mk(2, "fiction", "Mystery", "core", "A to Z Mysteries", "Structured mysteries build inference skills.", "Requires following clues across chapters.", ["Calendar Mysteries", "Cam Jansen"], "Chapter Book"),
+  mk(2, "fiction", "Mystery", "core", "Calendar Mysteries", "Easier entry to mystery structure.", "Somewhat predictable.", ["A to Z Mysteries", "Cam Jansen"], "Early Chapter"),
+  mk(2, "fiction", "Animal", "core", "Mercy Watson", "Humor and warmth in short chapters.", "Slightly longer text.", ["Princess in Black", "Ivy and Bean"], "Early Chapter"),
+  mk(2, "fiction", "Animal", "core", "Zoey and Sassafras", "STEM and animals in a story frame.", "Multi-step problem solving.", ["Magic School Bus", "Magic Tree House"], "Chapter Book"),
+  mk(2, "fiction", "School Life", "core", "Stink", "Humor with strong boy-protagonist appeal.", "Vocabulary stretches beginners.", ["Judy Moody", "My Weird School"], "Early Chapter"),
+  mk(2, "fiction", "Humor", "hook", "Press Start!", "Video-game hook brings in reluctant readers.", "Low text complexity.", ["Dog Man", "Bad Guys"], "Early Chapter"),
+  mk(2, "fiction", "Fantasy", "core", "Isadora Moon", "Half-vampire, half-fairy appeal with illustrations.", "Themes of fitting in require discussion.", ["Unicorn Diaries", "Dory Fantasmagory"], "Early Chapter"),
+
+  // ============ GRADE 2 — NON-FICTION ============
+  mk(2, "nonfiction", "Animals", "core", "National Geographic Kids Readers L2", "High-interest animals with richer text.", "Dense info per page.", ["DK Readers", "Scholastic Animals"], "Early Chapter"),
+  mk(2, "nonfiction", "Animals", "core", "Who Would Win?", "Animal matchups drive page-turning.", "Oversimplifies complex ecology.", ["Nat Geo Kids", "Weird but True"], "Early Chapter"),
+  mk(2, "nonfiction", "Animals", "core", "Scholastic Animal Series", "Accessible animal facts.", "Repetitive across books.", ["Nat Geo Kids", "DK Readers"], "Early Chapter"),
+  mk(2, "nonfiction", "Science", "core", "The Magic School Bus", "Story plus science — true hybrid.", "Dense pages; small text.", ["Zoey & Sassafras", "Let's-Read-and-Find-Out"], "Chapter Book"),
+  mk(2, "nonfiction", "Science", "core", "Let's-Read-and-Find-Out Science L2", "Strong concept clarity.", "Longer text.", ["Rookie Science", "DK Readers"], "Chapter Book"),
+  mk(2, "nonfiction", "Science", "stretch", "DK Eyewitness Readers L2", "Strong visuals and depth.", "Higher reading level than listed.", ["DK Readers", "Smithsonian"], "Chapter Book"),
+  mk(2, "nonfiction", "History", "stretch", "Who Was?", "Introduces historical figures accessibly.", "Dense text for average readers.", ["I Am", "What Was?"], "Chapter Book"),
+  mk(2, "nonfiction", "History", "core", "I Am", "Story-driven biographies by Brad Meltzer.", "Some abstraction in themes.", ["Who Was?", "Ordinary People Change the World"], "Early Chapter"),
+  mk(2, "nonfiction", "Social Studies", "core", "Time for Kids Readers L2", "Real-world topics in bite-sized pieces.", "Background knowledge needed.", ["Scholastic News", "Exploring Our World"], "Early Chapter"),
+  mk(2, "nonfiction", "Leveled", "core", "Scholastic Readers L2", "Wide range of subjects at one level.", "Mixed difficulty within level.", ["DK Readers", "Usborne Beginners"], "Early Chapter"),
+  mk(2, "nonfiction", "Leveled", "core", "DK Readers L2", "Visual support for new information.", "Vocabulary can be dense.", ["Usborne Beginners", "Scholastic Readers"], "Early Chapter"),
+  mk(2, "nonfiction", "Leveled", "core", "Usborne Beginners L2", "Clear structure; reliable depth.", "UK phrasing in places.", ["DK Readers", "Scholastic Readers"], "Early Chapter"),
+  mk(2, "nonfiction", "Leveled", "hook", "Pebble Plus L2", "Quick focused reads.", "Limited depth.", ["Blastoff Readers", "Seedlings"], "Early Reader"),
+  mk(2, "nonfiction", "Leveled", "hook", "Blastoff Readers L2", "Simple science topics.", "Very basic content.", ["Pebble Plus", "Seedlings"], "Early Reader"),
+  mk(2, "nonfiction", "High-Interest", "core", "Weird but True!", "Bite-sized fact hooks.", "Shallow depth; encourages skimming.", ["Guinness World Records", "Who Would Win?"], "Early Chapter"),
+  mk(2, "nonfiction", "High-Interest", "core", "Guinness World Records (Kids)", "Highly motivating for reluctant readers.", "Encourages skimming behavior.", ["Weird but True", "Ripley's Believe It or Not"], "Chapter Book"),
+  mk(2, "nonfiction", "Animals", "core", "Fly Guy Presents (Nonfiction)", "Beloved character introduces real topics.", "Less depth than dedicated nonfiction.", ["Nat Geo Kids", "Scholastic Readers"], "Early Chapter"),
+  mk(2, "nonfiction", "Science", "core", "Smithsonian Early Readers", "Museum-grade content for young readers.", "Some vocabulary is advanced.", ["DK Readers", "Nat Geo Kids"], "Early Chapter"),
+  mk(2, "nonfiction", "Social Studies", "core", "A True Book series", "Deep-dive on focused topics.", "Longer books; more commitment.", ["Scholastic Readers", "DK Readers"], "Chapter Book"),
+  mk(2, "nonfiction", "History", "core", "Ordinary People Change the World", "Illustrated biographies with strong voice.", "Idealizes subjects.", ["I Am", "Who Was?"], "Early Chapter"),
+
+  // ============ GRADE 3 — FICTION ============
+  mk(3, "fiction", "Humor", "core", "Stink (full series)", "Shorter than Judy Moody but still text-forward.", "Humor can feel gross.", ["Judy Moody", "Big Nate"], "Chapter Book"),
+  mk(3, "fiction", "Humor", "hook", "Big Nate (early books)", "Comic-novel hybrid for reluctant readers.", "Visual-heavy — low stretch alone.", ["Diary of a Wimpy Kid", "Dog Man"], "Graphic Hybrid"),
+  mk(3, "fiction", "Humor", "core", "The Notebook of Doom", "Spooky-funny with short chapters.", "Can feel formulaic.", ["Eerie Elementary", "Goosebumps"], "Chapter Book"),
+  mk(3, "fiction", "School Life", "core", "Clementine", "Strong internal character voice.", "Subtle humor needs maturity.", ["Judy Moody", "Ramona"], "Chapter Book"),
+  mk(3, "fiction", "School Life", "core", "Ramona Quimby", "Classic character depth.", "Dated references in places.", ["Clementine", "Tales of a Fourth Grade Nothing"], "Chapter Book"),
+  mk(3, "fiction", "School Life", "core", "Alvin Ho", "Anxiety and friendship handled with humor.", "Emotional nuance.", ["Clementine", "Stink"], "Chapter Book"),
+  mk(3, "fiction", "Imagination", "core", "Wayside School", "Quirky, structurally playful short stories.", "Nonsense logic can confuse.", ["My Weird School", "Sideways Stories"], "Chapter Book"),
+  mk(3, "fiction", "Fantasy", "core", "The Chronicles of Narnia: The Magician's Nephew", "Gateway to classic fantasy.", "Older language style.", ["Magic Tree House", "E. Nesbit books"], "Chapter Book"),
+  mk(3, "fiction", "Fantasy", "core", "The Spiderwick Chronicles", "Rich world-building in short books.", "Some scary imagery.", ["Fablehaven", "Magic Tree House"], "Chapter Book"),
+  mk(3, "fiction", "Fantasy", "core", "How to Train Your Dragon (books)", "Humor-driven fantasy with strong arc.", "Denser than the films.", ["Wings of Fire (shorter)", "Dragon Masters"], "Chapter Book"),
+  mk(3, "fiction", "Mystery", "core", "Encyclopedia Brown", "Short mysteries train inference.", "Dated vocabulary and references.", ["Nate the Great", "A to Z Mysteries"], "Chapter Book"),
+  mk(3, "fiction", "Mystery", "core", "The Boxcar Children (starter)", "Classic mystery structure.", "Slower pacing than modern series.", ["A to Z Mysteries", "Nancy Drew (Notebooks)"], "Chapter Book"),
+  mk(3, "fiction", "Mystery", "core", "Geronimo Stilton", "Typographic design keeps pages lively.", "Puns can overwhelm.", ["Thea Stilton", "Magic Tree House"], "Chapter Book"),
+  mk(3, "fiction", "Animal", "core", "Humphrey the Hamster", "Classroom hamster narrator with warmth.", "Slower pacing.", ["Mercy Watson", "Freddy the Frogcaster"], "Chapter Book"),
+  mk(3, "fiction", "Adventure", "core", "The Time Warp Trio", "Humor plus history-adjacent adventure.", "Some historical references need context.", ["Magic Tree House", "I Survived (junior)"], "Chapter Book"),
+  mk(3, "fiction", "Adventure", "stretch", "I Survived", "Historical survival narratives hook readers.", "Emotional intensity; real disasters.", ["Magic Tree House", "Ranger in Time"], "Chapter Book"),
+  mk(3, "fiction", "Adventure", "core", "Ranger in Time", "Golden retriever travels through history.", "Dense historical detail at times.", ["Magic Tree House", "I Survived"], "Chapter Book"),
+  mk(3, "fiction", "School Life", "core", "Sideways Stories from Wayside School", "Short quirky chapters reward rereading.", "Logic is intentionally absurd.", ["Wayside School", "My Weird School"], "Chapter Book"),
+  mk(3, "fiction", "Fantasy", "core", "Whatever After", "Fractured fairy tales with humor.", "Some references to older tales.", ["The Land of Stories", "Sisters Grimm"], "Chapter Book"),
+  mk(3, "fiction", "Humor", "core", "Diary of a Wimpy Kid (introductory)", "Diary format hooks reluctant readers.", "Weak vocabulary growth if relied on alone.", ["Dork Diaries", "Big Nate"], "Graphic Hybrid"),
+
+  // ============ GRADE 3 — NON-FICTION ============
+  mk(3, "nonfiction", "Animals", "core", "Nat Geo Kids Chapters", "Longer-form animal narratives.", "Denser than the readers line.", ["DK Eyewitness", "Scholastic Discover More"], "Chapter Book"),
+  mk(3, "nonfiction", "Animals", "core", "Scholastic Discover More", "Visual-rich with deeper info.", "Vocabulary stretches readers.", ["Nat Geo", "DK Readers"], "Chapter Book"),
+  mk(3, "nonfiction", "Science", "core", "Magic School Bus Science Chapter Books", "Story-plus-science hybrid.", "Denser than picture books.", ["Zoey & Sassafras", "Basher Science"], "Chapter Book"),
+  mk(3, "nonfiction", "Science", "stretch", "Basher Science", "Personifies concepts memorably.", "Abstract and dense in places.", ["Science Comics", "DK Eyewitness"], "Middle Grade"),
+  mk(3, "nonfiction", "Science", "core", "Nat Geo Kids Everything", "One-topic deep dives with photos.", "Fact-heavy.", ["DK Eyewitness", "Smithsonian"], "Chapter Book"),
+  mk(3, "nonfiction", "History", "core", "Who Was? (full)", "Gateway to biography reading.", "Dense text; sometimes dry.", ["I Am", "What Was?"], "Chapter Book"),
+  mk(3, "nonfiction", "History", "core", "What Was?", "Event-focused companion to Who Was.", "Requires background knowledge.", ["Who Was?", "You Wouldn't Want To..."], "Chapter Book"),
+  mk(3, "nonfiction", "History", "core", "You Wouldn't Want to Be...", "Humor brings history to life.", "Dark humor may need framing.", ["Who Was?", "Horrible Histories"], "Chapter Book"),
+  mk(3, "nonfiction", "Social Studies", "core", "Time for Kids (full magazine)", "Builds current-events literacy.", "Needs classroom discussion.", ["Scholastic News", "Storyworks Jr."], "Chapter Book"),
+  mk(3, "nonfiction", "Social Studies", "core", "Scholastic News (full)", "Weekly real-world literacy practice.", "Context gaps across topics.", ["Time for Kids", "Storyworks Jr."], "Chapter Book"),
+  mk(3, "nonfiction", "Leveled", "core", "DK Eyewitness (Junior)", "Strong visuals, layered information.", "Reading level can exceed grade.", ["Smithsonian", "Nat Geo"], "Chapter Book"),
+  mk(3, "nonfiction", "Leveled", "core", "Usborne See Inside", "Lift-the-flap depth; strong engagement.", "Dense per page.", ["DK", "Nat Geo"], "Chapter Book"),
+  mk(3, "nonfiction", "STEM", "core", "Xtreme Machines / Xtreme series", "Appeals to mechanically-minded readers.", "Terminology is technical.", ["DK Eyewitness", "Weird but True"], "Chapter Book"),
+  mk(3, "nonfiction", "STEM", "core", "How Things Work (Nat Geo)", "Strong infographic-style layout.", "Vocabulary is demanding.", ["DK Eyewitness", "Basher Science"], "Chapter Book"),
+  mk(3, "nonfiction", "High-Interest", "core", "Ripley's Believe It or Not! (Junior)", "Quirky facts sustain reader interest.", "Encourages skimming.", ["Guinness", "Weird but True"], "Chapter Book"),
+  mk(3, "nonfiction", "Animals", "core", "Animal Planet Chapter Books", "Media-brand familiarity plus depth.", "Some overlap with readers line.", ["Nat Geo Chapters", "DK Readers"], "Chapter Book"),
+  mk(3, "nonfiction", "Science", "stretch", "Smithsonian Readers Advanced", "Museum-quality depth.", "Advanced vocabulary.", ["DK Eyewitness", "Basher Science"], "Middle Grade"),
+  mk(3, "nonfiction", "History", "core", "A Picture Book of... (biographies)", "Short illustrated biographies.", "Less depth than Who Was.", ["Who Was?", "Ordinary People"], "Early Chapter"),
+  mk(3, "nonfiction", "Geography", "core", "Not-for-Parents Travel Guides", "Country-by-country discovery.", "Random structure.", ["Nat Geo Countries", "Usborne See Inside"], "Chapter Book"),
+  mk(3, "nonfiction", "STEM", "core", "Storyworks Jr.", "Mixed fiction-nonfiction literacy magazine.", "Needs teacher scaffolding.", ["Scholastic News", "Time for Kids"], "Chapter Book"),
+
+  // ============ GRADE 4 — FICTION ============
+  mk(4, "fiction", "Humor", "hook", "Diary of a Wimpy Kid", "Highly relatable voice hooks readers.", "Weak vocabulary growth alone.", ["Dork Diaries", "Big Nate"], "Middle Grade (light)"),
+  mk(4, "fiction", "Humor", "hook", "Dork Diaries", "Diary format appeals broadly.", "Length can intimidate weaker readers.", ["Wimpy Kid", "Confessions of a Dork Lord"], "Middle Grade (light)"),
+  mk(4, "fiction", "Humor", "hook", "Big Nate (full series)", "School humor with comic-strip appeal.", "Skim risk.", ["Wimpy Kid", "Timmy Failure"], "Middle Grade (light)"),
+  mk(4, "fiction", "Humor", "hook", "Timmy Failure", "Illustrated mystery-humor hybrid.", "Unreliable narrator confuses some.", ["Wimpy Kid", "Big Nate"], "Middle Grade (light)"),
+  mk(4, "fiction", "Real Life", "core", "Tales of a Fourth Grade Nothing", "Classic family dynamics; strong voice.", "Older style language.", ["Ramona", "Clementine"], "Middle Grade"),
+  mk(4, "fiction", "Real Life", "core", "The Lemonade War", "Conflict, economics, and sibling dynamics.", "Emotional nuance.", ["Because of Winn-Dixie", "Frindle"], "Middle Grade"),
+  mk(4, "fiction", "Real Life", "core", "Frindle", "Short, thought-provoking — great read-aloud.", "Requires reflection.", ["The Lemonade War", "No Talking"], "Middle Grade"),
+  mk(4, "fiction", "Real Life", "core", "Because of Winn-Dixie", "Strong emotional writing; beautiful prose.", "Slow-burn plot.", ["The Tiger Rising", "The Lemonade War"], "Middle Grade"),
+  mk(4, "fiction", "Fantasy", "stretch", "Percy Jackson and the Olympians", "High engagement plus mythology literacy.", "Dense text; sustained plot.", ["Heroes of Olympus", "The Kane Chronicles"], "Middle Grade"),
+  mk(4, "fiction", "Fantasy", "stretch", "Harry Potter (Books 1–3)", "Rich world-building; rewarding for strong readers.", "Length and complexity.", ["Percy Jackson", "Fablehaven"], "Middle Grade"),
+  mk(4, "fiction", "Fantasy", "core", "The Land of Stories", "Fairy-tale twists with strong pacing.", "Longer books than most grade-4 fare.", ["Sisters Grimm", "Whatever After"], "Middle Grade"),
+  mk(4, "fiction", "Fantasy", "core", "Wings of Fire", "Dragons and politics draw in strong readers.", "Many character POVs.", ["Warriors", "Guardians of Ga'Hoole"], "Middle Grade"),
+  mk(4, "fiction", "Mystery", "core", "The Boxcar Children (full)", "Classic mystery structure.", "Slower pacing for modern readers.", ["A to Z Mysteries", "Nancy Drew"], "Middle Grade"),
+  mk(4, "fiction", "Mystery", "core", "Nancy Drew (Diaries)", "Strong female lead; classic structure.", "Older language style.", ["Hardy Boys", "Boxcar Children"], "Middle Grade"),
+  mk(4, "fiction", "Mystery", "core", "The Hardy Boys", "Adventure-mystery hybrid.", "Dense chapters.", ["Nancy Drew", "Boxcar Children"], "Middle Grade"),
+  mk(4, "fiction", "Survival", "stretch", "I Survived (full series)", "Emotional history through kid eyes.", "Intense content; real tragedies.", ["Who Was?", "Ranger in Time"], "Middle Grade"),
+  mk(4, "fiction", "Survival", "stretch", "Hatchet", "Survival realism; single-protagonist depth.", "Mature themes.", ["My Side of the Mountain", "The Sign of the Beaver"], "Middle Grade"),
+  mk(4, "fiction", "Animal", "stretch", "Warriors", "Complex series arcs; fiercely loyal fans.", "Many characters; long arc.", ["Wings of Fire", "Guardians of Ga'Hoole"], "Middle Grade"),
+  mk(4, "fiction", "Animal", "stretch", "Guardians of Ga'Hoole", "Epic owl fantasy.", "Dense vocabulary.", ["Warriors", "Wings of Fire"], "Middle Grade"),
+  mk(4, "fiction", "Real Life", "core", "Ramona (full series)", "Complete character arc across childhood.", "Dated tone in places.", ["Clementine", "Tales of a Fourth Grade Nothing"], "Middle Grade"),
+
+  // ============ GRADE 4 — NON-FICTION ============
+  mk(4, "nonfiction", "Animals", "core", "Nat Geo Kids Almanac", "Reference book kids actually read cover-to-cover.", "Surface-level on any one topic.", ["DK Eyewitness", "Guinness"], "Middle Grade"),
+  mk(4, "nonfiction", "Animals", "stretch", "DK Eyewitness Books", "Detailed visuals; real depth.", "Dense reading.", ["Smithsonian", "Nat Geo"], "Middle Grade"),
+  mk(4, "nonfiction", "Animals", "stretch", "Smithsonian Readers (Advanced)", "Reliable, museum-grade content.", "Academic vocabulary.", ["DK Eyewitness", "Nat Geo"], "Middle Grade"),
+  mk(4, "nonfiction", "Science", "core", "Science Comics", "Deep science in graphic format.", "Requires reading stamina.", ["Basher Science", "Magic School Bus Chapter"], "Middle Grade"),
+  mk(4, "nonfiction", "Science", "core", "Basher Science (full)", "Concepts personified memorably.", "Some abstraction.", ["Science Comics", "DK Eyewitness"], "Middle Grade"),
+  mk(4, "nonfiction", "Science", "core", "National Geographic Kids Science Encyclopedia", "Strong reference for project work.", "Jumps between topics.", ["DK Eyewitness", "Smithsonian"], "Middle Grade"),
+  mk(4, "nonfiction", "History", "core", "Who Was? / Who Is?", "Accessible biographies.", "Dense text.", ["What Was?", "I Am"], "Middle Grade"),
+  mk(4, "nonfiction", "History", "core", "What Was? (full)", "Event-focused history.", "Vocabulary-heavy.", ["Who Was?", "You Wouldn't Want To..."], "Middle Grade"),
+  mk(4, "nonfiction", "History", "core", "Horrible Histories", "Humor-driven historical writing.", "Dark humor; UK-English.", ["You Wouldn't Want To...", "Who Was?"], "Middle Grade"),
+  mk(4, "nonfiction", "History", "core", "Hazardous Tales (Nathan Hale)", "Graphic-novel history with depth.", "Some intense war content.", ["Science Comics", "Who Was?"], "Middle Grade"),
+  mk(4, "nonfiction", "Social Studies", "core", "Time for Kids (full)", "Current events literacy.", "Context needed.", ["Scholastic News", "Storyworks"], "Middle Grade"),
+  mk(4, "nonfiction", "Social Studies", "core", "Scholastic News (Edition 4)", "Grade-targeted real-world literacy.", "Background knowledge.", ["Time for Kids", "Storyworks"], "Middle Grade"),
+  mk(4, "nonfiction", "Social Studies", "core", "Storyworks", "Mixed literacy magazine with activities.", "Needs scaffolding.", ["Scholastic News", "Time for Kids"], "Middle Grade"),
+  mk(4, "nonfiction", "High-Interest", "core", "Guinness World Records (full)", "Highly engaging; builds general knowledge.", "Encourages skimming.", ["Weird but True", "Ripley's"], "Middle Grade"),
+  mk(4, "nonfiction", "High-Interest", "core", "Weird but True! (full)", "Quick-fact format.", "Low depth.", ["Guinness", "Ripley's"], "Middle Grade"),
+  mk(4, "nonfiction", "STEM", "core", "How Things Work: Then and Now", "Compare old and new technology.", "Technical vocabulary.", ["DK Eyewitness", "Basher"], "Middle Grade"),
+  mk(4, "nonfiction", "STEM", "core", "The Way Things Work (Macaulay)", "Classic explanation with illustrations.", "Dense; older style.", ["DK Eyewitness", "Science Comics"], "Middle Grade"),
+  mk(4, "nonfiction", "Geography", "core", "Nat Geo Kids Countries of the World", "Cultural literacy through place.", "Surface-level.", ["Not-for-Parents Guides", "Atlas"], "Middle Grade"),
+  mk(4, "nonfiction", "Biography", "core", "Little Leaders series", "Biographies of underrepresented figures.", "Short entries limit depth.", ["Ordinary People", "Who Was?"], "Middle Grade"),
+  mk(4, "nonfiction", "Science", "stretch", "Kingfisher Knowledge Encyclopedia", "Strong reference for research projects.", "Encyclopedia structure — not linear.", ["Smithsonian", "DK Eyewitness"], "Middle Grade"),
+
+  // ============ GRADE 5 — FICTION ============
+  mk(5, "fiction", "Complex Themes", "core", "The Giver", "Abstract themes of control and choice.", "Confusing themes without discussion.", ["Number the Stars", "The City of Ember"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Complex Themes", "core", "Holes", "Non-linear plot rewards careful reading.", "Timeline confusion.", ["The Lemonade War", "Frindle"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Complex Themes", "stretch", "Tuck Everlasting", "Philosophical ideas about time and mortality.", "Slow pacing; lyrical prose.", ["Bridge to Terabithia", "The Giver"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Complex Themes", "stretch", "A Wrinkle in Time", "Abstract science and fantasy blend.", "Concept overload without support.", ["Percy Jackson", "The Giver"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Complex Themes", "core", "Number the Stars", "Historical moral courage at an accessible level.", "Holocaust context needs framing.", ["The Boy in the Striped Pajamas", "The Giver"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Advanced Fantasy", "core", "Harry Potter (Books 4+)", "Layered plot; literary payoff.", "Length and darker themes.", ["Percy Jackson (later)", "Keeper of the Lost Cities"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Advanced Fantasy", "stretch", "Keeper of the Lost Cities", "Rich world; strong character growth.", "Very long books.", ["Wings of Fire", "Harry Potter"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Advanced Fantasy", "stretch", "Eragon", "Dense fantasy for committed readers.", "Too difficult for most without support.", ["The Hobbit", "Wings of Fire"], "YA (lower)"),
+  mk(5, "fiction", "Advanced Fantasy", "stretch", "The Hobbit", "Classic foundational fantasy.", "Older language style.", ["Eragon", "Narnia (full)"], "YA (lower)"),
+  mk(5, "fiction", "Advanced Fantasy", "core", "Fablehaven", "World-building rewards persistent readers.", "Plot complexity builds across series.", ["Spiderwick", "Keeper of the Lost Cities"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Advanced Mystery", "core", "The Westing Game", "Complex puzzle rewards close reading.", "Easy to lose thread.", ["Lemoncello's Library", "The Mysterious Benedict Society"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Advanced Mystery", "stretch", "The Mysterious Benedict Society", "Heavy vocabulary plus logic puzzles.", "Cognitive overload possible.", ["Westing Game", "Escape from Mr. Lemoncello's Library"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Advanced Mystery", "core", "Escape from Mr. Lemoncello's Library", "Book-themed puzzles hook library lovers.", "Reference-heavy.", ["Westing Game", "Benedict Society"], "Middle Grade"),
+  mk(5, "fiction", "Emotional", "core", "Bridge to Terabithia", "Loss and friendship rendered beautifully.", "Emotional impact is significant.", ["Wonder", "The Tiger Rising"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Emotional", "core", "Wonder", "Empathy-building through multiple perspectives.", "Emotional weight.", ["Out of My Mind", "Bridge to Terabithia"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Emotional", "core", "Out of My Mind", "Strong protagonist voice with disability focus.", "Some emotional intensity.", ["Wonder", "Fish in a Tree"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Historical", "stretch", "Esperanza Rising", "Social injustice through a personal lens.", "Cultural context needed.", ["Number the Stars", "Roll of Thunder"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Historical", "stretch", "Roll of Thunder, Hear My Cry", "Racism and historical depth.", "Requires teacher guidance.", ["Esperanza Rising", "The Watsons Go to Birmingham"], "YA (lower)"),
+  mk(5, "fiction", "Historical", "core", "The Watsons Go to Birmingham—1963", "Humor and Civil Rights-era reality.", "Tonal shifts; historical context.", ["Roll of Thunder", "Esperanza Rising"], "Middle Grade (advanced)"),
+  mk(5, "fiction", "Complex Themes", "core", "The One and Only Ivan", "Animal voice narrates ethical questions.", "Emotional weight.", ["Wonder", "Charlotte's Web (reread)"], "Middle Grade (advanced)"),
+
+  // ============ GRADE 5 — NON-FICTION ============
+  mk(5, "nonfiction", "Science", "stretch", "DK Eyewitness Books (full)", "Detailed, research-grade content.", "Overwhelm risk.", ["Smithsonian", "Kingfisher"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Science", "stretch", "Smithsonian Readers (full)", "Academic tone; reliable facts.", "Heavy vocabulary.", ["DK Eyewitness", "Basher"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Science", "core", "Basher Science (advanced)", "Concepts personified cleverly.", "Abstract; easy to misread.", ["Science Comics", "DK"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Science", "core", "Science Comics (full)", "Deep-dive science in graphic format.", "Requires stamina.", ["Basher Science", "Hazardous Tales"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "History", "core", "Who Was? (full for 5th)", "Broad biographical coverage.", "Dense factual info; skim risk.", ["What Was?", "I Am"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "History", "core", "What Was? (full for 5th)", "Event-focused history at depth.", "Requires synthesis.", ["Who Was?", "Hazardous Tales"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "History", "stretch", "Brown Girl Dreaming", "Poetic memoir expands what nonfiction can be.", "Interpretive reading needed.", ["Ordinary Hazards", "I Am"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "History", "stretch", "Bomb (Steve Sheinkin)", "Narrative nonfiction about the atomic race.", "WWII context and intensity.", ["Hazardous Tales", "Chasing Lincoln's Killer"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Social Studies", "core", "Time for Kids (5th)", "Real-world inference practice.", "Background knowledge gaps.", ["Scholastic News", "Storyworks"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Social Studies", "core", "Scholastic News (Edition 5/6)", "Current events at appropriate depth.", "Requires discussion.", ["Time for Kids", "Storyworks"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Biography", "core", "Steve Sheinkin narrative nonfiction", "Reads like a thriller — real events.", "Mature historical content.", ["Bomb", "The Port Chicago 50"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Biography", "core", "I Am Malala (Young Readers)", "Personal courage in recent history.", "Terrorism content needs framing.", ["Brown Girl Dreaming", "Who Was?"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Science", "stretch", "Kingfisher Knowledge Encyclopedia (full)", "Reference-grade for research.", "Non-linear structure.", ["DK Eyewitness", "Smithsonian"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "STEM", "core", "Women in Science / similar", "Modern role models with illustrations.", "Short profiles limit depth.", ["Little Leaders", "I Am"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "STEM", "core", "The Way Things Work Now", "Updated classic with clear diagrams.", "Technical vocabulary.", ["DK Eyewitness", "Basher"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Geography", "core", "Nat Geo Kids Almanac (advanced use)", "Kids treat it like a favorite.", "Surface-level on any topic.", ["Guinness", "DK Eyewitness"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "History", "core", "Hazardous Tales (advanced titles)", "Graphic format carries heavy content.", "War content needs framing.", ["Bomb", "Science Comics"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Biography", "core", "Ordinary Hazards (Grimes)", "Memoir-in-verse; literary nonfiction.", "Mature themes.", ["Brown Girl Dreaming", "I Am Malala"], "YA (lower)"),
+  mk(5, "nonfiction", "High-Interest", "core", "Ripley's Believe It or Not! (full)", "Sustains reluctant readers.", "Shallow depth.", ["Guinness", "Weird but True"], "Middle Grade (advanced)"),
+  mk(5, "nonfiction", "Science", "core", "Chew on This (Eric Schlosser, Young Readers)", "Investigative nonfiction on food industry.", "Complex social-science ideas.", ["Bomb", "Hazardous Tales"], "Middle Grade (advanced)"),
+];
+
+// ============================================================
+// Styling
+// ============================================================
+const TIER_STYLE = {
+  hook: "bg-amber-50 text-amber-900 border-amber-200",
+  core: "bg-stone-100 text-stone-800 border-stone-300",
+  stretch: "bg-rose-50 text-rose-900 border-rose-200",
+};
+const TIER_DOT = {
+  hook: "bg-amber-400",
+  core: "bg-stone-400",
+  stretch: "bg-rose-400",
+};
+const SERIF = "ui-serif, 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif";
+const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+const CRISP = {
+  WebkitFontSmoothing: "antialiased",
+  MozOsxFontSmoothing: "grayscale",
+  textRendering: "optimizeLegibility",
+  transform: "translateZ(0)",
+  backfaceVisibility: "hidden",
+  WebkitBackfaceVisibility: "hidden",
+  WebkitTransform: "translateZ(0)",
+};
+
+// ============================================================
+// Component
+// ============================================================
+export default function ReadingAtlas() {
+  const [grade, setGrade] = useState(3);
+  const [type, setType] = useState("fiction");
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [expanded, setExpanded] = useState(null);
+  const [bookmarks, setBookmarks] = useState(new Set());
+  const [readLog, setReadLog] = useState(new Set());
+  const [showGuide, setShowGuide] = useState(false);
+
+  const pool = useMemo(() => {
+    return BOOKS.filter((b) => {
+      if (b.grade !== grade) return false;
+      if (b.type !== type) return false;
+      if (selectedGenres.length && !selectedGenres.includes(b.genre)) return false;
+      return true;
+    });
+  }, [grade, type, selectedGenres]);
+
+  const availableGenres = useMemo(() => {
+    const set = new Set(BOOKS.filter((b) => b.grade === grade && b.type === type).map((b) => b.genre));
+    return Array.from(set);
+  }, [grade, type]);
+
+  const toggleSet = (setter, current, val) => {
+    const n = new Set(current);
+    if (n.has(val)) n.delete(val);
+    else n.add(val);
+    setter(n);
+  };
+  const toggleArr = (setter, current, val) => {
+    setter(current.includes(val) ? current.filter((x) => x !== val) : [...current, val]);
+  };
+
+  return (
+    <div className="min-h-screen bg-stone-50" style={{ fontFamily: SERIF, ...CRISP }}>
+      {/* HEADER */}
+      <header className="border-b border-stone-300" style={{ backgroundColor: "#faf7f0" }}>
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <div className="flex items-center gap-2 text-stone-500 text-xs uppercase tracking-widest mb-2" style={{ fontFamily: SANS }}>
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Elementary · Grades 1–5</span>
+          </div>
+          <h1 className="text-5xl font-bold text-stone-900 mb-3 tracking-tight">The Reading Atlas</h1>
+          <p className="text-stone-600 text-lg max-w-2xl leading-relaxed">
+            A curated guide to 200 fiction and non-fiction series across five grades.
+          </p>
+
+          {/* TIER EXPLANATION STRIP */}
+          <div className="mt-6 flex flex-wrap gap-2" style={{ fontFamily: SANS }}>
+            <div className={`flex items-start gap-2 px-3 py-2 rounded-md border ${TIER_STYLE.hook} text-xs max-w-[220px]`}>
+              <span className={`w-2 h-2 rounded-full ${TIER_DOT.hook} mt-1 flex-shrink-0`}></span>
+              <div>
+                <div className="font-semibold uppercase tracking-wider text-[10px] mb-0.5">Hook</div>
+                <div className="leading-snug opacity-90">Graphic or visual-heavy. Use sparingly.</div>
+              </div>
+            </div>
+            <div className={`flex items-start gap-2 px-3 py-2 rounded-md border ${TIER_STYLE.core} text-xs max-w-[220px]`}>
+              <span className={`w-2 h-2 rounded-full ${TIER_DOT.core} mt-1 flex-shrink-0`}></span>
+              <div>
+                <div className="font-semibold uppercase tracking-wider text-[10px] mb-0.5">Core</div>
+                <div className="leading-snug opacity-90">On-grade chapter books. The main diet.</div>
+              </div>
+            </div>
+            <div className={`flex items-start gap-2 px-3 py-2 rounded-md border ${TIER_STYLE.stretch} text-xs max-w-[220px]`}>
+              <span className={`w-2 h-2 rounded-full ${TIER_DOT.stretch} mt-1 flex-shrink-0`}></span>
+              <div>
+                <div className="font-semibold uppercase tracking-wider text-[10px] mb-0.5">Stretch</div>
+                <div className="leading-snug opacity-90">Above grade. May need support.</div>
+              </div>
+            </div>
+          </div>
+
+          {/* GOOD-FIT GUIDE */}
+          <div className="mt-4" style={{ fontFamily: SANS }}>
+            <button
+              onClick={() => setShowGuide(!showGuide)}
+              className="flex items-center gap-2 text-sm text-stone-700 hover:text-stone-900 bg-white border border-stone-300 rounded-md px-3 py-2 transition-colors"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="font-medium">How to find a good-fit book</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${showGuide ? "rotate-180" : ""}`} />
+            </button>
+            {showGuide && (
+              <div className="mt-3 bg-white border border-stone-300 rounded-md p-5 max-w-3xl text-sm text-stone-700 leading-relaxed space-y-4">
+                <div>
+                  <h3 className="font-bold text-stone-900 text-base mb-1" style={{ fontFamily: SERIF }}>The Five-Finger Rule</h3>
+                  <p className="text-stone-600">The quickest way to gauge whether a book's reading level matches your current skills.</p>
+                </div>
+                <div>
+                  <div className="font-semibold text-stone-900 mb-1">Step 1 — Pick a "test page"</div>
+                  <p className="text-stone-600">Open the book to a page in the middle with a solid block of text. Avoid the very first page — it's often intentionally simple or overly descriptive.</p>
+                </div>
+                <div>
+                  <div className="font-semibold text-stone-900 mb-1">Step 2 — Start reading</div>
+                  <p className="text-stone-600">Read the page normally. Every time you hit a word you don't know or can't pronounce, put up one finger.</p>
+                </div>
+                <div>
+                  <div className="font-semibold text-stone-900 mb-1">Step 3 — Count the fingers</div>
+                  <div className="mt-2 border border-stone-200 rounded-md overflow-hidden">
+                    <div className="grid grid-cols-3 bg-stone-100 text-[11px] uppercase tracking-wider text-stone-500 font-semibold">
+                      <div className="px-3 py-2">Fingers</div>
+                      <div className="px-3 py-2">Difficulty</div>
+                      <div className="px-3 py-2">The verdict</div>
+                    </div>
+                    {[
+                      ["0–1", "Very easy", "Great for a quick, relaxing read or practicing speed."],
+                      ["2–3", "Just right", "The sweet spot. You'll learn new words but won't get stuck."],
+                      ["4", "Challenging", "You might need a dictionary or a partner to help you through."],
+                      ["5+", "Too hard", "You'll spend more time decoding words than enjoying the story."],
+                    ].map(([f, d, v], i) => (
+                      <div key={f} className={`grid grid-cols-3 text-xs ${i % 2 === 0 ? "bg-white" : "bg-stone-50"}`}>
+                        <div className="px-3 py-2 font-semibold text-stone-900">{f}</div>
+                        <div className="px-3 py-2 text-stone-700">{d}</div>
+                        <div className="px-3 py-2 text-stone-600">{v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold text-stone-900 mb-1">Other quick checks</div>
+                  <p className="text-stone-600 mb-2">If the five-finger rule doesn't give you a clear answer, try these two questions:</p>
+                  <ul className="space-y-1.5 text-stone-600">
+                    <li><strong className="text-stone-800">The movie test.</strong> After reading one page, can you picture what happened in your head? If the screen is blank, the vocabulary might be too dense.</li>
+                    <li><strong className="text-stone-800">The interest test.</strong> Do you actually care what happens on the next page? Even a perfectly leveled book is a bad fit if it bores you to tears.</li>
+                  </ul>
+                </div>
+                <div className="text-xs text-stone-500 italic border-t border-stone-200 pt-3">There's no shame in putting a "5-finger" book back on the shelf for later. It's not a no — it's just a not yet.</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* STICKY FILTER BAR */}
+      <div className="sticky top-0 z-20 bg-white border-b border-stone-200 shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex flex-wrap items-center gap-3" style={{ fontFamily: SANS }}>
+          <div className="flex items-center gap-1 bg-stone-100 rounded-md p-1">
+            <span className="text-xs text-stone-500 px-2 font-medium">Grade</span>
+            {[1, 2, 3, 4, 5].map((g) => (
+              <button
+                key={g}
+                onClick={() => { setGrade(g); setSelectedGenres([]); setExpanded(null); }}
+                className={`w-8 h-8 rounded text-sm font-medium transition-colors ${grade === g ? "bg-stone-900 text-white" : "text-stone-700 hover:bg-white"}`}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+          <div className="inline-flex rounded-md border border-stone-300 overflow-hidden">
+            {[{ k: "fiction", l: "Fiction" }, { k: "nonfiction", l: "Non-fiction" }].map((o) => (
+              <button
+                key={o.k}
+                onClick={() => { setType(o.k); setSelectedGenres([]); setExpanded(null); }}
+                className={`px-3 py-1.5 text-sm transition-colors ${type === o.k ? "bg-stone-900 text-white" : "bg-white text-stone-700 hover:bg-stone-50"}`}
+              >
+                {o.l}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto px-6 pb-3" style={{ fontFamily: SANS }}>
+          <div className="flex flex-wrap gap-1.5 items-center">
+            <span className="text-xs uppercase tracking-wider text-stone-500 mr-1">Genre:</span>
+            {selectedGenres.length > 0 && (
+              <button onClick={() => setSelectedGenres([])} className="px-2.5 py-1 text-xs text-stone-500 hover:text-stone-900 underline underline-offset-2">clear</button>
+            )}
+            {availableGenres.map((g) => (
+              <button
+                key={g}
+                onClick={() => toggleArr(setSelectedGenres, selectedGenres, g)}
+                className={`px-2.5 py-1 text-xs border rounded-full transition-colors ${selectedGenres.includes(g) ? "bg-stone-900 text-white border-stone-900" : "bg-white text-stone-700 border-stone-300 hover:border-stone-500"}`}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* MAIN */}
+      <main className="max-w-6xl mx-auto px-6 py-8">
+        <div className="flex items-baseline justify-between mb-6" style={{ fontFamily: SANS }}>
+          <h2 className="text-stone-700 text-lg">
+            <span className="font-semibold">Grade {grade} · {type === "fiction" ? "Fiction" : "Non-fiction"}</span>
+            <span className="text-stone-400 mx-2">·</span>
+            <span className="text-stone-500">{pool.length} series</span>
+          </h2>
+        </div>
+
+        {pool.length === 0 ? (
+          <div className="text-center py-16 text-stone-500">No series match this genre. Try clearing it.</div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4">
+            {pool.map((b) => {
+              const key = `${b.grade}-${b.type}-${b.title}`;
+              const isExpanded = expanded === key;
+              const isSaved = bookmarks.has(key);
+              const isRead = readLog.has(key);
+              return (
+                <div key={key} className="bg-white border border-stone-200 rounded-lg overflow-hidden hover:border-stone-400 transition-colors">
+                  <button onClick={() => setExpanded(isExpanded ? null : key)} className="w-full text-left p-4">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <h3 className="font-bold text-stone-900 text-lg leading-tight flex-1 min-w-0">{b.title}</h3>
+                      <ChevronDown className={`w-4 h-4 text-stone-400 flex-shrink-0 mt-1 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 items-center" style={{ fontFamily: SANS }}>
+                      <span className="text-xs px-2 py-0.5 bg-stone-100 text-stone-700 rounded">{b.genre}</span>
+                      <span className={`text-xs px-2 py-0.5 border rounded ${TIER_STYLE[b.tier]}`}>
+                        {b.tier.charAt(0).toUpperCase() + b.tier.slice(1)}
+                      </span>
+                    </div>
+                  </button>
+                  {isExpanded && (
+                    <div className="px-4 pb-4 pt-1 border-t border-stone-100 space-y-3">
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-stone-500 mb-1" style={{ fontFamily: SANS }}>Why read</div>
+                        <p className="text-sm text-stone-700 leading-relaxed">{b.why}</p>
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-stone-500 mb-1" style={{ fontFamily: SANS }}>Challenges</div>
+                        <p className="text-sm text-stone-600 leading-relaxed">{b.challenges}</p>
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-stone-500 mb-1" style={{ fontFamily: SANS }}>If they liked this, try</div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {b.similar.map((s) => (
+                            <span key={s} className="text-xs px-2 py-0.5 bg-stone-50 border border-stone-200 rounded text-stone-700">{s}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4 text-xs text-stone-500 pt-1" style={{ fontFamily: SANS }}>
+                        <span><strong className="text-stone-700">Level:</strong> {b.level}</span>
+                      </div>
+                      <div className="flex gap-2 pt-2" style={{ fontFamily: SANS }}>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); toggleSet(setBookmarks, bookmarks, key); }}
+                          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border transition-colors ${isSaved ? "bg-stone-900 text-white border-stone-900" : "bg-white text-stone-700 border-stone-300 hover:bg-stone-50"}`}
+                        >
+                          <Bookmark className={`w-3.5 h-3.5 ${isSaved ? "fill-current" : ""}`} />
+                          {isSaved ? "Saved" : "Save"}
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); toggleSet(setReadLog, readLog, key); }}
+                          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border transition-colors ${isRead ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-stone-700 border-stone-300 hover:bg-stone-50"}`}
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          {isRead ? "Read" : "Mark read"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {(bookmarks.size > 0 || readLog.size > 0) && (
+          <div className="mt-8 p-4 bg-white border border-stone-200 rounded-lg flex items-center gap-6" style={{ fontFamily: SANS }}>
+            {bookmarks.size > 0 && (
+              <span className="flex items-center gap-2 text-sm text-stone-700">
+                <Bookmark className="w-4 h-4 fill-stone-900 text-stone-900" />
+                <strong>{bookmarks.size}</strong> saved
+              </span>
+            )}
+            {readLog.size > 0 && (
+              <span className="flex items-center gap-2 text-sm text-stone-700">
+                <Check className="w-4 h-4 text-emerald-600" />
+                <strong>{readLog.size}</strong> marked as read
+              </span>
+            )}
+          </div>
+        )}
+      </main>
+
+      <footer className="border-t border-stone-200 mt-12 py-8" style={{ fontFamily: SANS }}>
+        <div className="max-w-6xl mx-auto px-6 text-xs text-stone-400 text-center">
+          200 series across 5 grades · curated reading guide
+        </div>
+      </footer>
+    </div>
+  );
+}
