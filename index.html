@@ -163,6 +163,68 @@ body::before{
 }
 .tool-card.coming-soon::after{display:none}
 
+/* Writing Guides Section */
+.guides-section{
+  max-width:900px;margin:0 auto;
+  padding:0 2rem 4rem;
+}
+
+.guides-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:1rem;
+}
+
+.guide-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:.75rem;
+  padding:1.75rem;
+  text-decoration:none;
+  color:var(--text);
+  display:flex;flex-direction:column;gap:.75rem;
+  transition:all .25s ease;
+  position:relative;overflow:hidden;
+  animation:fadeUp .5s ease both;
+  cursor:pointer;
+}
+.guide-card:nth-child(1){animation-delay:.35s}
+.guide-card:nth-child(2){animation-delay:.45s}
+.guide-card:nth-child(3){animation-delay:.55s}
+.guide-card:nth-child(4){animation-delay:.65s}
+.guide-card:nth-child(5){animation-delay:.75s}
+.guide-card:nth-child(6){animation-delay:.85s}
+
+.guide-card:hover{
+  border-color:var(--accent);
+  box-shadow:0 4px 24px rgba(196,93,62,.08);
+  transform:translateY(-2px);
+}
+.guide-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accent);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s ease;
+}
+.guide-card:hover::after{transform:scaleX(1)}
+
+.guide-icon{
+  width:40px;height:40px;border-radius:.5rem;
+  background:var(--accent-light);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);
+  flex-shrink:0;
+  font-size:1.25rem;
+}
+.guide-title{font-family:var(--serif);font-size:1.15rem;color:var(--text)}
+.guide-desc{font-size:.875rem;color:var(--text-secondary);line-height:1.55;flex:1}
+.guide-status{
+  font-size:.8rem;color:var(--accent);font-weight:500;
+  display:flex;align-items:center;gap:.35rem;
+  transition:gap .2s ease;
+}
+.guide-card:hover .guide-status{gap:.6rem}
+
 /* Footer */
 .site-footer{
   max-width:900px;margin:0 auto;
@@ -177,8 +239,9 @@ body::before{
 @media(max-width:600px){
   .hero{padding:3rem 1.5rem 2rem}
   .tools-section{padding:2rem 1.5rem 3rem}
+  .guides-section{padding:0 1.5rem 3rem}
   .site-header{padding:1.5rem 1.5rem 0}
-  .tools-grid{grid-template-columns:1fr}
+  .tools-grid,.guides-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -244,9 +307,74 @@ body::before{
   </div>
 </section>
 
+<section class="guides-section">
+  <div class="section-label">Writing Guides</div>
+  <div class="guides-grid">
+
+    <!-- Grade 1 Guide -->
+    <div class="guide-card" onclick="toggleGuide(this)">
+      <div class="guide-icon">📖</div>
+      <div class="guide-title">Grade 1 — Story/Narrative</div>
+      <div class="guide-desc">Introduction to narrative writing with simple story structures.</div>
+      <div class="guide-status">View <span>→</span></div>
+    </div>
+
+    <!-- Grade 2 Guide -->
+    <div class="guide-card" onclick="toggleGuide(this)">
+      <div class="guide-icon">📘</div>
+      <div class="guide-title">Grade 2 — Informational</div>
+      <div class="guide-desc">Non-fiction and informational writing with facts and details.</div>
+      <div class="guide-status">View <span>→</span></div>
+    </div>
+
+    <!-- Grade 3 Guide -->
+    <div class="guide-card" onclick="toggleGuide(this)">
+      <div class="guide-icon">🧃</div>
+      <div class="guide-title">Grade 3 — Procedural</div>
+      <div class="guide-desc">How-to and procedural writing with step-by-step instructions.</div>
+      <div class="guide-status">View <span>→</span></div>
+    </div>
+
+    <!-- Grade 4 Guide -->
+    <div class="guide-card" onclick="toggleGuide(this)">
+      <div class="guide-icon">🗣️</div>
+      <div class="guide-title">Grade 4 — Persuasive</div>
+      <div class="guide-desc">Persuasion and argumentative writing with evidence and reasoning.</div>
+      <div class="guide-status">View <span>→</span></div>
+    </div>
+
+    <!-- Grade 5 Guide -->
+    <div class="guide-card" onclick="toggleGuide(this)">
+      <div class="guide-icon">✍️</div>
+      <div class="guide-title">Grade 5 — Advanced Writing</div>
+      <div class="guide-desc">Complex narratives and advanced writing techniques across genres.</div>
+      <div class="guide-status">View <span>→</span></div>
+    </div>
+
+    <!-- Poetry Guide -->
+    <div class="guide-card" onclick="toggleGuide(this)">
+      <div class="guide-icon">🎭</div>
+      <div class="guide-title">Poetry Across Grades</div>
+      <div class="guide-desc">Grade-by-grade poetry expectations and writing techniques.</div>
+      <div class="guide-status">View <span>→</span></div>
+    </div>
+
+  </div>
+</section>
+
 <footer class="site-footer">
   © 2026 Hanami Education
 </footer>
+
+<script>
+function toggleGuide(card) {
+  // Placeholder for guide expansion
+  card.style.opacity = '0.8';
+  setTimeout(() => {
+    card.style.opacity = '1';
+  }, 200);
+}
+</script>
 
 </body>
 </html>
