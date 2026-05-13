@@ -120,6 +120,13 @@ body::before{
   animation:fadeUp .5s ease both;
 }
 
+.card:nth-child(1){animation-delay:.3s}
+.card:nth-child(2){animation-delay:.4s}
+.card:nth-child(3){animation-delay:.5s}
+.card:nth-child(4){animation-delay:.6s}
+.card:nth-child(5){animation-delay:.7s}
+.card:nth-child(6){animation-delay:.8s}
+
 .card:hover{
   border-color:var(--accent);
   box-shadow:0 4px 24px rgba(196,93,62,.08);
@@ -156,11 +163,6 @@ body::before{
   pointer-events:none;
 }
 .card.coming-soon::after{display:none}
-
-/* Guide card specific */
-.guide-card{
-  cursor:pointer;
-}
 
 /* Footer */
 .site-footer{
@@ -231,6 +233,15 @@ body::before{
       <div class="card-action">Explore <span>→</span></div>
     </a>
 
+    <!-- 🔜 COMING SOON: 4th Tool -->
+    <div class="card coming-soon">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="card-title">More coming soon</div>
+      <div class="card-desc">New tools and resources are on the way. Check back for updates.</div>
+    </div>
+
   </div>
 </section>
 
@@ -238,53 +249,15 @@ body::before{
   <div class="section-label">Writing Guides</div>
   <div class="grid">
 
-    <!-- Grade 1 Guide -->
-    <div class="card guide-card" onclick="toggleGuide(event)">
-      <div class="card-icon">📖</div>
-      <div class="card-title">Grade 1 — Story/Narrative</div>
-      <div class="card-desc">Introduction to narrative writing with simple story structures.</div>
+    <!-- ✅ Writing Guides (live) -->
+    <a href="Writing-Guides.html" class="card">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-1.1 0-2 .9-2 2v10H8l4-5 4 5h-2V4c0-1.1-.9-2-2-2zm8 10h-4v10c0 1.1.9 2 2 2s2-.9 2-2v-10zm-12 0H2v10c0 1.1.9 2 2 2s2-.9 2-2v-10z"/></svg>
+      </div>
+      <div class="card-title">Writing Guides</div>
+      <div class="card-desc">Comprehensive resources for developing writers across grades 1–5. Explore grade-specific guides, poetry, and teaching strategies.</div>
       <div class="card-action">Explore <span>→</span></div>
-    </div>
-
-    <!-- Grade 2 Guide -->
-    <div class="card guide-card" onclick="toggleGuide(event)">
-      <div class="card-icon">📘</div>
-      <div class="card-title">Grade 2 — Informational</div>
-      <div class="card-desc">Non-fiction and informational writing with facts and details.</div>
-      <div class="card-action">Explore <span>→</span></div>
-    </div>
-
-    <!-- Grade 3 Guide -->
-    <div class="card guide-card" onclick="toggleGuide(event)">
-      <div class="card-icon">🧃</div>
-      <div class="card-title">Grade 3 — Procedural</div>
-      <div class="card-desc">How-to and procedural writing with step-by-step instructions.</div>
-      <div class="card-action">Explore <span>→</span></div>
-    </div>
-
-    <!-- Grade 4 Guide -->
-    <div class="card guide-card" onclick="toggleGuide(event)">
-      <div class="card-icon">🗣️</div>
-      <div class="card-title">Grade 4 — Persuasive</div>
-      <div class="card-desc">Persuasion and argumentative writing with evidence and reasoning.</div>
-      <div class="card-action">Explore <span>→</span></div>
-    </div>
-
-    <!-- Grade 5 Guide -->
-    <div class="card guide-card" onclick="toggleGuide(event)">
-      <div class="card-icon">✍️</div>
-      <div class="card-title">Grade 5 — Advanced Writing</div>
-      <div class="card-desc">Complex narratives and advanced writing techniques across genres.</div>
-      <div class="card-action">Explore <span>→</span></div>
-    </div>
-
-    <!-- Poetry Guide -->
-    <div class="card guide-card" onclick="toggleGuide(event)">
-      <div class="card-icon">🎭</div>
-      <div class="card-title">Poetry Across Grades</div>
-      <div class="card-desc">Grade-by-grade poetry expectations and writing techniques.</div>
-      <div class="card-action">Explore <span>→</span></div>
-    </div>
+    </a>
 
     <!-- 🔜 COMING SOON -->
     <div class="card coming-soon">
@@ -292,7 +265,7 @@ body::before{
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
       <div class="card-title">More coming soon</div>
-      <div class="card-desc">New writing guides and resources are on the way. Check back for updates.</div>
+      <div class="card-desc">New writing resources and guides are on the way. Check back for updates.</div>
     </div>
 
   </div>
@@ -301,17 +274,6 @@ body::before{
 <footer class="site-footer">
   © 2026 Hanami Education
 </footer>
-
-<script>
-function toggleGuide(event) {
-  event.preventDefault();
-  const card = event.currentTarget;
-  card.style.opacity = '0.8';
-  setTimeout(() => {
-    card.style.opacity = '1';
-  }, 200);
-}
-</script>
 
 </body>
 </html>
