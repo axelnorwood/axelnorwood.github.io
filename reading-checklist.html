@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07060F;--card:#191727;--card2:#1F1D30;
+  --text:#F5F4FF;--muted:#8A8AAD;--border:rgba(255,255,255,0.08);
+  --c1:#6C63FF;--r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.4rem;background:rgba(7,6,15,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Fredoka One',cursive;font-size:1.15rem;background:linear-gradient(90deg,#6C63FF,#00C9A7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lang-tog{display:flex;gap:3px;background:var(--card);border-radius:30px;padding:3px;border:1px solid var(--border)}
+.lb{font-size:.7rem;font-weight:800;padding:4px 11px;border-radius:24px;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+.lb.on{background:var(--c1);color:#fff}
+
+/* HERO */
+.hero{text-align:center;padding:3rem 1rem 2.2rem;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+.orb1{width:380px;height:380px;background:rgba(108,99,255,.1);top:-120px;left:-80px}
+.orb2{width:280px;height:280px;background:rgba(78,205,196,.08);top:-40px;right:-60px}
+.hero-title{font-family:'Fredoka One',cursive;font-size:clamp(1.9rem,5vw,3rem);line-height:1.1;margin-bottom:.65rem;position:relative;z-index:1}
+.hero-title span{background:linear-gradient(120deg,#6C63FF,#00C9A7,#FFB347);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:var(--muted);font-size:.9rem;max-width:440px;margin:0 auto;line-height:1.65;position:relative;z-index:1}
+
+/* SECTION */
+.sec{max-width:780px;margin:0 auto;padding:2rem 1rem 2rem;position:relative;z-index:1}
+.sec-title{font-family:'Fredoka One',cursive;font-size:clamp(1.15rem,3vw,1.5rem);margin-bottom:.2rem}
+.sec-sub{color:var(--muted);font-size:.82rem;margin-bottom:1.25rem;line-height:1.55}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:.6rem 0 1.75rem}
+
+/* GENRE */
+.genre-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:.5rem}
+.genre-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s,box-shadow .2s;position:relative}
+.genre-card::before{content:'';position:absolute;inset:0;background:var(--gc);opacity:0;transition:opacity .2s;pointer-events:none}
+.genre-card.on::before{opacity:.08}
+.genre-card.on{border-color:var(--gc);box-shadow:0 0 0 1.5px var(--gc)}
+.genre-hd{display:flex;align-items:center;gap:.7rem;padding:.9rem 1rem;cursor:pointer;user-select:none;position:relative;z-index:1}
+.genre-hd:hover{background:rgba(255,255,255,.03)}
+.g-icon{font-size:1.8rem;flex-shrink:0}
+.g-meta{flex:1}
+.g-name{font-size:.95rem;font-weight:800}
+.g-hint{font-size:.7rem;color:var(--muted);margin-top:1px}
+.g-chev{font-size:11px;color:var(--muted);transition:transform .22s;opacity:.5}
+.genre-card.open .g-chev{transform:rotate(180deg)}
+.genre-body{display:none;border-top:1px solid var(--border);padding:.75rem 1rem .85rem;position:relative;z-index:1}
+.genre-card.open .genre-body{display:block}
+.genre-examples-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem;opacity:.7}
+.genre-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.65rem}
+.genre-chip{font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted)}
+.genre-tip-box{font-size:.73rem;color:#FFB347;background:rgba(255,179,71,.07);border:1px solid rgba(255,179,71,.18);border-radius:8px;padding:.42rem .65rem;line-height:1.55}
+.genre-select-btn{width:100%;margin-top:.65rem;padding:.48rem;border-radius:8px;border:1.5px solid var(--gc);background:transparent;color:var(--text);font-size:.76rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.genre-select-btn:hover,.genre-card.on .genre-select-btn{background:var(--gc);color:#fff}
+
+/* PIE — accordion style */
+.pie-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:.5rem}
+.pie-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.pie-card.on{border-color:var(--pc);box-shadow:0 0 0 1px var(--pc)}
+.pie-hd{display:flex;align-items:center;gap:.9rem;padding:.85rem 1rem;cursor:pointer;user-select:none;transition:background .15s}
+.pie-hd:hover,.pie-card.open .pie-hd{background:var(--card2)}
+.pie-badge{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--pc)}
+.pie-hd-meta{flex:1}
+.pie-hd-word{font-family:'Fredoka One',cursive;font-size:1rem;color:var(--pc);letter-spacing:.02em}
+.pie-hd-desc{font-size:.72rem;color:var(--muted);margin-top:1px}
+.pie-chev{font-size:11px;color:var(--muted);transition:transform .22s;opacity:.5;flex-shrink:0}
+.pie-card.open .pie-chev{transform:rotate(180deg)}
+.pie-body{display:none;border-top:1px solid var(--border);padding:.75rem 1rem .9rem}
+.pie-card.open .pie-body{display:block}
+.pie-what{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem;opacity:.7}
+.pie-feats{display:flex;flex-direction:column;gap:4px;margin-bottom:.65rem}
+.pie-feat{display:flex;align-items:flex-start;gap:7px;font-size:.73rem;color:var(--text);line-height:1.45}
+.pie-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:.28rem;background:var(--pc)}
+.pie-look{font-size:.7rem;color:var(--muted);line-height:1.5;font-style:italic;padding:.38rem .6rem;background:rgba(255,255,255,.03);border-radius:7px;border-left:2px solid var(--pc)}
+.pie-select-btn{width:100%;margin-top:.65rem;padding:.45rem;border-radius:8px;border:1.5px solid var(--pc);background:transparent;color:var(--text);font-size:.74rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.pie-select-btn:hover,.pie-card.on .pie-select-btn{background:var(--pc);color:#fff}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0}
+.conn{width:2px;height:18px;background:linear-gradient(to bottom,var(--fa),var(--fb));margin:0 auto;opacity:.35}
+.step{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;position:relative}
+.step::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ac);border-radius:4px 0 0 4px}
+.step.on{box-shadow:0 0 0 1.5px var(--ac)}
+.step-hd{display:flex;align-items:center;gap:.8rem;padding:.85rem 1rem;cursor:pointer;user-select:none;transition:background .15s}
+.step-hd:hover,.step.on .step-hd{background:var(--card2)}
+.s-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.s-meta{flex:1;min-width:0}
+.s-label{font-family:'Fredoka One',cursive;font-size:.98rem;color:var(--ac);letter-spacing:.02em}
+.s-tag{font-size:.71rem;color:var(--muted);margin-top:1px;line-height:1.35}
+.chev{font-size:11px;color:var(--muted);transition:transform .22s;opacity:.5;flex-shrink:0}
+.step.on .chev{transform:rotate(180deg)}
+.step-body{display:none;padding:0 1rem 1rem;border-top:1px solid var(--border)}
+.step.on .step-body{display:block}
+.gtip{display:none;font-size:.71rem;color:#FFB347;background:rgba(255,179,71,.07);border:1px solid rgba(255,179,71,.18);border-radius:8px;padding:.38rem .6rem;margin:.55rem 0 .3rem;line-height:1.5}
+.gtip.show{display:block}
+.cat-tabs{display:flex;gap:5px;flex-wrap:wrap;padding:.52rem 0 .38rem}
+.cat-tab{font-size:.67rem;font-weight:800;padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'Nunito',sans-serif}
+.cat-tab:hover{border-color:var(--ac);color:var(--ac)}
+.cat-tab.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.cat-panel{display:none}
+.cat-panel.on{display:block}
+.cat-intro{font-size:.71rem;color:var(--muted);margin-bottom:.45rem;line-height:1.5;padding:.38rem .6rem;background:rgba(255,255,255,.03);border-radius:7px;border-left:2px solid var(--ac)}
+.strat-list{display:flex;flex-direction:column;gap:4px}
+.strat{background:rgba(255,255,255,.03);border-radius:9px;border:1px solid var(--border);padding:.45rem .75rem;transition:background .15s}
+.strat:hover{background:rgba(255,255,255,.07)}
+.s-name{font-size:.75rem;font-weight:800;color:var(--ac);margin-bottom:1px}
+.s-desc{font-size:.69rem;color:var(--muted);line-height:1.45}
+
+footer{text-align:center;padding:1.5rem 1rem;color:var(--muted);font-size:.7rem;border-top:1px solid var(--border)}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">ReadSmart</span>
+  <div class="lang-tog">
+    <button class="lb on" onclick="setLang('en')">EN</button>
+    <button class="lb" onclick="setLang('ja')">日本語</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="orb orb1"></div><div class="orb orb2"></div>
+  <h1 class="hero-title"><span data-en="Read with a plan.<br>Every time." data-ja="計画を持って読もう。<br>毎回。">Read with a plan.<br>Every time.</span></h1>
+  <p class="hero-sub" data-en="Pick what you're reading, figure out why it was written, then use the five steps." data-ja="何を読んでいるかを選んで、なぜ書かれたかを考えて、5つのステップを使おう。">Pick what you're reading, figure out why it was written, then use the five steps.</p>
+</div>
+
+<section class="sec" id="main">
+
+  <!-- GENRE -->
+  <h2 class="sec-title" data-en="What are you reading?" data-ja="何を読んでいる？">What are you reading?</h2>
+  <p class="sec-sub" data-en="Tap to open, then press Select — this gives you helpful tips inside every step." data-ja="タップして開いてから「選ぶ」を押そう。各ステップにヒントが出るよ。">Tap to open, then press Select — this gives you helpful tips inside every step.</p>
+  <div class="genre-row" id="genreRow"></div>
+  <div class="divider"></div>
+
+  <!-- PIE -->
+  <h2 class="sec-title" data-en="Why did the author write this?" data-ja="なぜ作者は書いたの？">Why did the author write this?</h2>
+  <p class="sec-sub" data-en="Tap each one to see what to look for. Pick the one that fits your text best." data-ja="それぞれをタップして何を探すか確認しよう。自分の文章に一番合うものを選ぼう。">Tap each one to see what to look for. Pick the one that fits your text best.</p>
+  <div class="pie-stack" id="pieStack"></div>
+  <div class="divider"></div>
+
+  <!-- STEPS -->
+  <h2 class="sec-title" data-en="Your 5 reading steps" data-ja="5つの読書ステップ">Your 5 reading steps</h2>
+  <p class="sec-sub" data-en="Always in this order. Tap any step to open it and find tips." data-ja="いつもこの順番で。タップして開いてヒントを見つけよう。">Always in this order. Tap any step to open it and find tips.</p>
+  <div class="steps" id="stepsWrap"></div>
+
+</section>
+
+<footer>
+  <span data-en="ReadSmart · A reading guide for every reader" data-ja="ReadSmart · すべての読者のための読書ガイド">ReadSmart · A reading guide for every reader</span>
+</footer>
+
+<script>
+/* ═══ DATA ═══ */
+
+const GENRES = [
+  { id:'fiction', icon:'📖', col:'#A78BFA',
+    en:{ name:'Fiction', hint:'Made-up stories',
+      examples:['Adventure','Fantasy','Mystery','Science fiction','Historical fiction','Fairy tale','Fable','Realistic fiction'],
+      tip:'Notice the characters and how the story changes. Ask: what is the author really trying to say?' },
+    ja:{ name:'フィクション', hint:'想像の物語',
+      examples:['冒険','ファンタジー','ミステリー','SF','歴史小説','おとぎ話','寓話','リアル小説'],
+      tip:'登場人物と物語の変化に注目しよう。作者が本当に伝えたいことは何？' },
+    tips:{
+      en:{ focus:'Think about the characters and how the story feels. What kind of story is this?',
+           fluency:'Try to sound like the character when you read dialogue out loud.',
+           highlight:'Mark the words that make the story feel exciting, scary, or real.',
+           strat:'If you\'re confused, picture the scene like a film — then re-read.',
+           review:'What is the story really about underneath the plot? Think about the big idea.' },
+      ja:{ focus:'登場人物と物語の雰囲気について考えよう。どんな種類の物語？',
+           fluency:'会話文を読むときは登場人物みたいな声を出してみよう。',
+           highlight:'物語をわくわく・こわい・リアルに感じさせる言葉をマークしよう。',
+           strat:'混乱した？映画みたいに場面を思い浮かべてから読み直そう。',
+           review:'物語の表面の下に、本当は何がテーマ？大きなアイデアを考えよう。' }
+    }
+  },
+  { id:'nonfiction', icon:'📰', col:'#34D399',
+    en:{ name:'Non-fiction', hint:'Real facts and events',
+      examples:['News article','Biography','Science report','Explanation text','Persuasive writing','Diary','Instructions','Information book'],
+      tip:'Focus on the facts and how ideas link together. Ask: what does the author want me to know?' },
+    ja:{ name:'ノンフィクション', hint:'実際の事実と出来事',
+      examples:['ニュース記事','伝記','科学レポート','説明文','説得文','日記','説明書','情報本'],
+      tip:'事実と考えのつながりに注目しよう。作者は何を知ってほしい？' },
+    tips:{
+      en:{ focus:'Ask yourself: what do I already know about this? What do I want to find out?',
+           fluency:'Slow down when you hit numbers, dates, or unusual words — they carry the key facts.',
+           highlight:'Mark key facts, and any words the author stops to explain.',
+           strat:'If a paragraph is confusing, find the first sentence — it usually tells you what the paragraph is about.',
+           review:'Could you explain the main idea to someone who hasn\'t read it? Try it out loud.' },
+      ja:{ focus:'自分に聞いてみよう：このトピックについて何を知ってる？何を知りたい？',
+           fluency:'数字・日付・難しい言葉では速度を落とそう。大切な事実が入っているよ。',
+           highlight:'重要な事実と、作者が説明している言葉をマークしよう。',
+           strat:'段落が難しかったら、最初の文を読もう——たいてい段落の内容を教えてくれる。',
+           review:'読んでいない人に主な考えを説明できる？声に出して試してみよう。' }
+    }
+  }
+];
+
+const PIE = [
+  { id:'p', col:'#FF6B6B',
+    en:{ word:'Persuade', desc:'The author wants to change what you think',
+      features:[
+        'Gives one side of the argument only',
+        'Asks questions that make you feel something ("Isn\'t it obvious that...?")',
+        'Uses strong, emotional words',
+        'Repeats key words to make them stick',
+        'Uses facts or numbers to back up opinions',
+        'Makes you feel like everyone agrees',
+      ],
+      look:'Spot it: the author sounds very sure of themselves, uses words like "clearly" or "obviously", and doesn\'t mention the other side.'
+    },
+    ja:{ word:'説得', desc:'作者はあなたの考えを変えようとしている',
+      features:[
+        '一方の意見だけを伝える',
+        '感情に訴える問いかけをする',
+        '強い・感情的な言葉を使う',
+        'キーワードを繰り返す',
+        '事実や数字で意見を支える',
+        '全員が同意しているように見せる',
+      ],
+      look:'見分け方：作者がとても自信満々で「明らかに」「当然」のような言葉を使い、反対意見を出さない。'
+    }
+  },
+  { id:'i', col:'#00C9A7',
+    en:{ word:'Inform', desc:'The author wants to teach you something true',
+      features:[
+        'Has headings and subheadings to organise ideas',
+        'Uses diagrams, photos, or captions',
+        'Gives facts and real data',
+        'Explains difficult words',
+        'Shows how things cause other things',
+        'Tries to be balanced and fair',
+      ],
+      look:'Spot it: the text is organised into sections, uses specific facts, and explains rather than argues.'
+    },
+    ja:{ word:'情報', desc:'作者は本当のことを教えようとしている',
+      features:[
+        '見出しと小見出しで整理されている',
+        '図・写真・キャプションを使う',
+        '事実と実際のデータを伝える',
+        '難しい言葉を説明する',
+        '原因と結果を示す',
+        'バランスよく公平に伝えようとする',
+      ],
+      look:'見分け方：セクションに分かれていて、具体的な事実を使い、主張ではなく説明している。'
+    }
+  },
+  { id:'e', col:'#FFB347',
+    en:{ word:'Entertain', desc:'The author wants you to enjoy what you\'re reading',
+      features:[
+        'Has a story shape: beginning, middle, end',
+        'Uses rich, descriptive language',
+        'Has characters with feelings and problems',
+        'Includes dialogue (people talking)',
+        'Uses comparisons to paint pictures ("as cold as ice")',
+        'Builds suspense to keep you reading',
+      ],
+      look:'Spot it: you feel like you\'re inside the story — you can picture it, feel the tension, and care what happens next.'
+    },
+    ja:{ word:'娯楽', desc:'作者は楽しんでほしい',
+      features:[
+        '物語の形がある：はじめ・なか・おわり',
+        '豊かで描写的な言葉を使う',
+        '感情と問題を持つ登場人物がいる',
+        '会話文がある',
+        '比喩（例え）を使う（「氷のように冷たい」など）',
+        'ドキドキするような場面を作る',
+      ],
+      look:'見分け方：物語の中にいる感覚がして、映像が浮かび、緊張感を感じ、次が気になる。'
+    }
+  }
+];
+
+const STEPS_EN = [
+  { ac:'#6C63FF', soft:'rgba(108,99,255,.18)', icon:'🔍', label:'Focus', tag:'Get your brain ready before you start reading', gtip:'focus',
+    cats:[
+      { name:'Why am I reading?', intro:'Knowing your reason for reading helps you notice the right things.',
+        strats:[
+          {n:'To be persuaded',d:'Look for opinions and arguments. The author wants to change your mind.'},
+          {n:'To be informed',d:'Look for facts, headings, and explanations. The author wants to teach you.'},
+          {n:'To be entertained',d:'Look for characters, feelings, and story. The author wants you to enjoy it.'},
+          {n:'More than one reason',d:'Many texts have more than one purpose. Which feels strongest?'},
+        ]},
+      { name:'What do I already know?', intro:'Think about what you already know — it gives your brain a head start.',
+        strats:[
+          {n:'What do I know?',d:'Think of 2 or 3 things you already know about this topic or story.'},
+          {n:'What do I think will happen?',d:'Look at the title or cover — what do you expect?'},
+          {n:'Does this remind me of something?',d:'A film, a book, something in real life — make a connection.'},
+          {n:'What\'s my one question?',d:'Pick one question to keep in mind while you read.'},
+        ]},
+    ]},
+  { ac:'#00C9A7', soft:'rgba(0,201,167,.18)', icon:'☞', label:'Fluency', tag:'Read smoothly and with feeling', gtip:'fluency',
+    cats:[
+      { name:'Getting the words right', intro:'If you keep getting words wrong, try one of these.',
+        strats:[
+          {n:'Use your finger',d:'Point to each word as you read. This stops your eyes skipping ahead.'},
+          {n:'Go back to the start',d:'If a word was wrong, start the whole sentence again.'},
+          {n:'Ask three questions',d:'Does it look right? Does it sound right? Does it make sense? If not, try again.'},
+        ]},
+      { name:'Making it flow', intro:'Good reading sounds like someone talking — not like reading one word at a time.',
+        strats:[
+          {n:'Read in groups of words',d:'Try reading 3 or 4 words together instead of one at a time.'},
+          {n:'Use the punctuation',d:'Full stop = pause and breathe. Comma = small pause. Exclamation mark = put some energy in!'},
+          {n:'Try it again',d:'Read the same bit 2 or 3 times. It always sounds better the third time.'},
+        ]},
+      { name:'Adding expression', intro:'This is what makes reading sound exciting instead of flat.',
+        strats:[
+          {n:'Find the important word',d:'Every sentence has one word that matters most. Say that word a little louder or slower.'},
+          {n:'Match your voice to the story',d:'Sad parts = quieter and slower. Exciting parts = faster and bigger.'},
+          {n:'Think about feelings',d:'What is this character feeling right now? Try to let that come into your voice.'},
+        ]},
+    ]},
+  { ac:'#FFB347', soft:'rgba(255,179,71,.18)', icon:'✏️', label:'Highlight', tag:'Spot tricky words and mark the important ones', gtip:'highlight',
+    cats:[
+      { name:'Why is this word tricky?', intro:'Work out what kind of problem it is first — that helps you pick the right fix.',
+        strats:[
+          {n:'I\'ve never seen it before',d:'Brand new word — look for clues around it to figure out what it means.'},
+          {n:'I can\'t say it',d:'You know what kind of word it is, but you can\'t read it out loud — try the sounding-out steps.'},
+          {n:'The meaning feels wrong here',d:'You can say the word, but it doesn\'t quite fit — it might be used in a special or unusual way.'},
+        ]},
+      { name:'How to figure out the meaning', intro:'Before you look it up, try finding clues in the text around it.',
+        strats:[
+          {n:'Read around it',d:'Read the whole sentence, then the sentence before and after. The meaning is often hiding nearby.'},
+          {n:'Look for an explanation',d:'Authors often explain a tricky word right after it — after a comma or a dash.'},
+          {n:'Look at the parts',d:'Can you split the word into smaller parts? Each part often gives a clue.'},
+          {n:'Look for the opposite',d:'Words like "but", "however", and "unlike" often point to the opposite — which can tell you the meaning.'},
+        ]},
+      { name:'Words worth marking', intro:'Not just hard words — some words are important for understanding the whole text.',
+        strats:[
+          {n:'A word that keeps coming back',d:'If the author uses it again and again, it really matters.'},
+          {n:'A joining word',d:'Words like "however", "because", and "although" link ideas — they\'re important for understanding.'},
+          {n:'A surprising word choice',d:'Why did the author pick that word? Unusual choices often show what the author wants you to feel.'},
+        ]},
+    ]},
+  { ac:'#FF6B6B', soft:'rgba(255,107,107,.18)', icon:'⬡', label:'Strategise', tag:'Have a go at fixing the problem', gtip:'strat',
+    cats:[
+      { name:'I don\'t understand the meaning', intro:'The words are readable, but the meaning isn\'t clicking — try one of these.',
+        strats:[
+          {n:'Read it again from the start',d:'Go back to the beginning of the sentence. Going too fast is usually the problem.'},
+          {n:'Read the sentences around it',d:'The sentences before and after almost always explain what the confusing bit means.'},
+          {n:'Picture it',d:'Close your eyes and imagine what is happening. If you can\'t picture it, you haven\'t understood it yet.'},
+          {n:'Look for helpful words',d:'Words like "then", "because", "but", and "so" show how ideas connect.'},
+        ]},
+      { name:'I can\'t say the word', intro:'Try these tricks to sound out a word you don\'t recognise.',
+        strats:[
+          {n:'Break it into chunks',d:'Split the word into smaller pieces. Say each piece, then blend them together.'},
+          {n:'Try a different vowel sound',d:'Try saying the vowel short, then long. The sentence will tell you which one fits.'},
+          {n:'Look for a little word inside',d:'Is there a smaller word hiding inside the bigger one?'},
+          {n:'Skip it and come back',d:'Read to the end of the sentence, then come back — you\'ll have more clues.'},
+        ]},
+      { name:'Reading with someone else', intro:'If you\'re reading with a friend or grown-up, try these.',
+        strats:[
+          {n:'Wait for the sentence to finish',d:'Don\'t jump in when someone gets a word wrong — wait for the full sentence to end first.'},
+          {n:'Give a clue instead of the answer',d:'Help them figure it out themselves — just nudge them in the right direction.'},
+          {n:'Say it at the same time',d:'Both try the word quietly together. Two guesses are often better than one.'},
+        ]},
+    ]},
+  { ac:'#4ECDC4', soft:'rgba(78,205,196,.18)', icon:'🧩', label:'Review', tag:'Connect what you\'ve read so you don\'t forget it', gtip:'review',
+    cats:[
+      { name:'Reading skills (VIPERS)', intro:'Six things good readers do. Your lesson focuses on one — but you can always use all of them.',
+        strats:[
+          {n:'Vocabulary',d:'What does this word mean here? Why do you think the author chose it?'},
+          {n:'Inference',d:'What is the text hinting at but not saying out loud? Read between the lines.'},
+          {n:'Prediction',d:'What do you think will happen next? What in the text made you think that?'},
+          {n:'Explain',d:'How is the author using language? Find something interesting and explain what effect it has.'},
+          {n:'Retrieve',d:'Find and copy a fact directly from the text — exactly as it says.'},
+          {n:'Sequence or summarise',d:'Put the main events in order, or sum up what happened in your own words.'},
+        ]},
+      { name:'Quick checks', intro:'Before you move on — make sure the meaning has actually landed.',
+        strats:[
+          {n:'Say it in one sentence',d:'Sum up this section in one sentence. If you can\'t — go back and re-read first.'},
+          {n:'Who, what, where, when, why',d:'Go through all five. Any blanks? Go back and find the answers.'},
+          {n:'What surprised me?',d:'If something surprised you, your prediction was wrong. Why did you miss that?'},
+          {n:'Find a connection',d:'Does this link to something in your life, another book, or something in the world?'},
+        ]},
+      { name:'How did the reading sound?', intro:'Think about how it sounded when you read out loud.',
+        strats:[
+          {n:'Did it sound natural?',d:'Good reading sounds like normal talking. If it was choppy, find that part and try again.'},
+          {n:'Did the feeling come through?',d:'Did exciting bits sound exciting? Did the characters sound different from each other?'},
+          {n:'Was the pace right?',d:'Too fast means you might rush past the meaning. Too slow and you lose the story. Aim for a comfortable story-telling pace.'},
+        ]},
+    ]},
+];
+
+const STEPS_JA = [
+  { ac:'#6C63FF', soft:'rgba(108,99,255,.18)', icon:'🔍', label:'めあて', tag:'読む前に頭を準備しよう', gtip:'focus',
+    cats:[
+      { name:'なぜ読む？', intro:'読む理由を知ると、何に注目すればいいかがわかる。',
+        strats:[
+          {n:'説得されるため',d:'意見と主張を探そう。作者はあなたの考えを変えようとしている。'},
+          {n:'情報を得るため',d:'事実・見出し・説明を探そう。作者は教えようとしている。'},
+          {n:'楽しむため',d:'登場人物・感情・物語を探そう。作者は楽しんでほしい。'},
+          {n:'複数の理由',d:'多くの文章は複数の目的を持つ。どれが一番強い？'},
+        ]},
+      { name:'何を知ってる？', intro:'すでに知っていることを考えよう——脳に先取り点が入る。',
+        strats:[
+          {n:'何を知ってる？',d:'このトピックや物語について知っていることを2〜3つ思い浮かべよう。'},
+          {n:'何が起きると思う？',d:'タイトルや表紙を見て——何を予想する？'},
+          {n:'何かに似てる？',d:'映画・本・実際の体験でつながるものはある？'},
+          {n:'一つの問い',d:'読んでいる間、頭の中に持ち続ける一つの問いを決めよう。'},
+        ]},
+    ]},
+  { ac:'#00C9A7', soft:'rgba(0,201,167,.18)', icon:'☞', label:'音読', tag:'なめらかに・気持ちをこめて読もう', gtip:'fluency',
+    cats:[
+      { name:'正しく読む', intro:'言葉のミスが続くときはこれを試そう。',
+        strats:[
+          {n:'指で追う',d:'読みながら指で各単語を指そう。目が先に飛ばなくなる。'},
+          {n:'文の最初に戻る',d:'言葉が間違っていたら、文の最初からやり直そう。'},
+          {n:'3つの問いを確認',d:'見た目は合ってる？音は合ってる？意味は通る？合わなければもう一度。'},
+        ]},
+      { name:'なめらかに読む', intro:'上手な読み方は一語ずつではなく、話すように聞こえる。',
+        strats:[
+          {n:'言葉のかたまりで読む',d:'一語ずつでなく、3〜4語のかたまりとして読もう。'},
+          {n:'句読点を活かす',d:'「。」で止まって息を吸う。「、」で小さく間を置く。「！」はエネルギーを込めて。'},
+          {n:'もう一度読む',d:'同じ箇所を2〜3回読もう。3回目は必ずよくなる。'},
+        ]},
+      { name:'気持ちをこめる', intro:'これが読みをワクワクさせるもの。',
+        strats:[
+          {n:'大事な言葉を見つける',d:'どの文にも一番重い言葉がある。それを少し大きく・ゆっくり言おう。'},
+          {n:'声を物語に合わせる',d:'悲しい部分＝静かにゆっくり。わくわくする部分＝速く大きく。'},
+          {n:'感情について考える',d:'この登場人物は今どんな気持ち？その感情を声に出してみよう。'},
+        ]},
+    ]},
+  { ac:'#FFB347', soft:'rgba(255,179,71,.18)', icon:'✏️', label:'ハイライト', tag:'難しい言葉に気づいて大切なものをマークしよう', gtip:'highlight',
+    cats:[
+      { name:'なぜこの言葉は難しい？', intro:'まず問題の種類を見極めよう——それに合った対策が選べる。',
+        strats:[
+          {n:'見たことがない',d:'まったく新しい言葉——周りにあるヒントを使って意味を考えよう。'},
+          {n:'読み方がわからない',d:'どんな言葉かはわかるが声に出して読めない——読み方の練習へ。'},
+          {n:'意味がここでは変な感じ',d:'読めるけどここでは合わない——特別・珍しい使い方かもしれない。'},
+        ]},
+      { name:'意味のつきとめ方', intro:'辞書を引く前に、文章の中にあるヒントを探してみよう。',
+        strats:[
+          {n:'前後を読む',d:'文全体と前後の文を読もう。意味のヒントはたいてい近くに隠れている。'},
+          {n:'説明を探す',d:'作者がコンマやダッシュの後で難しい言葉を説明していることがある。'},
+          {n:'言葉の部品を見る',d:'言葉を小さな部品に分けてみよう。各部品が意味のヒントになる。'},
+          {n:'反対を探す',d:'「でも」「しかし」「ところが」は反対を示す——反対からさかのぼろう。'},
+        ]},
+      { name:'マークする価値がある言葉', intro:'難しいだけでなく、全体を理解するために大切な言葉もマークしよう。',
+        strats:[
+          {n:'何度も出てくる言葉',d:'作者が繰り返し使う言葉は本当に重要。'},
+          {n:'つなぐ言葉',d:'「しかし」「なぜなら」「ただし」——考えをつなぐ言葉で理解に欠かせない。'},
+          {n:'めずらしい言葉の選択',d:'なぜその言葉？めずらしい選択に作者が感じさせたいことが見える。'},
+        ]},
+    ]},
+  { ac:'#FF6B6B', soft:'rgba(255,107,107,.18)', icon:'⬡', label:'作戦', tag:'問題を解決してみよう', gtip:'strat',
+    cats:[
+      { name:'意味がわからない', intro:'言葉は読めるのに意味が入ってこない——これを試そう。',
+        strats:[
+          {n:'最初から読み直す',d:'文の最初に戻ろう。速く読みすぎたことがよくある。'},
+          {n:'前後の文を読む',d:'その文の前後の文がたいてい説明してくれる。'},
+          {n:'映像を思い浮かべる',d:'目を閉じて何が起きているか想像しよう。映像が浮かばなければまだ理解できていない。'},
+          {n:'つながり言葉を探す',d:'「そして」「なぜなら」「でも」「だから」——考えのつながりを示す言葉を探そう。'},
+        ]},
+      { name:'言葉が読めない', intro:'この言葉を声に出して読むためのコツ。',
+        strats:[
+          {n:'かたまりに分ける',d:'言葉を小さな部品に分けよう。各部品を読んでからつなげる。'},
+          {n:'母音の音を変えてみる',d:'短い音と長い音を両方試そう。文章が正しい音を教えてくれる。'},
+          {n:'中に小さな言葉はある？',d:'大きな言葉の中に知っている小さな言葉が隠れていないか探そう。'},
+          {n:'飛ばして戻る',d:'その言葉を飛ばして文の最後まで読んでから戻る——手がかりが増えているよ。'},
+        ]},
+      { name:'誰かと読んでいるとき', intro:'友達や大人と一緒に読んでいるとき——このやり方を試そう。',
+        strats:[
+          {n:'文が終わるまで待つ',d:'誰かが間違えても、文が終わるまで待ってから教えよう。'},
+          {n:'答えじゃなくてヒントを',d:'自分で答えにたどり着かせよう——方向を指し示すだけ。'},
+          {n:'一緒に言ってみる',d:'二人で同時に静かに言ってみよう。二つの試みが一つより助けになることが多い。'},
+        ]},
+    ]},
+  { ac:'#4ECDC4', soft:'rgba(78,205,196,.18)', icon:'🧩', label:'ふり返り', tag:'読んだことをつなげて忘れないようにしよう', gtip:'review',
+    cats:[
+      { name:'読みのスキル（VIPERS）', intro:'上手な読者がやること6つ。レッスンでは1つに集中するが、全部いつでも使えるよ。',
+        strats:[
+          {n:'語彙（言葉）',d:'この言葉はここでどんな意味？なぜ作者はその言葉を選んだと思う？'},
+          {n:'推論',d:'文章が示唆しているが言っていないことは？行間を読もう。'},
+          {n:'予測',d:'次に何が起きると思う？そう思う理由は文章のどこにある？'},
+          {n:'説明',d:'作者はどのように言葉を使っている？面白いものを見つけてその効果を説明しよう。'},
+          {n:'取り出す',d:'文章から直接、書いてある通りに事実を見つけてコピーしよう。'},
+          {n:'順序・要約',d:'主な出来事を順番に並べるか、自分の言葉で何が起きたかをまとめよう。'},
+        ]},
+      { name:'クイックチェック', intro:'先に進む前に——意味が本当に入ったか確かめよう。',
+        strats:[
+          {n:'一文でまとめる',d:'この部分を一文でまとめよう。できなければ読み直してから。'},
+          {n:'だれ・何・どこ・いつ・なぜ',d:'5つ全部確認しよう。答えられない空白がある？戻って確認しよう。'},
+          {n:'何に驚いた？',d:'驚いたということは予測が外れた。なぜ見逃した？'},
+          {n:'つながりを見つける',d:'自分の体験・他の本・世界の出来事——何かとつながる？'},
+        ]},
+      { name:'読み方はどうだった？', intro:'声に出して読んだとき、どう聴こえたかを振り返ろう。',
+        strats:[
+          {n:'自然に聞こえた？',d:'上手な読み方は普通の会話に聞こえる。ぎこちなかったら、その部分をもう一度。'},
+          {n:'気持ちは伝わった？',d:'わくわくする場面はわくわくして聞こえた？登場人物ごとに声は変えられた？'},
+          {n:'速さは合ってた？',d:'速すぎると意味が飛んでいく。遅すぎると物語が途切れる。話し方の上手な人の速さを目指そう。'},
+        ]},
+    ]},
+];
+
+/* ═══ STATE ═══ */
+let lang='en', selGenre=null, selPIE=null;
+
+/* ═══ LANG ═══ */
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.trim()===(l==='en'?'EN':'日本語')));
+  document.querySelectorAll('[data-en]').forEach(el=>{el.innerHTML=el.dataset[l]||el.dataset.en;});
+  document.documentElement.lang=l;
+  rebuildAll();
+}
+
+/* ═══ GENRE ═══ */
+function buildGenre(){
+  const row=document.getElementById('genreRow'); row.innerHTML='';
+  GENRES.forEach(g=>{
+    const d=g[lang];
+    const card=document.createElement('div');
+    card.className='genre-card'+(selGenre===g.id?' on':'');
+    card.style.setProperty('--gc',g.col);
+    const chips=d.examples.map(e=>`<span class="genre-chip">${e}</span>`).join('');
+    const btnLabel=lang==='en'?`Select ${d.name}`:d.name+'を選ぶ';
+    card.innerHTML=`
+      <div class="genre-hd">
+        <span class="g-icon">${g.icon}</span>
+        <div class="g-meta"><div class="g-name">${d.name}</div><div class="g-hint">${d.hint}</div></div>
+        <span class="g-chev">▼</span>
+      </div>
+      <div class="genre-body">
+        <div class="genre-examples-label">${lang==='en'?'Examples':'ジャンルの例'}</div>
+        <div class="genre-chips">${chips}</div>
+        <div class="genre-tip-box">${d.tip}</div>
+        <button class="genre-select-btn" style="--gc:${g.col}">${btnLabel}</button>
+      </div>`;
+    card.querySelector('.genre-hd').addEventListener('click',()=>{
+      const isOpen=card.classList.contains('open');
+      document.querySelectorAll('.genre-card').forEach(c=>c.classList.remove('open'));
+      if(!isOpen) card.classList.add('open');
+    });
+    card.querySelector('.genre-select-btn').addEventListener('click',e=>{
+      e.stopPropagation();
+      selGenre=selGenre===g.id?null:g.id;
+      buildGenre(); buildSteps();
+    });
+    row.appendChild(card);
+  });
+}
+
+/* ═══ PIE ═══ */
+function buildPIE(){
+  const stack=document.getElementById('pieStack'); stack.innerHTML='';
+  PIE.forEach(p=>{
+    const d=p[lang];
+    const card=document.createElement('div');
+    card.className='pie-card'+(selPIE===p.id?' on':'');
+    card.style.setProperty('--pc',p.col);
+    const feats=d.features.map(f=>`<div class="pie-feat"><span class="pie-dot"></span>${f}</div>`).join('');
+    const btnLabel=lang==='en'?`This is my purpose`:lang==='ja'?'これが目的':'This is my purpose';
+    card.innerHTML=`
+      <div class="pie-hd">
+        <div class="pie-badge" style="background:rgba(${hexToRgb(p.col)},.15)">${p.id.toUpperCase()}</div>
+        <div class="pie-hd-meta">
+          <div class="pie-hd-word">${d.word}</div>
+          <div class="pie-hd-desc">${d.desc}</div>
+        </div>
+        <span class="pie-chev">▼</span>
+      </div>
+      <div class="pie-body">
+        <div class="pie-what">${lang==='en'?'What to look for':'何を探す？'}</div>
+        <div class="pie-feats">${feats}</div>
+        <div class="pie-look">${d.look}</div>
+        <button class="pie-select-btn">${btnLabel}</button>
+      </div>`;
+    card.querySelector('.pie-hd').addEventListener('click',()=>{
+      const isOpen=card.classList.contains('open');
+      document.querySelectorAll('.pie-card').forEach(c=>c.classList.remove('open'));
+      if(!isOpen) card.classList.add('open');
+    });
+    card.querySelector('.pie-select-btn').addEventListener('click',e=>{
+      e.stopPropagation();
+      selPIE=selPIE===p.id?null:p.id;
+      buildPIE();
+    });
+    stack.appendChild(card);
+  });
+}
+
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+/* ═══ STEPS ═══ */
+function buildSteps(){
+  const wrap=document.getElementById('stepsWrap');
+  const STEPS=lang==='ja'?STEPS_JA:STEPS_EN;
+  const connCols=[['#6C63FF','#00C9A7'],['#00C9A7','#FFB347'],['#FFB347','#FF6B6B'],['#FF6B6B','#4ECDC4']];
+  const openSet=new Set(); wrap.querySelectorAll('.step.on').forEach((_,i)=>openSet.add(i));
+  wrap.innerHTML='';
+  STEPS.forEach((s,si)=>{
+    const gData=selGenre?GENRES.find(g=>g.id===selGenre):null;
+    const tip=gData&&s.gtip?gData.tips[lang][s.gtip]:null;
+    const tabsHtml=s.cats.map((c,ci)=>`<button class="cat-tab${ci===0?' on':''}" data-ci="${ci}">${c.name}</button>`).join('');
+    const panelsHtml=s.cats.map((c,ci)=>`
+      <div class="cat-panel${ci===0?' on':''}" data-panel="${ci}">
+        <p class="cat-intro">${c.intro}</p>
+        <div class="strat-list">${c.strats.map(st=>`<div class="strat"><div class="s-name">${st.n}</div><div class="s-desc">${st.d}</div></div>`).join('')}</div>
+      </div>`).join('');
+    const tipHtml=tip?`<div class="gtip show">${gData.icon} <strong>${gData[lang].name}:</strong> ${tip}</div>`:`<div class="gtip"></div>`;
+    const card=document.createElement('div');
+    card.className='step'+(openSet.has(si)?' on':'');
+    card.style.setProperty('--ac',s.ac);
+    card.innerHTML=`
+      <div class="step-hd">
+        <div class="s-icon" style="background:${s.soft}">${s.icon}</div>
+        <div class="s-meta"><div class="s-label">${s.label}</div><div class="s-tag">${s.tag}</div></div>
+        <span class="chev">▼</span>
+      </div>
+      <div class="step-body">
+        ${tipHtml}
+        <div class="cat-tabs">${tabsHtml}</div>
+        ${panelsHtml}
+      </div>`;
+    card.querySelector('.step-hd').addEventListener('click',()=>card.classList.toggle('on'));
+    card.querySelectorAll('.cat-tab').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        e.stopPropagation();
+        const ci=btn.dataset.ci;
+        card.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('on'));
+        card.querySelectorAll('.cat-panel').forEach(p=>p.classList.remove('on'));
+        btn.classList.add('on');
+        card.querySelector(`[data-panel="${ci}"]`).classList.add('on');
+      });
+    });
+    wrap.appendChild(card);
+    if(si<STEPS.length-1){
+      const conn=document.createElement('div');
+      conn.className='conn';
+      conn.style.setProperty('--fa',connCols[si][0]);
+      conn.style.setProperty('--fb',connCols[si][1]);
+      wrap.appendChild(conn);
+    }
+  });
+}
+
+function rebuildAll(){ buildGenre(); buildPIE(); buildSteps(); }
+rebuildAll();
+</script>
+</body>
+</html>
