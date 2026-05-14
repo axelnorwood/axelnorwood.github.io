@@ -1,8 +1,3 @@
-Here’s a **single‑file HTML Wordle-style game** that uses **only your spelling-list words**.
-
-Save this as `spelling-wordle.html` and open in a browser.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +7,6 @@ Save this as `spelling-wordle.html` and open in a browser.
     body { font-family: system-ui, sans-serif; text-align: center; background:#f5f5f5; }
     h1 { margin-top: 20px; }
     #grid { display: grid; gap: 4px; justify-content: center; margin: 20px auto; }
-    .row { display: contents; }
     .tile {
       width: 40px; height: 40px;
       border: 2px solid #ccc;
@@ -27,15 +21,39 @@ Save this as `spelling-wordle.html` and open in a browser.
     input[type="text"] {
       padding: 6px 8px; font-size: 16px; width: 200px; text-transform: lowercase;
     }
-    button { padding: 6px 10px; font-size: 14px; margin-left: 4px; }
+    button { padding: 6px 10px; font-size: 14px; margin: 4px; }
     #message { margin-top: 10px; min-height: 1.2em; }
-    small { color:#555; }
+    #lengthButtons { margin-top: 15px; }
+    .lenBtn {
+      padding: 6px 10px;
+      margin: 3px;
+      border: 1px solid #333;
+      background: #fff;
+      cursor: pointer;
+    }
+    .lenBtn.active {
+      background: #333;
+      color: #fff;
+    }
+    #wordBank {
+      margin-top: 20px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 8px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 14px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
 
 <h1>Spelling Wordle</h1>
-<p><small>Guess the secret word from this year’s spelling lists.</small></p>
+<p><small>Select a word length, then guess the word.</small></p>
+
+<div id="lengthButtons"></div>
 
 <div id="grid"></div>
 
@@ -46,6 +64,9 @@ Save this as `spelling-wordle.html` and open in a browser.
 </div>
 
 <div id="message"></div>
+
+<h3>Word Bank</h3>
+<div id="wordBank">(select a length to see words)</div>
 
 <script>
   // All words from your spelling lists (lowercase)
@@ -125,6 +146,15 @@ Save this as `spelling-wordle.html` and open in a browser.
     "greatness","forgiveness","beautiful","island","because","surprise","loneliness"
   ].map(w => w.toLowerCase());
 
+  // Group words by length
+  const groups = {};
+  WORDS.forEach(w => {
+    const len = w.length;
+    if (!groups[len]) groups[len] = [];
+    groups[len].push(w);
+  });
+
+  let currentLength = null;
   let answer = "";
   let maxRows = 6;
   let currentRow = 0;
@@ -135,9 +165,36 @@ Save this as `spelling-wordle.html` and open in a browser.
   const guessBtn = document.getElementById("guessBtn");
   const newBtn = document.getElementById("newBtn");
   const message = document.getElementById("message");
+  const lengthButtons = document.getElementById("lengthButtons");
+  const wordBank = document.getElementById("wordBank");
+
+  // Create toggle buttons for each available word length
+  Object.keys(groups).sort((a,b)=>a-b).forEach(len => {
+    const btn = document.createElement("button");
+    btn.textContent = len + " letters";
+    btn.className = "lenBtn";
+    btn.onclick = () => selectLength(len, btn);
+    lengthButtons.appendChild(btn);
+  });
+
+  function selectLength(len, btn) {
+    currentLength = Number(len);
+    document.querySelectorAll(".lenBtn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    updateWordBank();
+    pickNewWord();
+  }
+
+  function updateWordBank() {
+    if (!currentLength) return;
+    const list = groups[currentLength];
+    wordBank.innerHTML = list.join(", ");
+  }
 
   function pickNewWord() {
-    answer = WORDS[Math.floor(Math.random() * WORDS.length)];
+    if (!currentLength) return;
+    const list = groups[currentLength];
+    answer = list[Math.floor(Math.random() * list.length)];
     currentRow = 0;
     gameOver = false;
     message.textContent = "";
@@ -166,23 +223,18 @@ Save this as `spelling-wordle.html` and open in a browser.
   }
 
   function handleGuess() {
-    if (gameOver) return;
+    if (gameOver || !currentLength) return;
     let guess = guessInput.value.trim().toLowerCase();
 
-    if (!guess) {
-      setMessage("Type a word first.");
-      return;
-    }
     if (guess.length !== answer.length) {
       setMessage(`This word has ${answer.length} letters.`);
       return;
     }
-    if (!WORDS.includes(guess)) {
-      setMessage("That word is not in this spelling list.");
+    if (!groups[currentLength].includes(guess)) {
+      setMessage("That word is not in this list.");
       return;
     }
 
-    // Fill row tiles
     for (let i = 0; i < answer.length; i++) {
       const tile = [...grid.children].find(
         t => Number(t.dataset.row) === currentRow && Number(t.dataset.col) === i
@@ -190,13 +242,9 @@ Save this as `spelling-wordle.html` and open in a browser.
       tile.textContent = guess[i].toUpperCase();
       tile.classList.remove("correct","present","absent");
 
-      if (guess[i] === answer[i]) {
-        tile.classList.add("correct");
-      } else if (answer.includes(guess[i])) {
-        tile.classList.add("present");
-      } else {
-        tile.classList.add("absent");
-      }
+      if (guess[i] === answer[i]) tile.classList.add("correct");
+      else if (answer.includes(guess[i])) tile.classList.add("present");
+      else tile.classList.add("absent");
     }
 
     if (guess === answer) {
@@ -210,7 +258,7 @@ Save this as `spelling-wordle.html` and open in a browser.
       setMessage(`Out of guesses! The word was "${answer.toUpperCase()}".`, "#b71c1c");
       gameOver = true;
     } else {
-      setMessage(`Try again… (${maxRows - currentRow} guesses left)`);
+      setMessage(`${maxRows - currentRow} guesses left.`);
     }
 
     guessInput.value = "";
@@ -222,13 +270,7 @@ Save this as `spelling-wordle.html` and open in a browser.
   guessInput.addEventListener("keydown", e => {
     if (e.key === "Enter") handleGuess();
   });
-
-  // Start first game
-  pickNewWord();
 </script>
 
 </body>
 </html>
-```
-
-If you want, next we can add: **“this week’s list only” mode** or **hint sentences** for each word.
