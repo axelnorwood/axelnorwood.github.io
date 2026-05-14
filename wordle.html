@@ -1,0 +1,234 @@
+Here’s a **single‑file HTML Wordle-style game** that uses **only your spelling-list words**.
+
+Save this as `spelling-wordle.html` and open in a browser.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spelling Wordle</title>
+  <style>
+    body { font-family: system-ui, sans-serif; text-align: center; background:#f5f5f5; }
+    h1 { margin-top: 20px; }
+    #grid { display: grid; gap: 4px; justify-content: center; margin: 20px auto; }
+    .row { display: contents; }
+    .tile {
+      width: 40px; height: 40px;
+      border: 2px solid #ccc;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; text-transform: uppercase;
+      background: #fff;
+    }
+    .correct { background:#6aaa64; color:#fff; border-color:#6aaa64; }
+    .present { background:#c9b458; color:#fff; border-color:#c9b458; }
+    .absent  { background:#787c7e; color:#fff; border-color:#787c7e; }
+    #controls { margin-top: 10px; }
+    input[type="text"] {
+      padding: 6px 8px; font-size: 16px; width: 200px; text-transform: lowercase;
+    }
+    button { padding: 6px 10px; font-size: 14px; margin-left: 4px; }
+    #message { margin-top: 10px; min-height: 1.2em; }
+    small { color:#555; }
+  </style>
+</head>
+<body>
+
+<h1>Spelling Wordle</h1>
+<p><small>Guess the secret word from this year’s spelling lists.</small></p>
+
+<div id="grid"></div>
+
+<div id="controls">
+  <input id="guessInput" type="text" autocomplete="off" />
+  <button id="guessBtn">Guess</button>
+  <button id="newBtn">New Word</button>
+</div>
+
+<div id="message"></div>
+
+<script>
+  // All words from your spelling lists (lowercase)
+  const WORDS = [
+    "black","egg","sink","frog","lump","name","seen","high","stone","cute",
+    "character","narrative","fable","moral","dialogue",
+    "shrug","throw","shrunk","throne","shred","thrash","shrimp","thread","shrapnel","through",
+    "script","voice","illustration","perspective","storytelling",
+    "secret","submit","carrot","target","pocket","quite","quiet","planet","rabbit","jacket",
+    "diet","summit","poet","maggot","budget",
+    "boy","soil","avoid","toy","enjoy","annoy","coin","foyer","choice","destroy","voyage",
+    "poison","employ","anoint",
+    "itch","catch","bench","match","switch","watch","sketch","witch","patch","different",
+    "hatchet","kitchen","launch","stretch","blotchy",
+    "steer","chair","repair","cheer","stair","peer","dairy","pair","fairy","jeer",
+    "staircase","volunteer","despair","eerie","pioneer",
+    "skills","wishes","birds","mixes","packets","tomatoes","punches","buses","few","houses",
+    "pianos","coaches","crosses","superheroes",
+    "could","hour","talk","walk","half","honest","should","climb","would","bomb",
+    "integrity","inspiration","empathy","influence","responsibility",
+    "selling","asking","eating","moving","dreaming","smiling","carrying","painting",
+    "trying","whining","equality","diversity","courage","resilience",
+    "sigh","light","right","fight","night","flight","alright","knight","mighty",
+    "firelight","eyesight","fortnight","midnight","copyright",
+    "winning","hopping","rotting","grabbing","shutting","swimming","beginning",
+    "splitting","dropping","clapping","programming","permitting","wrapping",
+    "regretting","scrapping",
+    "grey","they","eight","obey","weight","eighty","eighteen","weighed","survey",
+    "neighbor","lightweight","feint","weightlifter","freight",
+    "apple","angle","local","final","equal","people","bottle","angel","table","travel",
+    "example","marvel","struggle","channel","trouble",
+    "liked","asked","kicked","washed","hoped","pleased","cared","cooked","poured",
+    "helped","remembered","praised","frightened","order",
+    "by","buy","for","four","plain","not","knot","heal","he'll",
+    "electricity","circuit","purpose","design","invention",
+    "sign","sword","wrong","write","know","knock","wreck","knife","knowledge","written",
+    "function","current","conductor","insulator","creativity",
+    "teacher","editor","worker","driver","darker","builder","collector","painter",
+    "supporter","climber","commander","manager","elevator","attacker","educator",
+    "why","photo","what","phone","when","graph","which","ghost","where","wheat",
+    "whisper","phase","wheel","photograph","physical",
+    "tried","copies","worried","cried","flies","studied","bullies","marries","replied",
+    "empties","satisfied","supplies","identified","occupies","purified",
+    "laugh","enough","caught","bought","cough","thought","rough","daughter","naughty",
+    "throughout","thorough","distraught","draught",
+    "gym","rice","orange","pencil","circle","large","danger","city","huge","since",
+    "garbage","sentence","general","emergency","cylinder",
+    "wrote","slept","began","broke","told","thrown","knew","learnt","found","heard",
+    "forgave","built","understood","withdrew","forbade",
+    "diary","summary","memory","library","factory","delivery","grocery","glossary",
+    "necessary","vocabulary","navigation","culture","global","heritage",
+    "painful","helpful","careless","skillful","endless","thankful","powerful",
+    "forgetful","successful","homeless","landmark","geography","location",
+    "compass","symbol",
+    "listen","often","guard","build","castle","fasten","guest","autumn","guess",
+    "wrestle","column","whistle","disguise","hustle",
+    "homework","afternoon","rainbow","airport","baseball","footprint","eyesight",
+    "grandmother","toothbrush","shoelace","somewhere","supermarket","everyone",
+    "lifeguard","skateboard",
+    "school","sphere","square","squat","squad","sphinx","squeeze","squirrel","scheme",
+    "squeaky","scholar","atmosphere","hemisphere","squeamish","spherical",
+    "easy","funny","scary","spicy","sleepy","cloudy","smoky","healthy","tricky",
+    "stormy","sustainability","agriculture","resources","ecosystem","material",
+    "don’t","can’t","i’m","it’s","i’ll","should’ve","they’re","o’clock","they’ll",
+    "doesn’t","recycling","alternative","development","natural","biodegradable",
+    "children","bread","women","mice","lives","leaves","wolves","music","chefs",
+    "trousers","beliefs","equipment","furniture","shelves","knives",
+    "slowly","happily","perfectly","exactly","properly","extremely","quickly",
+    "busily","surely","angrily","definitely","regularly","certainly","immediately",
+    "successfully",
+    "year","fear","gear","clear","dear","earth","learn","swear","heart","search",
+    "heard","beard","appear","nearby",
+    "disagree","dislike","uncover","unable","unfair","unhealthy","unhappy",
+    "disappear","misbehave","unpleasant","dishonest","disapprove","unnecessary",
+    "unfamiliar","misunderstanding",
+    "once","does","minute","clothes","friends","really","darkness",
+    "greatness","forgiveness","beautiful","island","because","surprise","loneliness"
+  ].map(w => w.toLowerCase());
+
+  let answer = "";
+  let maxRows = 6;
+  let currentRow = 0;
+  let gameOver = false;
+
+  const grid = document.getElementById("grid");
+  const guessInput = document.getElementById("guessInput");
+  const guessBtn = document.getElementById("guessBtn");
+  const newBtn = document.getElementById("newBtn");
+  const message = document.getElementById("message");
+
+  function pickNewWord() {
+    answer = WORDS[Math.floor(Math.random() * WORDS.length)];
+    currentRow = 0;
+    gameOver = false;
+    message.textContent = "";
+    buildEmptyGrid();
+    guessInput.value = "";
+    guessInput.placeholder = `Type a ${answer.length}-letter word`;
+  }
+
+  function buildEmptyGrid() {
+    grid.innerHTML = "";
+    grid.style.gridTemplateColumns = `repeat(${answer.length}, 40px)`;
+    for (let r = 0; r < maxRows; r++) {
+      for (let c = 0; c < answer.length; c++) {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.dataset.row = r;
+        tile.dataset.col = c;
+        grid.appendChild(tile);
+      }
+    }
+  }
+
+  function setMessage(text, color = "#333") {
+    message.textContent = text;
+    message.style.color = color;
+  }
+
+  function handleGuess() {
+    if (gameOver) return;
+    let guess = guessInput.value.trim().toLowerCase();
+
+    if (!guess) {
+      setMessage("Type a word first.");
+      return;
+    }
+    if (guess.length !== answer.length) {
+      setMessage(`This word has ${answer.length} letters.`);
+      return;
+    }
+    if (!WORDS.includes(guess)) {
+      setMessage("That word is not in this spelling list.");
+      return;
+    }
+
+    // Fill row tiles
+    for (let i = 0; i < answer.length; i++) {
+      const tile = [...grid.children].find(
+        t => Number(t.dataset.row) === currentRow && Number(t.dataset.col) === i
+      );
+      tile.textContent = guess[i].toUpperCase();
+      tile.classList.remove("correct","present","absent");
+
+      if (guess[i] === answer[i]) {
+        tile.classList.add("correct");
+      } else if (answer.includes(guess[i])) {
+        tile.classList.add("present");
+      } else {
+        tile.classList.add("absent");
+      }
+    }
+
+    if (guess === answer) {
+      setMessage(`Nice! The word was "${answer.toUpperCase()}".`, "#2e7d32");
+      gameOver = true;
+      return;
+    }
+
+    currentRow++;
+    if (currentRow >= maxRows) {
+      setMessage(`Out of guesses! The word was "${answer.toUpperCase()}".`, "#b71c1c");
+      gameOver = true;
+    } else {
+      setMessage(`Try again… (${maxRows - currentRow} guesses left)`);
+    }
+
+    guessInput.value = "";
+    guessInput.focus();
+  }
+
+  guessBtn.addEventListener("click", handleGuess);
+  newBtn.addEventListener("click", pickNewWord);
+  guessInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") handleGuess();
+  });
+
+  // Start first game
+  pickNewWord();
+</script>
+
+</body>
+</html>
+```
+
+If you want, next we can add: **“this week’s list only” mode** or **hint sentences** for each word.
