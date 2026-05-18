@@ -239,38 +239,9 @@ function buildNav() {
     nav.appendChild(el);
   });
 
-  // Poetry
-  const poetryEl = document.createElement('div');
-  poetryEl.className = 'nav-grade';
-  poetryEl.innerHTML = `
-    <div class="nav-grade-header" onclick="toggleGrade(this)">
-      <span class="grade-dot" style="background:#7D3C98"></span>
-      <span style="color:#7D3C98">Poetry</span>
-      <span class="grade-chevron">▶</span>
-    </div>
-    <div class="nav-genres">
-      ${DATA.poetry.map((p,i) => `
-        <div class="nav-item" onclick="showPoetry(${i})" id="nav-poetry-${i}">
-          <span class="nav-icon">✍️</span><span>${p.title}</span>
-        </div>`).join('')}
-    </div>`;
-  nav.appendChild(poetryEl);
 
-  // Teaching
-  const teachEl = document.createElement('div');
-  teachEl.className = 'nav-grade';
-  teachEl.innerHTML = `
-    <div class="nav-grade-header" onclick="toggleGrade(this)">
-      <span class="grade-dot" style="background:#0F6E56"></span>
-      <span style="color:#0F6E56">Teaching</span>
-      <span class="grade-chevron">▶</span>
-    </div>
-    <div class="nav-genres">
-      <div class="nav-item" onclick="showTeaching()" id="nav-teaching">
-        <span class="nav-icon">🎯</span><span>Best Practices</span>
-      </div>
-    </div>`;
-  nav.appendChild(teachEl);
+
+
 
   // Quick chips
   const chips = document.getElementById('quick-chips');
@@ -474,12 +445,12 @@ function showTeaching() {
   clearActive();
   const el = document.getElementById('nav-teaching');
   if (el) { el.classList.add('active'); el.closest('.nav-grade').classList.add('open'); }
-  document.getElementById('toolbar-title').textContent = 'Teaching Best Practices';
+  document.getElementById('toolbar-title').textContent = 'Tips';
 
   let html = `<div class="page">
     <div class="package-title" style="background:#0F6E56">
-      <div style="font-size:22px;font-weight:700">Teaching Best Practices</div>
-      <div class="package-subtitle">Writing process · Conferencing · Goal setting · Feedback</div>
+      <div style="font-size:22px;font-weight:700">Tips</div>
+      <div class="package-subtitle">Simple tools, advice for every level, and the goal of writing</div>
     </div>
     <div style="margin-top:16px">
       ${DATA.teaching.map(s => `
