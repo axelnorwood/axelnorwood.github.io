@@ -15,16 +15,17 @@
   --text-tertiary:#9c9c94;
   --border:#e8e7e3;
   --accent:#c45d3e;
-  --accent-light:#fdf0ec;
+  --accent-light:rgba(196,93,62,0.08);
   --accent-dark:#a34830;
   --petal:#f5e6e0;
   --serif:'DM Serif Display',Georgia,serif;
   --sans:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --radius-md:8px;
+  --radius-lg:12px;
 }
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 
-/* Subtle petal pattern background */
 body::before{
   content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
   background:
@@ -35,10 +36,10 @@ body::before{
   opacity:0.5;
 }
 
-/* Header & Navigation */
+/* Header */
 .site-header{
   padding:2rem 2rem 0;
-  max-width:900px;margin:0 auto;
+  max-width:960px;margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;
 }
 .logo-row{display:flex;align-items:center;gap:.75rem}
@@ -46,211 +47,171 @@ body::before{
   width:36px;height:36px;border-radius:50%;
   background:var(--accent);
   display:flex;align-items:center;justify-content:center;
-  color:#fff;font-family:var(--serif);font-size:1.1rem;line-height:1;
+  color:#fff;font-family:var(--serif);font-size:1.1rem;
 }
 .logo-text{font-family:var(--serif);font-size:1.35rem;color:var(--text);letter-spacing:-.01em}
 .back-link{
   font-size:.9rem;color:var(--accent);text-decoration:none;
-  display:flex;align-items:center;gap:.4rem;
-  transition:all .2s ease;
+  display:flex;align-items:center;gap:.4rem;transition:gap .2s ease;
 }
 .back-link:hover{gap:.6rem}
 
-/* Hero Section */
+/* Hero */
 .hero{
-  max-width:900px;margin:0 auto;
+  max-width:960px;margin:0 auto;
   padding:3rem 2rem 2rem;
 }
 .hero h1{
   font-family:var(--serif);
-  font-size:clamp(2rem, 5vw, 3rem);
-  font-weight:400;
-  line-height:1.15;
-  color:var(--text);
-  margin-bottom:.75rem;
+  font-size:clamp(2rem,5vw,3rem);
+  font-weight:400;line-height:1.15;
+  color:var(--text);margin-bottom:.75rem;
 }
 .hero h1 em{font-style:italic;color:var(--accent)}
 .hero p{
   font-size:1rem;font-weight:300;
   color:var(--text-secondary);
-  max-width:550px;
-  line-height:1.6;
+  max-width:560px;line-height:1.6;
 }
 
 /* Divider */
-.divider{
-  max-width:900px;margin:0 auto;padding:0 2rem;
-}
-.divider-line{
-  height:1px;
-  background:linear-gradient(to right, var(--border), transparent);
-}
+.divider{max-width:960px;margin:0 auto;padding:0 2rem}
+.divider-line{height:1px;background:linear-gradient(to right,var(--border),transparent)}
 
-/* Main Content */
-.container{
-  max-width:900px;margin:0 auto;
-  padding:2.5rem 2rem 4rem;
-}
+/* Container */
+.container{max-width:960px;margin:0 auto;padding:2.5rem 2rem 4rem}
 
-/* Grade Section */
-.grade-section{margin-bottom:3rem}
-.grade-header{
-  background:linear-gradient(135deg, rgba(196,93,62,.05), rgba(196,93,62,.08));
-  border-left:4px solid var(--accent);
-  padding:1.5rem;
-  border-radius:.5rem;
-  margin-bottom:1.5rem;
-}
-.grade-title{
-  font-family:var(--serif);
-  font-size:1.5rem;
-  color:var(--accent);
-  margin-bottom:.3rem;
-}
-.grade-subtitle{
-  font-size:.9rem;
-  color:var(--text-secondary);
-  line-height:1.5;
-}
-
-/* Trait Grid */
-.traits-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-  gap:1.5rem;
+/* Grade tabs */
+.grade-tabs{
+  display:flex;gap:8px;flex-wrap:wrap;
   margin-bottom:2rem;
 }
+.grade-tab{
+  padding:8px 20px;
+  border-radius:var(--radius-md);
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text-secondary);
+  font-family:var(--sans);
+  font-size:.9rem;font-weight:500;
+  cursor:pointer;transition:all .15s ease;
+}
+.grade-tab:hover{border-color:var(--accent);color:var(--accent)}
+.grade-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
 
-/* Trait Card */
+/* Grade panels */
+.grade-panel{display:none}
+.grade-panel.active{display:block}
+
+/* Grade description */
+.grade-desc{
+  font-size:.9rem;color:var(--text-secondary);
+  padding:.85rem 1.1rem;
+  background:var(--accent-light);
+  border-left:3px solid var(--accent);
+  border-radius:0 var(--radius-md) var(--radius-md) 0;
+  margin-bottom:1.5rem;
+  line-height:1.6;
+}
+
+/* Traits grid */
+.traits-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1rem;
+}
+
+/* Trait card */
 .trait-card{
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:.75rem;
+  border-radius:var(--radius-lg);
   overflow:hidden;
-  transition:all .25s ease;
+  transition:border-color .2s ease, box-shadow .2s ease;
 }
 .trait-card:hover{
   border-color:var(--accent);
-  box-shadow:0 4px 24px rgba(196,93,62,.08);
-  transform:translateY(-2px);
+  box-shadow:0 4px 20px rgba(196,93,62,.07);
 }
 
 .trait-header{
-  padding:1.5rem 1.75rem;
-  display:flex;align-items:center;gap:1rem;
+  display:flex;align-items:center;gap:.85rem;
+  padding:1rem 1.25rem;
   cursor:pointer;
-  background:var(--surface);
-  border:none;
-  width:100%;
-  text-align:left;
-  transition:background .2s ease;
+  width:100%;background:none;border:none;
+  text-align:left;color:var(--text);
+  font-family:var(--sans);
+  transition:background .15s ease;
 }
-.trait-card:hover .trait-header{background:#fdfcfb}
+.trait-header:hover{background:#fdfcfb}
 
 .trait-icon{
-  width:40px;height:40px;
-  border-radius:.5rem;
+  width:36px;height:36px;border-radius:var(--radius-md);
   background:var(--accent-light);
   display:flex;align-items:center;justify-content:center;
-  color:var(--accent);
-  font-size:1.3rem;
-  flex-shrink:0;
+  color:var(--accent);font-size:1.1rem;flex-shrink:0;
 }
-
-.trait-title{
-  font-family:var(--serif);
-  font-size:1.1rem;
-  color:var(--text);
-  flex:1;
+.trait-name{font-family:var(--serif);font-size:1.05rem;flex:1}
+.trait-chev{
+  font-size:.75rem;color:var(--accent);
+  transition:transform .25s ease;
 }
-
-.trait-toggle{
-  font-size:.8rem;
-  color:var(--accent);
-  transition:transform .3s ease;
-}
-.trait-card.open .trait-toggle{transform:rotate(180deg)}
+.trait-card.open .trait-chev{transform:rotate(180deg)}
 
 .trait-body{
   display:none;
-  padding:0 1.75rem 1.5rem;
+  padding:0 1.25rem 1.25rem;
   border-top:1px solid var(--border);
 }
 .trait-card.open .trait-body{display:block}
 
-/* Level Breakdown */
-.level-breakdown{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:1rem;
-  margin-bottom:1.25rem;
+/* Level pills */
+.levels-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:8px;margin:1rem 0;
 }
-
-.level{
-  background:#fafaf8;
+.level-pill{
+  padding:.65rem .8rem;
+  border-radius:var(--radius-md);
   border:1px solid var(--border);
-  border-radius:.5rem;
-  padding:1rem;
+  background:var(--bg);
 }
-
-.level-1{border-left:3px solid #d1d5db}
-.level-2{border-left:3px solid #fbbf24}
-.level-3{border-left:3px solid var(--accent)}
-
+.level-pill.l1{border-left:3px solid #d1d5db}
+.level-pill.l2{border-left:3px solid #fbbf24}
+.level-pill.l3{border-left:3px solid var(--accent)}
 .level-label{
-  font-size:.75rem;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:.05em;
+  font-size:.7rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:var(--text-tertiary);margin-bottom:4px;
+}
+.level-desc{font-size:.8rem;color:var(--text-secondary);line-height:1.4}
+
+/* Indicators */
+.indic-label{
+  font-size:.7rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
   color:var(--text-tertiary);
-  margin-bottom:.4rem;
+  margin-top:.85rem;margin-bottom:.5rem;
 }
-
-.level-desc{
-  font-size:.85rem;
-  color:var(--text-secondary);
-  line-height:1.5;
+.indic-list{list-style:none}
+.indic-list li{
+  font-size:.82rem;color:var(--text-secondary);
+  padding:.3rem 0 .3rem 1.25rem;
+  position:relative;line-height:1.45;
+  border-bottom:1px solid var(--border);
 }
-
-/* Indicators List */
-.indicators{
-  margin-top:1.25rem;
-  padding-top:1.25rem;
-  border-top:1px solid var(--border);
-}
-
-.indicators-label{
-  font-size:.75rem;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:.05em;
-  color:var(--text-tertiary);
-  margin-bottom:.6rem;
-}
-
-.indicator-list{list-style:none}
-.indicator-list li{
-  font-size:.85rem;
-  color:var(--text-secondary);
-  padding:.4rem 0 .4rem 1.5rem;
-  position:relative;
-  line-height:1.5;
-}
-.indicator-list li::before{
-  content:'✓';
-  position:absolute;
-  left:0;
-  color:var(--accent);
-  font-weight:600;
+.indic-list li:last-child{border-bottom:none}
+.indic-list li::before{
+  content:'✓';position:absolute;left:0;
+  color:var(--accent);font-size:.7rem;
+  font-weight:700;top:.38rem;
 }
 
 /* Footer */
 .site-footer{
-  max-width:900px;margin:0 auto;
-  padding:2rem;
-  border-top:1px solid var(--border);
-  text-align:center;
-  font-size:.75rem;color:var(--text-tertiary);
+  max-width:960px;margin:0 auto;
+  padding:2rem;border-top:1px solid var(--border);
+  text-align:center;font-size:.75rem;color:var(--text-tertiary);
 }
 
 /* Mobile */
@@ -259,10 +220,7 @@ body::before{
   .hero{padding:2.5rem 1.5rem 1.5rem}
   .container{padding:1.5rem 1.5rem 2.5rem}
   .divider{padding:0 1.5rem}
-  .trait-header{padding:1.25rem 1.5rem}
-  .trait-body{padding:0 1.5rem 1.25rem}
-  .back-link{font-size:.85rem}
-  .level-breakdown{grid-template-columns:1fr}
+  .levels-row{grid-template-columns:1fr}
   .traits-grid{grid-template-columns:1fr}
 }
 </style>
@@ -286,1553 +244,1011 @@ body::before{
 
 <div class="container">
 
+  <div class="grade-tabs" role="tablist">
+    <button class="grade-tab active" role="tab" aria-selected="true" data-grade="1">Grade 1</button>
+    <button class="grade-tab" role="tab" aria-selected="false" data-grade="2">Grade 2</button>
+    <button class="grade-tab" role="tab" aria-selected="false" data-grade="3">Grade 3</button>
+    <button class="grade-tab" role="tab" aria-selected="false" data-grade="4">Grade 4</button>
+    <button class="grade-tab" role="tab" aria-selected="false" data-grade="5">Grade 5</button>
+  </div>
+
   <!-- GRADE 1 -->
-  <div class="grade-section">
-    <div class="grade-header">
-      <div class="grade-title">Grade 1</div>
-      <div class="grade-subtitle">Students develop foundational writing skills: clear ideas, simple sentences, and beginning to apply grammar and punctuation rules.</div>
-    </div>
-
+  <div class="grade-panel active" id="grade-1" role="tabpanel">
+    <div class="grade-desc">Students develop foundational writing skills: clear ideas, simple sentences, and beginning to apply grammar and punctuation rules.</div>
     <div class="traits-grid">
-      <!-- Ideas -->
-      <div class="trait-card open">
-        <button class="trait-header">
+
+      <div class="trait-card">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">💡</div>
-          <div class="trait-title">Ideas</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Ideas</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear, focused ideas</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty developing clear ideas</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Develops clear, focused ideas</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear, focused ideas</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty developing clear ideas</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Develops clear, focused ideas</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Develops a clear main idea related to the task or topic</li>
-              <li>Includes details to support ideas</li>
-              <li>Maintains focus on the task</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Develops a clear main idea related to the task or topic</li>
+            <li>Includes details to support ideas</li>
+            <li>Maintains focus on the task</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Sentence Fluency -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">✍️</div>
-          <div class="trait-title">Sentence Fluency</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Sentence Fluency</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No flow or readability</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with flow</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Sentences flow smoothly</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No flow or readability</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with flow</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Sentences flow smoothly</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes clear, complete simple sentences that can be read aloud smoothly</li>
-              <li>Links ideas using basic connectives (e.g. and, but, because)</li>
-              <li>Writes sequences of sentences that flow logically</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes clear, complete simple sentences that can be read aloud smoothly</li>
+            <li>Links ideas using basic connectives (e.g. and, but, because)</li>
+            <li>Writes sequences of sentences that flow logically</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Organization -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📋</div>
-          <div class="trait-title">Organization</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Organization</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Not logical or coherent</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with structure</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Logical, coherent structure</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Not logical or coherent</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with structure</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Logical, coherent structure</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Organises ideas in a logical order</li>
-              <li>Uses a simple structure such as beginning–middle–end</li>
-              <li>Groups related ideas together</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Organises ideas in a logical order</li>
+            <li>Uses a simple structure such as beginning–middle–end</li>
+            <li>Groups related ideas together</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Word Choice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎨</div>
-          <div class="trait-title">Word Choice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Word Choice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Below grade level vocabulary</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with varied vocabulary</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses precise vocabulary</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Below grade level vocabulary</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with varied vocabulary</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses precise vocabulary</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses topic related vocabulary</li>
-              <li>Includes descriptive words to add detail</li>
-              <li>Begins to choose words intentionally</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses topic related vocabulary</li>
+            <li>Includes descriptive words to add detail</li>
+            <li>Begins to choose words intentionally</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Voice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎭</div>
-          <div class="trait-title">Voice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Voice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear voice</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with appropriate voice</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Clear, appropriate voice</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear voice</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with appropriate voice</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Clear, appropriate voice</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes with a tone suited to the task</li>
-              <li>Expresses feelings or opinions through writing</li>
-              <li>Shows awareness that writing is meant to be read</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes with a tone suited to the task</li>
+            <li>Expresses feelings or opinions through writing</li>
+            <li>Shows awareness that writing is meant to be read</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Grammar -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">Ⓐ</div>
-          <div class="trait-title">Grammar</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Grammar</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of taught grammar</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with grammar structures</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Applies grammar accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of taught grammar</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with grammar structures</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Applies grammar accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses simple sentences accurately</li>
-              <li>Writes compound sentences using connectives (e.g. and, but, because)</li>
-              <li>Uses statements and questions appropriately</li>
-              <li>Uses singular and plural nouns accurately</li>
-              <li>Uses present and past tense verbs appropriately</li>
-              <li>Uses subject pronouns correctly</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses simple sentences accurately</li>
+            <li>Writes compound sentences using connectives (e.g. and, but, because)</li>
+            <li>Uses statements and questions appropriately</li>
+            <li>Uses singular and plural nouns accurately</li>
+            <li>Uses present and past tense verbs appropriately</li>
+            <li>Uses subject pronouns correctly</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Punctuation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">.</div>
-          <div class="trait-title">Punctuation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Punctuation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of punctuation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty applying punctuation</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses punctuation accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of punctuation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty applying punctuation</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses punctuation accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses capital letters and full stops accurately</li>
-              <li>Uses question marks and exclamation marks appropriately</li>
-              <li>Uses capital letters for proper nouns (e.g. names, places)</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses capital letters and full stops accurately</li>
+            <li>Uses question marks and exclamation marks appropriately</li>
+            <li>Uses capital letters for proper nouns (e.g. names, places)</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Spelling -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🔤</div>
-          <div class="trait-title">Spelling</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Spelling</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of spelling</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with age-appropriate spelling</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Spells common words accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of spelling</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with age-appropriate spelling</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Spells common words accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Spells common words accurately</li>
-              <li>Uses phonics strategies to attempt new words</li>
-              <li>Spells topic related words with growing independence</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Spells common words accurately</li>
+            <li>Uses phonics strategies to attempt new words</li>
+            <li>Spells topic related words with growing independence</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Presentation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📄</div>
-          <div class="trait-title">Presentation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Presentation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Illegible presentation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty presenting neatly</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Clear, neat presentation</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Illegible presentation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty presenting neatly</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Clear, neat presentation</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes neatly with legible handwriting</li>
-              <li>Uses spacing between words</li>
-              <li>Presents work clearly</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes neatly with legible handwriting</li>
+            <li>Uses spacing between words</li>
+            <li>Presents work clearly</li>
+          </ul>
         </div>
       </div>
+
     </div>
   </div>
 
   <!-- GRADE 2 -->
-  <div class="grade-section">
-    <div class="grade-header">
-      <div class="grade-title">Grade 2</div>
-      <div class="grade-subtitle">Students develop confidence in sentence construction, expand use of transitions, and apply grammar rules more consistently.</div>
-    </div>
-
+  <div class="grade-panel" id="grade-2" role="tabpanel">
+    <div class="grade-desc">Students develop confidence in sentence construction, expand use of transitions, and apply grammar rules more consistently.</div>
     <div class="traits-grid">
-      <!-- Ideas -->
+
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">💡</div>
-          <div class="trait-title">Ideas</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Ideas</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear, focused ideas</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty developing ideas</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Develops clear main ideas</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear, focused ideas</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty developing ideas</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Develops clear main ideas</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Develops a clear main idea</li>
-              <li>Supports the main idea with several relevant details or reasons</li>
-              <li>Maintains focus on the task</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Develops a clear main idea</li>
+            <li>Supports the main idea with several relevant details or reasons</li>
+            <li>Maintains focus on the task</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Sentence Fluency -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">✍️</div>
-          <div class="trait-title">Sentence Fluency</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Sentence Fluency</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No flow or readability</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with flow</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Sentences flow easily</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No flow or readability</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with flow</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Sentences flow easily</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes clear, complete sentences that are easy to read aloud</li>
-              <li>Uses simple sentence patterns confidently</li>
-              <li>Uses basic transitional words or phrases to connect ideas (e.g. and, because, then)</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes clear, complete sentences that are easy to read aloud</li>
+            <li>Uses simple sentence patterns confidently</li>
+            <li>Uses basic transitional words or phrases to connect ideas (e.g. and, because, then)</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Organization -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📋</div>
-          <div class="trait-title">Organization</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Organization</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Not logical or coherent</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with structure</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Logical, coherent structure</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Not logical or coherent</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with structure</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Logical, coherent structure</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Organises ideas in a logical order</li>
-              <li>Uses familiar structures (e.g. beginning–middle–end, letter format)</li>
-              <li>Uses sequencing language</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Organises ideas in a logical order</li>
+            <li>Uses familiar structures (e.g. beginning–middle–end, letter format)</li>
+            <li>Uses sequencing language</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Word Choice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎨</div>
-          <div class="trait-title">Word Choice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Word Choice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Below grade level vocabulary</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with vocabulary</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses varied vocabulary</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Below grade level vocabulary</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with vocabulary</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses varied vocabulary</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses topic appropriate vocabulary</li>
-              <li>Chooses specific words to add detail (e.g. adjectives, verbs)</li>
-              <li>Begins to select vocabulary deliberately</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses topic appropriate vocabulary</li>
+            <li>Chooses specific words to add detail (e.g. adjectives, verbs)</li>
+            <li>Begins to select vocabulary deliberately</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Voice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎭</div>
-          <div class="trait-title">Voice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Voice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear voice</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with voice</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Clear, appropriate voice</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear voice</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with voice</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Clear, appropriate voice</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes with a tone appropriate to the task</li>
-              <li>Shares feelings, opinions, or information through writing</li>
-              <li>Shows awareness of the reader</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes with a tone appropriate to the task</li>
+            <li>Shares feelings, opinions, or information through writing</li>
+            <li>Shows awareness of the reader</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Grammar -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">Ⓐ</div>
-          <div class="trait-title">Grammar</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Grammar</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of grammar</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with grammar</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Applies grammar consistently</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of grammar</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with grammar</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Applies grammar consistently</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses simple sentences accurately</li>
-              <li>Uses compound sentences with coordinating conjunctions</li>
-              <li>Begins to vary sentence lengths and beginnings</li>
-              <li>Uses correct tense appropriately</li>
-              <li>Uses subject–verb agreement accurately</li>
-              <li>Applies basic grammar rules consistently</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses simple sentences accurately</li>
+            <li>Uses compound sentences with coordinating conjunctions</li>
+            <li>Begins to vary sentence lengths and beginnings</li>
+            <li>Uses correct tense appropriately</li>
+            <li>Uses subject–verb agreement accurately</li>
+            <li>Applies basic grammar rules consistently</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Punctuation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">.</div>
-          <div class="trait-title">Punctuation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Punctuation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of punctuation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty applying punctuation</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses punctuation accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of punctuation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty applying punctuation</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses punctuation accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses capital letters and end punctuation accurately</li>
-              <li>Uses commas in lists</li>
-              <li>Uses capital letters for proper nouns</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses capital letters and end punctuation accurately</li>
+            <li>Uses commas in lists</li>
+            <li>Uses capital letters for proper nouns</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Spelling -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🔤</div>
-          <div class="trait-title">Spelling</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Spelling</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of spelling</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with spelling</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Spells common words accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of spelling</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with spelling</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Spells common words accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Spells common words accurately</li>
-              <li>Applies spelling patterns and strategies</li>
-              <li>Spells topic related words with increasing consistency</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Spells common words accurately</li>
+            <li>Applies spelling patterns and strategies</li>
+            <li>Spells topic related words with increasing consistency</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Presentation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📄</div>
-          <div class="trait-title">Presentation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Presentation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Illegible presentation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty presenting neatly</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Clear, neat presentation</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Illegible presentation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty presenting neatly</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Clear, neat presentation</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes legibly with consistent letter formation</li>
-              <li>Uses consistent spacing between words</li>
-              <li>Presents work neatly, so overall appearance is clear</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes legibly with consistent letter formation</li>
+            <li>Uses consistent spacing between words</li>
+            <li>Presents work neatly, so overall appearance is clear</li>
+          </ul>
         </div>
       </div>
+
     </div>
   </div>
 
   <!-- GRADE 3 -->
-  <div class="grade-section">
-    <div class="grade-header">
-      <div class="grade-title">Grade 3</div>
-      <div class="grade-subtitle">Students organize writing into clear sections, use varied sentence structures, and begin using descriptive and figurative language.</div>
-    </div>
-
+  <div class="grade-panel" id="grade-3" role="tabpanel">
+    <div class="grade-desc">Students organize writing into clear sections, use varied sentence structures, and begin using descriptive and figurative language.</div>
     <div class="traits-grid">
-      <!-- Ideas -->
+
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">💡</div>
-          <div class="trait-title">Ideas</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Ideas</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear, focused ideas</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty developing ideas</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Develops clear, maintained ideas</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear, focused ideas</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty developing ideas</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Develops clear, maintained ideas</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Develops a clear main idea that is generally maintained</li>
-              <li>Supports ideas with relevant details or examples</li>
-              <li>Shapes ideas to suit the purpose of the task (e.g. narrative, explanation, opinion)</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Develops a clear main idea that is generally maintained</li>
+            <li>Supports ideas with relevant details or examples</li>
+            <li>Shapes ideas to suit the purpose of the task (e.g. narrative, explanation, opinion)</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Sentence Fluency -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">✍️</div>
-          <div class="trait-title">Sentence Fluency</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Sentence Fluency</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No flow or readability</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with flow</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Varied sentence flow</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No flow or readability</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with flow</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Varied sentence flow</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes clear, complete sentences that flow smoothly when read aloud</li>
-              <li>Uses a range of sentence lengths, including simple and compound sentences</li>
-              <li>Links ideas effectively within and across sentences</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes clear, complete sentences that flow smoothly when read aloud</li>
+            <li>Uses a range of sentence lengths, including simple and compound sentences</li>
+            <li>Links ideas effectively within and across sentences</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Organization -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📋</div>
-          <div class="trait-title">Organization</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Organization</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Not logical or coherent</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with structure</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Clear paragraph structure</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Not logical or coherent</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with structure</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Clear paragraph structure</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Organises writing into clear sections or paragraphs</li>
-              <li>Uses simple text structures appropriate to purpose</li>
-              <li>Sequences ideas logically</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Organises writing into clear sections or paragraphs</li>
+            <li>Uses simple text structures appropriate to purpose</li>
+            <li>Sequences ideas logically</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Word Choice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎨</div>
-          <div class="trait-title">Word Choice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Word Choice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Below grade level vocabulary</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with vocabulary</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses precise vocabulary</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Below grade level vocabulary</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with vocabulary</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses precise vocabulary</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses topic appropriate vocabulary</li>
-              <li>Chooses specific nouns, verbs, and adjectives</li>
-              <li>Begins to use descriptive or figurative language</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses topic appropriate vocabulary</li>
+            <li>Chooses specific nouns, verbs, and adjectives</li>
+            <li>Begins to use descriptive or figurative language</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Voice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎭</div>
-          <div class="trait-title">Voice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Voice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear voice</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with voice</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Clear, appropriate voice</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear voice</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with voice</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Clear, appropriate voice</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Maintains an appropriate tone for the task</li>
-              <li>Expresses ideas, opinions, or feelings clearly</li>
-              <li>Shows awareness of the reader</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Maintains an appropriate tone for the task</li>
+            <li>Expresses ideas, opinions, or feelings clearly</li>
+            <li>Shows awareness of the reader</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Grammar -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">Ⓐ</div>
-          <div class="trait-title">Grammar</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Grammar</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of grammar</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with grammar</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Applies grammar consistently</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of grammar</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with grammar</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Applies grammar consistently</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses simple and compound sentences accurately</li>
-              <li>Uses complex sentences (with conjunctions or clauses) to expand ideas</li>
-              <li>Varies sentence structure to improve clarity</li>
-              <li>Maintains tense consistency</li>
-              <li>Uses subject–verb agreement accurately</li>
-              <li>Uses a range of word classes correctly</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses simple and compound sentences accurately</li>
+            <li>Uses complex sentences (with conjunctions or clauses) to expand ideas</li>
+            <li>Varies sentence structure to improve clarity</li>
+            <li>Maintains tense consistency</li>
+            <li>Uses subject–verb agreement accurately</li>
+            <li>Uses a range of word classes correctly</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Punctuation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">.</div>
-          <div class="trait-title">Punctuation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Punctuation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of punctuation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty applying punctuation</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses punctuation accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of punctuation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty applying punctuation</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses punctuation accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses capital letters and end punctuation accurately</li>
-              <li>Uses commas and apostrophes correctly in familiar contexts</li>
-              <li>Uses quotation marks appropriately in dialogue</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses capital letters and end punctuation accurately</li>
+            <li>Uses commas and apostrophes correctly in familiar contexts</li>
+            <li>Uses quotation marks appropriately in dialogue</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Spelling -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🔤</div>
-          <div class="trait-title">Spelling</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Spelling</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of spelling</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with spelling</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Spells most words correctly</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of spelling</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with spelling</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Spells most words correctly</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Spells most high frequency words correctly</li>
-              <li>Applies spelling rules and patterns</li>
-              <li>Spells topic specific words with growing accuracy</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Spells most high frequency words correctly</li>
+            <li>Applies spelling rules and patterns</li>
+            <li>Spells topic specific words with growing accuracy</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Presentation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📄</div>
-          <div class="trait-title">Presentation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Presentation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Illegible presentation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty presenting neatly</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Clear, neat presentation</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Illegible presentation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty presenting neatly</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Clear, neat presentation</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Maintains legible handwriting</li>
-              <li>Uses consistent spacing and layout</li>
-              <li>Presents work neatly</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Maintains legible handwriting</li>
+            <li>Uses consistent spacing and layout</li>
+            <li>Presents work neatly</li>
+          </ul>
         </div>
       </div>
+
     </div>
   </div>
 
   <!-- GRADE 4 -->
-  <div class="grade-section">
-    <div class="grade-header">
-      <div class="grade-title">Grade 4</div>
-      <div class="grade-subtitle">Students develop complex sentences, use varied vocabulary including figurative language, and organize writing with cohesive devices.</div>
-    </div>
-
+  <div class="grade-panel" id="grade-4" role="tabpanel">
+    <div class="grade-desc">Students develop complex sentences, use varied vocabulary including figurative language, and organize writing with cohesive devices.</div>
     <div class="traits-grid">
-      <!-- Ideas -->
+
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">💡</div>
-          <div class="trait-title">Ideas</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Ideas</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear, focused ideas</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty developing ideas</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Maintains clear ideas throughout</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear, focused ideas</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty developing ideas</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Maintains clear ideas throughout</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Develops a clear main idea that is maintained throughout writing</li>
-              <li>Supports ideas with relevant and developed details</li>
-              <li>Shapes ideas to suit the task and purpose</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Develops a clear main idea that is maintained throughout writing</li>
+            <li>Supports ideas with relevant and developed details</li>
+            <li>Shapes ideas to suit the task and purpose</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Sentence Fluency -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">✍️</div>
-          <div class="trait-title">Sentence Fluency</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Sentence Fluency</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No flow or readability</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with flow</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Varied, logical sentence flow</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No flow or readability</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with flow</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Varied, logical sentence flow</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes clear and consistently complete sentences</li>
-              <li>Uses varied sentence lengths and structures</li>
-              <li>Varies sentences that flow logically when read aloud</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes clear and consistently complete sentences</li>
+            <li>Uses varied sentence lengths and structures</li>
+            <li>Varies sentences that flow logically when read aloud</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Organization -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📋</div>
-          <div class="trait-title">Organization</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Organization</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Not logical or coherent</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with structure</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Well-organized with transitions</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Not logical or coherent</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with structure</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Well-organized with transitions</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Organises writing into clear paragraphs or sections</li>
-              <li>Uses structures suited to purpose (e.g. narrative, explanation, persuasion)</li>
-              <li>Uses a range of cohesive devices (e.g. transitions, referential links) to link ideas</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Organises writing into clear paragraphs or sections</li>
+            <li>Uses structures suited to purpose (e.g. narrative, explanation, persuasion)</li>
+            <li>Uses a range of cohesive devices (e.g. transitions, referential links) to link ideas</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Word Choice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎨</div>
-          <div class="trait-title">Word Choice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Word Choice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Below grade level vocabulary</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with vocabulary</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses figurative language</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Below grade level vocabulary</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with vocabulary</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses figurative language</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses topic specific vocabulary accurately</li>
-              <li>Selects specific nouns, verbs, and adjectives</li>
-              <li>Uses descriptive and figurative language (e.g. imagery, similes, personification) appropriately</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses topic specific vocabulary accurately</li>
+            <li>Selects specific nouns, verbs, and adjectives</li>
+            <li>Uses descriptive and figurative language (e.g. imagery, similes, personification) appropriately</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Voice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎭</div>
-          <div class="trait-title">Voice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Voice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear voice</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with voice</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Purposeful, appropriate voice</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear voice</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with voice</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Purposeful, appropriate voice</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Maintains a tone appropriate to the task</li>
-              <li>Shows awareness of the reader</li>
-              <li>Expresses ideas, opinions, or information clearly</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Maintains a tone appropriate to the task</li>
+            <li>Shows awareness of the reader</li>
+            <li>Expresses ideas, opinions, or information clearly</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Grammar -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">Ⓐ</div>
-          <div class="trait-title">Grammar</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Grammar</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of grammar</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with grammar</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Uses complex grammar accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of grammar</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with grammar</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Uses complex grammar accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses simple, compound, and complex sentences accurately</li>
-              <li>Expands ideas using phrases and clauses</li>
-              <li>Uses sentence variety to improve clarity</li>
-              <li>Maintains consistent tense and agreement</li>
-              <li>Uses a wide range of word classes accurately</li>
-              <li>Applies grammar to suit purpose (progressive, perfect, modal, active and passive)</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses simple, compound, and complex sentences accurately</li>
+            <li>Expands ideas using phrases and clauses</li>
+            <li>Uses sentence variety to improve clarity</li>
+            <li>Maintains consistent tense and agreement</li>
+            <li>Uses a wide range of word classes accurately</li>
+            <li>Applies grammar to suit purpose (progressive, perfect, modal, active and passive)</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Punctuation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">.</div>
-          <div class="trait-title">Punctuation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Punctuation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of punctuation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty applying punctuation</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Applies punctuation accurately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of punctuation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty applying punctuation</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Applies punctuation accurately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses capital letters and end punctuation accurately</li>
-              <li>Uses commas and apostrophes correctly</li>
-              <li>Uses quotation marks accurately</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses capital letters and end punctuation accurately</li>
+            <li>Uses commas and apostrophes correctly</li>
+            <li>Uses quotation marks accurately</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Spelling -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🔤</div>
-          <div class="trait-title">Spelling</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Spelling</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of spelling</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with spelling</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Spells accurately overall</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of spelling</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with spelling</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Spells accurately overall</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Spells most high frequency words correctly</li>
-              <li>Applies spelling rules to unfamiliar words</li>
-              <li>Spells subject specific vocabulary accurately</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Spells most high frequency words correctly</li>
+            <li>Applies spelling rules to unfamiliar words</li>
+            <li>Spells subject specific vocabulary accurately</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Presentation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📄</div>
-          <div class="trait-title">Presentation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Presentation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Illegible presentation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty presenting neatly</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Neat, consistent presentation</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Illegible presentation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty presenting neatly</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Neat, consistent presentation</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Maintains legible handwriting across longer texts</li>
-              <li>Uses appropriate spacing and layout</li>
-              <li>Presents work neatly and consistently</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Maintains legible handwriting across longer texts</li>
+            <li>Uses appropriate spacing and layout</li>
+            <li>Presents work neatly and consistently</li>
+          </ul>
         </div>
       </div>
+
     </div>
   </div>
 
   <!-- GRADE 5 -->
-  <div class="grade-section">
-    <div class="grade-header">
-      <div class="grade-title">Grade 5</div>
-      <div class="grade-subtitle">Students write with sustained ideas, sophisticated vocabulary and figurative language, and deliberately select sentence structures to enhance clarity.</div>
-    </div>
-
+  <div class="grade-panel" id="grade-5" role="tabpanel">
+    <div class="grade-desc">Students write with sustained ideas, sophisticated vocabulary and figurative language, and deliberately select sentence structures to enhance clarity.</div>
     <div class="traits-grid">
-      <!-- Ideas -->
+
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">💡</div>
-          <div class="trait-title">Ideas</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Ideas</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear, focused ideas</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty developing ideas</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Sustained, purposeful ideas</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear, focused ideas</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty developing ideas</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Sustained, purposeful ideas</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Develops a clear, focused main idea that is sustained throughout the writing</li>
-              <li>Develops ideas with relevant and well-chosen details</li>
-              <li>Shapes ideas deliberately to suit purpose and audience</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Develops a clear, focused main idea that is sustained throughout the writing</li>
+            <li>Develops ideas with relevant and well-chosen details</li>
+            <li>Shapes ideas deliberately to suit purpose and audience</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Sentence Fluency -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">✍️</div>
-          <div class="trait-title">Sentence Fluency</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Sentence Fluency</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No flow or readability</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with flow</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Sophisticated, natural flow</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No flow or readability</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with flow</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Sophisticated, natural flow</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses a variety of sentence lengths and structures</li>
-              <li>Writes sentences that flow naturally when read aloud</li>
-              <li>Avoids repetitive sentence patterns</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses a variety of sentence lengths and structures</li>
+            <li>Writes sentences that flow naturally when read aloud</li>
+            <li>Avoids repetitive sentence patterns</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Organization -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📋</div>
-          <div class="trait-title">Organization</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Organization</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Not logical or coherent</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with structure</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Purposeful, cohesive organization</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Not logical or coherent</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with structure</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Purposeful, cohesive organization</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Organises writing into clear, purposeful paragraphs</li>
-              <li>Uses structures appropriate to text type</li>
-              <li>Uses cohesive devices (e.g. transitions) to link ideas across paragraphs</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Organises writing into clear, purposeful paragraphs</li>
+            <li>Uses structures appropriate to text type</li>
+            <li>Uses cohesive devices (e.g. transitions) to link ideas across paragraphs</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Word Choice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎨</div>
-          <div class="trait-title">Word Choice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Word Choice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Below grade level vocabulary</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with vocabulary</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Precise, sophisticated vocabulary</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Below grade level vocabulary</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with vocabulary</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Precise, sophisticated vocabulary</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses precise and subject specific vocabulary</li>
-              <li>Uses descriptive and figurative language (e.g. similes, metaphors) appropriately</li>
-              <li>Avoids unnecessary repetition</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses precise and subject specific vocabulary</li>
+            <li>Uses descriptive and figurative language (e.g. similes, metaphors) appropriately</li>
+            <li>Avoids unnecessary repetition</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Voice -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🎭</div>
-          <div class="trait-title">Voice</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Voice</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No clear voice</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with voice</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Individual, confident voice</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No clear voice</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with voice</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Individual, confident voice</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Writes a consistent and appropriate tone</li>
-              <li>Shows awareness of audience throughout writing</li>
-              <li>Expresses ideas with confidence and individuality</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Writes a consistent and appropriate tone</li>
+            <li>Shows awareness of audience throughout writing</li>
+            <li>Expresses ideas with confidence and individuality</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Grammar -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">Ⓐ</div>
-          <div class="trait-title">Grammar</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Grammar</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of grammar</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with grammar</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Selects grammar deliberately</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of grammar</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with grammar</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Selects grammar deliberately</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses simple, compound, and complex sentences accurately</li>
-              <li>Expands ideas using clauses and phrases</li>
-              <li>Selects sentence structures deliberately</li>
-              <li>Maintains tense, agreement, and consistency</li>
-              <li>Uses a wide range of word classes accurately</li>
-              <li>Applies grammar to suit different text types</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses simple, compound, and complex sentences accurately</li>
+            <li>Expands ideas using clauses and phrases</li>
+            <li>Selects sentence structures deliberately</li>
+            <li>Maintains tense, agreement, and consistency</li>
+            <li>Uses a wide range of word classes accurately</li>
+            <li>Applies grammar to suit different text types</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Punctuation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">.</div>
-          <div class="trait-title">Punctuation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Punctuation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of punctuation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty applying punctuation</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Applies punctuation purposefully</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of punctuation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty applying punctuation</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Applies punctuation purposefully</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Uses punctuation accurately, including commas and quotation marks</li>
-              <li>Applies punctuation to clarify meaning</li>
-              <li>Begins to use advanced punctuation appropriately</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Uses punctuation accurately, including commas and quotation marks</li>
+            <li>Applies punctuation to clarify meaning</li>
+            <li>Begins to use advanced punctuation appropriately</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Spelling -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">🔤</div>
-          <div class="trait-title">Spelling</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Spelling</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">No understanding of spelling</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty with spelling</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Spelling mastery demonstrated</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">No understanding of spelling</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty with spelling</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Spelling mastery demonstrated</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Spells most words accurately across writing</li>
-              <li>Applies spelling patterns and strategies confidently</li>
-              <li>Spells subject specific vocabulary accurately</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Spells most words accurately across writing</li>
+            <li>Applies spelling patterns and strategies confidently</li>
+            <li>Spells subject specific vocabulary accurately</li>
+          </ul>
         </div>
       </div>
 
-      <!-- Presentation -->
       <div class="trait-card">
-        <button class="trait-header">
+        <button class="trait-header" aria-expanded="false">
           <div class="trait-icon">📄</div>
-          <div class="trait-title">Presentation</div>
-          <div class="trait-toggle">▼</div>
+          <span class="trait-name">Presentation</span>
+          <span class="trait-chev">▼</span>
         </button>
         <div class="trait-body">
-          <div class="level-breakdown">
-            <div class="level level-1">
-              <div class="level-label">Starting</div>
-              <div class="level-desc">Illegible presentation</div>
-            </div>
-            <div class="level level-2">
-              <div class="level-label">Approaching</div>
-              <div class="level-desc">Difficulty presenting neatly</div>
-            </div>
-            <div class="level level-3">
-              <div class="level-label">Meeting</div>
-              <div class="level-desc">Professional, consistent presentation</div>
-            </div>
+          <div class="levels-row">
+            <div class="level-pill l1"><div class="level-label">Starting</div><div class="level-desc">Illegible presentation</div></div>
+            <div class="level-pill l2"><div class="level-label">Approaching</div><div class="level-desc">Difficulty presenting neatly</div></div>
+            <div class="level-pill l3"><div class="level-label">Meeting</div><div class="level-desc">Professional, consistent presentation</div></div>
           </div>
-          <div class="indicators">
-            <div class="indicators-label">Indicators of Meeting Standard</div>
-            <ul class="indicator-list">
-              <li>Maintains legible handwriting or presentation format</li>
-              <li>Uses spacing, layout, and formatting consistently</li>
-              <li>Presents work clearly across extended tasks</li>
-            </ul>
-          </div>
+          <div class="indic-label">Indicators of meeting standard</div>
+          <ul class="indic-list">
+            <li>Maintains legible handwriting or presentation format</li>
+            <li>Uses spacing, layout, and formatting consistently</li>
+            <li>Presents work clearly across extended tasks</li>
+          </ul>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -1843,11 +1259,21 @@ body::before{
 </footer>
 
 <script>
-// Toggle trait cards open/closed
-document.querySelectorAll('.trait-header').forEach(header => {
-  header.addEventListener('click', function() {
+document.querySelectorAll('.grade-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.grade-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+    document.querySelectorAll('.grade-panel').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    this.setAttribute('aria-selected','true');
+    document.getElementById('grade-' + this.dataset.grade).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.trait-header').forEach(btn => {
+  btn.addEventListener('click', function() {
     const card = this.closest('.trait-card');
-    card.classList.toggle('open');
+    const open = card.classList.toggle('open');
+    this.setAttribute('aria-expanded', open);
   });
 });
 </script>
