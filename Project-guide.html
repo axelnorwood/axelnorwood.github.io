@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Picker — Find Your Perfect Project!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg1: #FFF3E0;
+    --bg2: #FFE8F0;
+    --ink: #2D2A4A;
+    --ink-soft: #5B567E;
+    --card: #FFFFFF;
+    --shadow: rgba(45, 42, 74, 0.14);
+    --display: 'Baloo 2', cursive;
+    --head: 'Fredoka', sans-serif;
+    --body: 'Nunito', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--body);
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 12% 18%, #FFD6A5 0%, transparent 42%),
+      radial-gradient(circle at 88% 12%, #C7F0FF 0%, transparent 40%),
+      radial-gradient(circle at 78% 88%, #FFC8DD 0%, transparent 45%),
+      radial-gradient(circle at 20% 85%, #CDFFD8 0%, transparent 42%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* floating doodles */
+  .doodle {
+    position: fixed;
+    font-size: 2.4rem;
+    opacity: 0.5;
+    pointer-events: none;
+    animation: float 7s ease-in-out infinite;
+    z-index: 0;
+    filter: saturate(1.1);
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-18px) rotate(8deg); }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 22px 18px 80px;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    min-height: 52px;
+  }
+  .back-btn {
+    border: none;
+    background: var(--card);
+    color: var(--ink);
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 12px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--shadow);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform .12s ease, box-shadow .12s ease;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+  }
+  .back-btn.show { opacity: 1; transform: none; pointer-events: auto; }
+  .back-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shadow); }
+
+  .crumb {
+    font-family: var(--head);
+    font-weight: 500;
+    color: var(--ink-soft);
+    font-size: .95rem;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .crumb b { color: var(--ink); }
+
+  /* ---------- Screen transitions ---------- */
+  .screen { animation: pop .45s cubic-bezier(.2,.9,.3,1.4); }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(.96) translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Hero (home) ---------- */
+  .hero { text-align: center; margin-bottom: 26px; }
+  .hero .mascot {
+    font-size: 4.6rem;
+    display: inline-block;
+    animation: bounce 2.4s ease-in-out infinite;
+    filter: drop-shadow(0 8px 6px rgba(0,0,0,.12));
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.1rem, 6vw, 3.4rem);
+    line-height: 1.02;
+    margin: 6px 0 6px;
+    color: var(--ink);
+    letter-spacing: -.5px;
+  }
+  .hero h1 .pop1 { color: #FF6B6B; }
+  .hero h1 .pop2 { color: #4D96FF; }
+  .hero h1 .pop3 { color: #52B788; }
+  .hero p {
+    font-size: clamp(1rem, 2.6vw, 1.25rem);
+    color: var(--ink-soft);
+    font-weight: 700;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 4vw, 2.1rem);
+    margin: 4px 0 18px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title .tag {
+    font-size: 2rem;
+  }
+  .section-sub {
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin: -10px 0 20px;
+    font-size: 1.05rem;
+  }
+
+  /* ---------- Card grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+  .grid.two { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
+  .card {
+    --c: #FF6B6B;
+    position: relative;
+    border: none;
+    text-align: left;
+    background: var(--card);
+    border-radius: 22px;
+    padding: 18px 16px 16px;
+    cursor: pointer;
+    box-shadow: 0 7px 0 var(--shadow);
+    transition: transform .14s ease, box-shadow .14s ease;
+    overflow: hidden;
+    font-family: var(--body);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 132px;
+    animation: cardIn .5s backwards;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(18px) scale(.95); }
+    to { opacity: 1; transform: none; }
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 8px;
+    background: var(--c);
+  }
+  .card:hover { transform: translateY(-5px) rotate(-1deg); box-shadow: 0 12px 0 var(--shadow); }
+  .card:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--shadow); }
+  .card .ic {
+    font-size: 2.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 3px 2px rgba(0,0,0,.1));
+  }
+  .card .nm {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 1.08rem;
+    color: var(--ink);
+    line-height: 1.12;
+  }
+  .card .bl {
+    font-size: .86rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    line-height: 1.25;
+  }
+  .card .chev {
+    margin-top: auto;
+    align-self: flex-end;
+    font-family: var(--head);
+    font-weight: 600;
+    color: var(--c);
+    font-size: .9rem;
+  }
+
+  /* ---------- Detail screen ---------- */
+  .detail-head {
+    background: var(--card);
+    border-radius: 26px;
+    padding: 24px 22px;
+    box-shadow: 0 8px 0 var(--shadow);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .detail-head::after {
+    content: "";
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: var(--c);
+    opacity: .14;
+  }
+  .detail-head .big-ic {
+    font-size: 3.6rem;
+    filter: drop-shadow(0 4px 3px rgba(0,0,0,.12));
+  }
+  .detail-head h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.7rem, 5vw, 2.5rem);
+    margin: 6px 0 4px;
+    color: var(--ink);
+    line-height: 1.04;
+  }
+  .detail-head .tagline {
+    font-family: var(--head);
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: var(--c);
+  }
+
+  .panel {
+    background: var(--card);
+    border-radius: 22px;
+    padding: 20px 20px 22px;
+    box-shadow: 0 7px 0 var(--shadow);
+    margin-bottom: 20px;
+  }
+  .panel h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--ink);
+  }
+  .panel h3 .e { font-size: 1.4rem; }
+
+  .needs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pill {
+    background: var(--bg2);
+    border: 2.5px dashed var(--c);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: .95rem;
+    padding: 8px 14px;
+    border-radius: 14px;
+  }
+
+  .steps { list-style: none; counter-reset: s; }
+  .step {
+    counter-increment: s;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 2px dotted #EDE9F5;
+    cursor: pointer;
+  }
+  .step:last-child { border-bottom: none; }
+  .step .num {
+    flex: 0 0 auto;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--c);
+    color: #fff;
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 1.15rem;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 3px 0 rgba(0,0,0,.15);
+    transition: transform .15s ease;
+  }
+  .step .num::before { content: counter(s); }
+  .step .tx {
+    font-weight: 700;
+    font-size: 1.08rem;
+    line-height: 1.35;
+    padding-top: 5px;
+    color: var(--ink);
+    flex: 1;
+  }
+  .step .check {
+    flex: 0 0 auto;
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    border: 3px solid #E2DEEF;
+    margin-top: 8px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 1.1rem;
+    transition: all .15s ease;
+  }
+  .step.done .tx { color: var(--ink-soft); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .step.done .num { transform: scale(.9); opacity: .65; }
+  .step.done .check { background: var(--c); border-color: var(--c); }
+  .step.done .check::before { content: "✓"; }
+
+  /* ---------- ATL skills ---------- */
+  .atl-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  @media (min-width: 600px) {
+    .atl-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .atl {
+    --ac: #9B5DE5;
+    background: color-mix(in srgb, var(--ac) 10%, #fff);
+    border: 3px solid color-mix(in srgb, var(--ac) 32%, #fff);
+    border-radius: 18px;
+    padding: 14px 16px 12px;
+  }
+  .atl-head {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 10px;
+  }
+  .atl-ic {
+    flex: 0 0 auto;
+    width: 42px; height: 42px;
+    border-radius: 13px;
+    background: var(--ac);
+    display: grid;
+    place-items: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 0 rgba(0,0,0,.12);
+  }
+  .atl-cat {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 1.12rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .atl-subs {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .atl-sub {
+    position: relative;
+    padding-left: 22px;
+    line-height: 1.3;
+  }
+  .atl-sub::before {
+    content: "";
+    position: absolute;
+    left: 4px; top: 7px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--ac);
+  }
+  .atl-sub-name {
+    display: block;
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: .98rem;
+    color: var(--ink);
+  }
+  .atl-sub-note {
+    display: block;
+    font-weight: 700;
+    font-size: .85rem;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+
+  .tipbox {
+    background: linear-gradient(135deg, #FFF6D6, #FFE9B8);
+    border-radius: 18px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: 0 6px 0 rgba(214,168,40,.25);
+  }
+  .tipbox .bulb { font-size: 1.9rem; flex: 0 0 auto; animation: glow 1.6s ease-in-out infinite; }
+  @keyframes glow { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.15) rotate(6deg);} }
+  .tipbox .tiptx { font-weight: 700; font-size: 1.02rem; line-height: 1.35; }
+  .tipbox .tiptx b { color: #B5710B; }
+
+  /* progress bar on detail */
+  .progress-wrap {
+    margin: 18px 0 4px;
+    background: #ECE8F6;
+    border-radius: 999px;
+    height: 16px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.08);
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--c);
+    border-radius: 999px;
+    transition: width .4s cubic-bezier(.2,.9,.3,1.4);
+  }
+  .progress-label {
+    text-align: center;
+    font-family: var(--head);
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    font-size: .98rem;
+  }
+  .celebrate {
+    text-align: center;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: #52B788;
+    margin-top: 6px;
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  .celebrate.show { opacity: 1; animation: pop .5s; }
+
+  .surprise-btn {
+    display: block;
+    margin: 22px auto 0;
+    border: none;
+    background: linear-gradient(135deg, #FF6B6B, #FF9F1C);
+    color: #fff;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.2rem;
+    padding: 16px 30px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 7px 0 rgba(190,60,40,.35);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .surprise-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(190,60,40,.35); }
+
+  .foot {
+    text-align: center;
+    color: var(--ink-soft);
+    font-weight: 700;
+    margin-top: 30px;
+    font-size: .9rem;
+    opacity: .8;
+  }
+
+  @media (max-width: 520px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .back-btn { padding: 10px 16px; font-size: .92rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="doodles" id="doodles"></div>
+  <div class="wrap">
+    <div class="topbar">
+      <button class="back-btn" id="backBtn">⬅ Back</button>
+      <div class="crumb" id="crumb"></div>
+    </div>
+    <div id="app"></div>
+    <div class="foot">Pick a project, follow the steps, and have fun! 🎉</div>
+  </div>
+
+<script>
+window.DATA = {
+  categories: [
+    { id: "arts", icon: "🎨", title: "Creative Arts & Making", blurb: "Draw, build, and make cool stuff!", color: "#FF6B6B" },
+    { id: "writing", icon: "📚", title: "Writing & Storytelling", blurb: "Make up stories and share them!", color: "#4D96FF" },
+    { id: "performance", icon: "🎭", title: "Shows & Media", blurb: "Perform, record, and put on a show!", color: "#9B5DE5" },
+    { id: "digital", icon: "💻", title: "Computers & Tech", blurb: "Make things on the computer!", color: "#00BBF9" },
+    { id: "science", icon: "🌱", title: "Science & Nature", blurb: "Build, grow, and experiment!", color: "#52B788" },
+    { id: "building", icon: "🧱", title: "Building & Making", blurb: "Build games, mazes, and models!", color: "#FF9F1C" },
+    { id: "community", icon: "🤝", title: "Helping Others", blurb: "Help your school and friends!", color: "#F15BB5" },
+    { id: "events", icon: "🏅", title: "Clubs & Events", blurb: "Start a club or plan a fun day!", color: "#FFB703" },
+  ],
+
+  projects: {
+    arts: [
+      {
+        id: "comic", icon: "💥", name: "Comic Book Series",
+        blurb: "Make your own comic with heroes and stories!",
+        need: ["Paper", "Pencils and markers", "A ruler", "Your big imagination"],
+        steps: [
+          "Think up a hero and a problem they need to solve.",
+          "Fold or draw boxes on your paper. These are called panels.",
+          "Draw your story one panel at a time, left to right.",
+          "Add speech bubbles so your characters can talk.",
+          "Color it in and give your comic a cool title!",
+        ],
+        tip: "Make a few comics in a row to turn it into a SERIES!",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Invent your own heroes and a story." },
+            { name: "Critical thinking", note: "Decide what happens in each panel." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Use pictures and speech bubbles to tell the story." },
+          ] },
+        ],
+      },
+      {
+        id: "costumes", icon: "👗", name: "Design Costumes",
+        blurb: "Make costumes for characters or fun themes!",
+        need: ["Old clothes or fabric", "Cardboard", "Tape and glue", "Markers"],
+        steps: [
+          "Pick a character or theme you love.",
+          "Look at pictures to get ideas for how it looks.",
+          "Use cardboard and fabric to make the big pieces.",
+          "Decorate with colors, paper shapes, and details.",
+          "Try it on and show your friends!",
+        ],
+        tip: "Ask a grown-up before cutting any clothes.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Design a costume from your imagination." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Gather your materials before you start." },
+            { name: "Managing your task", note: "Build it one piece at a time." },
+          ] },
+        ],
+      },
+      {
+        id: "photobook", icon: "📷", name: "Photo Book",
+        blurb: "Take photos and make them into a book!",
+        need: ["A camera or tablet (ask a grown-up)", "Printed photos", "Paper", "Glue"],
+        steps: [
+          "Pick a theme, like 'my class' or 'our school'.",
+          "Take lots of fun photos.",
+          "Pick your favorite ones and print them.",
+          "Glue each photo onto a page.",
+          "Write a little note under each photo.",
+        ],
+        tip: "Always ask people before taking their picture.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Media literacy", note: "Take and choose good photos." },
+            { name: "Information skills", note: "Sort photos into the right order." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Write a note to go with each photo." },
+          ] },
+        ],
+      },
+      {
+        id: "bracelets", icon: "🧶", name: "Friendship Bracelets",
+        blurb: "Make bracelets to trade with friends!",
+        need: ["Colorful string or yarn", "Beads (if you want)", "Tape or a clip"],
+        steps: [
+          "Pick 3 or 4 colors of string.",
+          "Tie the strings together at the top with a knot.",
+          "Tape the top down so it stays still.",
+          "Braid or knot the strings together.",
+          "Tie off the end and give it to a friend!",
+        ],
+        tip: "Add beads to make your bracelet extra special.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Keep your strings neat and ready." },
+            { name: "Staying focused", note: "Finish each knot carefully." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Trade and share with friends." },
+          ] },
+        ],
+      },
+      {
+        id: "collage", icon: "🖼️", name: "Make a Collage",
+        blurb: "Make art from lots of different pieces!",
+        need: ["A big sheet of paper", "Old magazines or colored paper", "Scissors", "Glue"],
+        steps: [
+          "Pick a theme, like animals, space, or colors.",
+          "Cut out pictures and shapes you like.",
+          "Move them around your paper until it looks good.",
+          "Glue everything down.",
+          "Add drawings or words to finish it!",
+        ],
+        tip: "Mix different materials like fabric, paper, and leaves!",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Arrange pieces into your own design." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Lay out pieces before you glue." },
+            { name: "Staying focused", note: "Work neatly to the end." },
+          ] },
+        ],
+      },
+      {
+        id: "gallery", icon: "🏛️", name: "Class Art Gallery",
+        blurb: "Show off everyone's art like a real museum!",
+        need: ["Artwork from the class", "Tape or string", "Paper for labels"],
+        steps: [
+          "Ask everyone to pick one piece of art.",
+          "Find a wall or hallway to use.",
+          "Hang the art up in a neat row.",
+          "Make a little label for each one with the artist's name.",
+          "Invite other classes to come look!",
+        ],
+        tip: "Give your gallery a fun name on a big sign.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Set up the gallery as a team." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Make labels and explain the art." },
+          ] },
+        ],
+      },
+      {
+        id: "recycleart", icon: "♻️", name: "Recycling Art",
+        blurb: "Turn trash into treasure with art!",
+        need: ["Clean recycling (bottles, boxes, caps)", "Glue and tape", "Paint"],
+        steps: [
+          "Collect clean things you would throw away.",
+          "Wash them and let them dry.",
+          "Think about what you can build, like a robot or animal.",
+          "Glue and tape the pieces together.",
+          "Paint and decorate your creation!",
+        ],
+        tip: "Bottle caps make great eyes and buttons!",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Imagine new uses for old things." },
+            { name: "Transfer", note: "Turn one idea into a brand-new object." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Collect and clean your materials." },
+          ] },
+        ],
+      },
+    ],
+    writing: [
+      {
+        id: "play", icon: "🎬", name: "Write a Play",
+        blurb: "Write a script and act it out!",
+        need: ["Paper and pencil", "Friends to act", "A space to perform"],
+        steps: [
+          "Think of a fun story with a beginning, middle, and end.",
+          "Decide who the characters are.",
+          "Write what each character says.",
+          "Give each friend a part to play.",
+          "Practice, then perform it for your class!",
+        ],
+        tip: "Add simple costumes to make it more fun.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Write the lines characters will say." },
+            { name: "Speaking", note: "Say your lines loud and clear." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Perform together as a team." },
+          ] },
+        ],
+      },
+      {
+        id: "storybook", icon: "📖", name: "Storybook",
+        blurb: "Write and draw your own storybook!",
+        need: ["Paper", "Pencils and crayons", "A stapler (ask a grown-up)"],
+        steps: [
+          "Make up a story with characters you like.",
+          "Write one or two sentences on each page.",
+          "Draw a picture to match each page.",
+          "Make a cover with a title and your name.",
+          "Staple the pages together into a book!",
+        ],
+        tip: "Read your book out loud to the class.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Make up a whole new story." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Match words to each picture." },
+          ] },
+        ],
+      },
+      {
+        id: "newspaper", icon: "📰", name: "Class Newspaper",
+        blurb: "Write the news about your class!",
+        need: ["Paper", "Pencils", "A computer (if you have one)"],
+        steps: [
+          "Think about news, like a class trip or a fun event.",
+          "Each writer picks one story to write about.",
+          "Write your story with who, what, and when.",
+          "Add drawings or photos.",
+          "Put all the stories together and share copies!",
+        ],
+        tip: "Add a comic strip or a joke of the day!",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Find out the facts before you write." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Write so readers understand." },
+            { name: "Sharing ideas", note: "Share the news with the class." },
+          ] },
+        ],
+      },
+      {
+        id: "poetry", icon: "✒️", name: "Poetry Book",
+        blurb: "Write and draw fun poems!",
+        need: ["Paper", "Pencils and markers"],
+        steps: [
+          "Pick something to write about, like rain or your pet.",
+          "Write words that describe it. Rhyming is fun but not needed!",
+          "Read it out loud to hear how it sounds.",
+          "Draw a picture next to your poem.",
+          "Put everyone's poems together into one book!",
+        ],
+        tip: "Try a poem where each line starts with your name's letters.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Play with words and ideas." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Share feelings through your poem." },
+            { name: "Speaking", note: "Read your poem out loud." },
+          ] },
+        ],
+      },
+      {
+        id: "storychain", icon: "🔗", name: "Story Chain",
+        blurb: "Everyone adds a piece to one big story!",
+        need: ["A notebook or big paper", "Pencils"],
+        steps: [
+          "The first person writes the start of a story.",
+          "Pass it to the next person to add more.",
+          "Keep passing it around the class.",
+          "Each person reads what came before, then adds on.",
+          "Read the whole silly story at the end!",
+        ],
+        tip: "Set a timer so everyone gets a turn.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Build one story together." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Add a new idea to the story." },
+            { name: "Critical thinking", note: "Make your part fit what came before." },
+          ] },
+        ],
+      },
+      {
+        id: "diary", icon: "📔", name: "Class Diary",
+        blurb: "Write about what your class does each day!",
+        need: ["A notebook", "A pencil"],
+        steps: [
+          "Pick one person to be the writer each day.",
+          "Write the date at the top.",
+          "Write down the best thing that happened.",
+          "Add a small drawing if you want.",
+          "Read old pages to remember fun days!",
+        ],
+        tip: "Take turns so everyone gets a day to write.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Write a little each day." },
+            { name: "Reflection", note: "Think back on the best moments." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Describe the day clearly." },
+          ] },
+        ],
+      },
+    ],
+    performance: [
+      {
+        id: "puppet", icon: "🧦", name: "Puppet Show",
+        blurb: "Make puppets and put on a show!",
+        need: ["Socks or paper bags", "Buttons and yarn", "Glue", "A table to hide behind"],
+        steps: [
+          "Make puppets from socks or paper bags.",
+          "Add eyes, hair, and a mouth.",
+          "Think up a short, fun story.",
+          "Hide behind a table and hold your puppets up high.",
+          "Use silly voices and perform!",
+        ],
+        tip: "A cardboard box can be your puppet stage.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Use fun voices for your puppets." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Put on the show with friends." },
+          ] },
+        ],
+      },
+      {
+        id: "talent", icon: "⭐", name: "Talent Show",
+        blurb: "Show off what you're great at!",
+        need: ["A space to perform", "A sign-up list", "An audience"],
+        steps: [
+          "Make a list of who wants to perform.",
+          "Each person picks a talent, like singing or jokes.",
+          "Practice your act a few times.",
+          "Set up chairs for the audience.",
+          "Take turns showing your talents!",
+        ],
+        tip: "Have a host to introduce each act.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Plan and practice your act." },
+            { name: "Managing feelings", note: "Stay calm in front of others." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Perform for the audience." },
+          ] },
+        ],
+      },
+      {
+        id: "podcast", icon: "🎙️", name: "Storytelling Podcast",
+        blurb: "Record stories to listen to!",
+        need: ["A tablet or recorder (ask a grown-up)", "A quiet room", "A story to tell"],
+        steps: [
+          "Pick a story you want to tell.",
+          "Practice reading it out loud with feeling.",
+          "Find a quiet room so it sounds clear.",
+          "Press record and tell your story.",
+          "Listen back and share it with friends!",
+        ],
+        tip: "Add sound effects with your voice, like wind or knocking.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Speak clearly so people can hear." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Practice before you record." },
+            { name: "Staying focused", note: "Record without losing your place." },
+          ] },
+        ],
+      },
+      {
+        id: "stopmotion", icon: "🎞️", name: "Stop-Motion Animation",
+        blurb: "Make toys move in a movie!",
+        need: ["A tablet or camera (ask a grown-up)", "Toys or clay", "A steady spot"],
+        steps: [
+          "Set up your toys in a scene.",
+          "Take one photo.",
+          "Move the toys just a tiny bit.",
+          "Take another photo. Keep doing this!",
+          "Play all the photos fast to see them move!",
+        ],
+        tip: "The smaller you move things, the smoother it looks.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Plan a story that moves." },
+            { name: "Critical thinking", note: "Plan each tiny movement." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Managing feelings", note: "Stay patient through many photos." },
+          ] },
+        ],
+      },
+      {
+        id: "eduvideo", icon: "🎥", name: "Educational Video",
+        blurb: "Teach something fun in a video!",
+        need: ["A tablet or camera (ask a grown-up)", "A topic you know", "Props if you want"],
+        steps: [
+          "Pick a topic you can teach, like how plants grow.",
+          "Plan what you'll say.",
+          "Practice talking clearly.",
+          "Record yourself teaching it.",
+          "Show your video to the class!",
+        ],
+        tip: "Hold up pictures or objects to help explain.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Learn the topic well." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Explain it so others understand." },
+            { name: "Media literacy", note: "Use video to teach." },
+          ] },
+        ],
+      },
+      {
+        id: "storytime", icon: "🌙", name: "Virtual Storytime",
+        blurb: "Record yourself reading a book!",
+        need: ["A favorite book", "A tablet or recorder (ask a grown-up)"],
+        steps: [
+          "Pick a fun book to read.",
+          "Practice reading it with a happy voice.",
+          "Find a comfy, quiet spot.",
+          "Record yourself reading and showing the pictures.",
+          "Share it so others can enjoy storytime!",
+        ],
+        tip: "Pause and ask questions like a real storyteller.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Read out loud with feeling." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Practice the book first." },
+          ] },
+        ],
+      },
+    ],
+    digital: [
+      {
+        id: "virtualmuseum", icon: "🖼️", name: "Virtual Museum",
+        blurb: "Make a museum on the computer!",
+        need: ["A computer or tablet", "Photos of art or facts", "A grown-up helper"],
+        steps: [
+          "Pick a theme, like dinosaurs or space.",
+          "Find or draw pictures for your exhibits.",
+          "Put each picture on its own slide or page.",
+          "Write a fun fact under each one.",
+          "Give a tour and show your museum!",
+        ],
+        tip: "A slideshow app works great for this.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Find facts for each exhibit." },
+            { name: "Media literacy", note: "Choose good pictures." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Give a tour of your museum." },
+          ] },
+        ],
+      },
+      {
+        id: "blog", icon: "📝", name: "Class Blog",
+        blurb: "Post updates about your class online!",
+        need: ["A computer", "A grown-up helper", "Things to write about"],
+        steps: [
+          "Ask a teacher to help set up a safe blog.",
+          "Think of something to share, like a class project.",
+          "Write a short post about it.",
+          "Add a photo or drawing.",
+          "Post it and let families read!",
+        ],
+        tip: "Take turns so everyone gets to be a writer.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Write posts for others to read." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Take turns and post on time." },
+          ] },
+        ],
+      },
+      {
+        id: "website", icon: "🌐", name: "Class Website",
+        blurb: "Build a website for class news!",
+        need: ["A computer", "A grown-up helper", "Class info and pictures"],
+        steps: [
+          "Plan what pages you want, like 'News' and 'Photos'.",
+          "Ask a grown-up to help with a safe website tool.",
+          "Add text and pictures to each page.",
+          "Pick fun colors and a title.",
+          "Share the link with families!",
+        ],
+        tip: "Keep it simple. A few good pages is plenty!",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Plan how pages connect." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Media literacy", note: "Share class news online." },
+            { name: "Sharing ideas", note: "Make it clear for visitors." },
+          ] },
+        ],
+      },
+      {
+        id: "digitalstory", icon: "📱", name: "Digital Storybook",
+        blurb: "Make a story you can click through!",
+        need: ["A computer or tablet", "A story idea", "A grown-up helper"],
+        steps: [
+          "Write a short story.",
+          "Make one slide for each part of the story.",
+          "Add pictures or drawings to each slide.",
+          "Add buttons to go to the next page.",
+          "Click through your story to test it!",
+        ],
+        tip: "Add a fun sound when you turn the page.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Plan a click-through story." },
+            { name: "Transfer", note: "Mix words, pictures, and buttons." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Media literacy", note: "Use the screen to tell a story." },
+          ] },
+        ],
+      },
+      {
+        id: "scrapbook", icon: "📓", name: "Digital Scrapbook",
+        blurb: "Collect photos and memories on the screen!",
+        need: ["A computer or tablet", "Photos", "A grown-up helper"],
+        steps: [
+          "Gather photos from the year.",
+          "Make a page for each fun memory.",
+          "Add the photos and write about them.",
+          "Decorate with colors and stickers.",
+          "Share your scrapbook with the class!",
+        ],
+        tip: "Add the date so you remember when it happened.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Gather and sort your memories." },
+            { name: "Reflection", note: "Look back on the year." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Share moments with the class." },
+          ] },
+        ],
+      },
+      {
+        id: "appidea", icon: "📲", name: "Design an App",
+        blurb: "Plan your own helpful app!",
+        need: ["Paper and pencil", "Your ideas"],
+        steps: [
+          "Think of a problem an app could help with.",
+          "Draw what the app screens would look like.",
+          "Write what each button does.",
+          "Give your app a name and a logo.",
+          "Show your plan and explain how it works!",
+        ],
+        tip: "You don't need a computer. Drawing the idea counts!",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Solve a problem with an app." },
+            { name: "Creative thinking", note: "Design new screens and ideas." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Explain how your app works." },
+          ] },
+        ],
+      },
+    ],
+    science: [
+      {
+        id: "minigarden", icon: "🪴", name: "Miniature Garden",
+        blurb: "Grow a tiny garden in a container!",
+        need: ["A shallow container", "Soil", "Small plants or seeds", "Little rocks"],
+        steps: [
+          "Put soil in your container.",
+          "Plant small plants or seeds.",
+          "Add rocks and a tiny path for decoration.",
+          "Water it just a little.",
+          "Put it in the sun and watch it grow!",
+        ],
+        tip: "Add a tiny toy to make a magical scene.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Care for your garden over time." },
+          ] },
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Learn what plants need." },
+          ] },
+        ],
+      },
+      {
+        id: "veggies", icon: "🥕", name: "Vegetable Garden",
+        blurb: "Grow veggies you can eat!",
+        need: ["Pots or a garden spot", "Soil", "Veggie seeds", "Water"],
+        steps: [
+          "Fill your pots with soil.",
+          "Plant seeds like beans or lettuce.",
+          "Water them gently.",
+          "Put them where they get sunshine.",
+          "Watch them grow and pick them when ready!",
+        ],
+        tip: "Beans grow fast and are great for first gardeners.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Water and check plants daily." },
+          ] },
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Watch seeds turn into food." },
+          ] },
+        ],
+      },
+      {
+        id: "birdhouse", icon: "🐦", name: "Birdhouse",
+        blurb: "Build a cozy home for birds!",
+        need: ["A small cardboard box or wood (ask a grown-up)", "Glue", "Paint", "String"],
+        steps: [
+          "Make or find a small box.",
+          "Cut a round door (ask a grown-up to help).",
+          "Decorate and paint it.",
+          "Add string to hang it up.",
+          "Hang it in a tree and watch for birds!",
+        ],
+        tip: "Put a little birdseed nearby to invite birds.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Design a safe bird home." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Build it step by step." },
+          ] },
+        ],
+      },
+      {
+        id: "robot", icon: "🤖", name: "Simple Robot",
+        blurb: "Build a robot from craft stuff!",
+        need: ["Boxes and cans", "Foil", "Glue", "Bottle caps"],
+        steps: [
+          "Stack boxes to make a body and head.",
+          "Glue them together.",
+          "Add foil, caps, and buttons for details.",
+          "Give it arms with cardboard or straws.",
+          "Name your robot and show it off!",
+        ],
+        tip: "Use a marker to draw a control panel.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Imagine and design a robot." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Build it piece by piece." },
+          ] },
+        ],
+      },
+      {
+        id: "weather", icon: "🌤️", name: "Weather Station",
+        blurb: "Measure the weather like a scientist!",
+        need: ["A cup", "A ruler", "Paper", "A pencil"],
+        steps: [
+          "Put a cup outside to catch rain.",
+          "Use a ruler to measure the rain each day.",
+          "Look at the sky and write down sunny or cloudy.",
+          "Make a chart of the weather.",
+          "See how the weather changes over a week!",
+        ],
+        tip: "Check at the same time each day for fair results.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Measure and record the weather." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Spot patterns over the week." },
+          ] },
+        ],
+      },
+      {
+        id: "circuit", icon: "💡", name: "Simple Circuit",
+        blurb: "Make a light turn on with electricity!",
+        need: ["A battery", "A small bulb", "Wires", "A grown-up helper"],
+        steps: [
+          "Ask a grown-up to help with this one.",
+          "Connect a wire from the battery to the bulb.",
+          "Connect another wire back to the battery.",
+          "Watch the bulb light up!",
+          "Try adding a switch to turn it on and off.",
+        ],
+        tip: "Only use small batteries, never wall outlets!",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Figure out how to make it light up." },
+          ] },
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Learn how electricity flows." },
+          ] },
+        ],
+      },
+      {
+        id: "volcano", icon: "🌋", name: "Model Volcano",
+        blurb: "Make a volcano that erupts!",
+        need: ["Baking soda", "Vinegar", "A small bottle", "Clay or paper"],
+        steps: [
+          "Build a volcano shape around a bottle with clay.",
+          "Put baking soda in the bottle.",
+          "Stand back a little.",
+          "Pour in vinegar.",
+          "Watch it bubble and erupt!",
+        ],
+        tip: "Do this outside or on a tray for easy cleanup.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "See what happens when things mix." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Predict the eruption first." },
+          ] },
+        ],
+      },
+      {
+        id: "fossil", icon: "🦴", name: "Fossil Dig Site",
+        blurb: "Dig up pretend fossils like a scientist!",
+        need: ["Sand or dirt", "Small toys or 'bones'", "A box", "A brush"],
+        steps: [
+          "Hide small toys in a box of sand.",
+          "Give your friends brushes and tools.",
+          "Dig gently to find the hidden treasures.",
+          "Brush off the sand carefully.",
+          "Guess what each 'fossil' is!",
+        ],
+        tip: "Make pretend bones from white clay.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Dig and discover like a scientist." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Guess what each fossil is." },
+          ] },
+        ],
+      },
+      {
+        id: "machine", icon: "⚙️", name: "Simple Machine",
+        blurb: "Build a lever or pulley that really works!",
+        need: ["A ruler", "A pencil", "String", "A small cup"],
+        steps: [
+          "Put a ruler across a pencil to make a lever.",
+          "Push one side down and watch the other go up.",
+          "Try lifting a small toy with it.",
+          "Make a pulley by hanging string over a rod.",
+          "See how machines make work easier!",
+        ],
+        tip: "A seesaw is a giant lever you can see at the park.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Learn how machines help us." },
+            { name: "Transfer", note: "Use the idea on real objects." },
+          ] },
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Test levers and pulleys." },
+          ] },
+        ],
+      },
+      {
+        id: "solaroven", icon: "☀️", name: "Solar Oven",
+        blurb: "Cook a snack using the sun!",
+        need: ["A pizza box", "Foil", "Plastic wrap", "A sunny day", "A grown-up helper"],
+        steps: [
+          "Line a pizza box with foil.",
+          "Cover the opening with plastic wrap.",
+          "Put a snack inside, like a s'more.",
+          "Set it in bright sunshine.",
+          "Wait and watch the sun cook it!",
+        ],
+        tip: "This works best on a hot, sunny day.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Learn how the sun makes heat." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Predict how it will cook." },
+          ] },
+        ],
+      },
+      {
+        id: "windmill", icon: "🌬️", name: "Windmill",
+        blurb: "Build a spinner that catches the wind!",
+        need: ["Paper", "A pin or stick", "A pencil with an eraser", "Scissors"],
+        steps: [
+          "Cut a paper square.",
+          "Cut from each corner toward the middle.",
+          "Fold every other point to the center.",
+          "Pin it to a pencil eraser.",
+          "Blow on it or hold it in the wind!",
+        ],
+        tip: "Try different sizes to see which spins fastest.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Design a wind catcher." },
+          ] },
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Test which spins fastest." },
+          ] },
+        ],
+      },
+      {
+        id: "boat", icon: "⛵", name: "Simple Boat",
+        blurb: "Build a boat that floats!",
+        need: ["Foil, cork, or foam", "Tape", "A bowl of water", "Small weights"],
+        steps: [
+          "Build a boat shape from foil or foam.",
+          "Float it in a bowl of water.",
+          "Add small weights one at a time.",
+          "See how much it can hold before it sinks.",
+          "Try a new design to hold even more!",
+        ],
+        tip: "A wide, flat boat holds more than a skinny one.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Design a boat that floats." },
+          ] },
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Test how much it holds." },
+          ] },
+        ],
+      },
+      {
+        id: "bughotel", icon: "🐞", name: "Bug Hotel",
+        blurb: "Make a cozy home for bugs!",
+        need: ["A box or can", "Sticks and leaves", "Pinecones", "Hollow tubes"],
+        steps: [
+          "Find a box or can to be the hotel.",
+          "Fill it with sticks, leaves, and pinecones.",
+          "Make little gaps for bugs to crawl in.",
+          "Place it outside near plants.",
+          "Check back to see who moved in!",
+        ],
+        tip: "Bugs love quiet, shady spots.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Learn what bugs like." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Build and place it carefully." },
+          ] },
+        ],
+      },
+      {
+        id: "greenhouse", icon: "🏡", name: "Mini Greenhouse",
+        blurb: "Grow plants inside a clear box!",
+        need: ["A clear plastic container", "Soil", "Seeds", "Water"],
+        steps: [
+          "Put soil in a clear container.",
+          "Plant your seeds.",
+          "Water them a little.",
+          "Close the lid to keep it warm and wet.",
+          "Watch your seeds sprout inside!",
+        ],
+        tip: "Open the lid sometimes to give plants fresh air.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Watch how seeds sprout." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Check on it over time." },
+          ] },
+        ],
+      },
+    ],
+    building: [
+      {
+        id: "boardgame", icon: "🎲", name: "Invent a Board Game",
+        blurb: "Make a game with your own rules!",
+        need: ["Cardboard", "Markers", "Dice", "Small game pieces"],
+        steps: [
+          "Think of a fun idea, like a race to treasure.",
+          "Draw a path on cardboard with spaces.",
+          "Make up the rules.",
+          "Add pieces and dice.",
+          "Play it with friends and fix any tricky parts!",
+        ],
+        tip: "Add 'lucky' and 'oops' spaces for surprises.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Invent your own game." },
+            { name: "Critical thinking", note: "Make rules that make sense." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Test it by playing together." },
+          ] },
+        ],
+      },
+      {
+        id: "maze", icon: "🌀", name: "Design a Maze",
+        blurb: "Make a maze for friends to solve!",
+        need: ["Paper", "A pencil", "A ruler"],
+        steps: [
+          "Mark a START and a FINISH.",
+          "Draw the correct path first.",
+          "Add lots of fake paths and dead ends.",
+          "Erase any spots that give it away.",
+          "Give it to a friend to solve!",
+        ],
+        tip: "Make a big one on cardboard for marbles to roll through.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Plan paths and dead ends." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Make it clear for others to solve." },
+          ] },
+        ],
+      },
+      {
+        id: "modelcity", icon: "🏙️", name: "Model City",
+        blurb: "Build a tiny city from boxes!",
+        need: ["Cardboard boxes", "Paint", "Markers", "Glue"],
+        steps: [
+          "Collect boxes of different sizes.",
+          "Turn them into buildings with paint.",
+          "Draw windows and doors.",
+          "Lay out streets on a big base.",
+          "Add cars, trees, and people!",
+        ],
+        tip: "Work as a team. Each person builds part of the city.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Each person builds a part." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Plan how the city fits." },
+          ] },
+        ],
+      },
+      {
+        id: "marblerun", icon: "🔵", name: "Marble Run",
+        blurb: "Build a track for marbles to zoom down!",
+        need: ["Cardboard tubes", "Tape", "A wall or board", "Marbles"],
+        steps: [
+          "Tape tubes to a wall going downhill.",
+          "Make sure they connect end to end.",
+          "Drop a marble in the top.",
+          "Watch where it gets stuck and fix it.",
+          "Add loops and turns for more fun!",
+        ],
+        tip: "Cut tubes in half to see the marble roll.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Keep the marble rolling." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Managing feelings", note: "Test and fix tricky spots." },
+          ] },
+        ],
+      },
+      {
+        id: "fairyhouse", icon: "🏠", name: "Fairy House",
+        blurb: "Build a tiny magical home!",
+        need: ["Sticks and bark", "Leaves and moss", "Glue", "A small base"],
+        steps: [
+          "Find sticks, leaves, and bark outside.",
+          "Build little walls on a base.",
+          "Add a roof of bark or leaves.",
+          "Make a tiny door and windows.",
+          "Decorate with flowers and pebbles!",
+        ],
+        tip: "Add a little path made of tiny stones.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Design a tiny magical home." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Gather materials and build." },
+          ] },
+        ],
+      },
+      {
+        id: "puzzle", icon: "🧩", name: "Class Puzzle",
+        blurb: "Make a big puzzle to put together!",
+        need: ["Thick cardboard", "Markers", "Scissors (ask a grown-up)"],
+        steps: [
+          "Draw a big picture on cardboard.",
+          "Color it in brightly.",
+          "Draw puzzle-piece lines on the back.",
+          "Ask a grown-up to help cut the pieces.",
+          "Mix them up and put it back together!",
+        ],
+        tip: "Fewer, bigger pieces are easier for everyone.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Plan how the pieces fit." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Work carefully to make it." },
+          ] },
+        ],
+      },
+      {
+        id: "flag", icon: "🚩", name: "Class Flag",
+        blurb: "Design a flag for your whole class!",
+        need: ["Big paper or fabric", "Paint or markers"],
+        steps: [
+          "Talk about what your class loves.",
+          "Sketch some flag ideas.",
+          "Vote on your favorite.",
+          "Draw and color the big flag.",
+          "Hang it up proudly!",
+        ],
+        tip: "Use shapes and colors that mean something to you.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Decide together as a class." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Show what your class stands for." },
+          ] },
+        ],
+      },
+      {
+        id: "mascot", icon: "🦊", name: "Class Mascot",
+        blurb: "Create a fun mascot for your class!",
+        need: ["Paper", "Markers", "Maybe cardboard or fabric"],
+        steps: [
+          "Brainstorm animals or characters.",
+          "Draw your mascot ideas.",
+          "Pick one as a class.",
+          "Give it a name and a personality.",
+          "Make a poster or costume of it!",
+        ],
+        tip: "Write a story about your mascot's adventures.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Invent a fun character." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Pick one as a class." },
+          ] },
+        ],
+      },
+    ],
+    community: [
+      {
+        id: "recycleproject", icon: "♻️", name: "Recycling Project",
+        blurb: "Help your school recycle more!",
+        need: ["Boxes or bins", "Paper for signs", "Markers"],
+        steps: [
+          "Make recycling bins from boxes.",
+          "Make clear signs: paper, cans, plastic.",
+          "Put them where everyone can see.",
+          "Tell other classes how to use them.",
+          "Check the bins and feel proud of helping!",
+        ],
+        tip: "Use pictures on signs so everyone understands.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Help your whole school." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Teach others how to recycle." },
+          ] },
+        ],
+      },
+      {
+        id: "service", icon: "💗", name: "Community Service",
+        blurb: "Do something kind for your town!",
+        need: ["An idea to help", "A grown-up helper", "Friends"],
+        steps: [
+          "Think about who needs help nearby.",
+          "Pick one way to help, like making cards.",
+          "Make a plan with a grown-up.",
+          "Do your kind project together.",
+          "See how good it feels to help!",
+        ],
+        tip: "Even small kind acts make a big difference.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Do kind things for others." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Plan the best way to help." },
+          ] },
+        ],
+      },
+      {
+        id: "bookexchange", icon: "📚", name: "Book Exchange",
+        blurb: "Swap books with classmates!",
+        need: ["Books to share", "A table", "Paper for signs"],
+        steps: [
+          "Ask everyone to bring books they finished.",
+          "Set them out on a table.",
+          "Make a sign with the rules: take one, leave one.",
+          "Let everyone pick a 'new' book.",
+          "Enjoy reading your new-to-you book!",
+        ],
+        tip: "Make sure books are gentle and ready to share.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Share books with classmates." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Set up and run the swap." },
+          ] },
+        ],
+      },
+      {
+        id: "penpal", icon: "✉️", name: "Pen Pal Program",
+        blurb: "Write letters to new friends!",
+        need: ["Paper", "Pencils", "Envelopes", "A grown-up helper"],
+        steps: [
+          "Ask a teacher to find a pen pal class.",
+          "Write a letter about yourself.",
+          "Ask your pen pal some questions.",
+          "Send your letters together.",
+          "Get excited when you get a reply!",
+        ],
+        tip: "Draw a picture to send with your letter.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Write letters to new friends." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Build a friendship far away." },
+          ] },
+        ],
+      },
+      {
+        id: "culturalday", icon: "🌍", name: "Cultural Day",
+        blurb: "Share food, music, and customs!",
+        need: ["Things from your culture", "A grown-up helper", "An open space"],
+        steps: [
+          "Pick something special from your family.",
+          "Ask a grown-up to help bring it in.",
+          "Set up a little table or display.",
+          "Share with your classmates.",
+          "Learn about everyone else's too!",
+        ],
+        tip: "Music and food are great ways to share.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Share your culture with others." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Learn about everyone's culture." },
+          ] },
+        ],
+      },
+      {
+        id: "habitat", icon: "🦋", name: "Wildlife Habitat",
+        blurb: "Make a safe spot for animals!",
+        need: ["A small outdoor area", "Plants", "Water dish", "Rocks"],
+        steps: [
+          "Find a safe spot outside with a grown-up.",
+          "Add plants that animals like.",
+          "Put out a shallow dish of water.",
+          "Add rocks and logs for hiding.",
+          "Watch quietly to see who visits!",
+        ],
+        tip: "Flowers bring butterflies and bees.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Learn what animals need." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Help local wildlife together." },
+          ] },
+        ],
+      },
+      {
+        id: "mural", icon: "🎨", name: "Community Mural",
+        blurb: "Paint a big picture together!",
+        need: ["A big wall or paper (ask a grown-up)", "Paint", "Brushes"],
+        steps: [
+          "Decide on a theme as a group.",
+          "Sketch the big picture lightly first.",
+          "Give everyone a part to paint.",
+          "Fill it in with bright colors.",
+          "Sign your names and celebrate!",
+        ],
+        tip: "Use a pencil sketch before painting.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Paint it as a team." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Share a message through art." },
+          ] },
+        ],
+      },
+    ],
+    events: [
+      {
+        id: "bookclub", icon: "📖", name: "Book Club",
+        blurb: "Read and talk about books together!",
+        need: ["Copies of one book", "A meeting spot", "Snacks (optional)"],
+        steps: [
+          "Pick one book everyone will read.",
+          "Read a few pages each week.",
+          "Meet to talk about your favorite parts.",
+          "Ask each other fun questions.",
+          "Pick a new book when you finish!",
+        ],
+        tip: "Draw your favorite scene to share.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Talk about books together." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Share ideas with the group." },
+          ] },
+        ],
+      },
+      {
+        id: "timecapsule", icon: "📦", name: "Time Capsule",
+        blurb: "Save things to open in the future!",
+        need: ["A box or jar", "Letters and drawings", "Small items"],
+        steps: [
+          "Find a strong box to use.",
+          "Write letters to your future selves.",
+          "Add drawings and small treasures.",
+          "Seal it up and label the date to open it.",
+          "Hide it somewhere safe!",
+        ],
+        tip: "Add a class photo to see how you've grown.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Choose what the future should see." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Collect and store it safely." },
+            { name: "Reflection", note: "Think about who you are now." },
+          ] },
+        ],
+      },
+      {
+        id: "obstacle", icon: "🏃", name: "Obstacle Course",
+        blurb: "Build a course to run and jump through!",
+        need: ["Cones or chairs", "Hula hoops", "Ropes", "An open space"],
+        steps: [
+          "Find a safe, open space.",
+          "Set up things to jump over, crawl under, and run around.",
+          "Walk through it once slowly.",
+          "Time each other going through.",
+          "Cheer everyone on!",
+        ],
+        tip: "Add a silly station, like spinning around 3 times.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Set up and try the course." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Cheer each other on." },
+          ] },
+        ],
+      },
+      {
+        id: "quilt", icon: "🧵", name: "Class Quilt",
+        blurb: "Everyone makes a square for one big quilt!",
+        need: ["Paper or fabric squares", "Markers or fabric pens", "Tape or glue"],
+        steps: [
+          "Give everyone a square.",
+          "Decorate your square to show who you are.",
+          "Lay all the squares out together.",
+          "Tape or glue them into a big quilt.",
+          "Hang it up for everyone to see!",
+        ],
+        tip: "A paper quilt is easy and looks great on a wall.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Everyone adds a piece." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Sharing ideas", note: "Your square shows who you are." },
+          ] },
+        ],
+      },
+      {
+        id: "scienceclub", icon: "🔬", name: "Science Club",
+        blurb: "Do fun experiments together!",
+        need: ["Simple supplies", "A grown-up helper", "A science book or ideas"],
+        steps: [
+          "Pick an experiment to try.",
+          "Gather what you need.",
+          "Guess what will happen first.",
+          "Do the experiment together.",
+          "Talk about what you saw!",
+        ],
+        tip: "Keep a notebook of your discoveries.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Try experiments and watch results." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Guess what will happen first." },
+          ] },
+        ],
+      },
+      {
+        id: "sciencefair", icon: "🏆", name: "Science Fair",
+        blurb: "Show off a cool experiment!",
+        need: ["A poster board", "Your experiment", "Markers"],
+        steps: [
+          "Pick a question to test, like 'what melts fastest?'",
+          "Do your experiment and write down what happens.",
+          "Make a poster showing your steps.",
+          "Add pictures and your results.",
+          "Present it at the fair!",
+        ],
+        tip: "Practice explaining your project out loud.",
+        atls: [
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Test a question and record results." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Present what you found." },
+          ] },
+        ],
+      },
+      {
+        id: "gameday", icon: "🎮", name: "Game Day",
+        blurb: "Teach and play games all day!",
+        need: ["Board games or outdoor games", "A space to play"],
+        steps: [
+          "Each person brings a favorite game.",
+          "Make small groups.",
+          "Teach your game to your group.",
+          "Play and have fun.",
+          "Switch games so you try lots!",
+        ],
+        tip: "Mix quiet games and active games.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Speaking", note: "Teach your game to others." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Play fair and have fun." },
+          ] },
+        ],
+      },
+      {
+        id: "miniolympics", icon: "🥇", name: "Mini Olympics",
+        blurb: "Compete in fun, friendly events!",
+        need: ["An open space", "Simple gear", "Paper medals"],
+        steps: [
+          "Plan a few fun events, like a hop race.",
+          "Make teams.",
+          "Explain the rules for each event.",
+          "Cheer and play fair.",
+          "Give out paper medals to everyone!",
+        ],
+        tip: "Make sure every event is safe and fun for all.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Play fair on a team." },
+          ] },
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Plan and run the events." },
+          ] },
+        ],
+      },
+      {
+        id: "memorybook", icon: "💛", name: "Class Memory Book",
+        blurb: "Collect memories from the whole year!",
+        need: ["Paper", "Photos and drawings", "Markers", "A binder"],
+        steps: [
+          "Ask everyone for a favorite memory.",
+          "Make a page for each one.",
+          "Add photos and drawings.",
+          "Put all the pages in a binder.",
+          "Read it together at the end of the year!",
+        ],
+        tip: "Leave a page for everyone to sign.",
+        atls: [
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Everyone shares a memory." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Tell the story of your year." },
+          ] },
+        ],
+      },
+      {
+        id: "videoyearbook", icon: "📹", name: "Video Yearbook",
+        blurb: "Make a movie of your best moments!",
+        need: ["A tablet or camera (ask a grown-up)", "Photos and clips"],
+        steps: [
+          "Collect photos and short videos from the year.",
+          "Put them in order, oldest to newest.",
+          "Add titles for each event.",
+          "Pick some happy music.",
+          "Watch your year as a movie!",
+        ],
+        tip: "End with a group wave goodbye.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Gather and order the clips." },
+          ] },
+          { cat: "Communication", subs: [
+            { name: "Media literacy", note: "Tell your year as a movie." },
+          ] },
+        ],
+      },
+      {
+        id: "timeline", icon: "📅", name: "Class Timeline",
+        blurb: "Show your year from start to finish!",
+        need: ["A long strip of paper", "Markers", "Photos"],
+        steps: [
+          "Draw a long line on the paper.",
+          "Mark the months along it.",
+          "Add big events where they happened.",
+          "Stick on photos and drawings.",
+          "Hang it up to see your whole year!",
+        ],
+        tip: "Use a different color for each season.",
+        atls: [
+          { cat: "Thinking", subs: [
+            { name: "Critical thinking", note: "Put events in the right order." },
+          ] },
+          { cat: "Research", subs: [
+            { name: "Information skills", note: "Remember what happened when." },
+          ] },
+        ],
+      },
+      {
+        id: "recipebook", icon: "🍳", name: "Class Recipe Book",
+        blurb: "Collect everyone's favorite recipes!",
+        need: ["Paper", "Pencils", "A grown-up helper for recipes"],
+        steps: [
+          "Ask everyone for a favorite simple recipe.",
+          "Write each one on a page.",
+          "Draw a picture of the food.",
+          "Put them together into a book.",
+          "Share copies with families!",
+        ],
+        tip: "Snacks and treats make fun, easy recipes.",
+        atls: [
+          { cat: "Communication", subs: [
+            { name: "Writing", note: "Write recipes others can follow." },
+          ] },
+          { cat: "Social", subs: [
+            { name: "Working with others", note: "Everyone shares a favorite." },
+          ] },
+        ],
+      },
+      {
+        id: "calendar", icon: "🗓️", name: "Class Calendar",
+        blurb: "Make a calendar with your own art!",
+        need: ["Paper", "Markers", "A list of class events"],
+        steps: [
+          "Make a page for each month.",
+          "Draw the day boxes.",
+          "Add class events and birthdays.",
+          "Decorate each month with art.",
+          "Hang it up and flip it each month!",
+        ],
+        tip: "Match your drawings to the season.",
+        atls: [
+          { cat: "Self-Management", subs: [
+            { name: "Organization", note: "Plan months and events." },
+          ] },
+          { cat: "Thinking", subs: [
+            { name: "Creative thinking", note: "Match art to each season." },
+          ] },
+        ],
+      },
+    ],
+  },
+};
+
+</script>
+<script>
+(function () {
+  const DATA = window.DATA;
+  const app = document.getElementById('app');
+  const backBtn = document.getElementById('backBtn');
+  const crumb = document.getElementById('crumb');
+
+  // Progress stored in memory only (no browser storage in artifacts)
+  const progress = {}; // projectId -> Set of completed step indices
+
+  // View state: {view:'home'} | {view:'category', catId} | {view:'project', catId, projId}
+  let state = { view: 'home' };
+  const history = [];
+
+  function findCategory(id) { return DATA.categories.find(c => c.id === id); }
+  function findProject(catId, projId) { return DATA.projects[catId].find(p => p.id === projId); }
+
+  function go(newState, isBack) {
+    if (!isBack) history.push(state);
+    state = newState;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  backBtn.addEventListener('click', () => {
+    if (history.length) {
+      const prev = history.pop();
+      state = prev;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  function render() {
+    backBtn.classList.toggle('show', state.view !== 'home');
+    if (state.view === 'home') renderHome();
+    else if (state.view === 'category') renderCategory();
+    else if (state.view === 'project') renderProject();
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
+  /* ---------- HOME ---------- */
+  function renderHome() {
+    crumb.innerHTML = '';
+    let html = `
+      <div class="screen">
+        <div class="hero">
+          <div class="mascot">🚀</div>
+          <h1>Find Your <span class="pop1">Perfect</span> <span class="pop2">Project!</span></h1>
+          <p>Tap a box below to start. We'll help you pick something awesome and show you exactly what to do! 🌟</p>
+        </div>
+        <div class="grid two">`;
+    DATA.categories.forEach((c, i) => {
+      const count = DATA.projects[c.id].length;
+      html += `
+        <button class="card" style="--c:${c.color}; animation-delay:${i * 0.05}s" data-cat="${c.id}">
+          <div class="ic">${c.icon}</div>
+          <div class="nm">${escapeHtml(c.title)}</div>
+          <div class="bl">${escapeHtml(c.blurb)}</div>
+          <div class="chev">${count} ideas →</div>
+        </button>`;
+    });
+    html += `</div></div>`;
+    app.innerHTML = html;
+    app.querySelectorAll('[data-cat]').forEach(el => {
+      el.addEventListener('click', () => go({ view: 'category', catId: el.dataset.cat }));
+    });
+  }
+
+  /* ---------- CATEGORY ---------- */
+  function renderCategory() {
+    const cat = findCategory(state.catId);
+    crumb.innerHTML = `<b>${escapeHtml(cat.title)}</b>`;
+    const projs = DATA.projects[cat.id];
+    let html = `
+      <div class="screen">
+        <div class="section-title"><span class="tag">${cat.icon}</span> ${escapeHtml(cat.title)}</div>
+        <div class="section-sub">Pick one to see how to make it! 👇</div>
+        <div class="grid">`;
+    projs.forEach((p, i) => {
+      const done = progress[p.id] ? progress[p.id].size : 0;
+      const total = p.steps.length;
+      const doneTag = done > 0
+        ? `<div class="chev">${done === total ? '✓ Done!' : done + '/' + total + ' done'}</div>`
+        : `<div class="chev">Let's go →</div>`;
+      html += `
+        <button class="card" style="--c:${cat.color}; animation-delay:${i * 0.04}s" data-proj="${p.id}">
+          <div class="ic">${p.icon}</div>
+          <div class="nm">${escapeHtml(p.name)}</div>
+          <div class="bl">${escapeHtml(p.blurb)}</div>
+          ${doneTag}
+        </button>`;
+    });
+    html += `</div>
+      <button class="surprise-btn" id="surprise">🎲 Surprise Me!</button>
+    </div>`;
+    app.innerHTML = html;
+    app.querySelectorAll('[data-proj]').forEach(el => {
+      el.addEventListener('click', () => go({ view: 'project', catId: cat.id, projId: el.dataset.proj }));
+    });
+    document.getElementById('surprise').addEventListener('click', () => {
+      const pick = projs[Math.floor(Math.random() * projs.length)];
+      go({ view: 'project', catId: cat.id, projId: pick.id });
+    });
+  }
+
+  /* ---------- PROJECT DETAIL ---------- */
+  function renderProject() {
+    const cat = findCategory(state.catId);
+    const p = findProject(state.catId, state.projId);
+    if (!progress[p.id]) progress[p.id] = new Set();
+    crumb.innerHTML = `${escapeHtml(cat.title)} › <b>${escapeHtml(p.name)}</b>`;
+
+    // ATL skill metadata: icon + color per IB category
+    const ATL_META = {
+      "Thinking": { icon: "🧠", color: "#FF6B6B" },
+      "Social": { icon: "🤝", color: "#F15BB5" },
+      "Communication": { icon: "💬", color: "#4D96FF" },
+      "Self-Management": { icon: "⏰", color: "#FF9F1C" },
+      "Research": { icon: "🔍", color: "#52B788" },
+    };
+
+    let needsHtml = p.need.map(n => `<div class="pill">${escapeHtml(n)}</div>`).join('');
+
+    let atlsHtml = (p.atls || []).map(a => {
+      const m = ATL_META[a.cat] || { icon: "✨", color: "#9B5DE5" };
+      const subsHtml = a.subs.map(s =>
+        `<li class="atl-sub"><span class="atl-sub-name">${escapeHtml(s.name)}</span><span class="atl-sub-note">${escapeHtml(s.note)}</span></li>`
+      ).join('');
+      return `<div class="atl" style="--ac:${m.color}">
+        <div class="atl-head">
+          <div class="atl-ic">${m.icon}</div>
+          <div class="atl-cat">${escapeHtml(a.cat)} Skills</div>
+        </div>
+        <ul class="atl-subs">${subsHtml}</ul>
+      </div>`;
+    }).join('');
+    let stepsHtml = p.steps.map((s, i) => {
+      const done = progress[p.id].has(i);
+      return `<li class="step ${done ? 'done' : ''}" data-step="${i}">
+        <div class="num"></div>
+        <div class="tx">${escapeHtml(s)}</div>
+        <div class="check"></div>
+      </li>`;
+    }).join('');
+
+    const html = `
+      <div class="screen" style="--c:${cat.color}">
+        <div class="detail-head" style="--c:${cat.color}">
+          <div class="big-ic">${p.icon}</div>
+          <h2>${escapeHtml(p.name)}</h2>
+          <div class="tagline">${escapeHtml(p.blurb)}</div>
+        </div>
+
+        <div class="panel">
+          <h3><span class="e">🧰</span> What You Need</h3>
+          <div class="needs">${needsHtml}</div>
+        </div>
+
+        <div class="panel">
+          <h3><span class="e">👣</span> Steps to Follow</h3>
+          <ul class="steps" id="steps">${stepsHtml}</ul>
+          <div class="progress-wrap"><div class="progress-bar" id="bar" style="background:${cat.color}"></div></div>
+          <div class="progress-label" id="plabel"></div>
+          <div class="celebrate" id="celebrate">🎉 You did it! Amazing work! 🎉</div>
+        </div>
+
+        <div class="panel">
+          <h3><span class="e">🌟</span> Skills You'll Build (ATL)</h3>
+          <div class="atl-grid">${atlsHtml}</div>
+        </div>
+
+        <div class="panel" style="margin-bottom:8px">
+          <h3><span class="e">⭐</span> Bonus Tip</h3>
+          <div class="tipbox">
+            <div class="bulb">💡</div>
+            <div class="tiptx"><b>Try this:</b> ${escapeHtml(p.tip)}</div>
+          </div>
+        </div>
+      </div>`;
+    app.innerHTML = html;
+
+    const steps = app.querySelectorAll('.step');
+    steps.forEach(step => {
+      step.addEventListener('click', () => {
+        const idx = +step.dataset.step;
+        if (progress[p.id].has(idx)) { progress[p.id].delete(idx); step.classList.remove('done'); }
+        else { progress[p.id].add(idx); step.classList.add('done'); }
+        updateProgress(p, cat);
+      });
+    });
+    updateProgress(p, cat);
+  }
+
+  function updateProgress(p, cat) {
+    const total = p.steps.length;
+    const done = progress[p.id].size;
+    const pct = Math.round((done / total) * 100);
+    const bar = document.getElementById('bar');
+    const label = document.getElementById('plabel');
+    const celebrate = document.getElementById('celebrate');
+    if (bar) bar.style.width = pct + '%';
+    if (label) label.textContent = done === 0
+      ? 'Tap a step when you finish it!'
+      : `${done} of ${total} steps done`;
+    if (celebrate) celebrate.classList.toggle('show', done === total);
+    if (done === total && total > 0) burst(cat.color);
+  }
+
+  /* ---------- confetti burst ---------- */
+  let lastBurst = 0;
+  function burst(color) {
+    const now = Date.now();
+    if (now - lastBurst < 1500) return;
+    lastBurst = now;
+    const emojis = ['🎉', '⭐', '🎊', '✨', '🌟', '🥳'];
+    for (let i = 0; i < 24; i++) {
+      const e = document.createElement('div');
+      e.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      e.style.cssText = `position:fixed;left:${50 + (Math.random() * 40 - 20)}%;top:40%;font-size:${1.4 + Math.random() * 1.4}rem;z-index:99;pointer-events:none;`;
+      document.body.appendChild(e);
+      const dx = (Math.random() - 0.5) * 600;
+      const dy = -(150 + Math.random() * 300);
+      const rot = (Math.random() - 0.5) * 720;
+      e.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 1, offset: 0.7 },
+        { transform: `translate(${dx * 1.2}px, ${dy + 500}px) rotate(${rot}deg)`, opacity: 0 }
+      ], { duration: 1600 + Math.random() * 600, easing: 'cubic-bezier(.2,.7,.4,1)' }).onfinish = () => e.remove();
+    }
+  }
+
+  /* ---------- background doodles ---------- */
+  (function () {
+    const set = ['✏️', '🎨', '📚', '⭐', '🚀', '🧩', '🌈', '✂️', '🔬', '🎭', '💡', '🏆'];
+    const c = document.getElementById('doodles');
+    set.forEach((emo, i) => {
+      const d = document.createElement('div');
+      d.className = 'doodle';
+      d.textContent = emo;
+      d.style.left = (5 + Math.random() * 90) + 'vw';
+      d.style.top = (5 + Math.random() * 90) + 'vh';
+      d.style.animationDelay = (Math.random() * 5) + 's';
+      d.style.animationDuration = (6 + Math.random() * 5) + 's';
+      d.style.fontSize = (1.6 + Math.random() * 1.6) + 'rem';
+      c.appendChild(d);
+    });
+  })();
+
+  render();
+})();
+
+</script>
+</body>
+</html>
