@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Would You Rather? — Sentence Starters</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --ink: #2d2150; --p1: #6c5ce7; --p3: #ff7675; --p2d: #0a7a63; --p3d: #d6403e; --p4: #fdcb6e; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background:
+      radial-gradient(circle at 12% 18%, #ffe9a8 0 18px, transparent 19px),
+      radial-gradient(circle at 82% 12%, #b6e3ff 0 16px, transparent 17px),
+      radial-gradient(circle at 90% 72%, #ffc6d9 0 20px, transparent 21px),
+      radial-gradient(circle at 8% 80%, #c5f3e0 0 16px, transparent 17px),
+      linear-gradient(160deg, #fff7ec 0%, #ffeede 100%);
+    min-height: 100vh; color: var(--ink);
+    padding: 24px 16px 48px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .title {
+    font-family: 'Baloo 2', cursive; font-weight: 800;
+    font-size: clamp(32px, 7vw, 54px); text-align: center; line-height: 1;
+    color: var(--p1); text-shadow: 3px 3px 0 #fff, 6px 6px 0 rgba(108,92,231,.22);
+    letter-spacing: -1px; margin-top: 8px;
+  }
+  .title .q { color: var(--p3); display: inline-block; transform: rotate(8deg); }
+  .subtitle { text-align: center; font-weight: 700; font-size: 16px; color: #6b5e8a; margin: 12px 0 22px; max-width: 480px; }
+  .stage { width: 100%; max-width: 640px; }
+  .card {
+    background: #fff; border: 4px solid var(--ink); border-radius: 28px;
+    padding: 24px 22px; box-shadow: 8px 8px 0 rgba(45,33,80,.18);
+    text-align: center; margin-bottom: 22px;
+  }
+  #question { font-family: 'Baloo 2', cursive; font-weight: 700; font-size: clamp(20px, 5vw, 28px); line-height: 1.35; }
+  #question b { color: var(--p1); }
+  .opt {
+    border: 4px solid var(--ink); border-radius: 24px; padding: 18px 20px;
+    margin-bottom: 18px; box-shadow: 5px 5px 0 rgba(45,33,80,.18); background: #fffdf6;
+  }
+  .opt-name { font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 21px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .opt-name .badge { font-size: 26px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 520px){ .row { grid-template-columns: 1fr; } }
+  .col-label { font-family:'Baloo 2',cursive; font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  .for .col-label { color: var(--p2d); }
+  .against .col-label { color: var(--p3d); }
+  ul { list-style: none; }
+  li { font-weight: 600; font-size: 15px; line-height: 1.5; padding: 9px 12px; margin-bottom: 8px; border-radius: 12px; font-style: italic; }
+  .for li { background: #d6f7ec; }
+  .against li { background: #ffe3e2; }
+  .spin-wrap { text-align: center; margin-top: 6px; }
+  .spin {
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 22px;
+    background: var(--p4); color: #5a3d00; border: 4px solid var(--ink); border-radius: 50px;
+    padding: 14px 34px; cursor: pointer; box-shadow: 6px 6px 0 rgba(45,33,80,.3);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .spin:hover { transform: translate(-2px,-2px) rotate(-1deg); box-shadow: 8px 8px 0 rgba(45,33,80,.35); }
+  .spin:active { transform: translate(4px,4px); box-shadow: 1px 1px 0 rgba(45,33,80,.3); }
+  .hint { text-align: center; font-weight: 700; color: #6b5e8a; font-size: 14px; margin-top: 16px; max-width: 480px; }
+</style>
+</head>
+<body>
+
+  <h1 class="title">Would You Rather<span class="q">?</span></h1>
+  <p class="subtitle">Pick a choice, then finish the sentence starters to say why!</p>
+
+  <div class="stage">
+    <div class="card">
+      <div id="question"></div>
+    </div>
+    <div class="opt" id="optA"></div>
+    <div class="opt" id="optB"></div>
+
+    <div class="spin-wrap">
+      <button class="spin" id="spin">&#127922; New question!</button>
+    </div>
+    <p class="hint">Say each sentence out loud and finish it in your own words.</p>
+  </div>
+
+<script>
+const QS = [
+  {a:"have a pet dinosaur", b:"have a pet dragon"},
+  {a:"talk to animals", b:"fly like a bird"},
+  {a:"be invisible", b:"be super fast"},
+  {a:"eat pizza every day", b:"eat ice cream forever"},
+  {a:"have magic powers", b:"be able to time travel"},
+  {a:"swim with dolphins", b:"ride on a giant turtle"},
+  {a:"have a monkey tail", b:"have elephant ears"},
+  {a:"live in a treehouse", b:"live in an underwater house"},
+  {a:"have laser eyes", b:"have stretchy arms"},
+  {a:"be a superhero", b:"be a wizard"},
+  {a:"explore space", b:"dive deep in the ocean"},
+  {a:"be a pirate", b:"be an astronaut"},
+  {a:"have no homework", b:"have no tests"},
+  {a:"have chocolate rain", b:"have popcorn snow"},
+  {a:"be super smart", b:"be super silly"},
+  {a:"have a robot dog", b:"have a robot cat"},
+  {a:"ride a unicorn", b:"ride a dinosaur"},
+  {a:"have wings", b:"have fins"},
+  {a:"control fire", b:"control water"},
+  {a:"jump super high", b:"run super fast"},
+  {a:"be as tiny as an ant", b:"be as big as an elephant"},
+  {a:"have candy for breakfast", b:"have cookies for dinner"},
+  {a:"visit the past", b:"visit the future"},
+  {a:"have rainbow hair", b:"have glowing skin"},
+  {a:"live in a candy land", b:"live in a LEGO world"},
+  {a:"sneeze glitter", b:"burp bubbles"},
+  {a:"have a flying car", b:"have a swimming car"},
+  {a:"play tag forever", b:"play hide-and-seek forever"},
+  {a:"be friends with aliens", b:"be friends with robots"},
+  {a:"breathe underwater", b:"breathe in space"}
+];
+
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function starters(myChoice, otherChoice){
+  return {
+    good: [
+      "I would rather " + myChoice + " because...",
+      "The best part would be...",
+      "It would be awesome since..."
+    ],
+    bad: [
+      "I wouldn't want to " + otherChoice + " because...",
+      "That choice would be tricky since...",
+      "The worst part of it would be..."
+    ]
+  };
+}
+
+function optionBlock(name, otherName, emoji){
+  var s = starters(name, otherName);
+  return '<div class="opt-name"><span class="badge">'+emoji+'</span>'+cap(name)+'</div>'
+    + '<div class="row">'
+    + '<div class="for"><div class="col-label">&#128077; Why I\'d pick it</div><ul>'
+    + s.good.map(function(r){return '<li>'+r+'</li>';}).join('') + '</ul></div>'
+    + '<div class="against"><div class="col-label">&#128078; Why not the other</div><ul>'
+    + s.bad.map(function(r){return '<li>'+r+'</li>';}).join('') + '</ul></div>'
+    + '</div>';
+}
+
+function show(){
+  var q = QS[Math.floor(Math.random()*QS.length)];
+  document.getElementById("question").innerHTML = "Would you rather <b>"+q.a+"</b> or <b>"+q.b+"</b>?";
+  document.getElementById("optA").innerHTML = optionBlock(q.a, q.b, "\uD83C\uDD70\uFE0F");
+  document.getElementById("optB").innerHTML = optionBlock(q.b, q.a, "\uD83C\uDD71\uFE0F");
+}
+
+document.getElementById("spin").onclick = show;
+show();
+</script>
+</body>
+</html>
