@@ -215,6 +215,27 @@ function sportIcon(id, size, color, stroke) {
       '<g ' + P + '>' +
       '<circle cx="12" cy="4.5" r="1.8" />' +
       '<path d="M12 6.3v6M12 8.5l-4 2M12 8.5l4 2M12 12.3l-3 6M12 12.3l3 6" />' +
+      '</g>',
+    skateboarding:
+      '<g ' + P + '>' +
+      '<path d="M4 15.5l3.5-3.5 2.5 1.5 3-3 4 2" />' +
+      '<path d="M3.5 18.5h13" stroke-width="' + (stroke * 1.05) + '" />' +
+      '<circle cx="6.5" cy="20.3" r="1.1" fill="' + color + '" stroke="none" />' +
+      '<circle cx="13.5" cy="20.3" r="1.1" fill="' + color + '" stroke="none" />' +
+      '</g>',
+    frisbee:
+      '<g ' + P + '>' +
+      '<ellipse cx="12" cy="13" rx="9" ry="3.4" />' +
+      '<path d="M4.4 11.6c1.3 1.6 4.2 2.7 7.6 2.7s6.3-1.1 7.6-2.7" />' +
+      '<path d="M12 9.6v1" />' +
+      '</g>',
+    wrestling:
+      '<g ' + P + '>' +
+      '<circle cx="8.5" cy="5" r="1.7" />' +
+      '<circle cx="15.5" cy="5" r="1.7" />' +
+      '<path d="M8.5 6.8v3l-2 2M8.5 9.8l3 1.5 4-2.5" />' +
+      '<path d="M15.5 6.8v3l2 2.5M15.5 9.8l-2 1" />' +
+      '<path d="M9 14l-1.5 6M11.5 11.3l1 8.7M16 12.3l1 7.7" stroke-width="' + (stroke * 0.92) + '" />' +
       '</g>'
   };
   return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" style="display:block">' + (icons[id] || icons.soccer) + '</svg>';
@@ -626,6 +647,159 @@ const SPORTS = [
     ],
     strength: ["Planks", "Bridges", "Squats", "Lunges", "Hollow-body holds"],
   },
+  {
+    id: "skateboarding",
+    name: "Skateboarding",
+    tag: "Balance, courage & patient repetition",
+    accent: "#9333ea",
+    accentSoft: "#f3e8ff",
+    what:
+      "A creative board sport where you ride, balance, turn, and learn tricks on a skateboard. Find your balance, push with control, and build one small skill at a time — every skater starts by just standing on the board.",
+    movement: [
+      "Balance & weight shifting",
+      "Pushing & rolling control",
+      "Bending & absorbing with the knees",
+      "Body & arm coordination",
+      "Spatial awareness",
+      "Falling safely",
+    ],
+    equipment: [
+      "A skateboard (a complete beginner board is perfect)",
+      "A helmet — always, no exceptions",
+      "Knee, elbow & wrist pads",
+      "Flat closed-toe shoes (flat soles grip best)",
+      "A smooth, flat, traffic-free space",
+    ],
+    skills: [
+      { name: "Stance & Balance", cue: "Bend the knees, stay low", points: ["Find regular or goofy (which foot leads)", "Feet over the bolts", "Knees soft, eyes up"] },
+      { name: "Pushing", cue: "Push, place, glide", points: ["Front foot on the board", "Push gently with back foot", "Return foot to the board to roll"] },
+      { name: "Turning", cue: "Lean, don't twist", points: ["Lean toward your toes or heels", "Use ankles and knees", "Look where you want to go"] },
+      { name: "Stopping", cue: "Drag it slow", points: ["Take back foot off", "Drag sole lightly on the ground", "Or step off onto your foot"] },
+      { name: "Falling Safely", cue: "Crouch, roll, don't reach", points: ["Bend low before you fall", "Avoid stiff straight arms", "Roll with it and relax"] },
+    ],
+    solo: [
+      ["Grass Balance", "Stand and balance on the board on grass/carpet", "Balance, confidence"],
+      ["Push & Coast", "One push, then glide as long as you can", "Pushing control"],
+      ["Tic-Tacs", "Lift the nose and swivel left-right in place", "Steering, board feel"],
+      ["Manual Hold", "Lift the nose slightly while rolling slowly", "Balance, core control"],
+      ["Foot Placement Practice", "Hop on/off finding the bolts each time", "Stance memory"],
+    ],
+    partner: [
+      ["Hand-Hold Roll", "Partner steadies you as you find balance rolling", "Balance, trust"],
+      ["Follow the Leader", "Copy a partner's slow path and turns", "Steering, awareness"],
+      ["Cone Slalom", "Take turns weaving through cones", "Turning control"],
+      ["Spot & Cheer", "One films/spots while the other tries a skill", "Confidence, feedback"],
+    ],
+    games: [
+      ["Coast Distance", "How far can you roll from one push?", "Pushing, balance"],
+      ["Slow Race", "Last to the line (without stopping) wins", "Control"],
+      ["Cone Weave Challenge", "Weave a cone line cleanly", "Turning"],
+      ["Add-On Lines", "Each player adds one move to a sequence", "Creativity, memory"],
+    ],
+    strength: ["Squats", "Lunges", "Calf raises", "Planks", "Single-leg balance holds"],
+  },
+  {
+    id: "frisbee",
+    name: "Ultimate Frisbee",
+    tag: "Throwing, cutting & teamwork",
+    accent: "#0284c7",
+    accentSoft: "#e0f2fe",
+    what:
+      "A fast, non-contact team sport where you move a flying disc up the field by passing and score by catching it in the end zone. You can't run with the disc — so smart throws, sharp cutting, and teamwork are everything.",
+    movement: [
+      "Throwing with wrist control",
+      "Catching with two hands",
+      "Running & cutting into space",
+      "Pivoting on one foot",
+      "Spatial awareness",
+      "Communication",
+    ],
+    equipment: [
+      "A flying disc (a 175g ultimate disc is standard)",
+      "Cones or markers for end zones",
+      "Comfortable shoes (cleats optional)",
+      "A flat open field",
+      "Pinnies or colors to mark teams (optional)",
+    ],
+    skills: [
+      { name: "Backhand Throw", cue: "Step, snap, flat", points: ["Grip with thumb on top", "Step across your body", "Snap the wrist, keep the disc level"] },
+      { name: "Forehand (Flick)", cue: "Two fingers, quick wrist", points: ["Two fingers under the rim", "Elbow in", "Snap the wrist, don't swing the arm"] },
+      { name: "Catching", cue: "Clap it, two hands", points: ["Pancake: clap one hand top, one bottom", "Watch the disc into your hands", "Rim catch for high/low discs"] },
+      { name: "Pivoting", cue: "Plant and turn", points: ["Keep one foot planted", "Pivot to find a throwing lane", "You can't take steps with the disc"] },
+      { name: "Cutting", cue: "Sharp, then go", points: ["Change direction hard", "Cut into open space", "Make eye contact with the thrower"] },
+    ],
+    solo: [
+      ["Wall Throws", "Backhand/forehand at a wall, catch the return", "Throwing accuracy"],
+      ["Throw & Chase", "Throw far, sprint, catch your own disc", "Throwing, tracking"],
+      ["Flat-Disc Drill", "Throw aiming to keep the disc perfectly level", "Wrist control"],
+      ["Self Toss & Pancake", "Toss up, practice the two-hand clap catch", "Catching"],
+      ["Pivot Footwork", "Plant a foot and pivot through throwing angles", "Pivoting"],
+    ],
+    partner: [
+      ["Partner Catch", "Backhand & forehand back and forth", "Accuracy, communication"],
+      ["Distance Ladder", "Step back after each clean catch", "Throwing power"],
+      ["Cut & Throw", "One cuts to space, the other hits them", "Timing, leading the receiver"],
+      ["Mark & Pivot", "One defends; thrower pivots to find a lane", "Decision making"],
+    ],
+    games: [
+      ["Keep Away (3v1)", "Keep the disc from the defender", "Spacing, quick throws"],
+      ["End Zone Catch", "Score by catching in the zone", "Cutting, teamwork"],
+      ["500", "Throw up for grabs; points for clean catches", "Catching, tracking"],
+      ["Mini Ultimate (3v3)", "Small field, no contact, simple rules", "Game flow, teamwork"],
+    ],
+    strength: ["Squats", "Lunges", "Side shuffles", "Planks", "Short sprints"],
+  },
+  {
+    id: "wrestling",
+    name: "Wrestling",
+    tag: "Leverage, balance & honest grit",
+    accent: "#b45309",
+    accentSoft: "#fef3c7",
+    what:
+      "A one-on-one sport of control where you use balance, leverage, and technique to take an opponent down and control them on the mat. It rewards effort over size — beginners win by learning position, staying low, and never giving up.",
+    movement: [
+      "Balance & low stance",
+      "Level changing (bending the knees)",
+      "Pushing, pulling & leverage",
+      "Hip movement & control",
+      "Quick footwork",
+      "Falling and rolling safely",
+    ],
+    equipment: [
+      "A wrestling mat or soft padded surface",
+      "Comfortable, close-fitting athletic clothes",
+      "Wrestling shoes (optional for beginners)",
+      "Headgear to protect the ears (recommended)",
+      "A coach or partner for safe practice",
+    ],
+    skills: [
+      { name: "Stance", cue: "Low, square, ready", points: ["Knees bent, back straight", "Hands up and active", "Weight on the balls of your feet"] },
+      { name: "Motion & Footwork", cue: "Short steps, stay low", points: ["Move without crossing your feet", "Keep your stance the whole time", "Circle and change angles"] },
+      { name: "Level Change", cue: "Bend the knees, not the back", points: ["Drop your hips to lower your level", "Keep your head up", "Spring back up with control"] },
+      { name: "Penetration Step", cue: "Step in, drive forward", points: ["Lead knee drops toward the mat", "Step deep between their feet", "Drive forward, not down"] },
+      { name: "Sprawl (Defense)", cue: "Hips down, legs back", points: ["Shoot your legs back fast", "Drop your hips onto them", "Keep your weight heavy"] },
+    ],
+    solo: [
+      ["Stance & Motion", "Hold your stance and move in all directions", "Balance, footwork"],
+      ["Level Change Reps", "Drop and raise your level smoothly", "Hip control"],
+      ["Penetration Step", "Step in to a knee, return to stance", "Takedown entry"],
+      ["Sprawl Drill", "From stance, sprawl and recover", "Defense, reaction"],
+      ["Forward Rolls", "Practice rolling safely on the mat", "Falling, coordination"],
+    ],
+    partner: [
+      ["Hand Fighting", "Lightly fight for inside hand position", "Control, tempo"],
+      ["Mirror Motion", "Stay in stance and mirror your partner", "Footwork, awareness"],
+      ["Down-Position Holds", "Practice top/bottom start positions", "Position, base"],
+      ["Light Takedown Reps", "Walk through a takedown slowly, no force", "Technique, trust"],
+    ],
+    games: [
+      ["Knee Tag", "Try to gently tap your partner's knee", "Level change, reactions"],
+      ["Hand Slap", "Tap the back of partner's hands", "Speed, hand fighting"],
+      ["Stance Sumo", "Push partner out of a circle, staying low", "Balance, leverage"],
+      ["King of the Position", "Hold a position vs gentle resistance", "Base, grit"],
+    ],
+    strength: ["Squats", "Lunges", "Planks", "Bridges", "Pull-ups or rows"],
+  },
 ];
 ;
 
@@ -743,7 +917,7 @@ function homeHTML() {
 
   return '<main class="fade-in">' +
     '<section class="hero">' +
-      '<p class="kicker">A beginner\'s training ground for 9 sports</p>' +
+      '<p class="kicker">A beginner\'s training ground for ' + SPORTS.length + ' sports</p>' +
       '<h1 class="h1">Nobody starts<br><span class="h1-accent">great.</span></h1>' +
       '<p class="lede">Not the player you admire. Not your coach. Not anyone. They all began clumsy, unsure, and dropping the ball \u2014 <em>literally</em>. The only thing that turned beginners into champions was showing up again. Pick a sport, take one small step, and log it. That\'s how it starts.</p>' +
     '</section>' +
