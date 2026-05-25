@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friends & Feelings — A Kid's Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gochi+Hand&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fffdf6;
+    --ink:#3a3a44;
+    --berry:#e0488b;
+    --grape:#7a52c4;
+    --sky:#2f9fd4;
+    --leaf:#46b06a;
+    --sun:#f4a73b;
+    --tomato:#e8553e;
+    --cream:#fff6e3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 12% 8%, #ffe9f4 0, transparent 28%),
+      radial-gradient(circle at 88% 14%, #e6f0ff 0, transparent 26%),
+      radial-gradient(circle at 80% 88%, #eafbe8 0, transparent 30%),
+      radial-gradient(circle at 18% 92%, #fff3d9 0, transparent 28%),
+      #f3eee1;
+    font-family:'Patrick Hand', cursive;
+    color:var(--ink);
+    padding:40px 16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:34px;
+    align-items:start;
+  }
+  @media(max-width:880px){ .wrap{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--paper);
+    border-radius:26px;
+    padding:30px 30px 38px;
+    position:relative;
+    box-shadow:0 18px 0 -6px rgba(0,0,0,.07), 0 30px 50px -20px rgba(0,0,0,.25);
+    border:3px solid #ece4d2;
+  }
+  /* little tape on top */
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-16px; left:50%;
+    transform:translateX(-50%) rotate(-2deg);
+    width:140px; height:30px;
+    background:rgba(120,82,196,.22);
+    border:2px dashed rgba(120,82,196,.45);
+    border-radius:4px;
+  }
+
+  .title{
+    font-family:'Baloo 2', cursive;
+    text-align:center;
+    font-weight:800;
+    font-size:2.05rem;
+    line-height:1.05;
+    margin:6px 0 4px;
+  }
+  .title .one{ font-family:'Gochi Hand',cursive; }
+  .subtitle{
+    text-align:center;
+    font-size:1.15rem;
+    opacity:.7;
+    margin-bottom:18px;
+  }
+  .rule{
+    height:4px; border:0; border-radius:99px;
+    background:repeating-linear-gradient(90deg, currentColor 0 14px, transparent 14px 24px);
+    opacity:.45; margin:4px 0 22px;
+  }
+
+  .conflict .title, .conflict .rule{ color:var(--berry); }
+  .friends  .title, .friends  .rule{ color:var(--sky); }
+
+  .step{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    padding:14px 0;
+    border-bottom:2px dotted #e7dfcd;
+  }
+  .step:last-child{ border-bottom:0; }
+
+  .num{
+    flex:0 0 auto;
+    width:46px; height:46px;
+    display:grid; place-items:center;
+    font-family:'Baloo 2',cursive;
+    font-weight:800;
+    font-size:1.4rem;
+    color:#fff;
+    border-radius:50% 50% 50% 8px;
+    transform:rotate(-6deg);
+    box-shadow:0 4px 0 rgba(0,0,0,.12);
+  }
+  .text{ font-size:1.32rem; line-height:1.32; padding-top:3px; }
+  .text b{ font-family:'Baloo 2',cursive; font-weight:700; }
+
+  /* color cycle for numbers + emphasis */
+  .c1{background:var(--grape);} .e1{color:var(--grape);}
+  .c2{background:var(--sky);}   .e2{color:var(--sky);}
+  .c3{background:var(--leaf);}  .e3{color:var(--leaf);}
+  .c4{background:var(--sun);}   .e4{color:var(--sun);}
+  .c5{background:var(--tomato);} .e5{color:var(--tomato);}
+
+  .emoji{ font-size:1.25rem; }
+
+  .footer{
+    text-align:center;
+    margin-top:28px;
+    font-size:1.05rem;
+    opacity:.6;
+    font-family:'Patrick Hand',cursive;
+  }
+
+  @media print{
+    body{ background:#fff; padding:0; }
+    .wrap{ gap:18px; }
+    .card{ box-shadow:none; border:2px solid #ddd; break-inside:avoid; }
+    .footer{ break-before:avoid; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- CONFLICT CARD -->
+    <section class="card friends">
+      <h1 class="title">Making Friends <span class="one">101</span></h1>
+      <p class="subtitle">five easy steps to meet someone new</p>
+      <hr class="rule">
+
+      <div class="step">
+        <div class="num c1">1</div>
+        <div class="text"><span class="emoji">🎨</span> Do something <b class="e1">interesting</b> — OR find someone <b class="e1">doing something interesting</b>.</div>
+      </div>
+
+      <div class="step">
+        <div class="num c2">2</div>
+        <div class="text"><span class="emoji">👋</span> Say <b class="e2">Hi!</b></div>
+      </div>
+
+      <div class="step">
+        <div class="num c3">3</div>
+        <div class="text"><span class="emoji">🧩</span> Let others <b class="e3">join in</b> — and find ways to <b class="e3">contribute</b>.</div>
+      </div>
+
+      <div class="step">
+        <div class="num c4">4</div>
+        <div class="text"><span class="emoji">⏳</span> <b class="e4">Give it time</b> — friendships grow little by little.</div>
+      </div>
+
+      <div class="step">
+        <div class="num c5">5</div>
+        <div class="text"><span class="emoji">🔁</span> <b class="e5">Repeat!</b> Keep being friendly and keep trying.</div>
+      </div>
+    </section>
+
+    <!-- CONFLICT CARD -->
+    <section class="card conflict">
+      <h1 class="title">Resolving Conflict <span class="one">101</span></h1>
+      <p class="subtitle">when things go wrong, here's how to make them right</p>
+      <hr class="rule">
+
+      <div class="step">
+        <div class="num c1">1</div>
+        <div class="text"><span class="emoji">🤔</span> Think about how <b class="e1">you</b> might have made the problem worse — and <b class="e1">say sorry</b> if you did.</div>
+      </div>
+
+      <div class="step">
+        <div class="num c2">2</div>
+        <div class="text"><span class="emoji">💬</span> Tell the other person how you <b class="e2">felt</b> when they did something you didn't like. <b class="e2">Be specific!</b></div>
+      </div>
+
+      <div class="step">
+        <div class="num c3">3</div>
+        <div class="text"><span class="emoji">🤝</span> Make a <b class="e3">compromise</b> — find something you can both agree on.</div>
+      </div>
+
+      <div class="step">
+        <div class="num c4">4</div>
+        <div class="text"><span class="emoji">🌈</span> <b class="e4">Let go</b> of other people's mistakes — <b class="e4">we all make them!</b></div>
+      </div>
+
+      <div class="step">
+        <div class="num c5">5</div>
+        <div class="text"><span class="emoji">⭐</span> Be a <b class="e5">good example</b>: be <b class="e5">caring</b>, <b class="e5">generous</b>, and <b class="e5">kind</b>.</div>
+      </div>
+    </section>
+
+  </div>
+
+  <p class="footer">★ You've got this — be brave, be kind, be you ★</p>
+</body>
+</html>
