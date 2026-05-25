@@ -1,4 +1,155 @@
-import React, { useState, useMemo, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>First Steps — Sports Fundamentals Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #faf8f3;
+    --ink: #1a1a17;
+    --line: rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: 'Bricolage Grotesque', 'Trebuchet MS', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  ul li::marker { color: rgba(0,0,0,0.3); }
+
+  .bg-glow {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(234,88,12,0.08), transparent),
+      radial-gradient(700px 500px at -10% 30%, rgba(22,163,74,0.07), transparent);
+  }
+  .shell { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* header */
+  header.app {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0 18px; position: sticky; top: 0; z-index: 20;
+    background: rgba(250,248,243,0.85); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; background: none; border: none; padding: 0; }
+  .brand-mark { display: inline-grid; place-items: center; width: 30px; height: 30px; background: var(--ink); color: var(--bg); border-radius: 8px; font-size: 12px; }
+  .brand-text { font-weight: 800; letter-spacing: 0.14em; font-size: 15px; }
+  .header-stats { display: flex; gap: 18px; }
+  .stat { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; }
+  .stat-num { font-weight: 800; font-size: 17px; display: inline-flex; align-items: center; gap: 4px; }
+  .stat-lbl { font-size: 10px; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* hero */
+  .hero { padding: 54px 0 30px; max-width: 640px; }
+  .kicker { text-transform: uppercase; letter-spacing: 0.18em; font-size: 12px; font-weight: 700; opacity: 0.5; margin: 0; }
+  .h1 { font-size: clamp(48px, 9vw, 92px); line-height: 0.92; font-weight: 800; margin: 14px 0 0; letter-spacing: -0.03em; }
+  .h1-accent { background: linear-gradient(100deg,#ea580c,#db2777); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .lede { font-size: 18px; line-height: 1.6; margin-top: 22px; opacity: 0.8; font-family: Georgia, 'Times New Roman', serif; }
+
+  /* pillars */
+  .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin: 20px 0 56px; }
+  .pillar { background: #fff; border: 1px solid rgba(0,0,0,0.07); border-radius: 18px; padding: 22px 22px 24px; box-shadow: 0 1px 0 rgba(0,0,0,0.03); opacity: 0; animation: rise .6s cubic-bezier(.2,.7,.3,1) forwards; }
+  .pillar-icon { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; border: 1.5px solid currentColor; line-height: 0; }
+  .pillar h3 { margin: 12px 0 6px; font-size: 19px; font-weight: 800; color: var(--ink); }
+  .pillar p { margin: 0; font-size: 14.5px; line-height: 1.55; opacity: 0.72; }
+
+  /* section head */
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 8px; }
+  .h2 { font-size: 30px; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
+  .section-hint { font-size: 13px; opacity: 0.5; }
+
+  /* cards grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px,1fr)); gap: 16px; }
+  .card { position: relative; text-align: left; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 20px; padding: 20px 20px 22px; overflow: hidden; opacity: 0; animation: rise .55s cubic-bezier(.2,.7,.3,1) forwards; transition: transform .25s, box-shadow .25s, border-color .25s; color: var(--ink); width: 100%; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.10); }
+  .card:active { transform: translateY(-1px); }
+  .card-wash { position: absolute; inset: 0; opacity: 0.6; pointer-events: none; }
+  .card-top { position: relative; display: flex; align-items: flex-start; justify-content: space-between; }
+  .card-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; line-height: 0; }
+  .card-name { position: relative; margin: 14px 0 4px; font-size: 21px; font-weight: 800; }
+  .card-tag { position: relative; margin: 0; font-size: 13.5px; opacity: 0.65; line-height: 1.4; min-height: 38px; }
+  .card-go { position: relative; display: inline-block; margin-top: 12px; font-size: 13.5px; font-weight: 700; }
+
+  /* home footer */
+  .home-footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); text-align: center; }
+  .foot-quote { font-family: Georgia, serif; font-style: italic; font-size: 20px; opacity: 0.7; }
+  .reset-btn { margin-top: 8px; background: none; border: 1px solid rgba(0,0,0,0.15); border-radius: 99px; padding: 7px 16px; font-size: 12.5px; color: var(--ink); opacity: 0.6; }
+
+  /* back */
+  .back { background: none; border: none; font-size: 14.5px; font-weight: 600; opacity: 0.6; padding: 24px 0 8px; color: var(--ink); }
+
+  /* sport hero */
+  .sport-hero { display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid; border-radius: 24px; padding: 26px 28px; flex-wrap: wrap; }
+  .sport-hero-inner { display: flex; align-items: center; gap: 18px; }
+  .sport-icon { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 18px; border: 1.5px solid; line-height: 0; flex-shrink: 0; background: #fff; }
+  .sport-name { margin: 0; font-size: clamp(30px,5vw,46px); font-weight: 800; letter-spacing: -0.02em; }
+  .sport-tag { margin: 4px 0 0; font-size: 15px; font-weight: 700; }
+  .sport-ring { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .sport-ring-lbl { font-size: 10.5px; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.08em; }
+  .what-text { font-family: Georgia, serif; font-size: 18px; line-height: 1.6; opacity: 0.82; margin: 24px 2px 6px; max-width: 760px; }
+
+  /* tabs */
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0 26px; position: sticky; top: 70px; z-index: 10; background: rgba(250,248,243,0.9); backdrop-filter: blur(8px); padding: 8px 0; }
+  .tab { background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 99px; padding: 9px 16px; font-size: 13.5px; font-weight: 700; color: var(--ink); transition: all .2s; }
+
+  .tab-intro { font-size: 15px; opacity: 0.7; line-height: 1.55; margin: 0 0 22px; max-width: 680px; }
+
+  /* skills */
+  .skill { background: #fff; border: 1.5px solid; border-radius: 18px; padding: 18px 20px 16px; margin-bottom: 14px; transition: border-color .3s; }
+  .skill-head { display: flex; align-items: center; gap: 12px; }
+  .skill-num { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+  .skill-name { margin: 0; font-size: 19px; font-weight: 800; flex: 1; }
+  .skill-points { margin: 12px 0 14px; padding-left: 20px; line-height: 1.7; font-size: 14.5px; opacity: 0.82; }
+  .cue { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; font-size: 15px; font-weight: 700; font-style: italic; }
+  .cue-lbl { font-style: normal; font-size: 10px; font-weight: 800; letter-spacing: 0.12em; opacity: 0.7; padding: 2px 6px; border: 1px solid currentColor; border-radius: 5px; }
+
+  .check { width: 28px; height: 28px; border-radius: 9px; border: 2px solid rgba(0,0,0,0.18); background: #fff; flex-shrink: 0; display: grid; place-items: center; font-size: 15px; font-weight: 800; transition: all .2s; padding: 0; }
+
+  /* drills */
+  .drill { display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left; border: 1.5px solid; border-radius: 16px; padding: 16px 18px; margin-bottom: 12px; transition: all .25s; background: #fff; color: var(--ink); }
+  .drill-body { flex: 1; }
+  .drill-name { margin: 0; font-size: 17px; font-weight: 800; }
+  .drill-desc { margin: 4px 0 8px; font-size: 14.5px; opacity: 0.78; line-height: 1.5; }
+  .drill-purpose { font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* info */
+  .info-block { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 18px; padding: 20px 22px; margin-bottom: 14px; }
+  .info-h { display: flex; align-items: center; gap: 9px; margin: 0 0 12px; font-size: 18px; font-weight: 800; }
+  .info-glyph { display: inline-grid; place-items: center; line-height: 0; }
+  .info-list { margin: 0; padding-left: 20px; line-height: 1.8; font-size: 15px; opacity: 0.82; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 7px 13px; border-radius: 99px; font-size: 13.5px; font-weight: 700; }
+  .chip-plain { padding: 7px 13px; border-radius: 99px; font-size: 13.5px; font-weight: 600; background: #f1ede4; color: var(--ink); }
+  .flow { margin: 0; padding-left: 20px; line-height: 1.9; font-size: 15px; opacity: 0.85; }
+
+  /* toast */
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 13px 22px; border-radius: 99px; font-size: 14.5px; font-weight: 600; box-shadow: 0 12px 40px rgba(0,0,0,0.25); z-index: 100; display: flex; align-items: center; gap: 9px; max-width: 90vw; animation: toastin .35s cubic-bezier(.2,.7,.3,1) both; }
+  .toast-dot { color: #fbbf24; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fade .4s ease both; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .tab-in { animation: tabin .35s cubic-bezier(.2,.7,.3,1) both; }
+  @keyframes tabin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes toastin { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="shell" id="app"></div>
+<div id="toast-root"></div>
+
+<script>
+"use strict";
 
 /* ============================================================
    FIRST STEPS — A sports fundamentals trainer for beginners
@@ -7,95 +158,120 @@ import React, { useState, useMemo, useEffect } from "react";
    ============================================================ */
 
 // ---------- SPORT ICONS (custom line SVGs, not emoji) ----------
-function SportIcon({ id, size = 40, color = "currentColor", stroke = 2 }) {
-  const p = { fill: "none", stroke: color, strokeWidth: stroke, strokeLinecap: "round", strokeLinejoin: "round" };
-  const icons = {
-    soccer: (
-      <g {...p}>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7.5l3.2 2.3-1.2 3.8h-4L8.8 9.8z" fill={color} stroke="none" />
-        <path d="M12 7.5L8.8 9.8M12 7.5l3.2 2.3M9.8 13.6L7 16.4M14.2 13.6L17 16.4M14 13.6h-4" />
-      </g>
-    ),
-    baseball: (
-      <g {...p}>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M6.5 5.8C8.2 8 8.6 12 6.2 16.6M17.5 5.8C15.8 8 15.4 12 17.8 16.6" />
-        <path d="M7.4 8.2l1.1.5M7 10.6l1.2.3M7.1 13.2l1.2-.1M16.6 8.2l-1.1.5M17 10.6l-1.2.3M16.9 13.2l-1.2-.1" strokeWidth={stroke * 0.7} />
-      </g>
-    ),
-    hockey: (
-      <g {...p}>
-        <path d="M5 4v9a5 5 0 0 0 5 5h7" />
-        <circle cx="18.5" cy="18" r="1.6" fill={color} stroke="none" />
-      </g>
-    ),
-    rugby: (
-      <g {...p}>
-        <ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-40 12 12)" />
-        <path d="M9 15l6-6M10.5 13.2l1.2 1.2M13.2 10.5l1.2 1.2M8.6 11.2l1.2 1.2M11.4 8.4l1.2 1.2" strokeWidth={stroke * 0.85} />
-      </g>
-    ),
-    basketball: (
-      <g {...p}>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M3 12h18M12 3v18" />
-        <path d="M5.5 5.5C8 8 8 16 5.5 18.5M18.5 5.5C16 8 16 16 18.5 18.5" />
-      </g>
-    ),
-    badminton: (
-      <g {...p}>
-        <path d="M14 4l-2 4-2 4" />
-        <path d="M6 16l4-4 4-4" />
-        <path d="M5 19l3.5-3.5" />
-        <ellipse cx="15.5" cy="6.5" rx="3.5" ry="2.4" transform="rotate(-45 15.5 6.5)" />
-        <path d="M13.4 4.4l4.2 4.2M14.8 5l3 3M16 4.8l2.4 2.4" strokeWidth={stroke * 0.7} />
-      </g>
-    ),
-    golf: (
-      <g {...p}>
-        <path d="M12 3v13" />
-        <path d="M12 3l6 2.5L12 8" fill={color} stroke="none" />
-        <path d="M12 3l6 2.5L12 8" />
-        <circle cx="9" cy="19" r="1.4" fill={color} stroke="none" />
-        <path d="M7 20.5c1.5-1 8-1 10 0" />
-      </g>
-    ),
-    tennis: (
-      <g {...p}>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M4.5 6C8 9 8 15 4.5 18M19.5 6C16 9 16 15 19.5 18" />
-      </g>
-    ),
-    dance: (
-      <g {...p}>
-        <circle cx="12" cy="4.5" r="1.8" />
-        <path d="M12 6.3v6M12 8.5l-4 2M12 8.5l4 2M12 12.3l-3 6M12 12.3l3 6" />
-      </g>
-    ),
+function sportIcon(id, size, color, stroke) {
+  size = size || 40; color = color || "currentColor"; stroke = stroke || 2;
+  var P = 'fill="none" stroke="' + color + '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-linejoin="round"';
+  var icons = {
+    soccer:
+      '<g ' + P + '>' +
+      '<circle cx="12" cy="12" r="9" />' +
+      '<path d="M12 7.5l3.2 2.3-1.2 3.8h-4L8.8 9.8z" fill="' + color + '" stroke="none" />' +
+      '<path d="M12 7.5L8.8 9.8M12 7.5l3.2 2.3M9.8 13.6L7 16.4M14.2 13.6L17 16.4M14 13.6h-4" />' +
+      '</g>',
+    baseball:
+      '<g ' + P + '>' +
+      '<circle cx="12" cy="12" r="9" />' +
+      '<path d="M6.5 5.8C8.2 8 8.6 12 6.2 16.6M17.5 5.8C15.8 8 15.4 12 17.8 16.6" />' +
+      '<path d="M7.4 8.2l1.1.5M7 10.6l1.2.3M7.1 13.2l1.2-.1M16.6 8.2l-1.1.5M17 10.6l-1.2.3M16.9 13.2l-1.2-.1" stroke-width="' + (stroke * 0.7) + '" />' +
+      '</g>',
+    hockey:
+      '<g ' + P + '>' +
+      '<path d="M5 4v9a5 5 0 0 0 5 5h7" />' +
+      '<circle cx="18.5" cy="18" r="1.6" fill="' + color + '" stroke="none" />' +
+      '</g>',
+    rugby:
+      '<g ' + P + '>' +
+      '<ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-40 12 12)" />' +
+      '<path d="M9 15l6-6M10.5 13.2l1.2 1.2M13.2 10.5l1.2 1.2M8.6 11.2l1.2 1.2M11.4 8.4l1.2 1.2" stroke-width="' + (stroke * 0.85) + '" />' +
+      '</g>',
+    basketball:
+      '<g ' + P + '>' +
+      '<circle cx="12" cy="12" r="9" />' +
+      '<path d="M3 12h18M12 3v18" />' +
+      '<path d="M5.5 5.5C8 8 8 16 5.5 18.5M18.5 5.5C16 8 16 16 18.5 18.5" />' +
+      '</g>',
+    badminton:
+      '<g ' + P + '>' +
+      '<path d="M14 4l-2 4-2 4" />' +
+      '<path d="M6 16l4-4 4-4" />' +
+      '<path d="M5 19l3.5-3.5" />' +
+      '<ellipse cx="15.5" cy="6.5" rx="3.5" ry="2.4" transform="rotate(-45 15.5 6.5)" />' +
+      '<path d="M13.4 4.4l4.2 4.2M14.8 5l3 3M16 4.8l2.4 2.4" stroke-width="' + (stroke * 0.7) + '" />' +
+      '</g>',
+    golf:
+      '<g ' + P + '>' +
+      '<path d="M12 3v13" />' +
+      '<path d="M12 3l6 2.5L12 8" fill="' + color + '" stroke="none" />' +
+      '<path d="M12 3l6 2.5L12 8" />' +
+      '<circle cx="9" cy="19" r="1.4" fill="' + color + '" stroke="none" />' +
+      '<path d="M7 20.5c1.5-1 8-1 10 0" />' +
+      '</g>',
+    tennis:
+      '<g ' + P + '>' +
+      '<circle cx="12" cy="12" r="9" />' +
+      '<path d="M4.5 6C8 9 8 15 4.5 18M19.5 6C16 9 16 15 19.5 18" />' +
+      '</g>',
+    dance:
+      '<g ' + P + '>' +
+      '<circle cx="12" cy="4.5" r="1.8" />' +
+      '<path d="M12 6.3v6M12 8.5l-4 2M12 8.5l4 2M12 12.3l-3 6M12 12.3l3 6" />' +
+      '</g>'
   };
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" style={{ display: "block" }}>
-      {icons[id] || icons.soccer}
-    </svg>
-  );
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" style="display:block">' + (icons[id] || icons.soccer) + '</svg>';
 }
 
-// ---------- UI GLYPHS (small line icons for pillars, headers, stats) ----------
-function Glyph({ name, size = 22, color = "currentColor", stroke = 1.9 }) {
-  const p = { fill: "none", stroke: color, strokeWidth: stroke, strokeLinecap: "round", strokeLinejoin: "round" };
-  const g = {
-    steps: (<g {...p}><path d="M4 19h4v-4h4v-4h4V7h4" /><circle cx="20" cy="6" r="1.3" fill={color} stroke="none" /></g>),
-    effort: (<g {...p}><path d="M12 21s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 7 3.5C19 16.5 12 21 12 21z" /></g>),
-    repeat: (<g {...p}><path d="M4 12a8 8 0 0 1 13.6-5.7L20 8" /><path d="M20 4v4h-4" /><path d="M20 12a8 8 0 0 1-13.6 5.7L4 16" /><path d="M4 20v-4h4" /></g>),
-    gear: (<g {...p}><path d="M6 8h12l-1 12H7z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></g>),
-    move: (<g {...p}><circle cx="13" cy="5" r="1.6" /><path d="M13 7v4l3 2M13 9l-4 1-2 4M9 14l1 5M9 14l-2 2" /></g>),
-    clock: (<g {...p}><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></g>),
-    strength: (<g {...p}><path d="M5 9v6M19 9v6M7 8v8M17 8v8M9 12h6" /><path d="M3 11v2M21 11v2" /></g>),
-    flame: (<g {...p}><path d="M12 21c3.3 0 5.5-2.2 5.5-5.2 0-3.2-2.5-5-3.5-8.3-1.8 1.3-2 3-2 3S10 8 9 6.5C7.8 8.4 6.5 10 6.5 13.3 6.5 17.4 9 21 12 21z" /></g>),
+// ---------- UI GLYPHS ----------
+function glyph(name, size, color, stroke) {
+  size = size || 22; color = color || "currentColor"; stroke = stroke || 1.9;
+  var P = 'fill="none" stroke="' + color + '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-linejoin="round"';
+  var g = {
+    steps: '<g ' + P + '><path d="M4 19h4v-4h4v-4h4V7h4" /><circle cx="20" cy="6" r="1.3" fill="' + color + '" stroke="none" /></g>',
+    effort: '<g ' + P + '><path d="M12 21s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 7 3.5C19 16.5 12 21 12 21z" /></g>',
+    repeat: '<g ' + P + '><path d="M4 12a8 8 0 0 1 13.6-5.7L20 8" /><path d="M20 4v4h-4" /><path d="M20 12a8 8 0 0 1-13.6 5.7L4 16" /><path d="M4 20v-4h4" /></g>',
+    gear: '<g ' + P + '><path d="M6 8h12l-1 12H7z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></g>',
+    move: '<g ' + P + '><circle cx="13" cy="5" r="1.6" /><path d="M13 7v4l3 2M13 9l-4 1-2 4M9 14l1 5M9 14l-2 2" /></g>',
+    clock: '<g ' + P + '><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></g>',
+    strength: '<g ' + P + '><path d="M5 9v6M19 9v6M7 8v8M17 8v8M9 12h6" /><path d="M3 11v2M21 11v2" /></g>',
+    flame: '<g ' + P + '><path d="M12 21c3.3 0 5.5-2.2 5.5-5.2 0-3.2-2.5-5-3.5-8.3-1.8 1.3-2 3-2 3S10 8 9 6.5C7.8 8.4 6.5 10 6.5 13.3 6.5 17.4 9 21 12 21z" /></g>'
   };
-  return (<svg width={size} height={size} viewBox="0 0 24 24" style={{ display: "block" }}>{g[name] || g.steps}</svg>);
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" style="display:block">' + (g[name] || g.steps) + '</svg>';
 }
+
+// ---------- PROGRESS RING ----------
+function progressRing(pct, accent, size) {
+  size = size || 56;
+  var r = (size - 8) / 2;
+  var c = 2 * Math.PI * r;
+  var off = c - (pct / 100) * c;
+  var cx = size / 2;
+  return '<svg width="' + size + '" height="' + size + '" style="display:block">' +
+    '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="6" />' +
+    '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" fill="none" stroke="' + accent + '" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + c + '" stroke-dashoffset="' + off + '" transform="rotate(-90 ' + cx + ' ' + cx + ')" style="transition: stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)" />' +
+    '<text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle" font-size="' + (size * 0.26) + '" font-weight="800" fill="' + accent + '" font-family="inherit">' + Math.round(pct) + '</text>' +
+    '</svg>';
+}
+
+// escape helper for text
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var PILLARS = [
+  { icon: "steps", title: "Baby steps", body: "Slow \u2192 smooth \u2192 faster. Master one tiny piece before adding the next. Small touches beat big leaps." },
+  { icon: "effort", title: "Honest effort", body: "You don't have to be good. You have to try, fail, and try again with your full focus. That's the whole secret." },
+  { icon: "repeat", title: "Consistency", body: "10\u201320 minutes a day beats two hours once a month. Champions are just beginners who refused to quit." }
+];
+
+var CHEERS = [
+  "That's a rep nobody can take from you.",
+  "See? You're already better than five minutes ago.",
+  "Beginners do this. Champions just did it more times.",
+  "Honest effort, logged. Keep stacking them.",
+  "Slow is smooth. Smooth becomes fast.",
+  "Every pro was once exactly where you are.",
+  "Progress, not perfection. Nicely done.",
+  "You showed up. That's the hardest part, beaten."
+];
 
 // ---------- DATA ----------
 const SPORTS = [
@@ -451,494 +627,245 @@ const SPORTS = [
     strength: ["Planks", "Bridges", "Squats", "Lunges", "Hollow-body holds"],
   },
 ];
+;
 
-const PILLARS = [
-  { icon: "steps", title: "Baby steps", body: "Slow → smooth → faster. Master one tiny piece before adding the next. Small touches beat big leaps." },
-  { icon: "effort", title: "Honest effort", body: "You don't have to be good. You have to try, fail, and try again with your full focus. That's the whole secret." },
-  { icon: "repeat", title: "Consistency", body: "10–20 minutes a day beats two hours once a month. Champions are just beginners who refused to quit." },
-];
+// ---------- STATE & STORAGE ----------
+var STORE_KEY = "first-steps-progress-v1";
+var state = { done: {}, streak: 0, lastDay: null, sessions: 0 };
+var view = "home";   // home | sport
+var activeId = null;
+var tab = "learn";
 
-// Encouragements rotate as you complete things
-const CHEERS = [
-  "That's a rep nobody can take from you.",
-  "See? You're already better than five minutes ago.",
-  "Beginners do this. Champions just did it more times.",
-  "Honest effort, logged. Keep stacking them.",
-  "Slow is smooth. Smooth becomes fast.",
-  "Every pro was once exactly where you are.",
-  "Progress, not perfection. Nicely done.",
-  "You showed up. That's the hardest part, beaten.",
-];
+function todayKey() { return new Date().toISOString().slice(0, 10); }
 
-// ---------- STORAGE HELPERS (persist via window.storage) ----------
-const STORE_KEY = "first-steps-progress-v1";
-
-async function loadProgress() {
+function loadProgress() {
   try {
-    const r = await window.storage.get(STORE_KEY);
-    if (r && r.value) return JSON.parse(r.value);
-  } catch (e) {
-    // key doesn't exist yet — that's fine
-  }
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) { /* storage unavailable — fall through */ }
   return { done: {}, streak: 0, lastDay: null, sessions: 0 };
 }
-
-async function saveProgress(p) {
-  try {
-    await window.storage.set(STORE_KEY, JSON.stringify(p));
-  } catch (e) {
-    console.error("save failed", e);
-  }
+function saveProgress() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  catch (e) { /* ignore */ }
 }
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+// ---------- DERIVED ----------
+function itemKeys(sport) {
+  var ks = [];
+  sport.skills.forEach(function (_, i) { ks.push(sport.id + ":skill:" + i); });
+  sport.solo.forEach(function (_, i) { ks.push(sport.id + ":solo:" + i); });
+  sport.partner.forEach(function (_, i) { ks.push(sport.id + ":partner:" + i); });
+  sport.games.forEach(function (_, i) { ks.push(sport.id + ":game:" + i); });
+  return ks;
+}
+function sportPct(sport) {
+  var ks = itemKeys(sport);
+  var d = ks.filter(function (k) { return state.done[k]; }).length;
+  return ks.length ? (d / ks.length) * 100 : 0;
+}
+function totalDone() {
+  return Object.keys(state.done).filter(function (k) { return state.done[k]; }).length;
 }
 
-// ---------- SMALL UI PIECES ----------
-function ProgressRing({ pct, accent, size = 56 }) {
-  const r = (size - 8) / 2;
-  const c = 2 * Math.PI * r;
-  const off = c - (pct / 100) * c;
-  return (
-    <svg width={size} height={size} style={{ display: "block" }}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="6" />
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={r}
-        fill="none"
-        stroke={accent}
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeDasharray={c}
-        strokeDashoffset={off}
-        transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(.4,0,.2,1)" }}
-      />
-      <text x="50%" y="52%" textAnchor="middle" dominantBaseline="middle" fontSize={size * 0.26} fontWeight="800" fill={accent} fontFamily="inherit">
-        {Math.round(pct)}
-      </text>
-    </svg>
-  );
+// ---------- TOAST ----------
+var toastTimer = null;
+function showCheer() {
+  var msg = CHEERS[Math.floor(Math.random() * CHEERS.length)];
+  var root = document.getElementById("toast-root");
+  root.innerHTML = '<div class="toast"><span class="toast-dot">\u2726</span> ' + esc(msg) + '</div>';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { root.innerHTML = ""; }, 2600);
 }
 
-// ---------- MAIN APP ----------
-export default function App() {
-  const [view, setView] = useState("home"); // home | sport
-  const [activeId, setActiveId] = useState(null);
-  const [tab, setTab] = useState("learn");
-  const [progress, setProgress] = useState({ done: {}, streak: 0, lastDay: null, sessions: 0 });
-  const [loaded, setLoaded] = useState(false);
-  const [cheer, setCheer] = useState(null);
+// ---------- ACTIONS ----------
+function toggle(key) {
+  var willBeDone = !state.done[key];
+  state.done[key] = willBeDone;
+  if (willBeDone) { state.sessions = (state.sessions || 0) + 1; showCheer(); }
+  state.lastDay = todayKey();
+  saveProgress();
+  render();
+}
+function resetAll() {
+  state.done = {};
+  state.sessions = 0;
+  saveProgress();
+  render();
+}
+function goHome() { view = "home"; activeId = null; window.scrollTo(0, 0); render(); }
+function openSport(id) { activeId = id; view = "sport"; tab = "learn"; window.scrollTo(0, 0); render(); }
+function setTab(t) { tab = t; render(); }
 
-  useEffect(() => {
-    let alive = true;
-    loadProgress().then((p) => {
-      if (!alive) return;
-      // update streak on open
-      const today = todayKey();
-      let np = { ...p };
-      if (p.lastDay !== today) {
-        const y = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-        np.streak = p.lastDay === y ? (p.streak || 0) + 1 : 1;
-        np.lastDay = today;
-        saveProgress(np);
-      }
-      setProgress(np);
-      setLoaded(true);
-    });
-    return () => { alive = false; };
-  }, []);
+// expose for inline handlers
+window.FS = { toggle: toggle, resetAll: resetAll, goHome: goHome, openSport: openSport, setTab: setTab };
 
-  const active = useMemo(() => SPORTS.find((s) => s.id === activeId), [activeId]);
-
-  // total trackable items per sport = solo + partner + games + skills
-  function itemKeys(sport) {
-    const ks = [];
-    sport.skills.forEach((_, i) => ks.push(`${sport.id}:skill:${i}`));
-    sport.solo.forEach((_, i) => ks.push(`${sport.id}:solo:${i}`));
-    sport.partner.forEach((_, i) => ks.push(`${sport.id}:partner:${i}`));
-    sport.games.forEach((_, i) => ks.push(`${sport.id}:game:${i}`));
-    return ks;
-  }
-
-  function sportPct(sport) {
-    const ks = itemKeys(sport);
-    const d = ks.filter((k) => progress.done[k]).length;
-    return ks.length ? (d / ks.length) * 100 : 0;
-  }
-
-  const totalDone = Object.values(progress.done).filter(Boolean).length;
-
-  function toggle(key) {
-    setProgress((prev) => {
-      const willBeDone = !prev.done[key];
-      const next = {
-        ...prev,
-        done: { ...prev.done, [key]: willBeDone },
-        sessions: willBeDone ? (prev.sessions || 0) + 1 : prev.sessions,
-        lastDay: todayKey(),
-      };
-      saveProgress(next);
-      return next;
-    });
-    if (!progress.done[key]) {
-      setCheer(CHEERS[Math.floor(Math.random() * CHEERS.length)]);
-      setTimeout(() => setCheer(null), 2600);
-    }
-  }
-
-  function resetAll() {
-    const fresh = { done: {}, streak: progress.streak, lastDay: progress.lastDay, sessions: 0 };
-    setProgress(fresh);
-    saveProgress(fresh);
-  }
-
-  return (
-    <div style={S.root}>
-      <style>{CSS}</style>
-
-      {/* grain + glow background */}
-      <div style={S.bgGlow} />
-
-      <div style={S.shell}>
-        {/* ---------- HEADER ---------- */}
-        <header style={S.header}>
-          <button style={S.brand} onClick={() => { setView("home"); setActiveId(null); }}>
-            <span style={S.brandMark}>▲</span>
-            <span style={S.brandText}>FIRST&nbsp;STEPS</span>
-          </button>
-          <div style={S.headerStats}>
-            <div style={S.stat}>
-              <span style={{ ...S.statNum, display: "inline-flex", alignItems: "center", gap: 4 }}>{progress.streak || 0}<Glyph name="flame" size={16} color="#ea580c" stroke={2} /></span>
-              <span style={S.statLbl}>day streak</span>
-            </div>
-            <div style={S.stat}>
-              <span style={S.statNum}>{totalDone}</span>
-              <span style={S.statLbl}>reps logged</span>
-            </div>
-          </div>
-        </header>
-
-        {/* ---------- HOME ---------- */}
-        {view === "home" && (
-          <main className="fade-in">
-            <section style={S.hero}>
-              <p style={S.kicker}>A beginner's training ground for 9 sports</p>
-              <h1 style={S.h1}>
-                Nobody starts
-                <br />
-                <span style={S.h1accent}>great.</span>
-              </h1>
-              <p style={S.lede}>
-                Not the player you admire. Not your coach. Not anyone. They all began clumsy, unsure, and
-                dropping the ball — <em>literally</em>. The only thing that turned beginners into champions was
-                showing up again. Pick a sport, take one small step, and log it. That's how it starts.
-              </p>
-            </section>
-
-            <section style={S.pillars}>
-              {PILLARS.map((p, i) => (
-                <div key={p.title} className="pillar" style={{ ...S.pillar, animationDelay: `${0.1 + i * 0.08}s` }}>
-                  <div style={{ ...S.pillarIcon, color: ["#ea580c", "#db2777", "#16a34a"][i] }}><Glyph name={p.icon} size={26} stroke={2} /></div>
-                  <h3 style={S.pillarTitle}>{p.title}</h3>
-                  <p style={S.pillarBody}>{p.body}</p>
-                </div>
-              ))}
-            </section>
-
-            <section>
-              <div style={S.sectionHead}>
-                <h2 style={S.h2}>Choose your sport</h2>
-                <span style={S.sectionHint}>{SPORTS.length} guides · tap any to begin</span>
-              </div>
-              <div style={S.grid}>
-                {SPORTS.map((s, i) => {
-                  const pct = sportPct(s);
-                  return (
-                    <button
-                      key={s.id}
-                      className="card"
-                      style={{ ...S.card, animationDelay: `${0.05 * i}s` }}
-                      onClick={() => { setActiveId(s.id); setView("sport"); setTab("learn"); window.scrollTo(0, 0); }}
-                    >
-                      <div style={{ ...S.cardWash, background: `linear-gradient(135deg, ${s.accentSoft}, transparent)` }} />
-                      <div style={S.cardTop}>
-                        <span style={{ ...S.cardIcon, background: s.accentSoft, color: s.accent }}>
-                          <SportIcon id={s.id} size={28} color={s.accent} stroke={2} />
-                        </span>
-                        {pct > 0 && <ProgressRing pct={pct} accent={s.accent} size={46} />}
-                      </div>
-                      <h3 style={S.cardName}>{s.name}</h3>
-                      <p style={S.cardTag}>{s.tag}</p>
-                      <span style={{ ...S.cardGo, color: s.accent }}>Start training →</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-
-            <footer style={S.homeFooter}>
-              <p style={S.footQuote}>
-                "Champions are just beginners who refused to quit."
-              </p>
-              {totalDone > 0 && (
-                <button style={S.resetBtn} onClick={resetAll}>Reset all progress</button>
-              )}
-            </footer>
-          </main>
-        )}
-
-        {/* ---------- SPORT DETAIL ---------- */}
-        {view === "sport" && active && (
-          <main className="fade-in" key={active.id}>
-            <button style={S.back} onClick={() => { setView("home"); setActiveId(null); }}>← All sports</button>
-
-            <section style={{ ...S.sportHero, background: `linear-gradient(135deg, ${active.accentSoft}, transparent)`, borderColor: active.accent + "33" }}>
-              <div style={S.sportHeroInner}>
-                <span style={{ ...S.sportIcon, background: "#fff", color: active.accent, borderColor: active.accent + "33" }}>
-                  <SportIcon id={active.id} size={40} color={active.accent} stroke={1.9} />
-                </span>
-                <div>
-                  <h1 style={S.sportName}>{active.name}</h1>
-                  <p style={{ ...S.sportTag, color: active.accent }}>{active.tag}</p>
-                </div>
-              </div>
-              <div style={S.sportRing}>
-                <ProgressRing pct={sportPct(active)} accent={active.accent} size={68} />
-                <span style={S.sportRingLbl}>complete</span>
-              </div>
-            </section>
-
-            <p style={S.whatText}>{active.what}</p>
-
-            {/* tabs */}
-            <nav style={S.tabs}>
-              {[
-                ["learn", "Skills & Cues"],
-                ["solo", "Solo Drills"],
-                ["partner", "Partner"],
-                ["games", "Mini Games"],
-                ["info", "Gear & Flow"],
-              ].map(([id, label]) => (
-                <button
-                  key={id}
-                  onClick={() => setTab(id)}
-                  style={{
-                    ...S.tab,
-                    ...(tab === id ? { background: active.accent, color: "#fff", borderColor: active.accent } : {}),
-                  }}
-                >
-                  {label}
-                </button>
-              ))}
-            </nav>
-
-            {/* LEARN */}
-            {tab === "learn" && (
-              <div className="tab-in">
-                <p style={S.tabIntro}>The first skills every beginner learns. Don't rush — repeat each one until it feels natural, then move on.</p>
-                {active.skills.map((sk, i) => {
-                  const key = `${active.id}:skill:${i}`;
-                  const done = !!progress.done[key];
-                  return (
-                    <div key={i} style={{ ...S.skill, borderColor: done ? active.accent : "rgba(0,0,0,0.08)" }}>
-                      <div style={S.skillHead}>
-                        <span style={{ ...S.skillNum, background: active.accentSoft, color: active.accent }}>{i + 1}</span>
-                        <h3 style={S.skillName}>{sk.name}</h3>
-                        <button
-                          onClick={() => toggle(key)}
-                          style={{ ...S.check, ...(done ? { background: active.accent, borderColor: active.accent, color: "#fff" } : {}) }}
-                          aria-label="mark practiced"
-                        >
-                          {done ? "✓" : ""}
-                        </button>
-                      </div>
-                      <ul style={S.skillPoints}>
-                        {sk.points.map((p, j) => <li key={j}>{p}</li>)}
-                      </ul>
-                      <div style={{ ...S.cue, background: active.accentSoft, color: active.accent }}>
-                        <span style={S.cueLbl}>CUE</span> "{sk.cue}"
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* SOLO / PARTNER / GAMES — drill lists */}
-            {["solo", "partner", "games"].includes(tab) && (
-              <div className="tab-in">
-                <p style={S.tabIntro}>
-                  {tab === "solo" && "Practice alone — no partner needed. These build fluency and confidence one rep at a time."}
-                  {tab === "partner" && "Once you're comfortable solo, add a partner. Communication and timing grow here."}
-                  {tab === "games" && "Mini games make the real sport simple and fun. Learn the big ideas with zero pressure."}
-                </p>
-                {(tab === "solo" ? active.solo : tab === "partner" ? active.partner : active.games).map((d, i) => {
-                  const type = tab === "games" ? "game" : tab;
-                  const key = `${active.id}:${type}:${i}`;
-                  const done = !!progress.done[key];
-                  return (
-                    <button key={i} onClick={() => toggle(key)} style={{ ...S.drill, borderColor: done ? active.accent : "rgba(0,0,0,0.08)", background: done ? active.accentSoft + "66" : "#fff" }}>
-                      <div style={{ ...S.check, marginTop: 2, ...(done ? { background: active.accent, borderColor: active.accent, color: "#fff" } : {}) }}>
-                        {done ? "✓" : ""}
-                      </div>
-                      <div style={S.drillBody}>
-                        <h4 style={S.drillName}>{d[0]}</h4>
-                        <p style={S.drillDesc}>{d[1]}</p>
-                        <span style={{ ...S.drillPurpose, color: active.accent }}>Builds: {d[2]}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* INFO */}
-            {tab === "info" && (
-              <div className="tab-in">
-                <div style={S.infoBlock}>
-                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="gear" size={18} color={active.accent} /></span>What you need</h3>
-                  <ul style={S.infoList}>{active.equipment.map((e, i) => <li key={i}>{e}</li>)}</ul>
-                </div>
-                <div style={S.infoBlock}>
-                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="move" size={18} color={active.accent} /></span>Movement skills it builds</h3>
-                  <div style={S.chips}>{active.movement.map((m, i) => <span key={i} style={{ ...S.chip, background: active.accentSoft, color: active.accent }}>{m}</span>)}</div>
-                </div>
-                <div style={S.infoBlock}>
-                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="clock" size={18} color={active.accent} /></span>A 10–20 min session</h3>
-                  <ol style={S.flow}>
-                    <li>Warm up movement (skips, shuffles, light reps)</li>
-                    <li>One skill focus</li>
-                    <li>One drill</li>
-                    <li>One mini game</li>
-                    <li>Cool-down reflection: "What did I improve today?"</li>
-                  </ol>
-                </div>
-                <div style={S.infoBlock}>
-                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="strength" size={18} color={active.accent} /></span>Strength that supports it</h3>
-                  <div style={S.chips}>{active.strength.map((m, i) => <span key={i} style={S.chipPlain}>{m}</span>)}</div>
-                </div>
-              </div>
-            )}
-          </main>
-        )}
-      </div>
-
-      {/* cheer toast */}
-      {cheer && (
-        <div className="toast" style={S.toast}>
-          <span style={S.toastDot}>✦</span> {cheer}
-        </div>
-      )}
-    </div>
-  );
+// ---------- RENDER ----------
+function headerHTML() {
+  return '' +
+    '<header class="app">' +
+      '<button class="brand" onclick="FS.goHome()">' +
+        '<span class="brand-mark">\u25B2</span>' +
+        '<span class="brand-text">FIRST&nbsp;STEPS</span>' +
+      '</button>' +
+      '<div class="header-stats">' +
+        '<div class="stat"><span class="stat-num">' + (state.streak || 0) + glyph("flame", 16, "#ea580c", 2) + '</span><span class="stat-lbl">day streak</span></div>' +
+        '<div class="stat"><span class="stat-num">' + totalDone() + '</span><span class="stat-lbl">reps logged</span></div>' +
+      '</div>' +
+    '</header>';
 }
 
-// ---------- STYLES ----------
-const S = {
-  root: { minHeight: "100vh", position: "relative", fontFamily: "'Bricolage Grotesque', 'Trebuchet MS', system-ui, sans-serif", color: "#1a1a17", background: "#faf8f3", overflowX: "hidden" },
-  bgGlow: { position: "fixed", inset: 0, pointerEvents: "none", background: "radial-gradient(900px 500px at 80% -10%, rgba(234,88,12,0.08), transparent), radial-gradient(700px 500px at -10% 30%, rgba(22,163,74,0.07), transparent)", zIndex: 0 },
-  shell: { position: "relative", zIndex: 1, maxWidth: 1080, margin: "0 auto", padding: "0 20px 80px" },
+function homeHTML() {
+  var pillarColors = ["#ea580c", "#db2777", "#16a34a"];
+  var pillars = PILLARS.map(function (p, i) {
+    return '<div class="pillar" style="animation-delay:' + (0.1 + i * 0.08) + 's">' +
+      '<div class="pillar-icon" style="color:' + pillarColors[i] + '">' + glyph(p.icon, 26, pillarColors[i], 2) + '</div>' +
+      '<h3>' + esc(p.title) + '</h3>' +
+      '<p>' + esc(p.body) + '</p>' +
+    '</div>';
+  }).join("");
 
-  header: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "22px 0 18px", position: "sticky", top: 0, zIndex: 20, background: "rgba(250,248,243,0.85)", backdropFilter: "blur(10px)", borderBottom: "1px solid rgba(0,0,0,0.06)" },
-  brand: { display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 },
-  brandMark: { display: "inline-grid", placeItems: "center", width: 30, height: 30, background: "#1a1a17", color: "#faf8f3", borderRadius: 8, fontSize: 12, transform: "rotate(0deg)" },
-  brandText: { fontWeight: 800, letterSpacing: "0.14em", fontSize: 15 },
-  headerStats: { display: "flex", gap: 18 },
-  stat: { display: "flex", flexDirection: "column", alignItems: "flex-end", lineHeight: 1.1 },
-  statNum: { fontWeight: 800, fontSize: 17 },
-  statLbl: { fontSize: 10, opacity: 0.55, textTransform: "uppercase", letterSpacing: "0.08em" },
+  var cards = SPORTS.map(function (s, i) {
+    var pct = sportPct(s);
+    return '<button class="card" style="animation-delay:' + (0.05 * i) + 's" onclick="FS.openSport(\'' + s.id + '\')">' +
+      '<div class="card-wash" style="background:linear-gradient(135deg,' + s.accentSoft + ',transparent)"></div>' +
+      '<div class="card-top">' +
+        '<span class="card-icon" style="background:' + s.accentSoft + ';color:' + s.accent + '">' + sportIcon(s.id, 28, s.accent, 2) + '</span>' +
+        (pct > 0 ? progressRing(pct, s.accent, 46) : '') +
+      '</div>' +
+      '<h3 class="card-name">' + esc(s.name) + '</h3>' +
+      '<p class="card-tag">' + esc(s.tag) + '</p>' +
+      '<span class="card-go" style="color:' + s.accent + '">Start training \u2192</span>' +
+    '</button>';
+  }).join("");
 
-  hero: { padding: "54px 0 30px", maxWidth: 640 },
-  kicker: { textTransform: "uppercase", letterSpacing: "0.18em", fontSize: 12, fontWeight: 700, opacity: 0.5, margin: 0 },
-  h1: { fontSize: "clamp(48px, 9vw, 92px)", lineHeight: 0.92, fontWeight: 800, margin: "14px 0 0", letterSpacing: "-0.03em" },
-  h1accent: { background: "linear-gradient(100deg,#ea580c,#db2777)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" },
-  lede: { fontSize: 18, lineHeight: 1.6, marginTop: 22, opacity: 0.8, fontFamily: "Georgia, 'Times New Roman', serif" },
+  var resetBtn = totalDone() > 0 ? '<button class="reset-btn" onclick="FS.resetAll()">Reset all progress</button>' : '';
 
-  pillars: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))", gap: 16, margin: "20px 0 56px" },
-  pillar: { background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 18, padding: "22px 22px 24px", boxShadow: "0 1px 0 rgba(0,0,0,0.03)", opacity: 0, animation: "rise .6s cubic-bezier(.2,.7,.3,1) forwards" },
-  pillarIcon: { display: "inline-grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, border: "1.5px solid currentColor", lineHeight: 0 },
-  pillarTitle: { margin: "12px 0 6px", fontSize: 19, fontWeight: 800 },
-  pillarBody: { margin: 0, fontSize: 14.5, lineHeight: 1.55, opacity: 0.72 },
+  return '<main class="fade-in">' +
+    '<section class="hero">' +
+      '<p class="kicker">A beginner\'s training ground for 9 sports</p>' +
+      '<h1 class="h1">Nobody starts<br><span class="h1-accent">great.</span></h1>' +
+      '<p class="lede">Not the player you admire. Not your coach. Not anyone. They all began clumsy, unsure, and dropping the ball \u2014 <em>literally</em>. The only thing that turned beginners into champions was showing up again. Pick a sport, take one small step, and log it. That\'s how it starts.</p>' +
+    '</section>' +
+    '<section class="pillars">' + pillars + '</section>' +
+    '<section>' +
+      '<div class="section-head"><h2 class="h2">Choose your sport</h2><span class="section-hint">' + SPORTS.length + ' guides \u00B7 tap any to begin</span></div>' +
+      '<div class="grid">' + cards + '</div>' +
+    '</section>' +
+    '<footer class="home-footer">' +
+      '<p class="foot-quote">"Champions are just beginners who refused to quit."</p>' +
+      resetBtn +
+    '</footer>' +
+  '</main>';
+}
 
-  sectionHead: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 8 },
-  h2: { fontSize: 30, fontWeight: 800, margin: 0, letterSpacing: "-0.02em" },
-  sectionHint: { fontSize: 13, opacity: 0.5 },
+function sportHTML() {
+  var s = SPORTS.filter(function (x) { return x.id === activeId; })[0];
+  if (!s) return homeHTML();
 
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(232px,1fr))", gap: 16 },
-  card: { position: "relative", textAlign: "left", background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 20, padding: "20px 20px 22px", cursor: "pointer", overflow: "hidden", opacity: 0, animation: "rise .55s cubic-bezier(.2,.7,.3,1) forwards", transition: "transform .25s, box-shadow .25s, border-color .25s" },
-  cardWash: { position: "absolute", inset: 0, opacity: 0.6, pointerEvents: "none" },
-  cardTop: { position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between" },
-  cardIcon: { display: "grid", placeItems: "center", width: 52, height: 52, borderRadius: 14, lineHeight: 0 },
-  cardName: { position: "relative", margin: "14px 0 4px", fontSize: 21, fontWeight: 800 },
-  cardTag: { position: "relative", margin: 0, fontSize: 13.5, opacity: 0.65, lineHeight: 1.4, minHeight: 38 },
-  cardGo: { position: "relative", display: "inline-block", marginTop: 12, fontSize: 13.5, fontWeight: 700 },
+  var tabs = [
+    ["learn", "Skills & Cues"],
+    ["solo", "Solo Drills"],
+    ["partner", "Partner"],
+    ["games", "Mini Games"],
+    ["info", "Gear & Flow"]
+  ].map(function (t) {
+    var active = tab === t[0];
+    var style = active ? ' style="background:' + s.accent + ';color:#fff;border-color:' + s.accent + '"' : '';
+    return '<button class="tab"' + style + ' onclick="FS.setTab(\'' + t[0] + '\')">' + t[1] + '</button>';
+  }).join("");
 
-  homeFooter: { marginTop: 64, paddingTop: 32, borderTop: "1px solid rgba(0,0,0,0.08)", textAlign: "center" },
-  footQuote: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 20, opacity: 0.7 },
-  resetBtn: { marginTop: 8, background: "none", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 99, padding: "7px 16px", fontSize: 12.5, cursor: "pointer", color: "#1a1a17", opacity: 0.6 },
+  var body = "";
 
-  back: { background: "none", border: "none", cursor: "pointer", fontSize: 14.5, fontWeight: 600, opacity: 0.6, padding: "24px 0 8px" },
+  if (tab === "learn") {
+    var skills = s.skills.map(function (sk, i) {
+      var key = s.id + ":skill:" + i;
+      var done = !!state.done[key];
+      var points = sk.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join("");
+      var checkStyle = done ? ' style="background:' + s.accent + ';border-color:' + s.accent + ';color:#fff"' : '';
+      return '<div class="skill" style="border-color:' + (done ? s.accent : "rgba(0,0,0,0.08)") + '">' +
+        '<div class="skill-head">' +
+          '<span class="skill-num" style="background:' + s.accentSoft + ';color:' + s.accent + '">' + (i + 1) + '</span>' +
+          '<h3 class="skill-name">' + esc(sk.name) + '</h3>' +
+          '<button class="check"' + checkStyle + ' onclick="FS.toggle(\'' + key + '\')" aria-label="mark practiced">' + (done ? "\u2713" : "") + '</button>' +
+        '</div>' +
+        '<ul class="skill-points">' + points + '</ul>' +
+        '<div class="cue" style="background:' + s.accentSoft + ';color:' + s.accent + '"><span class="cue-lbl">CUE</span> "' + esc(sk.cue) + '"</div>' +
+      '</div>';
+    }).join("");
+    body = '<div class="tab-in"><p class="tab-intro">The first skills every beginner learns. Don\'t rush \u2014 repeat each one until it feels natural, then move on.</p>' + skills + '</div>';
+  } else if (tab === "info") {
+    var equip = s.equipment.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join("");
+    var move = s.movement.map(function (m) { return '<span class="chip" style="background:' + s.accentSoft + ';color:' + s.accent + '">' + esc(m) + '</span>'; }).join("");
+    var str = s.strength.map(function (m) { return '<span class="chip-plain">' + esc(m) + '</span>'; }).join("");
+    function ig(n) { return '<span class="info-glyph" style="color:' + s.accent + '">' + glyph(n, 18, s.accent) + '</span>'; }
+    body = '<div class="tab-in">' +
+      '<div class="info-block"><h3 class="info-h">' + ig("gear") + 'What you need</h3><ul class="info-list">' + equip + '</ul></div>' +
+      '<div class="info-block"><h3 class="info-h">' + ig("move") + 'Movement skills it builds</h3><div class="chips">' + move + '</div></div>' +
+      '<div class="info-block"><h3 class="info-h">' + ig("clock") + 'A 10\u201320 min session</h3><ol class="flow">' +
+        '<li>Warm up movement (skips, shuffles, light reps)</li>' +
+        '<li>One skill focus</li>' +
+        '<li>One drill</li>' +
+        '<li>One mini game</li>' +
+        '<li>Cool-down reflection: "What did I improve today?"</li>' +
+      '</ol></div>' +
+      '<div class="info-block"><h3 class="info-h">' + ig("strength") + 'Strength that supports it</h3><div class="chips">' + str + '</div></div>' +
+    '</div>';
+  } else {
+    var list = tab === "solo" ? s.solo : tab === "partner" ? s.partner : s.games;
+    var type = tab === "games" ? "game" : tab;
+    var intro = tab === "solo" ? "Practice alone \u2014 no partner needed. These build fluency and confidence one rep at a time."
+      : tab === "partner" ? "Once you're comfortable solo, add a partner. Communication and timing grow here."
+      : "Mini games make the real sport simple and fun. Learn the big ideas with zero pressure.";
+    var drills = list.map(function (d, i) {
+      var key = s.id + ":" + type + ":" + i;
+      var done = !!state.done[key];
+      var rowStyle = 'border-color:' + (done ? s.accent : "rgba(0,0,0,0.08)") + ';background:' + (done ? s.accentSoft + "66" : "#fff");
+      var checkStyle = done ? 'background:' + s.accent + ';border-color:' + s.accent + ';color:#fff;margin-top:2px' : 'margin-top:2px';
+      return '<button class="drill" style="' + rowStyle + '" onclick="FS.toggle(\'' + key + '\')">' +
+        '<div class="check" style="' + checkStyle + '">' + (done ? "\u2713" : "") + '</div>' +
+        '<div class="drill-body">' +
+          '<h4 class="drill-name">' + esc(d[0]) + '</h4>' +
+          '<p class="drill-desc">' + esc(d[1]) + '</p>' +
+          '<span class="drill-purpose" style="color:' + s.accent + '">Builds: ' + esc(d[2]) + '</span>' +
+        '</div>' +
+      '</button>';
+    }).join("");
+    body = '<div class="tab-in"><p class="tab-intro">' + intro + '</p>' + drills + '</div>';
+  }
 
-  sportHero: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, border: "1px solid", borderRadius: 24, padding: "26px 28px", flexWrap: "wrap" },
-  sportHeroInner: { display: "flex", alignItems: "center", gap: 18 },
-  sportIcon: { display: "grid", placeItems: "center", width: 72, height: 72, borderRadius: 18, border: "1.5px solid", lineHeight: 0, flexShrink: 0 },
-  sportName: { margin: 0, fontSize: "clamp(30px,5vw,46px)", fontWeight: 800, letterSpacing: "-0.02em" },
-  sportTag: { margin: "4px 0 0", fontSize: 15, fontWeight: 700 },
-  sportRing: { display: "flex", flexDirection: "column", alignItems: "center", gap: 2 },
-  sportRingLbl: { fontSize: 10.5, opacity: 0.55, textTransform: "uppercase", letterSpacing: "0.08em" },
+  return '<main class="fade-in">' +
+    '<button class="back" onclick="FS.goHome()">\u2190 All sports</button>' +
+    '<section class="sport-hero" style="background:linear-gradient(135deg,' + s.accentSoft + ',transparent);border-color:' + s.accent + '33">' +
+      '<div class="sport-hero-inner">' +
+        '<span class="sport-icon" style="color:' + s.accent + ';border-color:' + s.accent + '33">' + sportIcon(s.id, 40, s.accent, 1.9) + '</span>' +
+        '<div><h1 class="sport-name">' + esc(s.name) + '</h1><p class="sport-tag" style="color:' + s.accent + '">' + esc(s.tag) + '</p></div>' +
+      '</div>' +
+      '<div class="sport-ring">' + progressRing(sportPct(s), s.accent, 68) + '<span class="sport-ring-lbl">complete</span></div>' +
+    '</section>' +
+    '<p class="what-text">' + esc(s.what) + '</p>' +
+    '<nav class="tabs">' + tabs + '</nav>' +
+    body +
+  '</main>';
+}
 
-  whatText: { fontFamily: "Georgia, serif", fontSize: 18, lineHeight: 1.6, opacity: 0.82, margin: "24px 2px 6px", maxWidth: 760 },
+function render() {
+  var app = document.getElementById("app");
+  app.innerHTML = headerHTML() + (view === "home" ? homeHTML() : sportHTML());
+}
 
-  tabs: { display: "flex", gap: 8, flexWrap: "wrap", margin: "24px 0 26px", position: "sticky", top: 70, zIndex: 10, background: "rgba(250,248,243,0.9)", backdropFilter: "blur(8px)", padding: "8px 0" },
-  tab: { background: "#fff", border: "1px solid rgba(0,0,0,0.12)", borderRadius: 99, padding: "9px 16px", fontSize: 13.5, fontWeight: 700, cursor: "pointer", color: "#1a1a17", transition: "all .2s" },
-
-  tabIntro: { fontSize: 15, opacity: 0.7, lineHeight: 1.55, margin: "0 0 22px", maxWidth: 680 },
-
-  skill: { background: "#fff", border: "1.5px solid", borderRadius: 18, padding: "18px 20px 16px", marginBottom: 14, transition: "border-color .3s" },
-  skillHead: { display: "flex", alignItems: "center", gap: 12 },
-  skillNum: { display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, fontWeight: 800, fontSize: 14, flexShrink: 0 },
-  skillName: { margin: 0, fontSize: 19, fontWeight: 800, flex: 1 },
-  skillPoints: { margin: "12px 0 14px", paddingLeft: 20, lineHeight: 1.7, fontSize: 14.5, opacity: 0.82 },
-  cue: { display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 10, fontSize: 15, fontWeight: 700, fontStyle: "italic" },
-  cueLbl: { fontStyle: "normal", fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", opacity: 0.7, padding: "2px 6px", border: "1px solid currentColor", borderRadius: 5 },
-
-  check: { width: 28, height: 28, borderRadius: 9, border: "2px solid rgba(0,0,0,0.18)", background: "#fff", cursor: "pointer", flexShrink: 0, display: "grid", placeItems: "center", fontSize: 15, fontWeight: 800, transition: "all .2s" },
-
-  drill: { display: "flex", gap: 14, alignItems: "flex-start", width: "100%", textAlign: "left", border: "1.5px solid", borderRadius: 16, padding: "16px 18px", marginBottom: 12, cursor: "pointer", transition: "all .25s" },
-  drillBody: { flex: 1 },
-  drillName: { margin: 0, fontSize: 17, fontWeight: 800 },
-  drillDesc: { margin: "4px 0 8px", fontSize: 14.5, opacity: 0.78, lineHeight: 1.5 },
-  drillPurpose: { fontSize: 12.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" },
-
-  infoBlock: { background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 18, padding: "20px 22px", marginBottom: 14 },
-  infoH: { display: "flex", alignItems: "center", gap: 9, margin: "0 0 12px", fontSize: 18, fontWeight: 800 },
-  infoGlyph: { display: "inline-grid", placeItems: "center", lineHeight: 0 },
-  infoList: { margin: 0, paddingLeft: 20, lineHeight: 1.8, fontSize: 15, opacity: 0.82 },
-  chips: { display: "flex", flexWrap: "wrap", gap: 8 },
-  chip: { padding: "7px 13px", borderRadius: 99, fontSize: 13.5, fontWeight: 700 },
-  chipPlain: { padding: "7px 13px", borderRadius: 99, fontSize: 13.5, fontWeight: 600, background: "#f1ede4", color: "#1a1a17" },
-  flow: { margin: 0, paddingLeft: 20, lineHeight: 1.9, fontSize: 15, opacity: 0.85 },
-
-  toast: { position: "fixed", bottom: 26, left: "50%", transform: "translateX(-50%)", background: "#1a1a17", color: "#faf8f3", padding: "13px 22px", borderRadius: 99, fontSize: 14.5, fontWeight: 600, boxShadow: "0 12px 40px rgba(0,0,0,0.25)", zIndex: 100, display: "flex", alignItems: "center", gap: 9, maxWidth: "90vw" },
-  toastDot: { color: "#fbbf24" },
-};
-
-const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap');
-* { box-sizing: border-box; }
-body { margin: 0; }
-@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.fade-in { animation: fade .4s ease both; }
-@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-.tab-in { animation: tabin .35s cubic-bezier(.2,.7,.3,1) both; }
-@keyframes tabin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.10); }
-.card:active { transform: translateY(-1px); }
-.toast { animation: toastin .35s cubic-bezier(.2,.7,.3,1) both; }
-@keyframes toastin { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
-button { font-family: inherit; }
-ul li::marker { color: rgba(0,0,0,0.3); }
-`;
+// ---------- INIT ----------
+(function init() {
+  state = loadProgress();
+  var today = todayKey();
+  if (state.lastDay !== today) {
+    var y = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    state.streak = state.lastDay === y ? (state.streak || 0) + 1 : 1;
+    state.lastDay = today;
+    saveProgress();
+  }
+  render();
+})();
+</script>
+</body>
+</html>
