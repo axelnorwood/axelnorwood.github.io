@@ -1,0 +1,362 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #fdf6e8;
+    --paper-line: #e9dcc0;
+    --ink: #3a3226;
+    --ink-soft: #6b6151;
+    --sky: #4a90d9;
+    --sun: #ffb43d;
+    --sun-deep: #f08a24;
+    --leaf: #5cb85c;
+    --leaf-deep: #3d9140;
+    --berry: #e8607d;
+    --grape: #8a6fc4;
+    --shadow: rgba(58, 50, 38, 0.18);
+    --display: 'Fredoka', sans-serif;
+    --hand: 'Caveat', cursive;
+    --body: 'Nunito', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background:
+      radial-gradient(circle at 15% 12%, rgba(255,180,61,0.10), transparent 38%),
+      radial-gradient(circle at 85% 8%, rgba(74,144,217,0.10), transparent 40%),
+      radial-gradient(circle at 50% 100%, rgba(92,184,92,0.10), transparent 45%),
+      #fbf3e2;
+    color: var(--ink);
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 18px 80px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--hand);
+    font-size: 1.4rem;
+    color: var(--sun-deep);
+    transform: rotate(-4deg);
+    margin-bottom: -4px;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 8vw, 3.8rem);
+    line-height: 1;
+    margin: 6px 0 4px;
+    color: var(--ink);
+    letter-spacing: -1px;
+  }
+  h1 .pop {
+    background: linear-gradient(120deg, var(--berry), var(--grape));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .intro {
+    font-family: var(--hand);
+    font-size: 1.55rem;
+    color: var(--ink-soft);
+    max-width: 500px;
+    margin: 6px auto 0;
+    line-height: 1.2;
+  }
+
+  .howto {
+    background: rgba(74,144,217,0.10);
+    border: 2.5px dashed var(--sky);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin: 26px 0 32px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .howto .big { font-size: 2rem; line-height: 1; }
+  .howto h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0 0 4px;
+  }
+  .howto p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .card {
+    position: relative;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    border-radius: 22px;
+    padding: 26px 24px 24px;
+    margin-bottom: 30px;
+    box-shadow: 6px 7px 0 var(--shadow);
+  }
+  .card:nth-child(even) { transform: rotate(-0.4deg); }
+  .card:nth-child(odd)  { transform: rotate(0.3deg); }
+
+  .tape {
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 90px; height: 24px;
+    background: rgba(255,180,61,0.55);
+    border: 1px dashed rgba(240,138,36,0.6);
+    border-radius: 3px;
+  }
+
+  .num {
+    position: absolute;
+    top: -18px; left: -14px;
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #fff;
+    border: 2.5px solid var(--ink);
+    box-shadow: 2px 3px 0 var(--shadow);
+  }
+  .c1 .num { background: var(--sky); }
+  .c2 .num { background: var(--grape); }
+  .c3 .num { background: var(--leaf); }
+  .c4 .num { background: var(--sun-deep); }
+  .c5 .num { background: var(--berry); }
+
+  .step-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.55rem;
+    margin: 0 0 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .emoji { font-size: 1.6rem; }
+  .step-desc {
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin: 0 0 16px;
+    line-height: 1.45;
+  }
+
+  .qlabel {
+    font-family: var(--hand);
+    font-size: 1.4rem;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .c1 .qlabel { color: var(--sky); }
+  .c2 .qlabel { color: var(--grape); }
+  .c3 .qlabel { color: var(--leaf-deep); }
+  .c4 .qlabel { color: var(--sun-deep); }
+  .c5 .qlabel { color: var(--berry); }
+
+  .prompts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .prompts li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--hand);
+    font-size: 1.4rem;
+    line-height: 1.15;
+    color: var(--ink);
+    background: rgba(255,255,255,0.55);
+    border: 2px solid var(--paper-line);
+    border-radius: 12px;
+    padding: 9px 14px;
+  }
+  .prompts li::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 16px; height: 16px;
+    border: 2.5px solid var(--ink);
+    border-radius: 4px;
+    background: #fff;
+  }
+
+  .closing {
+    text-align: center;
+    background: rgba(92,184,92,0.10);
+    border-color: var(--leaf);
+  }
+  .closing .num { background: var(--leaf); }
+  .closing .step-desc { font-size: 1.1rem; }
+  .closing .note {
+    font-family: var(--hand);
+    font-size: 1.4rem;
+    color: var(--leaf-deep);
+  }
+
+  .footer {
+    text-align: center;
+    font-family: var(--hand);
+    font-size: 1.55rem;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    line-height: 1.25;
+  }
+  .footer .heart { color: var(--berry); }
+
+  @media print {
+    html, body { background: #fff; }
+    body::before { display: none; }
+    .wrap { padding: 0; max-width: 100%; }
+    .card {
+      box-shadow: none;
+      transform: none !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      border-color: #888;
+    }
+    .num, .tape { box-shadow: none; }
+  }
+
+  @media (max-width: 560px) {
+    .step-title { font-size: 1.35rem; }
+    .prompts li, .qlabel, .intro { font-size: 1.25rem; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="badge">my own little adventure &#10022;</span>
+    <h1>The Story of <span class="pop">Me</span></h1>
+    <p class="intro">Five quick stops to figure out who you are, and who you're becoming &mdash; one small step at a time.</p>
+  </header>
+
+  <div class="howto">
+    <div class="big">&#128211;</div>
+    <div>
+      <h2>How this works</h2>
+      <p>Grab a journal, notebook, or any paper and a pen you like. For each stop below, write your own answers in your journal. There are no wrong answers and no grades &mdash; the goal is just to think honestly and get to know yourself a little better. Take your time. You can do one stop a day if you want!</p>
+    </div>
+  </div>
+
+  <section class="card c1">
+    <div class="tape"></div>
+    <div class="num">1</div>
+    <h2 class="step-title"><span class="emoji">&#128064;</span> Look Back</h2>
+    <p class="step-desc">Think about the moments that made you, you &mdash; the big ones and the little ones.</p>
+    <div class="qlabel">In your journal, write about&hellip;</div>
+    <ul class="prompts">
+      <li>A happy memory you love</li>
+      <li>Something hard you got through</li>
+      <li>A moment you felt really proud</li>
+      <li>A mistake that taught you something</li>
+      <li>Someone who has helped you a lot</li>
+    </ul>
+  </section>
+
+  <section class="card c2">
+    <div class="tape"></div>
+    <div class="num">2</div>
+    <h2 class="step-title"><span class="emoji">&#129694;</span> Look at Right Now</h2>
+    <p class="step-desc">Be honest about the person you are today. This is just for you.</p>
+    <div class="qlabel">In your journal, write about&hellip;</div>
+    <ul class="prompts">
+      <li>Something you're good at</li>
+      <li>Something you find tricky</li>
+      <li>A habit that helps you</li>
+      <li>A habit you'd like to change</li>
+      <li>How you treat other people</li>
+    </ul>
+  </section>
+
+  <section class="card c3">
+    <div class="tape"></div>
+    <div class="num">3</div>
+    <h2 class="step-title"><span class="emoji">&#127793;</span> Imagine Your Best Future</h2>
+    <p class="step-desc">Picture yourself a few years from now if you keep trying your best. Dream big!</p>
+    <div class="qlabel">In your journal, write about&hellip;</div>
+    <ul class="prompts">
+      <li>The kind of person you want to become</li>
+      <li>A skill you'd love to learn</li>
+      <li>Something that would make you proud</li>
+      <li>The kind of friends you want</li>
+      <li>How you want your future life to feel</li>
+    </ul>
+  </section>
+
+  <section class="card c4">
+    <div class="tape"></div>
+    <div class="num">4</div>
+    <h2 class="step-title"><span class="emoji">&#129517;</span> Spot the Wrong Turns</h2>
+    <p class="step-desc">Every adventure has traps to avoid. What could pull you off the path you want?</p>
+    <div class="qlabel">In your journal, write about&hellip;</div>
+    <ul class="prompts">
+      <li>What might happen if you never practice</li>
+      <li>What might happen if you give up too fast</li>
+      <li>How being unkind could hurt you and others</li>
+      <li>A bad habit you'd like to avoid</li>
+      <li>A future that would make you unhappy</li>
+    </ul>
+  </section>
+
+  <section class="card c5">
+    <div class="tape"></div>
+    <div class="num">5</div>
+    <h2 class="step-title"><span class="emoji">&#128099;</span> Pick Your Tiny Steps</h2>
+    <p class="step-desc">You don't need giant leaps &mdash; just small steps you can take again and again.</p>
+    <div class="qlabel">In your journal, write about&hellip;</div>
+    <ul class="prompts">
+      <li>One small habit that could help you grow</li>
+      <li>Something you could practice every day</li>
+      <li>A way you could help others more</li>
+      <li>A healthy choice you can repeat</li>
+      <li>One tiny step you can start today</li>
+    </ul>
+  </section>
+
+  <section class="card closing">
+    <div class="num">&#9733;</div>
+    <h2 class="step-title" style="justify-content:center;"><span class="emoji">&#9999;&#65039;</span> You're All Set</h2>
+    <p class="step-desc">When you finish, keep your journal somewhere safe. Come back in a few months and read it again &mdash; you'll be amazed how much you've grown.</p>
+    <p class="note">There are no perfect answers. Just think honestly, write freely, and learn a little more about yourself.</p>
+  </section>
+
+  <p class="footer">Your future is built from small choices,<br>repeated over time. <span class="heart">&#9829;</span></p>
+</div>
