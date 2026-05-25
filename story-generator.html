@@ -71,18 +71,17 @@
   .closeb{border:none;background:var(--card);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);flex:0 0 auto}
   .closeb:hover{color:var(--ink)}
   .sheet h2{font-family:var(--font-display);font-weight:500;font-size:clamp(24px,6vw,32px);margin:14px 0 4px;letter-spacing:-.01em}
-  .sheet .oneliner{font-style:italic;font-family:var(--font-display);color:var(--ink-soft);font-size:17px;margin-bottom:20px}
-  .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
-  .meta{font-size:12px;font-weight:700;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:7px 12px;color:var(--ink-soft)}
-  .meta b{color:var(--ink);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;font-weight:800}
-  .mountain-title{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
-  .mountain{display:flex;flex-direction:column;gap:0;margin-bottom:22px}
+  .sheet .oneliner{font-style:italic;font-family:var(--font-display);color:var(--ink-soft);font-size:17px;margin-bottom:18px}
+  .quick{font-size:13px;font-weight:800;color:var(--ink-soft);background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:22px;line-height:1.7}
+  .quick b{color:var(--ink)}
+  .struct-title{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
+  .struct{display:flex;flex-direction:column;gap:0;margin-bottom:22px}
   .stage{display:flex;gap:14px;position:relative;padding-bottom:18px}
   .stage:last-child{padding-bottom:0}
-  .stage::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line-strong)}
+  .stage::before{content:"";position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--line-strong)}
   .stage:last-child::before{display:none}
-  .stage-dot{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--card);border:2px solid var(--line-strong);position:relative;z-index:1}
-  .stage-body{padding-top:2px}
+  .stage-num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;background:var(--card);border:2px solid var(--line-strong);position:relative;z-index:1;color:var(--ink-soft)}
+  .stage-body{padding-top:3px}
   .stage-body .s-name{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:2px}
   .stage-body .s-text{font-size:15px;font-weight:600;color:var(--ink)}
   .examples{font-size:14px;color:var(--ink-soft);font-weight:600;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
@@ -123,20 +122,19 @@
     </div>
     <h2 id="gTitle"></h2>
     <p class="oneliner" id="gOneliner"></p>
-    <div class="meta-row">
-      <div class="meta"><b>What happens</b><span id="gWhat"></span></div>
-      <div class="meta"><b>Core theme</b><span id="gTheme"></span></div>
-    </div>
-    <div class="mountain-title">⛰️ The Story Mountain</div>
-    <div class="mountain" id="gMountain"></div>
+    <div class="quick" id="gQuick"></div>
+    <div class="struct-title">📖 The 5 Parts of the Story</div>
+    <div class="struct" id="gStruct"></div>
     <div class="examples" id="gExamples"></div>
     <p class="note">Most great stories mix a few of these together — they're patterns to build on, not boxes to stay inside.</p>
   </div>
 </div>
 <script>
+const PARTS = ["Beginning","Build Up","Problem","Solution","Ending"];
 const PLOTS = {
-  monster:{name:"Overcoming the Monster",emoji:"👻",color:"#A32D2D",bg:"#FCEBEB",oneliner:"Fight the thing you fear",what:"A hero defeats a dangerous threat",theme:"Courage vs fear",
-    mountain:[["Beginning","A scary threat appears"],["Middle","The hero struggles and prepares"],["Climax","The final showdown"],["Ending","Safety is restored"]],
+  monster:{name:"Overcoming the Monster",emoji:"👻",color:"#A32D2D",bg:"#FCEBEB",oneliner:"Fight the thing you fear",
+    quick:"Threat → Struggle → Big battle → Victory → Peace",
+    structure:["A dangerous threat appears","The hero prepares and faces challenges","The monster seems too powerful","The hero defeats the monster","Peace and safety return"],
     examples:"Jaws · Star Wars · How to Train Your Dragon",
     prompts:[
       "Something has been eating the streetlights on Maple Lane — one by one, the bulbs go dark. By now the whole street is black at night, and Theo is the only one who has seen what's doing it.",
@@ -145,8 +143,9 @@ const PLOTS = {
       "The school pool has been 'closed for repairs' all term. But Jordan can hear splashing in there at night, and whatever's making it is definitely not a broken pipe.",
       "A shadow has started following Sam home — but only on days he tells a lie. Today he told a really big one, and the shadow is getting closer."
     ]},
-  rags:{name:"Rags to Riches",emoji:"⭐",color:"#8A5A0B",bg:"#FAEEDA",oneliner:"Rise upward",what:"An ordinary person rises to success",theme:"Hope, identity, potential",
-    mountain:[["Beginning","Weak, poor, or ignored"],["Middle","Growth and new chances"],["Climax","One big test"],["Ending","Recognition and success"]],
+  rags:{name:"Rags to Riches",emoji:"⭐",color:"#8A5A0B",bg:"#FAEEDA",oneliner:"Rise upward",
+    quick:"Poor start → Growth → Big test → Success → New life",
+    structure:["A poor or unnoticed person struggles","They discover opportunities or talents","A major test blocks their success","They prove themselves","They gain success, respect, or happiness"],
     examples:"Cinderella · Rocky · Matilda",
     prompts:[
       "Benny plays football in trainers two sizes too big, because he's never owned proper boots. Then the team captain twists his ankle the day before the biggest match of the year — and the coach turns and looks straight at Benny.",
@@ -155,8 +154,9 @@ const PLOTS = {
       "Ruby gets picked last for everything. So when chess club starts, she's sure she'll be last there too — until the first lesson, when something in her brain suddenly goes click.",
       "Finn has helped at his gran's food stall every weekend since he was tiny. The day a very important customer tastes one of his gran's dishes, Finn realises the secret recipe is one he made up himself."
     ]},
-  quest:{name:"The Quest",emoji:"🗺️",color:"#0F6E56",bg:"#E1F5EE",oneliner:"Journey outward",what:"A journey to reach an important goal",theme:"Purpose and perseverance",
-    mountain:[["Beginning","The mission begins"],["Middle","Obstacles and trials"],["Climax","The final challenge"],["Ending","The goal is reached"]],
+  quest:{name:"The Quest",emoji:"🗺️",color:"#0F6E56",bg:"#E1F5EE",oneliner:"Journey outward",
+    quick:"Mission → Journey → Final obstacle → Goal reached → Return home",
+    structure:["A mission or goal is given","The journey becomes difficult","The final obstacle seems impossible","The hero completes the quest","The characters return changed"],
     examples:"The Lord of the Rings · Finding Nemo",
     prompts:[
       "Three best friends find a hand-drawn map tucked inside a hundred-year-old library book. The X is right in the middle of their own town — somewhere they walk past every single day and have never once looked twice at.",
@@ -165,8 +165,9 @@ const PLOTS = {
       "Jasper's dog bolts out of the gate and runs further than Jasper has ever been. Following him leads to a part of town Jasper never knew existed — full of people who seem to have been waiting for him to show up.",
       "Someone is leaving clues all over school: in lockers, under desks, on the back of the lunch menu. Each one points a little closer to whatever is hidden beneath the old sports hall."
     ]},
-  voyage:{name:"Voyage and Return",emoji:"🚪",color:"#3C3489",bg:"#EEEDFE",oneliner:"Leave and come back changed",what:"Someone enters a strange world and returns changed",theme:"Transformation through experience",
-    mountain:[["Beginning","Leave normal life behind"],["Middle","The strange world turns dangerous"],["Climax","Escape or survival"],["Ending","Return home, wiser"]],
+  voyage:{name:"Voyage and Return",emoji:"🚪",color:"#3C3489",bg:"#EEEDFE",oneliner:"Leave and come back changed",
+    quick:"Leave home → Strange world → Danger → Escape → Return wiser",
+    structure:["Someone leaves normal life","They explore a strange new world","The world becomes dangerous or confusing","They escape or survive","They return home wiser"],
     examples:"The Wizard of Oz · Spirited Away · Alice in Wonderland",
     prompts:[
       "During a power cut, Nadia finds a door at the back of her wardrobe that wasn't there yesterday. Behind it is a world stuck forever in the golden minute before sunset — where the kids have never once seen the dark.",
@@ -175,8 +176,9 @@ const PLOTS = {
       "Ezra dozes off on the train home and wakes at a station that isn't on the line. Everyone there greets him by name and acts like he's been gone for years. He's never set foot here in his life.",
       "There's a snow globe in the attic that doesn't show a tiny snowy scene when you shake it. It shows a real place. And the harder Maya shakes it, the more she feels herself being pulled inside."
     ]},
-  comedy:{name:"Comedy",emoji:"😂",color:"#993556",bg:"#FBEAF0",oneliner:"Confusion becomes harmony",what:"Confusion and conflict are sorted into harmony",theme:"Belonging and harmony",
-    mountain:[["Beginning","A muddle or mix-up starts"],["Middle","Misunderstandings grow and grow"],["Climax","The truth comes out"],["Ending","Everyone is friends again"]],
+  comedy:{name:"Comedy",emoji:"😂",color:"#993556",bg:"#FBEAF0",oneliner:"Confusion becomes harmony",
+    quick:"Confusion → Problems grow → Chaos → Truth revealed → Happy ending",
+    structure:["Relationships or society are messy","Confusion and misunderstandings grow","Conflict reaches a breaking point","Truth is revealed and problems are solved","Harmony and happiness return"],
     examples:"A Midsummer Night's Dream · Paddington",
     prompts:[
       "Two kids who absolutely cannot stand each other have both been cast as the best-friend leads in the school play. First rehearsal is Monday, and the whole town is coming to opening night.",
@@ -185,8 +187,9 @@ const PLOTS = {
       "Priya's hamster escapes on the exact morning the school inspector arrives. The hamster finds the inspector before anyone else does.",
       "Three kids secretly enter the bake-off with the same exact recipe, each swearing it's their own grandmother's top-secret invention. Judging starts in ten minutes."
     ]},
-  tragedy:{name:"Tragedy",emoji:"😔",color:"#5F5E5A",bg:"#F1EFE8",oneliner:"Rise then fall",what:"A person falls because of flaws or bad choices",theme:"Pride and self-undoing",
-    mountain:[["Beginning","The character has power or potential"],["Middle","A flaw or bad choice grows"],["Climax","The big mistake"],["Ending","Loss — and a lesson"]],
+  tragedy:{name:"Tragedy",emoji:"😔",color:"#5F5E5A",bg:"#F1EFE8",oneliner:"Rise then fall",
+    quick:"Success → Bad choices → Fatal mistake → Collapse → Destruction",
+    structure:["A talented or powerful person rises","Their flaws and bad choices grow","They make a fatal mistake","Their downfall cannot be stopped","Loss, destruction, or a hard lesson follows"],
     examples:"Macbeth · Icarus",
     prompts:[
       "Callum is the fastest runner in school and never lets anyone forget it. Then, in the big cross-country race, he stops to help a hurt runner, finishes dead last — and has to figure out what kind of person that makes him.",
@@ -195,8 +198,9 @@ const PLOTS = {
       "Tom has copied spelling answers from the girl next to him all year. Now he's been chosen to represent the school in the big spelling bee — and she came second.",
       "Felix worked the whole year to be made team captain. The day it's finally announced, he realises the only reason he wanted it was to impress someone who never even noticed he was trying."
     ]},
-  rebirth:{name:"Rebirth",emoji:"🌱",color:"#3B6D11",bg:"#EAF3DE",oneliner:"Darkness becomes renewal",what:"A stuck or damaged person changes and is renewed",theme:"Forgiveness and renewal",
-    mountain:[["Beginning","The character is trapped or lost"],["Middle","A crisis forces a change"],["Climax","A big realisation"],["Ending","A new start"]],
+  rebirth:{name:"Rebirth",emoji:"🌱",color:"#3B6D11",bg:"#EAF3DE",oneliner:"Darkness becomes renewal",
+    quick:"Lost person → Crisis → Darkest moment → Change → Renewal",
+    structure:["A person is unhappy, selfish, or lost","A crisis forces them to reflect","They reach their darkest moment","They change or redeem themselves","A new and better life begins"],
     examples:"A Christmas Carol · The Lion King · Beauty and the Beast",
     prompts:[
       "Since switching schools, Dylan refuses to join clubs, try new things, or talk to anyone first. Then a teacher pairs him up — for a whole term — with the single most cheerful, chatty kid in the year.",
@@ -259,11 +263,9 @@ function openGuide(){
   gt.style.color = p.color; gt.style.background = p.bg;
   document.getElementById("gTitle").textContent = p.name;
   document.getElementById("gOneliner").textContent = "\u201C" + p.oneliner + "\u201D";
-  document.getElementById("gWhat").textContent = p.what;
-  document.getElementById("gTheme").textContent = p.theme;
-  const m = document.getElementById("gMountain");
-  const dots = ["🌱","⛰️","🔥","🏁"];
-  m.innerHTML = p.mountain.map((s, idx)=>`<div class="stage"><div class="stage-dot">${dots[idx]||"•"}</div><div class="stage-body"><div class="s-name">${s[0]}</div><div class="s-text">${s[1]}</div></div></div>`).join("");
+  document.getElementById("gQuick").innerHTML = `<b>In a nutshell:</b> ${p.quick}`;
+  const s = document.getElementById("gStruct");
+  s.innerHTML = p.structure.map((txt, idx)=>`<div class="stage"><div class="stage-num">${idx+1}</div><div class="stage-body"><div class="s-name">${PARTS[idx]}</div><div class="s-text">${txt}</div></div></div>`).join("");
   document.getElementById("gExamples").innerHTML = `<b>You've seen this in:</b> ${p.examples}`;
   document.getElementById("overlay").classList.add("open");
   document.body.style.overflow = "hidden";
