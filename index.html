@@ -230,7 +230,7 @@ body{
 /* ── Grid ── */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns:repeat(3, 1fr);
   gap:.75rem;
 }
 
@@ -347,6 +347,11 @@ body{
   animation:fadeIn .8s ease .5s both;
 }
 .branch-svg{opacity:.2}
+
+/* ── Tablet ── */
+@media(max-width:760px) and (min-width:601px){
+  .grid{grid-template-columns:repeat(2, 1fr)}
+}
 
 /* ── Mobile ── */
 @media(max-width:600px){
