@@ -347,8 +347,144 @@ body{
 }
 .branch-svg{opacity:.2}
 
+/* ── Sticky nav ── */
+.site-nav{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:rgba(251,250,248,.82);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  animation:fadeIn .6s ease both;
+}
+.nav-inner{
+  max-width:840px;
+  margin:0 auto;
+  padding:.9rem 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+}
+.nav-brand{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  text-decoration:none;
+}
+.nav-brand .logo-mark{font-size:1.2rem}
+.nav-brand .logo-text{font-size:.7rem}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:1.75rem;
+}
+.nav-links a{
+  font-family:var(--sans);
+  font-size:.72rem;
+  font-weight:400;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--text-secondary);
+  text-decoration:none;
+  transition:color .25s ease;
+}
+.nav-links a:hover{color:var(--accent)}
+
+/* ── Tools dropdown ── */
+.nav-dropdown{position:relative}
+.nav-dropdown-toggle{
+  font-family:var(--sans);
+  font-size:.72rem;
+  font-weight:400;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--text-secondary);
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  transition:color .25s ease;
+}
+.nav-dropdown-toggle:hover,
+.nav-dropdown.open .nav-dropdown-toggle{color:var(--accent)}
+.nav-dropdown-toggle .chev{
+  width:8px;height:8px;
+  border-right:1.4px solid currentColor;
+  border-bottom:1.4px solid currentColor;
+  transform:rotate(45deg) translateY(-1px);
+  transition:transform .3s ease;
+}
+.nav-dropdown.open .nav-dropdown-toggle .chev{transform:rotate(-135deg) translateY(-1px)}
+
+.nav-menu{
+  position:absolute;
+  top:calc(100% + .9rem);
+  right:0;
+  min-width:240px;
+  background:rgba(251,250,248,.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  border-radius:4px;
+  box-shadow:0 12px 48px rgba(194,123,106,.08);
+  padding:.5rem;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-6px);
+  transition:opacity .28s ease, transform .28s ease, visibility .28s;
+}
+.nav-dropdown.open .nav-menu{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+}
+.nav-menu a{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+  padding:.6rem .7rem;
+  border-radius:3px;
+  text-transform:none;
+  letter-spacing:.01em;
+  font-family:var(--serif);
+  font-size:.95rem;
+  color:var(--text);
+  transition:background .25s ease, color .25s ease;
+}
+.nav-menu a:hover{background:var(--accent-soft);color:var(--accent)}
+.nav-menu .menu-icon{
+  width:26px;height:26px;
+  flex-shrink:0;
+  border-radius:2px;
+  background:var(--accent-soft);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);
+}
+
+/* ── Desktop: wider layout, 3-up grid ── */
+@media(min-width:900px){
+  .container{max-width:1080px}
+  .nav-inner{max-width:1080px}
+  .grid{grid-template-columns:repeat(3, 1fr)}
+}
+
 /* ── Mobile ── */
 @media(max-width:600px){
+  .nav-inner{padding:.8rem 1.5rem}
+  .nav-links{gap:1.1rem}
+  .nav-links a{font-size:.66rem;letter-spacing:.08em}
+  .nav-dropdown-toggle{font-size:.66rem;letter-spacing:.08em}
+  .nav-menu{
+    position:fixed;
+    left:1rem;right:1rem;
+    top:auto;
+    min-width:0;
+  }
   .hero{padding:4rem 0 3rem}
   .hero h1{font-size:clamp(1.8rem,8vw,2.6rem)}
   .section{padding:2rem 0 3rem}
@@ -362,6 +498,36 @@ body{
 </head>
 <body>
 
+<!-- Sticky nav -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand">
+      <span class="logo-mark">花見</span>
+      <span class="logo-text">Hanami Education</span>
+    </a>
+    <div class="nav-links">
+      <div class="nav-dropdown" id="toolsDropdown">
+        <button class="nav-dropdown-toggle" id="toolsToggle" aria-haspopup="true" aria-expanded="false">Tools <span class="chev"></span></button>
+        <div class="nav-menu" role="menu">
+          <a href="reading-atlas.html" role="menuitem">
+            <span class="menu-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>The Reading Atlas</a>
+          <a href="checklisttool.html" role="menuitem">
+            <span class="menu-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg></span>Reading Checklist Aid</a>
+          <a href="project-guide.html" role="menuitem">
+            <span class="menu-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg></span>The Project Picker</a>
+          <a href="story-generator.html" role="menuitem">
+            <span class="menu-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>The Story Spinner</a>
+          <a href="Writing-Guides.html" role="menuitem">
+            <span class="menu-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span>Writing Guides</a>
+          <a href="reading-checklist.html" role="menuitem">
+            <span class="menu-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Reading Checklist Guide</a>
+        </div>
+      </div>
+      <a href="#approach">Approach</a>
+    </div>
+  </div>
+</nav>
+
 <!-- Floating petals -->
 <div class="petal"></div>
 <div class="petal"></div>
@@ -374,7 +540,7 @@ body{
 
 <div class="container">
 
-<header class="site-header">
+<header class="site-header" id="top">
   <div class="logo-row">
     <div class="logo-mark">花見</div>
     <div class="logo-text">Hanami Education</div>
@@ -396,7 +562,7 @@ body{
 
 <div class="divider"><div class="divider-line"></div></div>
 
-<section class="section">
+<section class="section" id="tools">
   <div class="section-label">Tools &amp; Resources</div>
   <div class="grid">
 
@@ -478,7 +644,7 @@ body{
 <div class="divider"><div class="divider-line"></div></div>
 
 <!-- Philosophy -->
-<div class="philosophy">
+<div class="philosophy" id="approach">
   <div class="philosophy-inner">
     <div class="philosophy-rule"></div>
     <div class="philosophy-body">
@@ -506,5 +672,28 @@ body{
 </footer>
 
 </div>
+<script>
+(function(){
+  var dd = document.getElementById('toolsDropdown');
+  var btn = document.getElementById('toolsToggle');
+  if(!dd || !btn) return;
+  function close(){ dd.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var open = dd.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e){
+    if(!dd.contains(e.target)) close();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') close();
+  });
+  // close after picking a tool
+  dd.querySelectorAll('.nav-menu a').forEach(function(a){
+    a.addEventListener('click', close);
+  });
+})();
+</script>
 </body>
 </html>
