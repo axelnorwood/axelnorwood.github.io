@@ -1,0 +1,944 @@
+import React, { useState, useMemo, useEffect } from "react";
+
+/* ============================================================
+   FIRST STEPS — A sports fundamentals trainer for beginners
+   Philosophy: nobody starts great. Baby steps. Honest effort.
+   Consistency makes champions.
+   ============================================================ */
+
+// ---------- SPORT ICONS (custom line SVGs, not emoji) ----------
+function SportIcon({ id, size = 40, color = "currentColor", stroke = 2 }) {
+  const p = { fill: "none", stroke: color, strokeWidth: stroke, strokeLinecap: "round", strokeLinejoin: "round" };
+  const icons = {
+    soccer: (
+      <g {...p}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7.5l3.2 2.3-1.2 3.8h-4L8.8 9.8z" fill={color} stroke="none" />
+        <path d="M12 7.5L8.8 9.8M12 7.5l3.2 2.3M9.8 13.6L7 16.4M14.2 13.6L17 16.4M14 13.6h-4" />
+      </g>
+    ),
+    baseball: (
+      <g {...p}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M6.5 5.8C8.2 8 8.6 12 6.2 16.6M17.5 5.8C15.8 8 15.4 12 17.8 16.6" />
+        <path d="M7.4 8.2l1.1.5M7 10.6l1.2.3M7.1 13.2l1.2-.1M16.6 8.2l-1.1.5M17 10.6l-1.2.3M16.9 13.2l-1.2-.1" strokeWidth={stroke * 0.7} />
+      </g>
+    ),
+    hockey: (
+      <g {...p}>
+        <path d="M5 4v9a5 5 0 0 0 5 5h7" />
+        <circle cx="18.5" cy="18" r="1.6" fill={color} stroke="none" />
+      </g>
+    ),
+    rugby: (
+      <g {...p}>
+        <ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-40 12 12)" />
+        <path d="M9 15l6-6M10.5 13.2l1.2 1.2M13.2 10.5l1.2 1.2M8.6 11.2l1.2 1.2M11.4 8.4l1.2 1.2" strokeWidth={stroke * 0.85} />
+      </g>
+    ),
+    basketball: (
+      <g {...p}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3v18" />
+        <path d="M5.5 5.5C8 8 8 16 5.5 18.5M18.5 5.5C16 8 16 16 18.5 18.5" />
+      </g>
+    ),
+    badminton: (
+      <g {...p}>
+        <path d="M14 4l-2 4-2 4" />
+        <path d="M6 16l4-4 4-4" />
+        <path d="M5 19l3.5-3.5" />
+        <ellipse cx="15.5" cy="6.5" rx="3.5" ry="2.4" transform="rotate(-45 15.5 6.5)" />
+        <path d="M13.4 4.4l4.2 4.2M14.8 5l3 3M16 4.8l2.4 2.4" strokeWidth={stroke * 0.7} />
+      </g>
+    ),
+    golf: (
+      <g {...p}>
+        <path d="M12 3v13" />
+        <path d="M12 3l6 2.5L12 8" fill={color} stroke="none" />
+        <path d="M12 3l6 2.5L12 8" />
+        <circle cx="9" cy="19" r="1.4" fill={color} stroke="none" />
+        <path d="M7 20.5c1.5-1 8-1 10 0" />
+      </g>
+    ),
+    tennis: (
+      <g {...p}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M4.5 6C8 9 8 15 4.5 18M19.5 6C16 9 16 15 19.5 18" />
+      </g>
+    ),
+    dance: (
+      <g {...p}>
+        <circle cx="12" cy="4.5" r="1.8" />
+        <path d="M12 6.3v6M12 8.5l-4 2M12 8.5l4 2M12 12.3l-3 6M12 12.3l3 6" />
+      </g>
+    ),
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" style={{ display: "block" }}>
+      {icons[id] || icons.soccer}
+    </svg>
+  );
+}
+
+// ---------- UI GLYPHS (small line icons for pillars, headers, stats) ----------
+function Glyph({ name, size = 22, color = "currentColor", stroke = 1.9 }) {
+  const p = { fill: "none", stroke: color, strokeWidth: stroke, strokeLinecap: "round", strokeLinejoin: "round" };
+  const g = {
+    steps: (<g {...p}><path d="M4 19h4v-4h4v-4h4V7h4" /><circle cx="20" cy="6" r="1.3" fill={color} stroke="none" /></g>),
+    effort: (<g {...p}><path d="M12 21s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 7 3.5C19 16.5 12 21 12 21z" /></g>),
+    repeat: (<g {...p}><path d="M4 12a8 8 0 0 1 13.6-5.7L20 8" /><path d="M20 4v4h-4" /><path d="M20 12a8 8 0 0 1-13.6 5.7L4 16" /><path d="M4 20v-4h4" /></g>),
+    gear: (<g {...p}><path d="M6 8h12l-1 12H7z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></g>),
+    move: (<g {...p}><circle cx="13" cy="5" r="1.6" /><path d="M13 7v4l3 2M13 9l-4 1-2 4M9 14l1 5M9 14l-2 2" /></g>),
+    clock: (<g {...p}><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></g>),
+    strength: (<g {...p}><path d="M5 9v6M19 9v6M7 8v8M17 8v8M9 12h6" /><path d="M3 11v2M21 11v2" /></g>),
+    flame: (<g {...p}><path d="M12 21c3.3 0 5.5-2.2 5.5-5.2 0-3.2-2.5-5-3.5-8.3-1.8 1.3-2 3-2 3S10 8 9 6.5C7.8 8.4 6.5 10 6.5 13.3 6.5 17.4 9 21 12 21z" /></g>),
+  };
+  return (<svg width={size} height={size} viewBox="0 0 24 24" style={{ display: "block" }}>{g[name] || g.steps}</svg>);
+}
+
+// ---------- DATA ----------
+const SPORTS = [
+  {
+    id: "soccer",
+    name: "Soccer",
+    tag: "Rhythm, movement & decision making",
+    accent: "#16a34a",
+    accentSoft: "#dcfce7",
+    what:
+      "A fast, creative team sport where you move the ball with your feet, body, and teamwork to score goals. Keep the ball, move into space, and put it in the net.",
+    movement: [
+      "Running & changing direction",
+      "Stopping & starting quickly",
+      "Balance & body control",
+      "Kicking & trapping",
+      "Spatial awareness",
+    ],
+    equipment: [
+      "A soccer ball (size 3 young kids, 4 primary, 5 older)",
+      "Comfortable shoes (cleats optional)",
+      "Cones or markers (bottles, shoes, chalk work too)",
+      "A small open space",
+    ],
+    skills: [
+      { name: "Dribbling", cue: "Tap, tap, look", points: ["Inside & outside of foot", "Keep the ball close", "Look up often"] },
+      { name: "Trapping / Receiving", cue: "Soft foot", points: ["Use inside of foot", "Cushion the ball gently"] },
+      { name: "Passing", cue: "Point your toes where you want the ball to go", points: ["Plant non-kicking foot beside ball", "Use inside of foot", "Follow through to target"] },
+      { name: "Shooting", cue: "Laces, lean, low", points: ["Strike with laces", "Lean slightly forward", "Aim low for accuracy"] },
+    ],
+    solo: [
+      ["Toe Taps", "Alternate feet tapping the top of the ball", "Rhythm, coordination"],
+      ["Inside-Outside Dribble", "Tap with inside then outside of same foot", "Ball control, agility"],
+      ["Wall Passes", "Pass to a wall and trap the rebound", "Passing accuracy, first touch"],
+      ["Figure-8 Dribble", "Dribble around two cones in a figure 8", "Turning, balance"],
+      ["Juggling (beginner)", "Drop → kick once → catch", "Timing, foot-eye coordination"],
+    ],
+    partner: [
+      ["Passing Gates", "Pass through a small gate", "Accuracy, communication"],
+      ["Keep Away (3v1)", "Simple possession game", "Spacing, decisions"],
+      ["Moving Pass & Follow", "Pass then run to partner's spot", "Movement after passing"],
+      ["1v1 Dribble Challenge", "Beat a defender in a small area", "Creativity, confidence"],
+    ],
+    games: [
+      ["3-Goal Game", "Three small goals, score in any", "Finding space"],
+      ["No-Steal Dribbling", "Defenders block but can't take the ball", "Dribbling confidence"],
+      ["4v4 Small-Sided", "No keepers, small field", "Teamwork, movement"],
+      ["End-Zone Soccer", "Score by dribbling into a zone", "Control, teamwork"],
+    ],
+    strength: ["Squats", "Lunges", "Side shuffles", "Planks", "Quick-feet ladders"],
+  },
+  {
+    id: "baseball",
+    name: "Baseball",
+    tag: "Timing, coordination & teamwork",
+    accent: "#dc2626",
+    accentSoft: "#fee2e2",
+    what:
+      "A bat-and-ball sport where teams take turns hitting, running, fielding, and throwing. Hit the ball, run the bases, and score runs before the other team gets you out.",
+    movement: ["Throwing accurately", "Catching with soft hands", "Striking with timing", "Running bases", "Balance & stance", "Hand-eye coordination"],
+    equipment: ["A baseball or soft practice ball", "A glove (optional early on)", "A bat (plastic, foam, or light)", "Cones for bases", "A small open space"],
+    skills: [
+      { name: "Throwing", cue: "Step, point, throw", points: ["Front shoulder at target", "Step with opposite foot", "Throw over the top"] },
+      { name: "Catching", cue: "Soft hands", points: ["Triangle hands for high balls", "Pinkies together for low balls", "Watch it in"] },
+      { name: "Fielding Grounders", cue: "Down, scoop, up", points: ["Feet wide, knees bent", "Glove low, eyes down", "Scoop then stand to throw"] },
+      { name: "Hitting", cue: "See it, swing it", points: ["Feet shoulder-width", "Hands together on bat", "Swing level and smooth"] },
+    ],
+    solo: [
+      ["Wall Throws", "Throw at a wall and catch", "Accuracy, reaction"],
+      ["Self Toss & Catch", "Toss up, catch with two hands", "Tracking, soft hands"],
+      ["Batting Tee Swings", "Hit off a tee or cone", "Swing mechanics, balance"],
+      ["Rolling Grounders", "Roll out, run to field it", "Footwork, fielding form"],
+      ["Shadow Swinging", "Swing with no ball", "Rhythm, body control"],
+    ],
+    partner: [
+      ["Partner Catch", "Start close, move back over time", "Accuracy, communication"],
+      ["Rolling Grounders", "One rolls, one fields", "Staying low, clean scoops"],
+      ["Soft Toss Hitting", "Gentle toss from the side", "Timing, smooth swing"],
+      ["Relay Throws", "Race to throw & catch down a line", "Teamwork, quick hands"],
+    ],
+    games: [
+      ["Home Run Derby", "Hit off a tee for distance/accuracy", "Hitting confidence"],
+      ["Base Running Tag", "Run bases while a fielder tags", "Speed, awareness"],
+      ["3-Ball Fielding", "Field three grounders fast", "Footwork, readiness"],
+      ["Mini Baseball (3v3)", "Short field, soft ball, simple rules", "Game flow, fun"],
+    ],
+    strength: ["Squats", "Lunges", "Planks", "Side shuffles", "Quick sprints"],
+  },
+  {
+    id: "hockey",
+    name: "Hockey",
+    tag: "Agility, coordination & teamwork",
+    accent: "#0891b2",
+    accentSoft: "#cffafe",
+    what:
+      "A fast, dynamic sport where you use a stick to control a ball or puck, move it up the field, and score in the opponent's goal. Keep control, find space, pass, and shoot.",
+    movement: ["Running & changing direction", "Stick control with both hands", "Passing & receiving", "Shooting with control", "Balance & low stance", "Spatial awareness"],
+    equipment: ["A hockey stick (plastic or wooden)", "A ball or soft puck", "Cones or markers", "A small open space", "Optional: shin guards, gloves, mouthguard"],
+    skills: [
+      { name: "Grip & Stance", cue: "Low and ready", points: ["Hands apart on the stick", "Knees bent, back straight", "Stick on the ground"] },
+      { name: "Stick Handling", cue: "Soft taps, eyes up", points: ["Use the flat side", "Keep ball close", "Move wrists, not whole arms"] },
+      { name: "Passing", cue: "Point your stick where you want it to go", points: ["Step toward target", "Push, don't slap", "Follow through"] },
+      { name: "Receiving", cue: "Soft stick", points: ["Cushion the ball", "Angle stick slightly back"] },
+      { name: "Shooting", cue: "Low, smooth, strong", points: ["Hands slide together", "Step forward", "Push or sweep to goal"] },
+    ],
+    solo: [
+      ["Straight-Line Dribble", "Move the ball forward in small taps", "Control, rhythm"],
+      ["Side-to-Side Handling", "Move ball left ↔ right in front", "Wrist control, reactions"],
+      ["Cone Weave", "Dribble through cones zig-zag", "Agility, control"],
+      ["Wall Trap", "Push to wall, trap the rebound", "Receiving, soft touch"],
+      ["Shadow Movement", "Practice stance & footwork, no ball", "Balance, readiness"],
+    ],
+    partner: [
+      ["Partner Passing", "Start close, increase distance", "Accuracy, communication"],
+      ["Moving Pass & Follow", "Pass then run to partner's spot", "Movement after passing"],
+      ["1v1 Dribble Challenge", "Beat a defender in a small area", "Creativity, confidence"],
+      ["Triangle Passing", "Three players pass around a triangle", "Spacing, timing"],
+    ],
+    games: [
+      ["Gate Dribble Game", "Dribble through gates for points", "Control, awareness"],
+      ["Keep Away (3v1)", "Simple possession game", "Teamwork, spacing"],
+      ["Small Goal Hockey (3v3)", "No keepers, small goals", "Passing, movement"],
+      ["End-Zone Hockey", "Score by dribbling into a zone", "Control, teamwork"],
+    ],
+    strength: ["Squats", "Lunges", "Side shuffles", "Planks", "Quick-feet ladders"],
+  },
+  {
+    id: "rugby",
+    name: "Rugby",
+    tag: "Teamwork, courage & smart movement",
+    accent: "#7c3aed",
+    accentSoft: "#ede9fe",
+    what:
+      "A fast, powerful team sport where you run with an oval ball, pass backwards, and score by grounding the ball in the opponent's end zone (a try). Move forward, support teammates, score.",
+    movement: ["Running & evasion", "Passing & catching (backwards)", "Agility & footwork", "Balance & body control", "Spatial awareness", "Communication"],
+    equipment: ["A rugby ball (size 3/4/5 by age)", "Cones or markers", "A small open field or gym", "Optional contact gear: mouthguard, pads, scrum cap"],
+    skills: [
+      { name: "Ball Carrying", cue: "Two hands, eyes forward", points: ["Hold with two hands", "Keep elbows in", "Run with eyes up"] },
+      { name: "Passing (Backwards)", cue: "Pass back, run forward", points: ["Ball at your hip", "Step toward teammate", "Swing arms gently"] },
+      { name: "Catching", cue: "Hands out, pull in", points: ["Hands form a 'W'", "Reach toward ball", "Bring to chest"] },
+      { name: "Evasion", cue: "Sell the fake", points: ["Light on your feet", "Fake one way, go the other", "Keep ball secure"] },
+      { name: "Scoring a Try", cue: "Ball to ground", points: ["Run into the end zone", "Place ball down with control"] },
+    ],
+    solo: [
+      ["Ball Handling Patterns", "Move ball around hips, head, legs", "Grip, comfort"],
+      ["Wall Passes", "Pass at a wall and catch", "Accuracy, soft hands"],
+      ["Zig-Zag Running", "Run through cones with the ball", "Evasion, footwork"],
+      ["Drop Catch", "Drop ball, catch before it lands", "Reaction time"],
+      ["Shadow Evasion", "Sidesteps without a ball", "Agility, balance"],
+    ],
+    partner: [
+      ["Partner Passing", "Pass while moving slowly", "Accuracy, communication"],
+      ["2v1 Attack Drill", "Two attackers vs one defender", "Support play, timing"],
+      ["Passing Chain", "Pass down a line while moving", "Teamwork, rhythm"],
+      ["Tag and Pass", "Pass to avoid being tagged", "Decision making"],
+    ],
+    games: [
+      ["End-Zone Touch", "Touch the ball down in the zone", "Running lines"],
+      ["Keep Ball", "Possession with backward passes only", "Passing accuracy"],
+      ["3-Second Rule", "Carrier must pass within 3 seconds", "Support play"],
+      ["Channel Rugby", "Narrow lanes for straight running", "Discipline, structure"],
+    ],
+    strength: ["Squats", "Lunges", "Planks", "Side shuffles", "Short sprints"],
+  },
+  {
+    id: "basketball",
+    name: "Basketball",
+    tag: "Rhythm, agility & teamwork",
+    accent: "#ea580c",
+    accentSoft: "#ffedd5",
+    what:
+      "A fast, exciting team sport where you dribble, pass, and shoot into a raised hoop. Move the ball, create space, and score while stopping the other team.",
+    movement: ["Running & stopping", "Jumping & landing", "Dribbling with one hand", "Passing & catching", "Defensive stance", "Spatial awareness"],
+    equipment: ["A basketball (size 5/6/7 by age)", "A hoop (any height works)", "A flat surface", "Optional: cones, chalk, markers"],
+    skills: [
+      { name: "Dribbling", cue: "Bounce low, eyes forward", points: ["Use fingertips, not palm", "Ball at waist height or lower", "Eyes up"] },
+      { name: "Passing", cue: "Step, push, snap", points: ["Chest pass: step & push from chest", "Bounce pass: aim 2/3 of the way", "Aim for the hands"] },
+      { name: "Catching", cue: "Reach and cushion", points: ["Hands ready", "Absorb the ball softly"] },
+      { name: "Shooting (Set Shot)", cue: "Elbow in, flick up", points: ["Feet shoulder-width", "Elbow under the ball", "Gooseneck follow-through"] },
+      { name: "Defensive Stance", cue: "Low and wide", points: ["Knees bent", "Back straight", "Hands active"] },
+    ],
+    solo: [
+      ["Stationary Dribble", "Right → left → alternate", "Control, rhythm"],
+      ["Around the World", "Ball around waist, head, legs", "Comfort with ball"],
+      ["Wall Shooting Form", "Shoot form at a wall, no hoop", "Technique, muscle memory"],
+      ["Figure-8 Dribble", "Dribble around legs in a figure 8", "Coordination, footwork"],
+      ["Mikan Footwork", "Step under hoop, alternate feet", "Layup rhythm"],
+    ],
+    partner: [
+      ["Partner Passing", "Chest → bounce → overhead", "Accuracy, communication"],
+      ["Moving Pass & Follow", "Pass then run to partner's spot", "Teamwork, movement"],
+      ["1v1 Mirror Defense", "One moves, the other mirrors", "Footwork, reaction"],
+      ["Give and Go", "Pass, cut to basket, receive again", "Timing, teamwork"],
+    ],
+    games: [
+      ["Dribble Tag", "Dribble while tagging others", "Ball control, awareness"],
+      ["Knockout Dribble", "Protect your ball, knock others away", "Shielding, control"],
+      ["3-Shot Challenge", "Layup → short → long shot", "Shooting variety"],
+      ["3v3 Small-Sided", "Half court, simple rules", "Spacing, teamwork"],
+    ],
+    strength: ["Squats", "Lunges", "Planks", "Lateral shuffles", "Jump-stop practice"],
+  },
+  {
+    id: "badminton",
+    name: "Badminton",
+    tag: "Quick reactions & precise control",
+    accent: "#0d9488",
+    accentSoft: "#ccfbf1",
+    what:
+      "A fast, skillful racket sport where you hit a shuttlecock over a net. Place the shuttle in your opponent's court so they can't return it.",
+    movement: ["Footwork to reach the shuttle", "Striking with control", "Balance & body control", "Hand-eye coordination", "Jumping & landing", "Agility"],
+    equipment: ["A lightweight racket", "A shuttlecock (plastic for beginners)", "A net (or rope at net height)", "A small court or space", "Optional: cones"],
+    skills: [
+      { name: "Grip", cue: "Handshake grip", points: ["Hold like shaking hands", "Relax your fingers"] },
+      { name: "Ready Position", cue: "Light and ready", points: ["Knees bent", "Racket up", "Feet shoulder-width"] },
+      { name: "Underhand Serve", cue: "Low swing, high flight", points: ["Shuttle in front", "Swing gently upward", "Aim high and deep"] },
+      { name: "Forehand & Backhand", cue: "Reach and tap", points: ["Smooth swing", "Contact in front of body"] },
+      { name: "Footwork", cue: "Step, then hit", points: ["Small steps", "Move before you swing"] },
+    ],
+    solo: [
+      ["Shuttle Keep-Up", "Tap the shuttle upward repeatedly", "Hand-eye coordination"],
+      ["Wall Rally", "Hit gently against a wall", "Timing, control"],
+      ["Shadow Footwork", "Move to imaginary court corners", "Agility, balance"],
+      ["Drop Hit", "Drop the shuttle, hit it upward", "Timing, clean contact"],
+      ["Racket Control", "Flip the shuttle on the racket face", "Touch, feel"],
+    ],
+    partner: [
+      ["Gentle Rally", "Hit back and forth slowly", "Control, rhythm"],
+      ["Serve & Return", "One serves, one returns", "Accuracy, consistency"],
+      ["Target Practice", "Hit into marked zones", "Placement, precision"],
+      ["Net Rally", "Short soft hits near the net", "Touch, quick reactions"],
+    ],
+    games: [
+      ["Keep It Up", "How many hits can you sustain?", "Control"],
+      ["Court Corners", "Hit to corners called out", "Placement, movement"],
+      ["Mini Rally to 5", "Short rallies, first to 5", "Consistency"],
+      ["King/Queen of Court", "Winners move up, others rotate", "Game flow"],
+    ],
+    strength: ["Lunges", "Squats", "Side shuffles", "Planks", "Light jumps"],
+  },
+  {
+    id: "golf",
+    name: "Golf",
+    tag: "Patience, focus & repeatable movement",
+    accent: "#65a30d",
+    accentSoft: "#ecfccb",
+    what:
+      "A precision sport where you use clubs to move a ball toward holes in as few strokes as possible. Control your swing, aim your shot, play with accuracy and consistency.",
+    movement: ["Balance & posture", "Hand-eye coordination", "Smooth striking", "Body rotation", "Spatial awareness", "Fine motor control"],
+    equipment: ["A golf club (a 7-iron is great)", "A golf ball (foam/plastic to learn)", "A small open space", "Optional: tees, cones, putting mat, targets"],
+    skills: [
+      { name: "Grip", cue: "Hold it like a small bird — firm but gentle", points: ["Hands together", "Light pressure, not tight"] },
+      { name: "Stance & Posture", cue: "Athletic and comfortable", points: ["Feet shoulder-width", "Knees slightly bent", "Back straight, arms relaxed"] },
+      { name: "Alignment", cue: "Aim your body where you want the ball to go", points: ["Feet, hips & shoulders face the target"] },
+      { name: "Swing Basics", cue: "Back… and through", points: ["Smooth takeaway", "Rotate shoulders", "Swing through, not at, the ball"] },
+      { name: "Putting", cue: "Tick tock", points: ["Short pendulum motion", "Eyes over the ball"] },
+    ],
+    solo: [
+      ["Air Swings", "Swing with no ball", "Rhythm, balance"],
+      ["Line-Up Drill", "Lay a club down to check alignment", "Accuracy"],
+      ["Coin Strike", "Brush a coin or leaf off the ground", "Clean contact"],
+      ["Putting Gate", "Putt through two close objects", "Straight stroke"],
+      ["Slow-Motion Swing", "Move slowly to feel each part", "Body awareness"],
+    ],
+    partner: [
+      ["Target Challenge", "Take turns aiming at cones", "Accuracy"],
+      ["Distance Ladder", "Hit to short, medium, long targets", "Control"],
+      ["Putting Relay", "Race to sink putts in sequence", "Teamwork, consistency"],
+      ["Chip and Catch", "Chip soft balls for a partner to catch", "Touch, trajectory"],
+    ],
+    games: [
+      ["Closest to Target", "Closest to a cone wins", "Aim"],
+      ["Putting Course", "Build a mini course with obstacles", "Creativity, touch"],
+      ["Chip to the Circle", "Land inside a marked circle", "Distance control"],
+      ["3-Club Challenge", "Use only 3 clubs / shot types", "Adaptability"],
+    ],
+    strength: ["Squats", "Lunges", "Planks", "Shoulder mobility", "Light jumps"],
+  },
+  {
+    id: "tennis",
+    name: "Tennis",
+    tag: "Timing, footwork & controlled power",
+    accent: "#ca8a04",
+    accentSoft: "#fef9c3",
+    what:
+      "A fast racket sport where you hit a ball over a net into the opponent's court. Hit so your opponent can't return it before it bounces twice.",
+    movement: ["Footwork to reach the ball", "Striking: forehand, backhand, volleys, serves", "Balance & posture", "Hand-eye coordination", "Agility", "Reaction time"],
+    equipment: ["A lightweight racket", "A ball (foam/low-compression to learn)", "A net (or rope at net height)", "A flat surface", "Optional: cones, chalk, targets"],
+    skills: [
+      { name: "Grip", cue: "Shake hands with the racket", points: ["'Shake hands' grip for forehand", "'Thumb on top' for backhand"] },
+      { name: "Ready Position", cue: "Ready and balanced", points: ["Knees bent", "Racket in front", "Light on your toes"] },
+      { name: "Forehand", cue: "Brush up the ball", points: ["Turn body sideways", "Swing low to high", "Contact in front"] },
+      { name: "Backhand", cue: "Turn, swing, follow through", points: ["Two-handed for beginners", "Turn shoulders", "Smooth swing"] },
+      { name: "Serve", cue: "Toss, reach, tap", points: ["Toss slightly in front", "Swing upward", "Aim diagonally"] },
+    ],
+    solo: [
+      ["Bounce Hit", "Bounce ball, hit it upward", "Timing, control"],
+      ["Wall Rally", "Hit gently against a wall", "Consistency, rhythm"],
+      ["Shadow Swings", "Forehand/backhand, no ball", "Technique, balance"],
+      ["Toss and Catch", "Toss up, catch with off hand", "Tracking, coordination"],
+      ["Footwork Ladder", "Quick steps through a ladder", "Agility"],
+    ],
+    partner: [
+      ["Gentle Rally", "Hit back and forth slowly", "Control, consistency"],
+      ["Drop-Hit Rally", "Each drop-hits to start", "Timing"],
+      ["Target Rally", "Hit into marked zones", "Accuracy"],
+      ["Net Play (Volleys)", "Tap the ball near the net", "Quick reactions"],
+    ],
+    games: [
+      ["Keep It Alive", "How many hits can you sustain?", "Consistency"],
+      ["Court Corners", "Hit to corners called out", "Placement"],
+      ["Mini Tennis", "Play inside the service boxes", "Control, short swings"],
+      ["King/Queen of Court", "Winners move up, others rotate", "Game flow"],
+    ],
+    strength: ["Lunges", "Squats", "Planks", "Side shuffles", "Light jumps"],
+  },
+  {
+    id: "dance",
+    name: "Dance & Gymnastics",
+    tag: "Rhythm, body awareness & confidence",
+    accent: "#db2777",
+    accentSoft: "#fce7f3",
+    what:
+      "Movement-based disciplines where you use your body, balance, and creativity to perform sequences. Move with control, express yourself, and build strength, balance, and coordination.",
+    movement: ["Balance — holding positions", "Flexibility — full range of motion", "Strength — core, legs, shoulders", "Rhythm & timing", "Spatial awareness", "Body control"],
+    equipment: ["Comfortable clothing", "A soft surface (mat, carpet, grass)", "Open space", "Music (optional but motivating)", "Optional: ribbons, scarves, tape line"],
+    skills: [
+      { name: "Shapes & Positions", cue: "Strong shapes, still body", points: ["Straight, Tuck, Star", "Pike, Straddle"] },
+      { name: "Balance Positions", cue: "Tall body, tight core", points: ["One-leg stand", "Arabesque", "Scale"] },
+      { name: "Rolls", cue: "Round like a ball", points: ["Log roll", "Egg roll", "Forward roll (progression)"] },
+      { name: "Jumps & Landings", cue: "Soft knees, quiet landing", points: ["Straight jump", "Star jump", "Half turn"] },
+      { name: "Movement Patterns", cue: "Move with the beat", points: ["Step touch", "Grapevine", "March with arms"] },
+    ],
+    solo: [
+      ["Balance Challenge", "Hold a pose 5–10 seconds", "Stability"],
+      ["Shape Flow", "Move between shapes smoothly", "Body control"],
+      ["Rhythm Walk", "Walk, skip, hop to music", "Timing"],
+      ["Core Basics", "Tuck holds, plank, hollow body", "Strength"],
+      ["Roll Progressions", "Roll safely on a soft surface", "Coordination"],
+    ],
+    partner: [
+      ["Mirror Movement", "One leads, one follows", "Awareness, creativity"],
+      ["Shape Copy", "Partner makes a shape, you copy", "Observation"],
+      ["Rhythm Echo", "Repeat a clapped/stepped pattern", "Timing"],
+      ["Group Sequence", "Build a short routine together", "Teamwork, expression"],
+    ],
+    games: [
+      ["Freeze Dance", "Move to music, freeze on cue", "Control"],
+      ["Balance Beam Line", "Walk a taped line", "Balance"],
+      ["Shape Stations", "Move between shape stations", "Transitions"],
+      ["Roll & Jump Circuit", "Roll → stand → jump → pose", "Sequencing"],
+    ],
+    strength: ["Planks", "Bridges", "Squats", "Lunges", "Hollow-body holds"],
+  },
+];
+
+const PILLARS = [
+  { icon: "steps", title: "Baby steps", body: "Slow → smooth → faster. Master one tiny piece before adding the next. Small touches beat big leaps." },
+  { icon: "effort", title: "Honest effort", body: "You don't have to be good. You have to try, fail, and try again with your full focus. That's the whole secret." },
+  { icon: "repeat", title: "Consistency", body: "10–20 minutes a day beats two hours once a month. Champions are just beginners who refused to quit." },
+];
+
+// Encouragements rotate as you complete things
+const CHEERS = [
+  "That's a rep nobody can take from you.",
+  "See? You're already better than five minutes ago.",
+  "Beginners do this. Champions just did it more times.",
+  "Honest effort, logged. Keep stacking them.",
+  "Slow is smooth. Smooth becomes fast.",
+  "Every pro was once exactly where you are.",
+  "Progress, not perfection. Nicely done.",
+  "You showed up. That's the hardest part, beaten.",
+];
+
+// ---------- STORAGE HELPERS (persist via window.storage) ----------
+const STORE_KEY = "first-steps-progress-v1";
+
+async function loadProgress() {
+  try {
+    const r = await window.storage.get(STORE_KEY);
+    if (r && r.value) return JSON.parse(r.value);
+  } catch (e) {
+    // key doesn't exist yet — that's fine
+  }
+  return { done: {}, streak: 0, lastDay: null, sessions: 0 };
+}
+
+async function saveProgress(p) {
+  try {
+    await window.storage.set(STORE_KEY, JSON.stringify(p));
+  } catch (e) {
+    console.error("save failed", e);
+  }
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+// ---------- SMALL UI PIECES ----------
+function ProgressRing({ pct, accent, size = 56 }) {
+  const r = (size - 8) / 2;
+  const c = 2 * Math.PI * r;
+  const off = c - (pct / 100) * c;
+  return (
+    <svg width={size} height={size} style={{ display: "block" }}>
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="6" />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke={accent}
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeDasharray={c}
+        strokeDashoffset={off}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(.4,0,.2,1)" }}
+      />
+      <text x="50%" y="52%" textAnchor="middle" dominantBaseline="middle" fontSize={size * 0.26} fontWeight="800" fill={accent} fontFamily="inherit">
+        {Math.round(pct)}
+      </text>
+    </svg>
+  );
+}
+
+// ---------- MAIN APP ----------
+export default function App() {
+  const [view, setView] = useState("home"); // home | sport
+  const [activeId, setActiveId] = useState(null);
+  const [tab, setTab] = useState("learn");
+  const [progress, setProgress] = useState({ done: {}, streak: 0, lastDay: null, sessions: 0 });
+  const [loaded, setLoaded] = useState(false);
+  const [cheer, setCheer] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    loadProgress().then((p) => {
+      if (!alive) return;
+      // update streak on open
+      const today = todayKey();
+      let np = { ...p };
+      if (p.lastDay !== today) {
+        const y = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+        np.streak = p.lastDay === y ? (p.streak || 0) + 1 : 1;
+        np.lastDay = today;
+        saveProgress(np);
+      }
+      setProgress(np);
+      setLoaded(true);
+    });
+    return () => { alive = false; };
+  }, []);
+
+  const active = useMemo(() => SPORTS.find((s) => s.id === activeId), [activeId]);
+
+  // total trackable items per sport = solo + partner + games + skills
+  function itemKeys(sport) {
+    const ks = [];
+    sport.skills.forEach((_, i) => ks.push(`${sport.id}:skill:${i}`));
+    sport.solo.forEach((_, i) => ks.push(`${sport.id}:solo:${i}`));
+    sport.partner.forEach((_, i) => ks.push(`${sport.id}:partner:${i}`));
+    sport.games.forEach((_, i) => ks.push(`${sport.id}:game:${i}`));
+    return ks;
+  }
+
+  function sportPct(sport) {
+    const ks = itemKeys(sport);
+    const d = ks.filter((k) => progress.done[k]).length;
+    return ks.length ? (d / ks.length) * 100 : 0;
+  }
+
+  const totalDone = Object.values(progress.done).filter(Boolean).length;
+
+  function toggle(key) {
+    setProgress((prev) => {
+      const willBeDone = !prev.done[key];
+      const next = {
+        ...prev,
+        done: { ...prev.done, [key]: willBeDone },
+        sessions: willBeDone ? (prev.sessions || 0) + 1 : prev.sessions,
+        lastDay: todayKey(),
+      };
+      saveProgress(next);
+      return next;
+    });
+    if (!progress.done[key]) {
+      setCheer(CHEERS[Math.floor(Math.random() * CHEERS.length)]);
+      setTimeout(() => setCheer(null), 2600);
+    }
+  }
+
+  function resetAll() {
+    const fresh = { done: {}, streak: progress.streak, lastDay: progress.lastDay, sessions: 0 };
+    setProgress(fresh);
+    saveProgress(fresh);
+  }
+
+  return (
+    <div style={S.root}>
+      <style>{CSS}</style>
+
+      {/* grain + glow background */}
+      <div style={S.bgGlow} />
+
+      <div style={S.shell}>
+        {/* ---------- HEADER ---------- */}
+        <header style={S.header}>
+          <button style={S.brand} onClick={() => { setView("home"); setActiveId(null); }}>
+            <span style={S.brandMark}>▲</span>
+            <span style={S.brandText}>FIRST&nbsp;STEPS</span>
+          </button>
+          <div style={S.headerStats}>
+            <div style={S.stat}>
+              <span style={{ ...S.statNum, display: "inline-flex", alignItems: "center", gap: 4 }}>{progress.streak || 0}<Glyph name="flame" size={16} color="#ea580c" stroke={2} /></span>
+              <span style={S.statLbl}>day streak</span>
+            </div>
+            <div style={S.stat}>
+              <span style={S.statNum}>{totalDone}</span>
+              <span style={S.statLbl}>reps logged</span>
+            </div>
+          </div>
+        </header>
+
+        {/* ---------- HOME ---------- */}
+        {view === "home" && (
+          <main className="fade-in">
+            <section style={S.hero}>
+              <p style={S.kicker}>A beginner's training ground for 9 sports</p>
+              <h1 style={S.h1}>
+                Nobody starts
+                <br />
+                <span style={S.h1accent}>great.</span>
+              </h1>
+              <p style={S.lede}>
+                Not the player you admire. Not your coach. Not anyone. They all began clumsy, unsure, and
+                dropping the ball — <em>literally</em>. The only thing that turned beginners into champions was
+                showing up again. Pick a sport, take one small step, and log it. That's how it starts.
+              </p>
+            </section>
+
+            <section style={S.pillars}>
+              {PILLARS.map((p, i) => (
+                <div key={p.title} className="pillar" style={{ ...S.pillar, animationDelay: `${0.1 + i * 0.08}s` }}>
+                  <div style={{ ...S.pillarIcon, color: ["#ea580c", "#db2777", "#16a34a"][i] }}><Glyph name={p.icon} size={26} stroke={2} /></div>
+                  <h3 style={S.pillarTitle}>{p.title}</h3>
+                  <p style={S.pillarBody}>{p.body}</p>
+                </div>
+              ))}
+            </section>
+
+            <section>
+              <div style={S.sectionHead}>
+                <h2 style={S.h2}>Choose your sport</h2>
+                <span style={S.sectionHint}>{SPORTS.length} guides · tap any to begin</span>
+              </div>
+              <div style={S.grid}>
+                {SPORTS.map((s, i) => {
+                  const pct = sportPct(s);
+                  return (
+                    <button
+                      key={s.id}
+                      className="card"
+                      style={{ ...S.card, animationDelay: `${0.05 * i}s` }}
+                      onClick={() => { setActiveId(s.id); setView("sport"); setTab("learn"); window.scrollTo(0, 0); }}
+                    >
+                      <div style={{ ...S.cardWash, background: `linear-gradient(135deg, ${s.accentSoft}, transparent)` }} />
+                      <div style={S.cardTop}>
+                        <span style={{ ...S.cardIcon, background: s.accentSoft, color: s.accent }}>
+                          <SportIcon id={s.id} size={28} color={s.accent} stroke={2} />
+                        </span>
+                        {pct > 0 && <ProgressRing pct={pct} accent={s.accent} size={46} />}
+                      </div>
+                      <h3 style={S.cardName}>{s.name}</h3>
+                      <p style={S.cardTag}>{s.tag}</p>
+                      <span style={{ ...S.cardGo, color: s.accent }}>Start training →</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <footer style={S.homeFooter}>
+              <p style={S.footQuote}>
+                "Champions are just beginners who refused to quit."
+              </p>
+              {totalDone > 0 && (
+                <button style={S.resetBtn} onClick={resetAll}>Reset all progress</button>
+              )}
+            </footer>
+          </main>
+        )}
+
+        {/* ---------- SPORT DETAIL ---------- */}
+        {view === "sport" && active && (
+          <main className="fade-in" key={active.id}>
+            <button style={S.back} onClick={() => { setView("home"); setActiveId(null); }}>← All sports</button>
+
+            <section style={{ ...S.sportHero, background: `linear-gradient(135deg, ${active.accentSoft}, transparent)`, borderColor: active.accent + "33" }}>
+              <div style={S.sportHeroInner}>
+                <span style={{ ...S.sportIcon, background: "#fff", color: active.accent, borderColor: active.accent + "33" }}>
+                  <SportIcon id={active.id} size={40} color={active.accent} stroke={1.9} />
+                </span>
+                <div>
+                  <h1 style={S.sportName}>{active.name}</h1>
+                  <p style={{ ...S.sportTag, color: active.accent }}>{active.tag}</p>
+                </div>
+              </div>
+              <div style={S.sportRing}>
+                <ProgressRing pct={sportPct(active)} accent={active.accent} size={68} />
+                <span style={S.sportRingLbl}>complete</span>
+              </div>
+            </section>
+
+            <p style={S.whatText}>{active.what}</p>
+
+            {/* tabs */}
+            <nav style={S.tabs}>
+              {[
+                ["learn", "Skills & Cues"],
+                ["solo", "Solo Drills"],
+                ["partner", "Partner"],
+                ["games", "Mini Games"],
+                ["info", "Gear & Flow"],
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  onClick={() => setTab(id)}
+                  style={{
+                    ...S.tab,
+                    ...(tab === id ? { background: active.accent, color: "#fff", borderColor: active.accent } : {}),
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+
+            {/* LEARN */}
+            {tab === "learn" && (
+              <div className="tab-in">
+                <p style={S.tabIntro}>The first skills every beginner learns. Don't rush — repeat each one until it feels natural, then move on.</p>
+                {active.skills.map((sk, i) => {
+                  const key = `${active.id}:skill:${i}`;
+                  const done = !!progress.done[key];
+                  return (
+                    <div key={i} style={{ ...S.skill, borderColor: done ? active.accent : "rgba(0,0,0,0.08)" }}>
+                      <div style={S.skillHead}>
+                        <span style={{ ...S.skillNum, background: active.accentSoft, color: active.accent }}>{i + 1}</span>
+                        <h3 style={S.skillName}>{sk.name}</h3>
+                        <button
+                          onClick={() => toggle(key)}
+                          style={{ ...S.check, ...(done ? { background: active.accent, borderColor: active.accent, color: "#fff" } : {}) }}
+                          aria-label="mark practiced"
+                        >
+                          {done ? "✓" : ""}
+                        </button>
+                      </div>
+                      <ul style={S.skillPoints}>
+                        {sk.points.map((p, j) => <li key={j}>{p}</li>)}
+                      </ul>
+                      <div style={{ ...S.cue, background: active.accentSoft, color: active.accent }}>
+                        <span style={S.cueLbl}>CUE</span> "{sk.cue}"
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* SOLO / PARTNER / GAMES — drill lists */}
+            {["solo", "partner", "games"].includes(tab) && (
+              <div className="tab-in">
+                <p style={S.tabIntro}>
+                  {tab === "solo" && "Practice alone — no partner needed. These build fluency and confidence one rep at a time."}
+                  {tab === "partner" && "Once you're comfortable solo, add a partner. Communication and timing grow here."}
+                  {tab === "games" && "Mini games make the real sport simple and fun. Learn the big ideas with zero pressure."}
+                </p>
+                {(tab === "solo" ? active.solo : tab === "partner" ? active.partner : active.games).map((d, i) => {
+                  const type = tab === "games" ? "game" : tab;
+                  const key = `${active.id}:${type}:${i}`;
+                  const done = !!progress.done[key];
+                  return (
+                    <button key={i} onClick={() => toggle(key)} style={{ ...S.drill, borderColor: done ? active.accent : "rgba(0,0,0,0.08)", background: done ? active.accentSoft + "66" : "#fff" }}>
+                      <div style={{ ...S.check, marginTop: 2, ...(done ? { background: active.accent, borderColor: active.accent, color: "#fff" } : {}) }}>
+                        {done ? "✓" : ""}
+                      </div>
+                      <div style={S.drillBody}>
+                        <h4 style={S.drillName}>{d[0]}</h4>
+                        <p style={S.drillDesc}>{d[1]}</p>
+                        <span style={{ ...S.drillPurpose, color: active.accent }}>Builds: {d[2]}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* INFO */}
+            {tab === "info" && (
+              <div className="tab-in">
+                <div style={S.infoBlock}>
+                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="gear" size={18} color={active.accent} /></span>What you need</h3>
+                  <ul style={S.infoList}>{active.equipment.map((e, i) => <li key={i}>{e}</li>)}</ul>
+                </div>
+                <div style={S.infoBlock}>
+                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="move" size={18} color={active.accent} /></span>Movement skills it builds</h3>
+                  <div style={S.chips}>{active.movement.map((m, i) => <span key={i} style={{ ...S.chip, background: active.accentSoft, color: active.accent }}>{m}</span>)}</div>
+                </div>
+                <div style={S.infoBlock}>
+                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="clock" size={18} color={active.accent} /></span>A 10–20 min session</h3>
+                  <ol style={S.flow}>
+                    <li>Warm up movement (skips, shuffles, light reps)</li>
+                    <li>One skill focus</li>
+                    <li>One drill</li>
+                    <li>One mini game</li>
+                    <li>Cool-down reflection: "What did I improve today?"</li>
+                  </ol>
+                </div>
+                <div style={S.infoBlock}>
+                  <h3 style={S.infoH}><span style={{ ...S.infoGlyph, color: active.accent }}><Glyph name="strength" size={18} color={active.accent} /></span>Strength that supports it</h3>
+                  <div style={S.chips}>{active.strength.map((m, i) => <span key={i} style={S.chipPlain}>{m}</span>)}</div>
+                </div>
+              </div>
+            )}
+          </main>
+        )}
+      </div>
+
+      {/* cheer toast */}
+      {cheer && (
+        <div className="toast" style={S.toast}>
+          <span style={S.toastDot}>✦</span> {cheer}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------- STYLES ----------
+const S = {
+  root: { minHeight: "100vh", position: "relative", fontFamily: "'Bricolage Grotesque', 'Trebuchet MS', system-ui, sans-serif", color: "#1a1a17", background: "#faf8f3", overflowX: "hidden" },
+  bgGlow: { position: "fixed", inset: 0, pointerEvents: "none", background: "radial-gradient(900px 500px at 80% -10%, rgba(234,88,12,0.08), transparent), radial-gradient(700px 500px at -10% 30%, rgba(22,163,74,0.07), transparent)", zIndex: 0 },
+  shell: { position: "relative", zIndex: 1, maxWidth: 1080, margin: "0 auto", padding: "0 20px 80px" },
+
+  header: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "22px 0 18px", position: "sticky", top: 0, zIndex: 20, background: "rgba(250,248,243,0.85)", backdropFilter: "blur(10px)", borderBottom: "1px solid rgba(0,0,0,0.06)" },
+  brand: { display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 },
+  brandMark: { display: "inline-grid", placeItems: "center", width: 30, height: 30, background: "#1a1a17", color: "#faf8f3", borderRadius: 8, fontSize: 12, transform: "rotate(0deg)" },
+  brandText: { fontWeight: 800, letterSpacing: "0.14em", fontSize: 15 },
+  headerStats: { display: "flex", gap: 18 },
+  stat: { display: "flex", flexDirection: "column", alignItems: "flex-end", lineHeight: 1.1 },
+  statNum: { fontWeight: 800, fontSize: 17 },
+  statLbl: { fontSize: 10, opacity: 0.55, textTransform: "uppercase", letterSpacing: "0.08em" },
+
+  hero: { padding: "54px 0 30px", maxWidth: 640 },
+  kicker: { textTransform: "uppercase", letterSpacing: "0.18em", fontSize: 12, fontWeight: 700, opacity: 0.5, margin: 0 },
+  h1: { fontSize: "clamp(48px, 9vw, 92px)", lineHeight: 0.92, fontWeight: 800, margin: "14px 0 0", letterSpacing: "-0.03em" },
+  h1accent: { background: "linear-gradient(100deg,#ea580c,#db2777)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" },
+  lede: { fontSize: 18, lineHeight: 1.6, marginTop: 22, opacity: 0.8, fontFamily: "Georgia, 'Times New Roman', serif" },
+
+  pillars: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))", gap: 16, margin: "20px 0 56px" },
+  pillar: { background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 18, padding: "22px 22px 24px", boxShadow: "0 1px 0 rgba(0,0,0,0.03)", opacity: 0, animation: "rise .6s cubic-bezier(.2,.7,.3,1) forwards" },
+  pillarIcon: { display: "inline-grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, border: "1.5px solid currentColor", lineHeight: 0 },
+  pillarTitle: { margin: "12px 0 6px", fontSize: 19, fontWeight: 800 },
+  pillarBody: { margin: 0, fontSize: 14.5, lineHeight: 1.55, opacity: 0.72 },
+
+  sectionHead: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 8 },
+  h2: { fontSize: 30, fontWeight: 800, margin: 0, letterSpacing: "-0.02em" },
+  sectionHint: { fontSize: 13, opacity: 0.5 },
+
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(232px,1fr))", gap: 16 },
+  card: { position: "relative", textAlign: "left", background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 20, padding: "20px 20px 22px", cursor: "pointer", overflow: "hidden", opacity: 0, animation: "rise .55s cubic-bezier(.2,.7,.3,1) forwards", transition: "transform .25s, box-shadow .25s, border-color .25s" },
+  cardWash: { position: "absolute", inset: 0, opacity: 0.6, pointerEvents: "none" },
+  cardTop: { position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between" },
+  cardIcon: { display: "grid", placeItems: "center", width: 52, height: 52, borderRadius: 14, lineHeight: 0 },
+  cardName: { position: "relative", margin: "14px 0 4px", fontSize: 21, fontWeight: 800 },
+  cardTag: { position: "relative", margin: 0, fontSize: 13.5, opacity: 0.65, lineHeight: 1.4, minHeight: 38 },
+  cardGo: { position: "relative", display: "inline-block", marginTop: 12, fontSize: 13.5, fontWeight: 700 },
+
+  homeFooter: { marginTop: 64, paddingTop: 32, borderTop: "1px solid rgba(0,0,0,0.08)", textAlign: "center" },
+  footQuote: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 20, opacity: 0.7 },
+  resetBtn: { marginTop: 8, background: "none", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 99, padding: "7px 16px", fontSize: 12.5, cursor: "pointer", color: "#1a1a17", opacity: 0.6 },
+
+  back: { background: "none", border: "none", cursor: "pointer", fontSize: 14.5, fontWeight: 600, opacity: 0.6, padding: "24px 0 8px" },
+
+  sportHero: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, border: "1px solid", borderRadius: 24, padding: "26px 28px", flexWrap: "wrap" },
+  sportHeroInner: { display: "flex", alignItems: "center", gap: 18 },
+  sportIcon: { display: "grid", placeItems: "center", width: 72, height: 72, borderRadius: 18, border: "1.5px solid", lineHeight: 0, flexShrink: 0 },
+  sportName: { margin: 0, fontSize: "clamp(30px,5vw,46px)", fontWeight: 800, letterSpacing: "-0.02em" },
+  sportTag: { margin: "4px 0 0", fontSize: 15, fontWeight: 700 },
+  sportRing: { display: "flex", flexDirection: "column", alignItems: "center", gap: 2 },
+  sportRingLbl: { fontSize: 10.5, opacity: 0.55, textTransform: "uppercase", letterSpacing: "0.08em" },
+
+  whatText: { fontFamily: "Georgia, serif", fontSize: 18, lineHeight: 1.6, opacity: 0.82, margin: "24px 2px 6px", maxWidth: 760 },
+
+  tabs: { display: "flex", gap: 8, flexWrap: "wrap", margin: "24px 0 26px", position: "sticky", top: 70, zIndex: 10, background: "rgba(250,248,243,0.9)", backdropFilter: "blur(8px)", padding: "8px 0" },
+  tab: { background: "#fff", border: "1px solid rgba(0,0,0,0.12)", borderRadius: 99, padding: "9px 16px", fontSize: 13.5, fontWeight: 700, cursor: "pointer", color: "#1a1a17", transition: "all .2s" },
+
+  tabIntro: { fontSize: 15, opacity: 0.7, lineHeight: 1.55, margin: "0 0 22px", maxWidth: 680 },
+
+  skill: { background: "#fff", border: "1.5px solid", borderRadius: 18, padding: "18px 20px 16px", marginBottom: 14, transition: "border-color .3s" },
+  skillHead: { display: "flex", alignItems: "center", gap: 12 },
+  skillNum: { display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, fontWeight: 800, fontSize: 14, flexShrink: 0 },
+  skillName: { margin: 0, fontSize: 19, fontWeight: 800, flex: 1 },
+  skillPoints: { margin: "12px 0 14px", paddingLeft: 20, lineHeight: 1.7, fontSize: 14.5, opacity: 0.82 },
+  cue: { display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 10, fontSize: 15, fontWeight: 700, fontStyle: "italic" },
+  cueLbl: { fontStyle: "normal", fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", opacity: 0.7, padding: "2px 6px", border: "1px solid currentColor", borderRadius: 5 },
+
+  check: { width: 28, height: 28, borderRadius: 9, border: "2px solid rgba(0,0,0,0.18)", background: "#fff", cursor: "pointer", flexShrink: 0, display: "grid", placeItems: "center", fontSize: 15, fontWeight: 800, transition: "all .2s" },
+
+  drill: { display: "flex", gap: 14, alignItems: "flex-start", width: "100%", textAlign: "left", border: "1.5px solid", borderRadius: 16, padding: "16px 18px", marginBottom: 12, cursor: "pointer", transition: "all .25s" },
+  drillBody: { flex: 1 },
+  drillName: { margin: 0, fontSize: 17, fontWeight: 800 },
+  drillDesc: { margin: "4px 0 8px", fontSize: 14.5, opacity: 0.78, lineHeight: 1.5 },
+  drillPurpose: { fontSize: 12.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" },
+
+  infoBlock: { background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 18, padding: "20px 22px", marginBottom: 14 },
+  infoH: { display: "flex", alignItems: "center", gap: 9, margin: "0 0 12px", fontSize: 18, fontWeight: 800 },
+  infoGlyph: { display: "inline-grid", placeItems: "center", lineHeight: 0 },
+  infoList: { margin: 0, paddingLeft: 20, lineHeight: 1.8, fontSize: 15, opacity: 0.82 },
+  chips: { display: "flex", flexWrap: "wrap", gap: 8 },
+  chip: { padding: "7px 13px", borderRadius: 99, fontSize: 13.5, fontWeight: 700 },
+  chipPlain: { padding: "7px 13px", borderRadius: 99, fontSize: 13.5, fontWeight: 600, background: "#f1ede4", color: "#1a1a17" },
+  flow: { margin: 0, paddingLeft: 20, lineHeight: 1.9, fontSize: 15, opacity: 0.85 },
+
+  toast: { position: "fixed", bottom: 26, left: "50%", transform: "translateX(-50%)", background: "#1a1a17", color: "#faf8f3", padding: "13px 22px", borderRadius: 99, fontSize: 14.5, fontWeight: 600, boxShadow: "0 12px 40px rgba(0,0,0,0.25)", zIndex: 100, display: "flex", alignItems: "center", gap: 9, maxWidth: "90vw" },
+  toastDot: { color: "#fbbf24" },
+};
+
+const CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap');
+* { box-sizing: border-box; }
+body { margin: 0; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fade .4s ease both; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.tab-in { animation: tabin .35s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes tabin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.10); }
+.card:active { transform: translateY(-1px); }
+.toast { animation: toastin .35s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes toastin { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+button { font-family: inherit; }
+ul li::marker { color: rgba(0,0,0,0.3); }
+`;
