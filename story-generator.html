@@ -3,23 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Story Spinner — Story ideas for young writers</title>
+<title>The Story Spinner — Story ideas for young writers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#FBF7EF;
-    --ink:#2B2620;
-    --ink-soft:#6B6358;
-    --ink-faint:#A89E90;
-    --card:#FFFFFF;
-    --line:#EBE3D6;
-    --line-strong:#D9CFBE;
+    --bg:#FBF7EF; --ink:#2B2620; --ink-soft:#6B6358; --ink-faint:#A89E90;
+    --card:#FFFFFF; --line:#EBE3D6; --line-strong:#D9CFBE;
     --shadow:0 1px 2px rgba(43,38,32,.04), 0 8px 24px rgba(43,38,32,.06);
-    --r:18px;
-    --font-display:"Fraunces", Georgia, serif;
-    --font-body:"Nunito", system-ui, sans-serif;
+    --r:18px; --font-display:"Fraunces", Georgia, serif; --font-body:"Nunito", system-ui, sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
@@ -30,101 +23,72 @@
       radial-gradient(circle at 88% 4%, rgba(168,200,255,.16), transparent 40%),
       radial-gradient(circle at 78% 96%, rgba(180,235,200,.16), transparent 42%),
       var(--bg);
-    color:var(--ink);
-    min-height:100vh;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding:clamp(16px,4vw,48px) 16px 64px;
-    line-height:1.5;
+    color:var(--ink); min-height:100vh; display:flex; align-items:flex-start; justify-content:center;
+    padding:clamp(16px,4vw,48px) 16px 64px; line-height:1.5;
   }
-  .shell{width:100%;max-width:600px}
-
+  .shell{width:100%;max-width:640px}
   header{text-align:center;margin-bottom:clamp(24px,5vw,40px)}
-  .kicker{
-    font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--ink-faint);margin-bottom:10px;
-  }
-  h1{
-    font-family:var(--font-display);
-    font-weight:500;
-    font-size:clamp(34px,8vw,52px);
-    line-height:1.02;
-    letter-spacing:-.01em;
-    margin-bottom:12px;
-  }
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+  h1{font-family:var(--font-display);font-weight:500;font-size:clamp(34px,8vw,52px);line-height:1.02;letter-spacing:-.01em;margin-bottom:12px}
   h1 em{font-style:italic;color:#C7791F}
-  .sub{font-size:15px;color:var(--ink-soft);max-width:38ch;margin:0 auto;font-weight:600}
-
-  .step-label{
-    font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--ink-faint);margin:0 4px 12px;display:flex;align-items:center;gap:8px;
-  }
-  .step-num{
-    width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--bg);
-    display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;
-  }
-
-  .plot-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));
-    gap:10px;margin-bottom:32px;
-  }
-  .plot{
-    border:1.5px solid var(--line);background:var(--card);border-radius:14px;
-    padding:14px 8px 12px;cursor:pointer;text-align:center;font-family:var(--font-body);
-    transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;
-    color:var(--ink-soft);
-  }
-  .plot:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:var(--shadow)}
-  .plot.on{border-color:var(--ink);color:var(--ink);box-shadow:var(--shadow);transform:translateY(-2px)}
-  .plot .emoji{font-size:26px;display:block;margin-bottom:7px;line-height:1}
-  .plot .name{font-size:12px;font-weight:800;line-height:1.2}
-
-  .spin{
-    width:100%;border:none;cursor:pointer;font-family:var(--font-body);
-    background:var(--ink);color:var(--bg);font-weight:800;font-size:16px;
-    padding:16px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:10px;
-    transition:transform .12s ease, opacity .16s ease;box-shadow:var(--shadow);
-  }
+  .sub{font-size:15px;color:var(--ink-soft);max-width:40ch;margin:0 auto;font-weight:600}
+  .step-label{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:0 4px 12px;display:flex;align-items:center;gap:8px}
+  .step-num{width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+  .toggle{display:flex;gap:8px;overflow-x:auto;padding:4px 4px 12px;margin-bottom:28px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+  .toggle::-webkit-scrollbar{height:6px}
+  .toggle::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:100px}
+  .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:100px;padding:9px 15px;cursor:pointer;font-family:var(--font-body);font-weight:800;font-size:13px;color:var(--ink-soft);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;transition:transform .14s ease, border-color .14s ease, color .14s ease, box-shadow .14s ease}
+  .chip:hover{border-color:var(--line-strong);color:var(--ink)}
+  .chip.on{border-color:var(--ink);color:var(--ink);box-shadow:var(--shadow);transform:translateY(-1px)}
+  .chip .em{font-size:16px;line-height:1}
+  .actions-row{display:flex;gap:10px;margin-bottom:8px}
+  .spin{flex:1;border:none;cursor:pointer;font-family:var(--font-body);background:var(--ink);color:var(--bg);font-weight:800;font-size:16px;padding:16px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease, opacity .16s ease;box-shadow:var(--shadow)}
   .spin:hover{opacity:.92}
   .spin:active{transform:scale(.985)}
   .spin .dice{font-size:20px;transition:transform .5s cubic-bezier(.2,.9,.3,1.4)}
   .spin.rolling .dice{transform:rotate(360deg)}
-
-  .card{
-    margin-top:28px;background:var(--card);border:1.5px solid var(--line);
-    border-radius:var(--r);padding:clamp(22px,5vw,32px);box-shadow:var(--shadow);
-    opacity:0;transform:translateY(10px);transition:opacity .35s ease, transform .35s ease;
-  }
+  .guide-btn{flex:0 0 auto;border:1.5px solid var(--line-strong);background:var(--card);cursor:pointer;font-family:var(--font-body);font-weight:800;font-size:14px;color:var(--ink-soft);padding:0 18px;border-radius:var(--r);display:inline-flex;align-items:center;gap:8px;transition:background .14s ease, color .14s ease, border-color .14s ease}
+  .guide-btn:hover{background:var(--bg);color:var(--ink);border-color:var(--ink-faint)}
+  .guide-btn .ic{font-size:17px}
+  .card{margin-top:24px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:clamp(22px,5vw,32px);box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:opacity .35s ease, transform .35s ease}
   .card.show{opacity:1;transform:translateY(0)}
-  .tag{
-    display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;
-    letter-spacing:.04em;padding:6px 13px;border-radius:100px;margin-bottom:18px;
-  }
+  .tag{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.04em;padding:6px 13px;border-radius:100px;margin-bottom:18px}
   .tag .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.55}
-  .prompt{
-    font-family:var(--font-display);font-weight:400;font-size:clamp(19px,4.6vw,23px);
-    line-height:1.55;letter-spacing:-.005em;color:var(--ink);
-  }
-  .footer{
-    display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;padding-top:20px;
-    border-top:1.5px solid var(--line);
-  }
-  .act{
-    font-family:var(--font-body);font-weight:800;font-size:14px;cursor:pointer;
-    border:1.5px solid var(--line-strong);background:transparent;color:var(--ink-soft);
-    padding:10px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;
-    transition:background .14s ease, color .14s ease, border-color .14s ease;
-  }
+  .prompt{font-family:var(--font-display);font-weight:400;font-size:clamp(19px,4.6vw,23px);line-height:1.55;letter-spacing:-.005em;color:var(--ink)}
+  .footer{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;padding-top:20px;border-top:1.5px solid var(--line)}
+  .act{font-family:var(--font-body);font-weight:800;font-size:14px;cursor:pointer;border:1.5px solid var(--line-strong);background:transparent;color:var(--ink-soft);padding:10px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;transition:background .14s ease, color .14s ease, border-color .14s ease}
   .act:hover{background:var(--bg);color:var(--ink);border-color:var(--ink-faint)}
   .act .ic{font-size:16px}
   .act.copied{color:#2C7A4B;border-color:#2C7A4B}
-
-  .empty{text-align:center;color:var(--ink-faint);font-weight:600;font-size:14px;padding:8px 0}
-
-  @media (max-width:420px){
-    .plot-grid{grid-template-columns:repeat(3,1fr)}
-  }
+  .overlay{position:fixed;inset:0;background:rgba(43,38,32,.42);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:0;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s ease}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .sheet{background:var(--bg);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:clamp(22px,5vw,34px);transform:translateY(20px);transition:transform .3s cubic-bezier(.2,.8,.3,1);box-shadow:0 -10px 40px rgba(43,38,32,.18)}
+  .overlay.open .sheet{transform:translateY(0)}
+  @media (min-width:560px){.overlay{align-items:center;padding:24px}.sheet{border-radius:24px}}
+  .sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+  .sheet-tag{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;padding:7px 14px;border-radius:100px}
+  .sheet-tag .em{font-size:17px}
+  .closeb{border:none;background:var(--card);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);flex:0 0 auto}
+  .closeb:hover{color:var(--ink)}
+  .sheet h2{font-family:var(--font-display);font-weight:500;font-size:clamp(24px,6vw,32px);margin:14px 0 4px;letter-spacing:-.01em}
+  .sheet .oneliner{font-style:italic;font-family:var(--font-display);color:var(--ink-soft);font-size:17px;margin-bottom:20px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+  .meta{font-size:12px;font-weight:700;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:7px 12px;color:var(--ink-soft)}
+  .meta b{color:var(--ink);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;font-weight:800}
+  .mountain-title{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
+  .mountain{display:flex;flex-direction:column;gap:0;margin-bottom:22px}
+  .stage{display:flex;gap:14px;position:relative;padding-bottom:18px}
+  .stage:last-child{padding-bottom:0}
+  .stage::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line-strong)}
+  .stage:last-child::before{display:none}
+  .stage-dot{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--card);border:2px solid var(--line-strong);position:relative;z-index:1}
+  .stage-body{padding-top:2px}
+  .stage-body .s-name{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:2px}
+  .stage-body .s-text{font-size:15px;font-weight:600;color:var(--ink)}
+  .examples{font-size:14px;color:var(--ink-soft);font-weight:600;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
+  .examples b{color:var(--ink);font-weight:800}
+  .note{font-size:13px;color:var(--ink-faint);font-weight:600;margin-top:18px;text-align:center;line-height:1.6}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
 <body>
@@ -132,130 +96,152 @@
   <header>
     <div class="kicker">For young writers · ages 7–10</div>
     <h1>The Story <em>Spinner</em></h1>
-    <p class="sub">Pick a kind of story, then spin up an idea to write about.</p>
+    <p class="sub">Pick a kind of story, spin up an idea, and peek at the guide to see how that story is built.</p>
   </header>
-
   <div class="step-label"><span class="step-num">1</span> Choose your kind of story</div>
-  <div class="plot-grid" id="plotGrid"></div>
-
-  <div class="step-label"><span class="step-num">2</span> Spin an idea</div>
-  <button class="spin" id="spinBtn" onclick="spin()">
-    <span class="dice">🎲</span> Spin a story idea
-  </button>
-
+  <div class="toggle" id="toggle"></div>
+  <div class="step-label"><span class="step-num">2</span> Spin an idea — or open the guide</div>
+  <div class="actions-row">
+    <button class="spin" id="spinBtn" onclick="spin()"><span class="dice">🎲</span> Spin a story idea</button>
+    <button class="guide-btn" onclick="openGuide()"><span class="ic">🧭</span> Guide</button>
+  </div>
   <div class="card" id="card">
     <span class="tag" id="cardTag"></span>
     <p class="prompt" id="cardPrompt"></p>
     <div class="footer">
       <button class="act" id="copyBtn" onclick="copyPrompt()"><span class="ic">📋</span> Copy idea</button>
       <button class="act" onclick="spin()"><span class="ic">🔄</span> Another idea</button>
+      <button class="act" onclick="openGuide()"><span class="ic">🧭</span> How is this story built?</button>
     </div>
   </div>
 </div>
-
+<div class="overlay" id="overlay" onclick="bgClose(event)">
+  <div class="sheet" id="sheet">
+    <div class="sheet-head">
+      <span class="sheet-tag" id="gTag"></span>
+      <button class="closeb" onclick="closeGuide()">✕</button>
+    </div>
+    <h2 id="gTitle"></h2>
+    <p class="oneliner" id="gOneliner"></p>
+    <div class="meta-row">
+      <div class="meta"><b>What happens</b><span id="gWhat"></span></div>
+      <div class="meta"><b>Core theme</b><span id="gTheme"></span></div>
+    </div>
+    <div class="mountain-title">⛰️ The Story Mountain</div>
+    <div class="mountain" id="gMountain"></div>
+    <div class="examples" id="gExamples"></div>
+    <p class="note">Most great stories mix a few of these together — they're patterns to build on, not boxes to stay inside.</p>
+  </div>
+</div>
 <script>
 const PLOTS = {
-  monster:{ name:"Beat the monster", emoji:"👻", color:"#A32D2D", bg:"#FCEBEB", prompts:[
-    "Something has been eating the streetlights on Maple Lane — one by one, the bulbs go dark. By now the whole street is black at night, and Theo is the only one who has seen what's doing it.",
-    "A giant thundercloud has parked over the town of Brightwick and won't move. The grown-ups say it's just the weather. Lily is sure it's waiting for something.",
-    "Every kid is scared of the huge growling dog that guards the park shortcut. Mia is scared too — until the morning she spots it limping and whimpering, and nobody else stops to help.",
-    "The school pool has been 'closed for repairs' all term. But Jordan can hear splashing in there at night, and whatever's making it is definitely not a broken pipe.",
-    "A shadow has started following Sam home — but only on days he tells a lie. Today he told a really big one, and the shadow is getting closer."
-  ]},
-  rags:{ name:"Big break", emoji:"⭐", color:"#8A5A0B", bg:"#FAEEDA", prompts:[
-    "Benny plays football in trainers two sizes too big, because he's never owned proper boots. Then the team captain twists his ankle the day before the biggest match of the year — and the coach turns and looks straight at Benny.",
-    "Zara doodles comics in the margins of every notebook she owns. Everyone laughs at them — until a famous illustrator visits school and picks one of her pages up off the floor.",
-    "Oscar just moved into the smallest flat in town, with no friends and no toys. Then he finds a half-built robot left in the recycling room, just waiting for someone to switch it on.",
-    "Ruby gets picked last for everything. So when chess club starts, she's sure she'll be last there too — until the first lesson, when something in her brain suddenly goes click.",
-    "Finn has helped at his gran's food stall every weekend since he was tiny. The day a very important customer tastes one of his gran's dishes, Finn realises the secret recipe is one he made up himself."
-  ]},
-  quest:{ name:"The quest", emoji:"🗺️", color:"#0F6E56", bg:"#E1F5EE", prompts:[
-    "Three best friends find a hand-drawn map tucked inside a hundred-year-old library book. The X is right in the middle of their own town — somewhere they walk past every single day and have never once looked twice at.",
-    "A message in a bottle washes up on the school trip. Inside is one line: 'If you find this, the lighthouse keeper still needs help.' The lighthouse has stood empty for thirty years.",
-    "Cleo's grandad always promised to show her 'the best view in the whole world' — but he got too poorly to take her. Now she has his old walking journal and one week of holiday to find it on her own.",
-    "Jasper's dog bolts out of the gate and runs further than Jasper has ever been. Following him leads to a part of town Jasper never knew existed — full of people who seem to have been waiting for him to show up.",
-    "Someone is leaving clues all over school: in lockers, under desks, on the back of the lunch menu. Each one points a little closer to whatever is hidden beneath the old sports hall."
-  ]},
-  voyage:{ name:"There & back", emoji:"🚪", color:"#3C3489", bg:"#EEEDFE", prompts:[
-    "During a power cut, Nadia finds a door at the back of her wardrobe that wasn't there yesterday. Behind it is a world stuck forever in the golden minute before sunset — where the kids have never once seen the dark.",
-    "Sent to spend the whole summer with his great-aunt in a tiny seaside village with no Wi-Fi, Marcus is furious. By August he can sail a boat, has a best friend, and has found something under the pier that nobody will explain.",
-    "A school nature trip goes wrong in thick fog and Lily gets separated from the group. The forest on the other side of the old fence isn't on any map — and something in there has started following her footsteps.",
-    "Ezra dozes off on the train home and wakes at a station that isn't on the line. Everyone there greets him by name and acts like he's been gone for years. He's never set foot here in his life.",
-    "There's a snow globe in the attic that doesn't show a tiny snowy scene when you shake it. It shows a real place. And the harder Maya shakes it, the more she feels herself being pulled inside."
-  ]},
-  comedy:{ name:"Mix-up", emoji:"😂", color:"#993556", bg:"#FBEAF0", prompts:[
-    "Two kids who absolutely cannot stand each other have both been cast as the best-friend leads in the school play. First rehearsal is Monday, and the whole town is coming to opening night.",
-    "Jake meant to send a super-embarrassing voice note to one friend. He accidentally sent it to the entire class group chat. Now he has a whole school day to survive.",
-    "Twins Sofia and Leo swap classes for a laugh — and both get called on, in the very same minute, to do the one thing only the other twin knows how to do.",
-    "Priya's hamster escapes on the exact morning the school inspector arrives. The hamster finds the inspector before anyone else does.",
-    "Three kids secretly enter the bake-off with the same exact recipe, each swearing it's their own grandmother's top-secret invention. Judging starts in ten minutes."
-  ]},
-  tragedy:{ name:"Hard choice", emoji:"😔", color:"#5F5E5A", bg:"#F1EFE8", prompts:[
-    "Callum is the fastest runner in school and never lets anyone forget it. Then, in the big cross-country race, he stops to help a hurt runner, finishes dead last — and has to figure out what kind of person that makes him.",
-    "Maya tells one tiny lie to dodge trouble. Then it grows. And grows. By the time it really matters, the truth will hurt someone she loves — but so will staying quiet.",
-    "Ava has kept her best friend since nursery by agreeing with everything she says. Now that friend wants to freeze out the new girl, and Ava knows it's wrong — but speaking up might cost her the only friend she has.",
-    "Tom has copied spelling answers from the girl next to him all year. Now he's been chosen to represent the school in the big spelling bee — and she came second.",
-    "Felix worked the whole year to be made team captain. The day it's finally announced, he realises the only reason he wanted it was to impress someone who never even noticed he was trying."
-  ]},
-  rebirth:{ name:"Fresh start", emoji:"🌱", color:"#3B6D11", bg:"#EAF3DE", prompts:[
-    "Since switching schools, Dylan refuses to join clubs, try new things, or talk to anyone first. Then a teacher pairs him up — for a whole term — with the single most cheerful, chatty kid in the year.",
-    "Gracie used to love painting, until someone laughed at her best picture. She hasn't touched a brush in two years. Then a new art teacher finds that exact painting in the lost-property box and pins it on the wall.",
-    "Luca decides he'll be the class clown, because if everyone's laughing, nobody looks too closely. It works perfectly — right up until the class writes anonymous notes saying what they really think of each other.",
-    "Sam and his grandad haven't spoken in two years, after a falling-out neither of them really started. Then Sam gets a school project: interview someone over sixty about their life. He has one week and no other ideas.",
-    "Hana has let her big brother take the blame for her mistakes her whole life. Now he's gone up to secondary school, and for the first time ever, she's facing the music all by herself."
-  ]}
+  monster:{name:"Overcoming the Monster",emoji:"👻",color:"#A32D2D",bg:"#FCEBEB",oneliner:"Fight the thing you fear",what:"A hero defeats a dangerous threat",theme:"Courage vs fear",
+    mountain:[["Beginning","A scary threat appears"],["Middle","The hero struggles and prepares"],["Climax","The final showdown"],["Ending","Safety is restored"]],
+    examples:"Jaws · Star Wars · How to Train Your Dragon",
+    prompts:[
+      "Something has been eating the streetlights on Maple Lane — one by one, the bulbs go dark. By now the whole street is black at night, and Theo is the only one who has seen what's doing it.",
+      "A giant thundercloud has parked over the town of Brightwick and won't move. The grown-ups say it's just the weather. Lily is sure it's waiting for something.",
+      "Every kid is scared of the huge growling dog that guards the park shortcut. Mia is scared too — until the morning she spots it limping and whimpering, and nobody else stops to help.",
+      "The school pool has been 'closed for repairs' all term. But Jordan can hear splashing in there at night, and whatever's making it is definitely not a broken pipe.",
+      "A shadow has started following Sam home — but only on days he tells a lie. Today he told a really big one, and the shadow is getting closer."
+    ]},
+  rags:{name:"Rags to Riches",emoji:"⭐",color:"#8A5A0B",bg:"#FAEEDA",oneliner:"Rise upward",what:"An ordinary person rises to success",theme:"Hope, identity, potential",
+    mountain:[["Beginning","Weak, poor, or ignored"],["Middle","Growth and new chances"],["Climax","One big test"],["Ending","Recognition and success"]],
+    examples:"Cinderella · Rocky · Matilda",
+    prompts:[
+      "Benny plays football in trainers two sizes too big, because he's never owned proper boots. Then the team captain twists his ankle the day before the biggest match of the year — and the coach turns and looks straight at Benny.",
+      "Zara doodles comics in the margins of every notebook she owns. Everyone laughs at them — until a famous illustrator visits school and picks one of her pages up off the floor.",
+      "Oscar just moved into the smallest flat in town, with no friends and no toys. Then he finds a half-built robot left in the recycling room, just waiting for someone to switch it on.",
+      "Ruby gets picked last for everything. So when chess club starts, she's sure she'll be last there too — until the first lesson, when something in her brain suddenly goes click.",
+      "Finn has helped at his gran's food stall every weekend since he was tiny. The day a very important customer tastes one of his gran's dishes, Finn realises the secret recipe is one he made up himself."
+    ]},
+  quest:{name:"The Quest",emoji:"🗺️",color:"#0F6E56",bg:"#E1F5EE",oneliner:"Journey outward",what:"A journey to reach an important goal",theme:"Purpose and perseverance",
+    mountain:[["Beginning","The mission begins"],["Middle","Obstacles and trials"],["Climax","The final challenge"],["Ending","The goal is reached"]],
+    examples:"The Lord of the Rings · Finding Nemo",
+    prompts:[
+      "Three best friends find a hand-drawn map tucked inside a hundred-year-old library book. The X is right in the middle of their own town — somewhere they walk past every single day and have never once looked twice at.",
+      "A message in a bottle washes up on the school trip. Inside is one line: 'If you find this, the lighthouse keeper still needs help.' The lighthouse has stood empty for thirty years.",
+      "Cleo's grandad always promised to show her 'the best view in the whole world' — but he got too poorly to take her. Now she has his old walking journal and one week of holiday to find it on her own.",
+      "Jasper's dog bolts out of the gate and runs further than Jasper has ever been. Following him leads to a part of town Jasper never knew existed — full of people who seem to have been waiting for him to show up.",
+      "Someone is leaving clues all over school: in lockers, under desks, on the back of the lunch menu. Each one points a little closer to whatever is hidden beneath the old sports hall."
+    ]},
+  voyage:{name:"Voyage and Return",emoji:"🚪",color:"#3C3489",bg:"#EEEDFE",oneliner:"Leave and come back changed",what:"Someone enters a strange world and returns changed",theme:"Transformation through experience",
+    mountain:[["Beginning","Leave normal life behind"],["Middle","The strange world turns dangerous"],["Climax","Escape or survival"],["Ending","Return home, wiser"]],
+    examples:"The Wizard of Oz · Spirited Away · Alice in Wonderland",
+    prompts:[
+      "During a power cut, Nadia finds a door at the back of her wardrobe that wasn't there yesterday. Behind it is a world stuck forever in the golden minute before sunset — where the kids have never once seen the dark.",
+      "Sent to spend the whole summer with his great-aunt in a tiny seaside village with no Wi-Fi, Marcus is furious. By August he can sail a boat, has a best friend, and has found something under the pier that nobody will explain.",
+      "A school nature trip goes wrong in thick fog and Lily gets separated from the group. The forest on the other side of the old fence isn't on any map — and something in there has started following her footsteps.",
+      "Ezra dozes off on the train home and wakes at a station that isn't on the line. Everyone there greets him by name and acts like he's been gone for years. He's never set foot here in his life.",
+      "There's a snow globe in the attic that doesn't show a tiny snowy scene when you shake it. It shows a real place. And the harder Maya shakes it, the more she feels herself being pulled inside."
+    ]},
+  comedy:{name:"Comedy",emoji:"😂",color:"#993556",bg:"#FBEAF0",oneliner:"Confusion becomes harmony",what:"Confusion and conflict are sorted into harmony",theme:"Belonging and harmony",
+    mountain:[["Beginning","A muddle or mix-up starts"],["Middle","Misunderstandings grow and grow"],["Climax","The truth comes out"],["Ending","Everyone is friends again"]],
+    examples:"A Midsummer Night's Dream · Paddington",
+    prompts:[
+      "Two kids who absolutely cannot stand each other have both been cast as the best-friend leads in the school play. First rehearsal is Monday, and the whole town is coming to opening night.",
+      "Jake meant to send a super-embarrassing voice note to one friend. He accidentally sent it to the entire class group chat. Now he has a whole school day to survive.",
+      "Twins Sofia and Leo swap classes for a laugh — and both get called on, in the very same minute, to do the one thing only the other twin knows how to do.",
+      "Priya's hamster escapes on the exact morning the school inspector arrives. The hamster finds the inspector before anyone else does.",
+      "Three kids secretly enter the bake-off with the same exact recipe, each swearing it's their own grandmother's top-secret invention. Judging starts in ten minutes."
+    ]},
+  tragedy:{name:"Tragedy",emoji:"😔",color:"#5F5E5A",bg:"#F1EFE8",oneliner:"Rise then fall",what:"A person falls because of flaws or bad choices",theme:"Pride and self-undoing",
+    mountain:[["Beginning","The character has power or potential"],["Middle","A flaw or bad choice grows"],["Climax","The big mistake"],["Ending","Loss — and a lesson"]],
+    examples:"Macbeth · Icarus",
+    prompts:[
+      "Callum is the fastest runner in school and never lets anyone forget it. Then, in the big cross-country race, he stops to help a hurt runner, finishes dead last — and has to figure out what kind of person that makes him.",
+      "Maya tells one tiny lie to dodge trouble. Then it grows. And grows. By the time it really matters, the truth will hurt someone she loves — but so will staying quiet.",
+      "Ava has kept her best friend since nursery by agreeing with everything she says. Now that friend wants to freeze out the new girl, and Ava knows it's wrong — but speaking up might cost her the only friend she has.",
+      "Tom has copied spelling answers from the girl next to him all year. Now he's been chosen to represent the school in the big spelling bee — and she came second.",
+      "Felix worked the whole year to be made team captain. The day it's finally announced, he realises the only reason he wanted it was to impress someone who never even noticed he was trying."
+    ]},
+  rebirth:{name:"Rebirth",emoji:"🌱",color:"#3B6D11",bg:"#EAF3DE",oneliner:"Darkness becomes renewal",what:"A stuck or damaged person changes and is renewed",theme:"Forgiveness and renewal",
+    mountain:[["Beginning","The character is trapped or lost"],["Middle","A crisis forces a change"],["Climax","A big realisation"],["Ending","A new start"]],
+    examples:"A Christmas Carol · The Lion King · Beauty and the Beast",
+    prompts:[
+      "Since switching schools, Dylan refuses to join clubs, try new things, or talk to anyone first. Then a teacher pairs him up — for a whole term — with the single most cheerful, chatty kid in the year.",
+      "Gracie used to love painting, until someone laughed at her best picture. She hasn't touched a brush in two years. Then a new art teacher finds that exact painting in the lost-property box and pins it on the wall.",
+      "Luca decides he'll be the class clown, because if everyone's laughing, nobody looks too closely. It works perfectly — right up until the class writes anonymous notes saying what they really think of each other.",
+      "Sam and his grandad haven't spoken in two years, after a falling-out neither of them really started. Then Sam gets a school project: interview someone over sixty about their life. He has one week and no other ideas.",
+      "Hana has let her big brother take the blame for her mistakes her whole life. Now he's gone up to secondary school, and for the first time ever, she's facing the music all by herself."
+    ]}
 };
-
-let current = "monster";
-let lastIndex = -1;
-
-const grid = document.getElementById("plotGrid");
+let current = "monster", lastIndex = -1;
+const toggle = document.getElementById("toggle");
 Object.entries(PLOTS).forEach(([key, p], i)=>{
   const b = document.createElement("button");
-  b.className = "plot" + (i===0 ? " on" : "");
+  b.className = "chip" + (i===0 ? " on" : "");
   b.dataset.key = key;
-  b.innerHTML = `<span class="emoji">${p.emoji}</span><span class="name">${p.name}</span>`;
+  b.innerHTML = `<span class="em">${p.emoji}</span>${p.name}`;
   b.onclick = ()=>selectPlot(key, b);
-  grid.appendChild(b);
+  toggle.appendChild(b);
 });
-
 function selectPlot(key, el){
-  current = key;
-  lastIndex = -1;
-  document.querySelectorAll(".plot").forEach(p=>p.classList.remove("on"));
+  current = key; lastIndex = -1;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
   el.classList.add("on");
+  el.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
 }
-
 function spin(){
   const p = PLOTS[current];
-  let i;
-  do { i = Math.floor(Math.random() * p.prompts.length); }
-  while (p.prompts.length > 1 && i === lastIndex);
+  let i; do { i = Math.floor(Math.random()*p.prompts.length); } while (p.prompts.length>1 && i===lastIndex);
   lastIndex = i;
-
   const btn = document.getElementById("spinBtn");
-  btn.classList.remove("rolling");
-  void btn.offsetWidth;
-  btn.classList.add("rolling");
-
+  btn.classList.remove("rolling"); void btn.offsetWidth; btn.classList.add("rolling");
   const tag = document.getElementById("cardTag");
   tag.innerHTML = `<span class="dot"></span>${p.name}`;
-  tag.style.color = p.color;
-  tag.style.background = p.bg;
-
+  tag.style.color = p.color; tag.style.background = p.bg;
   document.getElementById("cardPrompt").textContent = p.prompts[i];
-
   const card = document.getElementById("card");
-  card.classList.remove("show");
-  void card.offsetWidth;
-  card.classList.add("show");
-
+  card.classList.remove("show"); void card.offsetWidth; card.classList.add("show");
+  resetCopy();
+}
+function resetCopy(){
   const cp = document.getElementById("copyBtn");
   cp.classList.remove("copied");
   cp.querySelector(".ic").textContent = "📋";
   cp.childNodes[1].textContent = " Copy idea";
 }
-
 function copyPrompt(){
   const text = document.getElementById("cardPrompt").textContent;
   navigator.clipboard.writeText(text).then(()=>{
@@ -263,14 +249,31 @@ function copyPrompt(){
     cp.classList.add("copied");
     cp.querySelector(".ic").textContent = "✓";
     cp.childNodes[1].textContent = " Copied!";
-    setTimeout(()=>{
-      cp.classList.remove("copied");
-      cp.querySelector(".ic").textContent = "📋";
-      cp.childNodes[1].textContent = " Copy idea";
-    }, 1800);
+    setTimeout(resetCopy, 1800);
   });
 }
-
+function openGuide(){
+  const p = PLOTS[current];
+  const gt = document.getElementById("gTag");
+  gt.innerHTML = `<span class="em">${p.emoji}</span>${p.name}`;
+  gt.style.color = p.color; gt.style.background = p.bg;
+  document.getElementById("gTitle").textContent = p.name;
+  document.getElementById("gOneliner").textContent = "\u201C" + p.oneliner + "\u201D";
+  document.getElementById("gWhat").textContent = p.what;
+  document.getElementById("gTheme").textContent = p.theme;
+  const m = document.getElementById("gMountain");
+  const dots = ["🌱","⛰️","🔥","🏁"];
+  m.innerHTML = p.mountain.map((s, idx)=>`<div class="stage"><div class="stage-dot">${dots[idx]||"•"}</div><div class="stage-body"><div class="s-name">${s[0]}</div><div class="s-text">${s[1]}</div></div></div>`).join("");
+  document.getElementById("gExamples").innerHTML = `<b>You've seen this in:</b> ${p.examples}`;
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeGuide(){
+  document.getElementById("overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+function bgClose(e){ if(e.target.id === "overlay") closeGuide(); }
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeGuide(); });
 spin();
 </script>
 </body>
