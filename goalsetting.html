@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Growth Mindset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --green:#7ed957;
+    --green-dark:#5cb82f;
+    --green-glow:#a8f07e;
+    --bulb:#ffe066;
+    --shadow:rgba(26,26,26,0.18);
+    --self:#ff6b6b;
+    --comm:#4dabf7;
+    --social:#ffa94d;
+    --think:#9775fa;
+    --research:#20c997;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Fredoka',sans-serif;
+    background:
+      radial-gradient(circle at 15% 12%, rgba(126,217,87,0.10), transparent 38%),
+      radial-gradient(circle at 85% 80%, rgba(255,224,102,0.12), transparent 42%),
+      #f4f1e8;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(var(--shadow) 0.5px, transparent 0.5px);
+    background-size:22px 22px;opacity:0.25;
+  }
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:34px 18px 90px;}
+
+  /* ---------- HEADER ---------- */
+  header.hero{text-align:center;margin-bottom:34px;}
+  .monster{width:130px;height:130px;margin:0 auto 8px;animation:bob 3s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .badge{
+    display:inline-block;background:var(--ink);color:#fff;
+    padding:6px 16px;border-radius:30px;font-size:13px;letter-spacing:1.5px;
+    text-transform:uppercase;font-weight:600;margin-bottom:14px;
+    box-shadow:0 4px 0 var(--green-dark);
+  }
+  h1{font-size:clamp(36px,7vw,60px);font-weight:700;line-height:0.95;letter-spacing:-1px;}
+  h1 .grow{color:var(--green-dark);position:relative;}
+  h1 .grow::after{
+    content:"";position:absolute;left:0;bottom:5px;width:100%;height:11px;
+    background:var(--green-glow);z-index:-1;border-radius:6px;transform:rotate(-1deg);
+  }
+  .tagline{font-family:'Patrick Hand',cursive;font-size:21px;color:#555;margin-top:8px;}
+
+  /* ---------- CATEGORY CARDS ---------- */
+  .card{
+    background:#fff;border:3px solid var(--ink);border-radius:24px;
+    box-shadow:8px 8px 0 var(--shadow);overflow:hidden;margin-bottom:26px;
+  }
+  .card-head{padding:20px 26px;color:#fff;display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--ink);}
+  .card-head .emoji{font-size:38px;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.2));flex-shrink:0;}
+  .card-head h2{font-size:27px;font-weight:700;line-height:1;}
+  .card-head .num{font-family:'Patrick Hand',cursive;font-size:16px;opacity:.95;margin-top:3px;}
+  .intro{font-family:'Patrick Hand',cursive;font-size:23px;padding:18px 26px 4px;color:#444;}
+
+  ul.goals{list-style:none;padding:6px 22px 22px;}
+  ul.goals li{
+    display:flex;align-items:flex-start;gap:15px;padding:13px 10px;border-radius:14px;
+    cursor:pointer;transition:background .2s ease;user-select:none;
+  }
+  ul.goals li:hover{background:#faf8f0;}
+  ul.goals li + li{border-top:2px dashed #eee;}
+  .check{
+    flex-shrink:0;width:30px;height:30px;border-radius:9px;border:3px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;font-size:18px;margin-top:1px;
+    background:#fff;color:#fff;transition:all .2s ease;
+  }
+  li.done .check{background:var(--green-dark);transform:rotate(-6deg) scale(1.05);}
+  li.done .check::after{content:"✓";}
+  .goal-text{font-size:17.5px;line-height:1.4;padding-top:3px;}
+  li.done .goal-text{text-decoration:line-through;text-decoration-thickness:2px;color:#aaa;}
+
+  /* category accents */
+  .self  .card-head{background:var(--self);}
+  .comm  .card-head{background:var(--comm);}
+  .social .card-head{background:var(--social);}
+  .think .card-head{background:var(--think);}
+  .research .card-head{background:var(--research);}
+
+  /* ---------- FLIP SECTION ---------- */
+  .flip-section{margin:40px 0 8px;}
+  .flip-title{text-align:center;font-size:26px;font-weight:700;margin-bottom:4px;}
+  .flip-sub{text-align:center;font-family:'Patrick Hand',cursive;font-size:19px;color:#666;margin-bottom:20px;}
+  .flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:560px){.flip-grid{grid-template-columns:1fr;}}
+  .flip-card{border:3px solid var(--ink);border-radius:18px;padding:18px 20px;box-shadow:5px 5px 0 var(--shadow);}
+  .flip-card.fixed{background:#2b2b2b;color:#fff;}
+  .flip-card.growth{background:linear-gradient(160deg,#eaffd9,#d2f7b8);}
+  .flip-card h4{font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+  .flip-card.fixed h4{color:#ff8a8a;}
+  .flip-card.growth h4{color:var(--green-dark);}
+  .flip-card p{font-family:'Patrick Hand',cursive;font-size:19px;line-height:1.45;margin:8px 0;}
+  .flip-card.fixed p{color:#ddd;}
+
+  footer{text-align:center;margin-top:38px;font-family:'Patrick Hand',cursive;font-size:20px;color:#777;}
+  footer span{color:var(--green-dark);font-weight:600;}
+
+  /* ---------- CELEBRATION ---------- */
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(140px);
+    background:var(--ink);color:#fff;padding:14px 26px;border-radius:40px;
+    font-weight:600;font-size:17px;box-shadow:0 8px 24px rgba(0,0,0,.25);
+    z-index:80;transition:transform .4s cubic-bezier(.2,.9,.3,1.4);
+    border:3px solid var(--green-glow);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  .confetti{position:fixed;width:12px;height:12px;z-index:90;pointer-events:none;top:-20px;border-radius:2px;}
+
+  .reset-btn{
+    display:block;margin:30px auto 0;font-family:'Patrick Hand',cursive;font-size:16px;
+    background:none;border:2px solid #ccc;color:#999;border-radius:30px;padding:7px 20px;cursor:pointer;transition:all .2s;
+  }
+  .reset-btn:hover{border-color:var(--self);color:var(--self);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="monster" id="monster"></div>
+    <div class="badge">I am a learner who can grow</div>
+    <h1>my <span class="grow">growth</span> mindset</h1>
+    <p class="tagline">Check off each goal as you grow. Light up your brain! 💡</p>
+  </header>
+
+  <div id="cards"></div>
+
+  <section class="flip-section">
+    <div class="flip-title">Flip your thinking 🔄</div>
+    <div class="flip-sub">A growth mindset turns "I can't" into "I can't <em>yet</em>."</div>
+    <div class="flip-grid">
+      <div class="flip-card fixed">
+        <h4>🔒 Fixed mindset says…</h4>
+        <p>"I'm just not good at this."</p>
+        <p>"I give up — it's too hard."</p>
+        <p>"Mistakes mean I failed."</p>
+        <p>"This is good enough."</p>
+      </div>
+      <div class="flip-card growth">
+        <h4>💡 Growth mindset says…</h4>
+        <p>"I'll keep practicing until I improve."</p>
+        <p>"Challenges help my brain grow."</p>
+        <p>"Mistakes help me learn what to try next."</p>
+        <p>"Is this really my best work?"</p>
+      </div>
+    </div>
+  </section>
+
+  <button class="reset-btn" id="reset">↺ Start fresh</button>
+  <footer>Every challenge is a chance to <span>grow</span>. 🌱</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS=[
+ {key:"self",name:"Self-Management Skills",emoji:"🎯",
+  goals:["Keep my desk, drawer, and backpack organized for easy use",
+         "Control my behavior during class to have more freedom",
+         "Work more carefully so that I am proud of my work",
+         "Improve my time management so I can do more things that I want to do",
+         "Be consistent so that everyone trusts my words and integrity"]},
+ {key:"comm",name:"Communication Skills",emoji:"💬",
+  goals:["Choose my words carefully when I speak and write to express great ideas",
+         "Thoughtfully organize my ideas when I speak and write for excellent clarity",
+         "Carefully listen to and read instructions so that I never need reminders",
+         "Learn numerous strategies to better recall and understand my reading"]},
+ {key:"social",name:"Social Skills",emoji:"🤝",
+  goals:["Be a great example for my peers to follow to be a leader",
+         "Express my feelings clearly so I maintain strong friendships",
+         "Be mindful of my actions to build strong trust with my peers",
+         "Share materials and ideas to make the classroom a caring, friendly atmosphere"]},
+ {key:"think",name:"Thinking Skills",emoji:"🧠",
+  goals:["Use effective strategies to do things exceptionally",
+         "Identify a wide array of concepts, patterns, and forms to think quickly and expertly",
+         "Learn strategies to solve numerous, varied problems",
+         "Be creative by connecting skills and strategies in new ways"]},
+ {key:"research",name:"Research Skills",emoji:"🔎",
+  goals:["Look for good examples to build on to make even better ones",
+         "Connect things that I know to continue expanding what I can do",
+         "Ask thoughtful questions that lead to new discoveries",
+         "Organize my ideas to notice patterns, build clarity, and create innovations"]},
+];
+
+let state={};
+const STORE_KEY="growth_mindset_checks_v2";
+
+async function loadState(){
+  try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)state=JSON.parse(r.value);}catch(e){}
+  CATS.forEach(c=>{if(!state[c.key])state[c.key]={};});
+}
+async function saveState(){try{await window.storage.set(STORE_KEY,JSON.stringify(state));}catch(e){}}
+
+function monsterSVG(lit){
+  const fill=lit?"url(#gl)":"#cfe6b8";
+  const bulb=lit?"#ffe066":"#e9e9e9";
+  const rays=lit?`<g stroke="#e6b800" stroke-width="3" stroke-linecap="round">
+      <line x1="60" y1="22" x2="60" y2="12"/><line x1="40" y1="30" x2="33" y2="23"/>
+      <line x1="80" y1="30" x2="87" y2="23"/><line x1="34" y1="48" x2="24" y2="46"/>
+      <line x1="86" y1="48" x2="96" y2="46"/></g>`:"";
+  return `<svg viewBox="0 0 120 120" width="130" height="130">
+    <defs><radialGradient id="gl"><stop offset="0%" stop-color="#fff3b0"/><stop offset="100%" stop-color="#7ed957"/></radialGradient></defs>
+    <ellipse cx="60" cy="78" rx="46" ry="40" fill="#2b2b2b"/>
+    <ellipse cx="60" cy="58" rx="34" ry="26" fill="${fill}"/>${rays}
+    <ellipse cx="60" cy="54" rx="13" ry="15" fill="${bulb}" stroke="#1a1a1a" stroke-width="2"/>
+    <rect x="54" y="66" width="12" height="7" rx="2" fill="#9a9a9a" stroke="#1a1a1a" stroke-width="1.5"/>
+    <path d="M55 50 q5 6 0 12 M65 50 q-5 6 0 12" stroke="#1a1a1a" stroke-width="1.4" fill="none"/>
+    <ellipse cx="30" cy="104" rx="11" ry="8" fill="#2b2b2b" transform="rotate(-20 30 104)"/>
+    <ellipse cx="90" cy="104" rx="11" ry="8" fill="#2b2b2b" transform="rotate(20 90 104)"/></svg>`;
+}
+
+function totals(){let d=0,t=0;CATS.forEach(c=>{c.goals.forEach((_,i)=>{t++;if(state[c.key][i])d++;});});return{d,t};}
+
+function escapeHTML(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+function renderCards(){
+  const host=document.getElementById("cards");
+  host.innerHTML=CATS.map(c=>{
+    const items=c.goals.map((g,i)=>`
+      <li class="${state[c.key][i]?'done':''}" data-cat="${c.key}" data-idx="${i}">
+        <span class="check"></span>
+        <span class="goal-text">${escapeHTML(g)}</span>
+      </li>`).join("");
+    return `<div class="card ${c.key}">
+      <div class="card-head"><span class="emoji">${c.emoji}</span>
+        <div><h2>${c.name}</h2><div class="num">${c.goals.length} ways to grow</div></div></div>
+      <div class="intro">I will try to…</div>
+      <ul class="goals">${items}</ul></div>`;
+  }).join("");
+  host.querySelectorAll("li").forEach(li=>{
+    li.onclick=()=>toggle(li.dataset.cat,+li.dataset.idx);
+  });
+}
+
+function renderProgress(){
+  const {d}=totals();
+  document.getElementById("monster").innerHTML=monsterSVG(d>0);
+}
+
+function toggle(cat,idx){
+  const now=!state[cat][idx];
+  if(now)state[cat][idx]=true;else delete state[cat][idx];
+  saveState();renderCards();renderProgress();
+  if(now){celebrate();}
+}
+
+const CHEERS=["Way to grow! 🌱","Brain power +1 💡","Nice work! ⭐","Keep stretching! 💪","Learning unlocked! 🔓","You're growing! 🚀"];
+function celebrate(){
+  toast(CHEERS[Math.floor(Math.random()*CHEERS.length)]);
+  confettiBurst();
+  const {d,t}=totals();
+  if(d===t&&t>0){setTimeout(()=>{toast("🌟 ALL goals complete! 🌟");confettiBurst();confettiBurst();},650);}
+}
+let tt;
+function toast(m){const e=document.getElementById("toast");e.textContent=m;e.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("show"),1800);}
+function confettiBurst(){
+  const colors=["#7ed957","#ffe066","#4dabf7","#ff6b6b","#9775fa","#ffa94d"];
+  for(let i=0;i<30;i++){
+    const c=document.createElement("div");c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    document.body.appendChild(c);
+    const dur=1400+Math.random()*900;
+    c.animate([{transform:`translateY(0) rotate(0)`,opacity:1},
+      {transform:`translateY(${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:.9}],
+      {duration:dur,easing:"cubic-bezier(.3,.6,.4,1)"});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+document.getElementById("reset").onclick=async()=>{
+  if(!confirm("Start fresh? This clears all your checks."))return;
+  state={};CATS.forEach(c=>state[c.key]={});await saveState();
+  renderCards();renderProgress();toast("Fresh start! 🌱");
+};
+
+(async()=>{await loadState();renderCards();renderProgress();})();
+</script>
+</body>
+</html>
