@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Project Maker</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --sun:#FFB830;--sky:#5BC8F5;--leaf:#5DC887;--berry:#FF6B9D;
+  --plum:#8B72E8;--clay:#FF7C4D;--teal:#26C6DA;
+  --cream:#FFFBF3;--white:#fff;--ink:#2B1F0E;--muted:#7A6652;
+  --border:#F0E0CC;--r:20px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito','Comic Sans MS','Trebuchet MS',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+
+/* ── SIDEBAR LAYOUT ── */
+.layout{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:220px;flex-shrink:0;
+  background:#fff;
+  border-right:2.5px solid var(--border);
+  position:fixed;top:0;left:0;bottom:0;
+  overflow-y:auto;z-index:200;
+  display:flex;flex-direction:column;
+}
+.sidebar-logo{
+  padding:20px 16px 14px;
+  border-bottom:2px solid var(--border);
+  text-align:center;
+}
+.sidebar-logo .owl{font-size:48px;display:block;margin-bottom:4px;}
+.sidebar-logo h1{font-size:16px;font-weight:900;color:var(--ink);line-height:1.2;}
+.sidebar-logo p{font-size:11px;font-weight:700;color:var(--muted);margin-top:3px;}
+
+.sidebar-section-label{
+  padding:14px 16px 4px;
+  font-size:10px;font-weight:900;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--berry);
+}
+
+.nav-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;
+  font-family:inherit;font-size:13px;font-weight:800;
+  color:var(--muted);
+  background:transparent;border:none;
+  text-decoration:none;cursor:pointer;
+  border-radius:0;
+  transition:background 0.15s,color 0.15s;
+  width:100%;text-align:left;
+}
+.nav-btn:hover{background:#FFF0F5;color:var(--berry);}
+.nav-btn.active{background:linear-gradient(90deg,#FFF0F5,#FFF8F0);color:var(--berry);border-left:4px solid var(--berry);}
+.nav-btn .nb-icon{font-size:20px;flex-shrink:0;}
+.nav-btn .nb-label{line-height:1.3;}
+.nav-btn .nb-sub{font-size:10px;font-weight:600;color:var(--muted);display:block;margin-top:1px;}
+.nav-btn.active .nb-sub{color:#FF9E4F;}
+
+.step-nav-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px 8px 12px;
+  font-family:inherit;font-size:12px;font-weight:800;
+  color:var(--muted);
+  background:transparent;border:none;
+  text-decoration:none;cursor:pointer;
+  transition:background 0.15s,color 0.15s;
+  width:100%;text-align:left;
+  border-left:3px solid transparent;
+}
+.step-nav-btn:hover{background:#FFF8F0;color:var(--clay);}
+.step-nav-btn.active{background:#FFF0E8;color:var(--clay);border-left-color:var(--clay);}
+.step-badge{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;color:#fff;font-weight:900;
+}
+
+/* ── MAIN CONTENT ── */
+.main{margin-left:220px;flex:1;min-width:0;}
+
+/* ── PANELS (pages) ── */
+.panel{display:none;padding:32px 32px 80px;max-width:780px;}
+.panel.active{display:block;}
+
+/* ── HOME HERO ── */
+.hero-panel{
+  background:linear-gradient(135deg,#FF9E4F 0%,#FF6B9D 55%,#8B72E8 100%);
+  color:#fff;padding:48px 36px;border-radius:0 0 40px 0;margin-bottom:36px;
+  position:relative;overflow:hidden;
+}
+.hero-panel::after{
+  content:'';position:absolute;
+  top:-60px;right:-60px;width:200px;height:200px;
+  background:rgba(255,255,255,0.1);border-radius:50%;
+}
+.hero-panel .h-owl{font-size:64px;display:block;margin-bottom:12px;}
+.hero-panel h2{font-size:32px;font-weight:900;margin-bottom:8px;line-height:1.2;}
+.hero-panel p{font-size:16px;font-weight:700;opacity:0.92;max-width:420px;line-height:1.6;}
+
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px;}
+.quick-card{
+  background:#fff;border-radius:18px;border:2.5px solid var(--border);
+  padding:20px 14px;text-align:center;cursor:pointer;
+  transition:transform 0.15s,box-shadow 0.15s;
+  text-decoration:none;display:block;
+}
+.quick-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1);}
+.quick-card .qc-icon{font-size:40px;display:block;margin-bottom:8px;}
+.quick-card .qc-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:3px;}
+.quick-card .qc-sub{font-size:11px;font-weight:600;color:var(--muted);}
+
+/* ── SECTION TITLES ── */
+.panel-eyebrow{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--berry);margin-bottom:4px;}
+.panel-title{font-size:26px;font-weight:900;color:var(--ink);margin-bottom:20px;line-height:1.2;}
+
+/* ── STEP PAGE ── */
+.step-hero{
+  border-radius:var(--r);padding:24px;margin-bottom:20px;
+  display:flex;align-items:flex-start;gap:16px;
+}
+.step-hero .sh-bubble{
+  width:70px;height:70px;border-radius:20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:34px;flex-shrink:0;color:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,0.15);
+}
+.step-hero .sh-num{font-size:10px;font-weight:900;opacity:0.85;margin-top:2px;}
+.step-hero .sh-body h2{font-size:22px;font-weight:900;color:var(--ink);margin-bottom:5px;}
+.step-hero .sh-body p{font-size:13px;font-weight:600;color:var(--muted);line-height:1.65;}
+
+.owl-tip{
+  background:#FFFBE6;border:2px solid #FFE066;border-radius:14px;
+  padding:12px 14px;margin-bottom:18px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.owl-tip .ot-icon{font-size:22px;flex-shrink:0;}
+.owl-tip .ot-text{font-size:13px;font-weight:700;color:#7A6000;line-height:1.55;}
+
+/* ── QUESTION CARDS ── */
+.q-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.q-card{
+  background:#fff;border:2.5px solid var(--border);border-radius:16px;
+  padding:14px 16px;display:flex;align-items:flex-start;gap:12px;
+}
+.q-icon{font-size:24px;flex-shrink:0;margin-top:1px;}
+.q-text{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.q-hint{font-size:12px;font-weight:600;color:var(--muted);line-height:1.55;}
+.q-example{
+  margin-top:8px;background:var(--cream);border-radius:10px;
+  padding:8px 10px;font-size:12px;font-weight:700;color:var(--ink);
+  border-left:3px solid var(--sun);
+}
+
+.output-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  border-radius:20px;padding:6px 14px;
+  font-size:12px;font-weight:800;margin-top:4px;
+}
+
+/* ── CHECK ROWS ── */
+.check-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.check-row{
+  background:#fff;border:2.5px solid var(--border);border-radius:14px;
+  padding:12px 14px;display:flex;align-items:flex-start;gap:12px;
+}
+.check-box{
+  width:24px;height:24px;border-radius:7px;border:2.5px solid var(--border);
+  flex-shrink:0;margin-top:1px;background:#fff;
+}
+.check-icon{font-size:22px;flex-shrink:0;}
+.check-label{font-size:13px;font-weight:800;color:var(--ink);}
+.check-note{font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.4;}
+
+/* ── MATERIAL GRID ── */
+/* ── MATERIAL ROWS ── */
+.mat-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.mat-row{
+  background:#fff;border-radius:18px;border:2.5px solid var(--border);
+  padding:14px 16px;display:grid;
+  grid-template-columns:64px 1fr;gap:0 14px;align-items:start;
+}
+.mat-left{display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:2px;}
+.mat-icon{font-size:36px;line-height:1;}
+.mat-name{font-size:11px;font-weight:900;color:var(--ink);text-align:center;line-height:1.2;}
+.mat-right{}
+.mat-props{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.mat-prop-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  border-radius:20px;padding:3px 9px;
+  font-size:11px;font-weight:800;line-height:1.3;
+}
+.prop-strong{background:#FFF0E8;color:#9B3D10;border:1.5px solid #FFB899;}
+.prop-light{background:#E0F5FF;color:#0B6A8F;border:1.5px solid #8ADDF5;}
+.prop-flexible{background:#EEE8FF;color:#4A2DB5;border:1.5px solid #C4B0F5;}
+.prop-waterproof{background:#E4F8EC;color:#1A6B40;border:1.5px solid #8ADBB0;}
+.prop-mouldable{background:#FFEAF3;color:#A3245A;border:1.5px solid #FFB3D4;}
+.prop-conductive{background:#FFF3CC;color:#7A5800;border:1.5px solid #FFD966;}
+.prop-natural{background:#F0FBF4;color:#2D6A4F;border:1.5px solid #95D5B2;}
+.prop-decorative{background:#F5F3FF;color:#5E35B1;border:1.5px solid #C4B0F5;}
+.mat-uses-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
+.mat-uses{display:flex;flex-wrap:wrap;gap:5px;}
+.mat-use-tag{
+  background:var(--cream);border:1.5px solid var(--border);
+  border-radius:8px;padding:3px 8px;
+  font-size:11px;font-weight:700;color:var(--ink);
+  display:inline-flex;align-items:center;gap:3px;
+}
+
+/* ── FORMAT GRID ── */
+.fmt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.fmt-card{
+  background:#fff;border-radius:var(--r);border:2.5px solid var(--border);
+  padding:20px 14px;text-align:center;
+}
+.fmt-icon{font-size:44px;display:block;margin-bottom:10px;}
+.fmt-title{font-size:15px;font-weight:900;color:var(--ink);margin-bottom:5px;}
+.fmt-desc{font-size:12px;font-weight:600;color:var(--muted);line-height:1.5;margin-bottom:12px;}
+.fmt-tips{display:flex;flex-direction:column;gap:5px;}
+.fmt-tip{background:var(--cream);border-radius:9px;padding:5px 9px;font-size:11px;font-weight:700;color:var(--ink);text-align:left;}
+
+/* ── GLOSSARY ── */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+.gloss-card{background:#fff;border-radius:14px;border:2.5px solid var(--border);padding:14px 16px;}
+.gloss-word{font-size:14px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.gloss-def{font-size:12px;font-weight:600;color:var(--muted);line-height:1.55;}
+
+/* ── TIPS GRID ── */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.tip-card{background:#fff;border-radius:var(--r);border:2.5px solid var(--border);padding:18px;display:flex;gap:12px;}
+.tip-icon{font-size:32px;flex-shrink:0;}
+.tip-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:4px;}
+.tip-body{font-size:12px;font-weight:600;color:var(--muted);line-height:1.6;}
+
+/* ── NAV ARROWS ── */
+.step-nav-row{
+  display:flex;gap:10px;margin-top:28px;padding-top:20px;
+  border-top:2px solid var(--border);
+}
+.snr-back,.snr-next{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 20px;border-radius:14px;
+  font-family:inherit;font-size:14px;font-weight:800;
+  cursor:pointer;border:2.5px solid var(--border);
+  transition:all 0.15s;text-decoration:none;
+}
+.snr-back{background:#fff;color:var(--muted);}
+.snr-back:hover{border-color:#FF9E4F;color:var(--clay);}
+.snr-next{
+  flex:1;justify-content:center;
+  background:linear-gradient(135deg,#FF6B9D,#FF9E4F);
+  color:#fff;border-color:transparent;
+  box-shadow:0 4px 14px rgba(255,107,157,0.3);
+}
+.snr-next:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,107,157,0.4);}
+
+/* ── STEP PROGRESS (inside panel) ── */
+.step-progress{
+  display:flex;align-items:center;gap:0;margin-bottom:24px;
+  background:#fff;border:2.5px solid var(--border);border-radius:50px;
+  padding:8px 14px;overflow-x:auto;
+}
+.sp-dot{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;flex-shrink:0;padding:0 4px;
+}
+.sp-circle{
+  width:32px;height:32px;border-radius:50%;border:2.5px solid var(--border);
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:all 0.15s;
+}
+.sp-circle.cur{border-color:var(--berry);background:#FFF0F5;box-shadow:0 0 0 3px rgba(255,107,157,0.15);}
+.sp-label{font-size:9px;font-weight:800;color:#BBA898;}
+.sp-label.cur{color:var(--berry);}
+.sp-line{width:16px;height:2px;background:var(--border);flex-shrink:0;margin-bottom:12px;}
+
+/* ── COLOUR HELPERS ── */
+.bg-sun{background:#FFF8E1;} .bg-leaf{background:#E4F8EC;} .bg-sky{background:#E0F5FF;}
+.bg-berry{background:#FFEAF3;} .bg-plum{background:#EEE8FF;} .bg-clay{background:#FFF0E8;}
+.bub-sun{background:#FFB830;} .bub-leaf{background:#5DC887;} .bub-sky{background:#5BC8F5;}
+.bub-berry{background:#FF6B9D;} .bub-plum{background:#8B72E8;} .bub-clay{background:#FF7C4D;}
+.bub-teal{background:#26C6DA;} .bub-gold{background:#F5A623;}
+.chip-sun{background:#FFF3CC;color:#7A5800;border:2px solid #FFD966;}
+.chip-leaf{background:#E4F8EC;color:#1A6B40;border:2px solid #8ADBB0;}
+.chip-sky{background:#E0F5FF;color:#0B6A8F;border:2px solid #8ADDF5;}
+.chip-berry{background:#FFEAF3;color:#A3245A;border:2px solid #FFB3D4;}
+.chip-plum{background:#EEE8FF;color:#4A2DB5;border:2px solid #C4B0F5;}
+.chip-clay{background:#FFF0E8;color:#9B3D10;border:2px solid #FFB899;}
+
+/* ── MOBILE TOPBAR (hidden on desktop) ── */
+.mobile-topbar{display:none;background:#fff;border-bottom:2px solid var(--border);padding:12px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;}
+.mob-menu-btn{background:none;border:2px solid var(--border);border-radius:10px;padding:6px 10px;font-size:18px;cursor:pointer;}
+.mob-title{font-size:15px;font-weight:900;color:var(--ink);}
+
+/* ── OVERLAY ── */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:150;}
+
+@media(max-width:640px){
+  .mobile-topbar{display:flex;}
+  .sidebar{transform:translateX(-100%);transition:transform 0.25s;top:0;}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.open{display:block;}
+  .main{margin-left:0;}
+  .panel{padding:20px 16px 60px;}
+  .hero-panel{border-radius:0 0 24px 0;padding:28px 20px;}
+  .hero-panel h2{font-size:24px;}
+  .step-nav-row{flex-direction:column;}
+  .snr-next{justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE TOPBAR -->
+<div class="mobile-topbar">
+  <button class="mob-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+  <span class="mob-title">🦉 My Project Maker</span>
+  <span style="width:44px;"></span>
+</div>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+
+  <!-- ════════ SIDEBAR ════════ -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="owl">🦉</span>
+      <h1>My Project Maker</h1>
+      <p>Ages 7 – 10</p>
+    </div>
+
+    <div class="sidebar-section-label">Start here</div>
+    <a class="nav-btn active" onclick="show('home')" href="#">
+      <span class="nb-icon">🏠</span>
+      <span class="nb-label">Home<span class="nb-sub">Welcome page</span></span>
+    </a>
+    <a class="nav-btn" onclick="show('tips')" href="#">
+      <span class="nb-icon">💡</span>
+      <span class="nb-label">Inventor Tips<span class="nb-sub">How to do your best</span></span>
+    </a>
+    <a class="nav-btn" onclick="show('materials')" href="#">
+      <span class="nb-icon">🛠️</span>
+      <span class="nb-label">Materials Guide<span class="nb-sub">What to build with</span></span>
+    </a>
+    <a class="nav-btn" onclick="show('presenting')" href="#">
+      <span class="nb-icon">🎤</span>
+      <span class="nb-label">Presenting<span class="nb-sub">How to share your work</span></span>
+    </a>
+    <a class="nav-btn" onclick="show('checklist')" href="#">
+      <span class="nb-icon">✅</span>
+      <span class="nb-label">Checklist<span class="nb-sub">Print &amp; tick off</span></span>
+    </a>
+    <a class="nav-btn" onclick="show('words')" href="#">
+      <span class="nb-icon">📖</span>
+      <span class="nb-label">Word List<span class="nb-sub">What words mean</span></span>
+    </a>
+
+    <div class="sidebar-section-label">The 8 Steps</div>
+    <a class="step-nav-btn" onclick="show('step1')" href="#">
+      <span class="step-badge bub-sun">🌱</span>1. Your Big Idea
+    </a>
+    <a class="step-nav-btn" onclick="show('step2')" href="#">
+      <span class="step-badge bub-leaf">🛠️</span>2. Materials
+    </a>
+    <a class="step-nav-btn" onclick="show('step3')" href="#">
+      <span class="step-badge bub-sky">📐</span>3. Shape &amp; Structure
+    </a>
+    <a class="step-nav-btn" onclick="show('step4')" href="#">
+      <span class="step-badge bub-clay">📋</span>4. Build Plan
+    </a>
+    <a class="step-nav-btn" onclick="show('step5')" href="#">
+      <span class="step-badge bub-berry">🎤</span>5. Present It
+    </a>
+    <a class="step-nav-btn" onclick="show('step6')" href="#">
+      <span class="step-badge bub-plum">🔍</span>6. Reflect
+    </a>
+    <a class="step-nav-btn" onclick="show('step7')" href="#">
+      <span class="step-badge bub-teal">🚀</span>7. Make It Better
+    </a>
+    <a class="step-nav-btn" onclick="show('step8')" href="#">
+      <span class="step-badge bub-gold">🏆</span>8. Final Statement
+    </a>
+  </nav>
+
+  <!-- ════════ MAIN ════════ -->
+  <main class="main">
+
+    <!-- ═══ HOME ═══ -->
+    <div class="panel active" id="panel-home">
+      <div class="hero-panel">
+        <span class="h-owl">🦉</span>
+        <h2>Welcome, Young Inventor!</h2>
+        <p>This guide helps you plan, build, and share an amazing project — one step at a time. Use the menu on the left to explore!</p>
+      </div>
+
+      <p class="panel-eyebrow">Jump to a section</p>
+      <div class="quick-grid">
+        <a class="quick-card" onclick="show('step1')" href="#">
+          <span class="qc-icon">👣</span>
+          <div class="qc-title">The 8 Steps</div>
+          <div class="qc-sub">Start your project plan</div>
+        </a>
+        <a class="quick-card" onclick="show('materials')" href="#">
+          <span class="qc-icon">🛠️</span>
+          <div class="qc-title">Materials</div>
+          <div class="qc-sub">What to build with</div>
+        </a>
+        <a class="quick-card" onclick="show('presenting')" href="#">
+          <span class="qc-icon">🎤</span>
+          <div class="qc-title">Presenting</div>
+          <div class="qc-sub">Share your work</div>
+        </a>
+        <a class="quick-card" onclick="show('checklist')" href="#">
+          <span class="qc-icon">✅</span>
+          <div class="qc-title">Checklist</div>
+          <div class="qc-sub">Print &amp; tick off</div>
+        </a>
+        <a class="quick-card" onclick="show('tips')" href="#">
+          <span class="qc-icon">💡</span>
+          <div class="qc-title">Tips</div>
+          <div class="qc-sub">Inventor secrets</div>
+        </a>
+        <a class="quick-card" onclick="show('words')" href="#">
+          <span class="qc-icon">📖</span>
+          <div class="qc-title">Word List</div>
+          <div class="qc-sub">Words explained</div>
+        </a>
+      </div>
+
+      <div class="owl-tip">
+        <span class="ot-icon">🦉</span>
+        <div class="ot-text">Hi! I'm Ollie the Owl. Use the menu on the left to go to any section. Ready to start? Tap <strong>The 8 Steps</strong> and begin with Step 1!</div>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 1 ═══ -->
+    <div class="panel" id="panel-step1">
+      <div class="step-hero bg-sun">
+        <div class="sh-bubble bub-sun">🌱<span class="sh-num">STEP 1</span></div>
+        <div class="sh-body">
+          <h2>Your Big Idea</h2>
+          <p>Every amazing project begins with a spark of an idea. This step helps you describe what you want to make and why it matters.</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Write your answers in a notebook. Tap each question to read the hint and example. There are no wrong answers here!</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">🤔</span>
+          <div>
+            <div class="q-text">What do you want to make or build?</div>
+            <div class="q-hint">Think of something you'd love to create — or a problem you want to fix.</div>
+            <div class="q-example">📝 Example: "A robot arm, a bird feeder, a board game, or an automatic plant waterer."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">❤️</span>
+          <div>
+            <div class="q-text">Why does it matter? What problem does it solve?</div>
+            <div class="q-hint">The best projects fix something that is annoying, hard, or missing.</div>
+            <div class="q-example">📝 Example: "My plants always die because I forget to water them."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">👥</span>
+          <div>
+            <div class="q-text">Who will use your project?</div>
+            <div class="q-hint">Think about who will benefit from your creation.</div>
+            <div class="q-example">📝 Example: "Me, my family, my class, younger kids, elderly people, or pets."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🌟</span>
+          <div>
+            <div class="q-text">Write one sentence that describes your whole project.</div>
+            <div class="q-hint">Include what it is, who it is for, and why you are making it.</div>
+            <div class="q-example">📝 Example: "I am making an automatic plant waterer for my mum so her flowers don't die."</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-sun">📋 Your output: A Project Statement</span>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('home')">🏠 Home</button>
+        <button class="snr-next" onclick="show('step2')">Next: Materials 🛠️ →</button>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 2 ═══ -->
+    <div class="panel" id="panel-step2">
+      <div class="step-hero bg-leaf">
+        <div class="sh-bubble bub-leaf">🛠️<span class="sh-num">STEP 2</span></div>
+        <div class="sh-body">
+          <h2>Materials &amp; Properties</h2>
+          <p>What will you use to build your project? Different materials have different strengths — choose ones that fit what your project needs!</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Check the <strong>Materials Guide</strong> in the menu for a full list of materials and what each one is good for!</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">📦</span>
+          <div>
+            <div class="q-text">List all the materials you might need.</div>
+            <div class="q-hint">Write every single thing you'll use — even tape and glue count!</div>
+            <div class="q-example">📝 Example: "Cardboard, wooden sticks, paint, string, and glue."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">💪</span>
+          <div>
+            <div class="q-text">Why is each material a good choice?</div>
+            <div class="q-hint">Think about whether it needs to be strong, light, waterproof, or flexible.</div>
+            <div class="q-example">📝 Example: "Cardboard is good because it is light and easy to cut."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🔍</span>
+          <div>
+            <div class="q-text">Where will you get these materials?</div>
+            <div class="q-hint">At home, at school, from a shop, or from the recycling bin?</div>
+            <div class="q-example">📝 Example: "Cardboard from the recycling bin, paint from the art cupboard."</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-leaf">🗺️ Your output: A Materials Map</span>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('step1')">← Back: Big Idea</button>
+        <button class="snr-next" onclick="show('step3')">Next: Shape &amp; Structure 📐 →</button>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 3 ═══ -->
+    <div class="panel" id="panel-step3">
+      <div class="step-hero bg-sky">
+        <div class="sh-bubble bub-sky">📐<span class="sh-num">STEP 3</span></div>
+        <div class="sh-body">
+          <h2>Shape, Structure &amp; Function</h2>
+          <p>Time to draw your blueprint! Think about how your project will look, how big it will be, and how it will work.</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Draw your project in your notebook. Show the front AND the side. Label all the parts. It does not have to be perfect — just clear!</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">✏️</span>
+          <div>
+            <div class="q-text">Draw a picture of your project and label all the parts.</div>
+            <div class="q-hint">Draw the front view and the side view. Add measurements if you can.</div>
+            <div class="q-example">📝 Example: Label the base, the walls, the lid, and any moving parts.</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🏗️</span>
+          <div>
+            <div class="q-text">How will it stay stable? Will it fall over?</div>
+            <div class="q-hint">A wide base or support legs help things stay upright.</div>
+            <div class="q-example">📝 Example: "I will make the base wider so it does not tip over."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">⚡</span>
+          <div>
+            <div class="q-text">Does it move, light up, make sounds, or do something special?</div>
+            <div class="q-hint">Describe how it works — wheels, hinges, buttons, strings, switches...</div>
+            <div class="q-example">📝 Example: "It has a wheel that spins when you push a button."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🛡️</span>
+          <div>
+            <div class="q-text">Is it safe? Are there any sharp edges or parts that could hurt someone?</div>
+            <div class="q-hint">Think about who will use it. Round off any sharp corners.</div>
+            <div class="q-example">📝 Example: "I will cover the sharp cardboard edges with tape."</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-sky">🗺️ Your output: A Blueprint Drawing</span>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('step2')">← Back: Materials</button>
+        <button class="snr-next" onclick="show('step4')">Next: Build Plan 📋 →</button>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 4 ═══ -->
+    <div class="panel" id="panel-step4">
+      <div class="step-hero bg-clay">
+        <div class="sh-bubble bub-clay">📋<span class="sh-num">STEP 4</span></div>
+        <div class="sh-body">
+          <h2>Your Build Plan</h2>
+          <p>Break your build into small steps so you know exactly what to do and when. Big projects are much easier when you take one step at a time!</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Write each build step in your notebook and put a time estimate next to it. Mark any steps where you need an adult's help!</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">1️⃣</span>
+          <div>
+            <div class="q-text">List every step of building your project in the right order.</div>
+            <div class="q-hint">Start from the very beginning — even "gather all the materials" is a step.</div>
+            <div class="q-example">📝 Example: "Step 1 — Gather materials. Step 2 — Cut the cardboard. Step 3 — Glue pieces. Step 4 — Paint it."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">⏰</span>
+          <div>
+            <div class="q-text">How long will each step take?</div>
+            <div class="q-hint">Write a time estimate next to each step. A whole project might take 1 hour or several days!</div>
+            <div class="q-example">📝 Example: "Cutting = 30 mins. Gluing = 20 mins. Drying = 2 hours."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🔧</span>
+          <div>
+            <div class="q-text">What tools will you need at each step?</div>
+            <div class="q-hint">Scissors, glue gun, ruler, tape, paintbrush, hammer... always ask an adult for help with sharp or hot tools!</div>
+            <div class="q-example">📝 Example: "Step 2 needs scissors and a ruler."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🤝</span>
+          <div>
+            <div class="q-text">Which steps need an adult's help?</div>
+            <div class="q-hint">Mark those steps clearly so you know when to ask.</div>
+            <div class="q-example">📝 Example: "Step 2 (cutting) — needs an adult."</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-clay">🗓️ Your output: A Build Sequence</span>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('step3')">← Back: Shape &amp; Structure</button>
+        <button class="snr-next" onclick="show('step5')">Next: Present It 🎤 →</button>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 5 ═══ -->
+    <div class="panel" id="panel-step5">
+      <div class="step-hero bg-berry">
+        <div class="sh-bubble bub-berry">🎤<span class="sh-num">STEP 5</span></div>
+        <div class="sh-body">
+          <h2>Presentation Plan</h2>
+          <p>How will you share your project with others? A great presentation tells the story of your project — the idea, the build, and what you learnt.</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Check the <strong>Presenting</strong> section in the menu to see all 4 formats with tips for each one!</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">🎯</span>
+          <div>
+            <div class="q-text">Which presentation format will you choose?</div>
+            <div class="q-hint">Poster, slideshow, live demonstration, or video — pick the one that suits you best.</div>
+            <div class="q-example">📝 Example: "I will do a live demonstration and bring my project in to show the class."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">💬</span>
+          <div>
+            <div class="q-text">What are the 3 most important things to explain?</div>
+            <div class="q-hint">Think: 1. What is it? 2. How does it work? 3. Why did you make it?</div>
+            <div class="q-example">📝 Example: "1. What the watering machine does. 2. How the timer works. 3. Why I made it for my mum."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">📸</span>
+          <div>
+            <div class="q-text">What photos, drawings, or objects will you include?</div>
+            <div class="q-hint">Photos of each build step make a presentation really interesting!</div>
+            <div class="q-example">📝 Example: "Photos of the building process, plus my blueprint drawing."</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-berry">🎤 Your output: A Presentation Outline</span>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('step4')">← Back: Build Plan</button>
+        <button class="snr-next" onclick="show('step6')">Next: Reflect 🔍 →</button>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 6 ═══ -->
+    <div class="panel" id="panel-step6">
+      <div class="step-hero bg-plum">
+        <div class="sh-bubble bub-plum">🔍<span class="sh-num">STEP 6</span></div>
+        <div class="sh-body">
+          <h2>Reflection &amp; Refinement</h2>
+          <p>The best inventors test their creations and make them better. Honest reflection is a superpower — it's how every great invention improves!</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Finding things to improve is NOT bad — it means you are thinking like a real scientist or engineer!</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">✅</span>
+          <div>
+            <div class="q-text">Does your project do what you planned in Step 1?</div>
+            <div class="q-hint">Compare your finished project to your original project statement.</div>
+            <div class="q-example">📝 Example: "Yes! It waters the plants. But the water comes out too fast."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🤩</span>
+          <div>
+            <div class="q-text">Ask someone else to try or look at your project. What do they think?</div>
+            <div class="q-hint">Ask a friend, classmate, or family member for honest feedback.</div>
+            <div class="q-example">📝 Example: "My friend said it was good but hard to carry."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🔧</span>
+          <div>
+            <div class="q-text">What would you change or fix if you did it again?</div>
+            <div class="q-hint">Write at least 2 things you would improve. This shows you have learnt!</div>
+            <div class="q-example">📝 Example: "I would make the base wider and add a handle."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">💭</span>
+          <div>
+            <div class="q-text">What is the one thing you are most proud of?</div>
+            <div class="q-hint">Celebrate the wins, big and small!</div>
+            <div class="q-example">📝 Example: "I am most proud that it actually works!"</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-plum">📝 Your output: A Refinement Summary</span>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('step5')">← Back: Present It</button>
+        <button class="snr-next" onclick="show('step7')">Next: Make It Better 🚀 →</button>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 7 ═══ -->
+    <div class="panel" id="panel-step7">
+      <div class="step-hero bg-sky">
+        <div class="sh-bubble bub-teal">🚀<span class="sh-num">STEP 7</span></div>
+        <div class="sh-body">
+          <h2>Enhancements &amp; Extensions</h2>
+          <p>Dream big! What cool features could you add if you had more time, more materials, or more skills? This is the "future version" of your project.</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">There are no limits here — dream as big as you like! These ideas are for your next version.</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">💫</span>
+          <div>
+            <div class="q-text">List 3 features you would love to add to a future version.</div>
+            <div class="q-hint">Think about lights, sounds, remote control, bigger size, or new colours.</div>
+            <div class="q-example">📝 Example: "1. LED lights. 2. A timer. 3. A louder buzzer to alert when done."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🔮</span>
+          <div>
+            <div class="q-text">Draw or describe what your "Version 2" would look like.</div>
+            <div class="q-hint">Let your imagination go wild — this is just for fun and future planning!</div>
+            <div class="q-example">📝 Example: "Version 2 would be smaller, solar-powered, and have a digital display."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🌍</span>
+          <div>
+            <div class="q-text">Could your project help even more people if it was bigger or different?</div>
+            <div class="q-hint">Think about how your idea could grow into something really big one day!</div>
+            <div class="q-example">📝 Example: "If it was bigger, it could water a whole school garden!"</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-sky">💡 Your output: Upgrade Ideas</span>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('step6')">← Back: Reflect</button>
+        <button class="snr-next" onclick="show('step8')">Next: Final Statement 🏆 →</button>
+      </div>
+    </div>
+
+    <!-- ═══ STEP 8 ═══ -->
+    <div class="panel" id="panel-step8">
+      <div class="step-hero bg-sun">
+        <div class="sh-bubble bub-gold">🏆<span class="sh-num">STEP 8</span></div>
+        <div class="sh-body">
+          <h2>Your Final Project Statement</h2>
+          <p>Pull everything together! Write a final paragraph that explains your whole project — the idea, how you built it, what you learnt, and what you are most proud of.</p>
+        </div>
+      </div>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Use all 7 previous steps to help you write. Read your statement out loud — if it sounds good, it is good!</div></div>
+      <div class="q-list">
+        <div class="q-card">
+          <span class="q-icon">📝</span>
+          <div>
+            <div class="q-text">Write your complete project story in your own words.</div>
+            <div class="q-hint">Aim for at least 4 sentences. Use your notebook answers to help you.</div>
+            <div class="q-example">📝 Example: "My project is an automatic plant waterer. I made it for my mum because her flowers always died. I used cardboard, a plastic bottle, and string. I learnt that the water flow is hard to control, and next time I would use a smaller hole."</div>
+          </div>
+        </div>
+        <div class="q-card">
+          <span class="q-icon">🎯</span>
+          <div>
+            <div class="q-text">Make sure your statement includes all 4 parts.</div>
+            <div class="q-hint">Check: What is it? Who is it for? How did you make it? What would you improve?</div>
+            <div class="q-example">📝 Tip: Read it to someone else and ask if they understand it.</div>
+          </div>
+        </div>
+      </div>
+      <span class="output-pill chip-sun">🏆 Your output: A Polished Final Statement</span>
+      <div style="background:linear-gradient(135deg,#FFF8E1,#FFEAF3);border:2.5px solid #FFD6A5;border-radius:var(--r);padding:20px;margin-top:20px;text-align:center;">
+        <span style="font-size:52px;display:block;margin-bottom:8px;">🎉</span>
+        <div style="font-size:20px;font-weight:900;color:var(--ink);margin-bottom:6px;">You did it, Inventor!</div>
+        <div style="font-size:13px;font-weight:600;color:var(--muted);max-width:360px;margin:0 auto;line-height:1.6;">You have completed all 8 steps. You now have a full project plan, a build guide, a reflection, and a final statement. You are ready to make something amazing!</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;">
+          <span style="background:#FFF3CC;color:#7A5800;border:2px solid #FFD966;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🌱 Big Thinker</span>
+          <span style="background:#E4F8EC;color:#1A6B40;border:2px solid #8ADBB0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🛠️ Builder</span>
+          <span style="background:#FFEAF3;color:#A3245A;border:2px solid #FFB3D4;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🎤 Presenter</span>
+          <span style="background:#EEE8FF;color:#4A2DB5;border:2px solid #C4B0F5;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🔍 Reflector</span>
+          <span style="background:#E0F5FF;color:#0B6A8F;border:2px solid #8ADDF5;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🚀 Dreamer</span>
+        </div>
+      </div>
+      <div class="step-nav-row">
+        <button class="snr-back" onclick="show('step7')">← Back: Make It Better</button>
+        <button class="snr-next" onclick="show('home')">🏠 Back to Home</button>
+      </div>
+    </div>
+
+    <!-- ═══ MATERIALS ═══ -->
+    <div class="panel" id="panel-materials">
+      <p class="panel-eyebrow">Step 2 reference</p>
+      <h2 class="panel-title">🛠️ Materials Guide</h2>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Each material has <strong>property tags</strong> (what it's like) and <strong>You can make</strong> ideas (what to build with it). Scan the tags to find the right one for your project!</div></div>
+
+      <!-- PROPERTY KEY -->
+      <p class="panel-eyebrow">Property colour key</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
+        <span class="mat-prop-tag prop-strong">💪 Strong</span>
+        <span class="mat-prop-tag prop-light">🪶 Light</span>
+        <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
+        <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
+        <span class="mat-prop-tag prop-mouldable">🫙 Mouldable</span>
+        <span class="mat-prop-tag prop-conductive">⚡ Conductive</span>
+        <span class="mat-prop-tag prop-natural">🌿 Natural</span>
+        <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
+      </div>
+
+      <div class="mat-list">
+
+        <!-- CARDBOARD -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">📦</span>
+            <span class="mat-name">Cardboard</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-light">🪶 Light</span>
+              <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">📦 Boxes &amp; frames</span>
+              <span class="mat-use-tag">🏠 Model buildings</span>
+              <span class="mat-use-tag">🚗 Vehicle bodies</span>
+              <span class="mat-use-tag">🎭 Masks &amp; armour</span>
+              <span class="mat-use-tag">🌉 Bridges</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- WOOD -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🪵</span>
+            <span class="mat-name">Wood</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-strong">💪 Strong</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🏗️ Sturdy bases</span>
+              <span class="mat-use-tag">📚 Shelves &amp; stands</span>
+              <span class="mat-use-tag">🔨 Frames &amp; supports</span>
+              <span class="mat-use-tag">🪑 Small furniture</span>
+              <span class="mat-use-tag">⚔️ Props &amp; tools</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FABRIC -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🧵</span>
+            <span class="mat-name">Fabric</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-light">🪶 Light</span>
+              <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
+              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">👜 Pouches &amp; bags</span>
+              <span class="mat-use-tag">🪆 Soft toys</span>
+              <span class="mat-use-tag">🎪 Covers &amp; curtains</span>
+              <span class="mat-use-tag">🎀 Decorations</span>
+              <span class="mat-use-tag">👕 Costumes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PLASTIC BOTTLES -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🧴</span>
+            <span class="mat-name">Plastic Bottles</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-light">🪶 Light</span>
+              <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🪴 Plant waterers</span>
+              <span class="mat-use-tag">🎸 Shakers &amp; instruments</span>
+              <span class="mat-use-tag">🚀 Rockets &amp; launchers</span>
+              <span class="mat-use-tag">🐦 Bird feeders</span>
+              <span class="mat-use-tag">🎨 Paint holders</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- METAL -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🔩</span>
+            <span class="mat-name">Metal</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-strong">💪 Strong</span>
+              <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
+              <span class="mat-prop-tag prop-conductive">⚡ Conductive</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">⚙️ Moving parts</span>
+              <span class="mat-use-tag">🔋 Electrical circuits</span>
+              <span class="mat-use-tag">🗡️ Armatures &amp; hinges</span>
+              <span class="mat-use-tag">🧲 Magnetic gadgets</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAINT -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🖌️</span>
+            <span class="mat-name">Paint</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
+              <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🌈 Coloured surfaces</span>
+              <span class="mat-use-tag">🖼️ Murals &amp; designs</span>
+              <span class="mat-use-tag">🛡️ Protective coatings</span>
+              <span class="mat-use-tag">🔡 Signs &amp; labels</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLAY -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🫙</span>
+            <span class="mat-name">Clay</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-mouldable">🫙 Mouldable</span>
+              <span class="mat-prop-tag prop-strong">💪 Strong (when dry)</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🏺 Pots &amp; bowls</span>
+              <span class="mat-use-tag">🦖 Sculptures &amp; figures</span>
+              <span class="mat-use-tag">🪆 Miniature models</span>
+              <span class="mat-use-tag">🔘 Buttons &amp; beads</span>
+              <span class="mat-use-tag">🗺️ Map landforms</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STRING & ROPE -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🪢</span>
+            <span class="mat-name">String &amp; Rope</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-light">🪶 Light</span>
+              <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🧵 Pulleys &amp; levers</span>
+              <span class="mat-use-tag">📎 Joins &amp; ties</span>
+              <span class="mat-use-tag">🪁 Catapults</span>
+              <span class="mat-use-tag">🎣 Traps &amp; triggers</span>
+              <span class="mat-use-tag">🎀 Weaving &amp; art</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LED LIGHTS -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">💡</span>
+            <span class="mat-name">LED Lights</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-conductive">⚡ Conductive</span>
+              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🔦 Torches &amp; lamps</span>
+              <span class="mat-use-tag">🌟 Light-up displays</span>
+              <span class="mat-use-tag">🚦 Traffic light models</span>
+              <span class="mat-use-tag">🎄 Glowing decorations</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GEARS & WHEELS -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">⚙️</span>
+            <span class="mat-name">Gears &amp; Wheels</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-strong">💪 Strong</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🚗 Vehicles</span>
+              <span class="mat-use-tag">🎡 Spinning machines</span>
+              <span class="mat-use-tag">🏗️ Mechanical arms</span>
+              <span class="mat-use-tag">⚙️ Gear trains</span>
+              <span class="mat-use-tag">🪀 Wind-up toys</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NATURAL ITEMS -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🌿</span>
+            <span class="mat-name">Natural Items</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-natural">🌿 Natural</span>
+              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">🖼️ Nature art &amp; collage</span>
+              <span class="mat-use-tag">🪺 Animal habitats</span>
+              <span class="mat-use-tag">🌍 Landscape models</span>
+              <span class="mat-use-tag">🎋 Mobiles &amp; hangings</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATIONERY -->
+        <div class="mat-row">
+          <div class="mat-left">
+            <span class="mat-icon">🖊️</span>
+            <span class="mat-name">Stationery</span>
+          </div>
+          <div class="mat-right">
+            <div class="mat-props">
+              <span class="mat-prop-tag prop-light">🪶 Light</span>
+              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
+            </div>
+            <div class="mat-uses-label">✏️ You can make</div>
+            <div class="mat-uses">
+              <span class="mat-use-tag">📋 Labels &amp; signs</span>
+              <span class="mat-use-tag">📖 Instruction booklets</span>
+              <span class="mat-use-tag">🎁 Gift wrapping</span>
+              <span class="mat-use-tag">📐 Templates &amp; stencils</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end mat-list -->
+
+      <!-- HOW TO CHOOSE -->
+      <p class="panel-eyebrow" style="margin-top:8px;">How to choose the right material</p>
+      <div class="check-list">
+        <div class="check-row"><span style="font-size:22px;">💪</span><div><div class="check-label">Need it to be strong? → Wood or Metal</div><div class="check-note">These hold heavy weights without bending or breaking.</div></div></div>
+        <div class="check-row"><span style="font-size:22px;">🪶</span><div><div class="check-label">Need it to be light? → Cardboard, Fabric or String</div><div class="check-note">Lighter materials are easier to carry, hang, or move around.</div></div></div>
+        <div class="check-row"><span style="font-size:22px;">💧</span><div><div class="check-label">Need it to be waterproof? → Plastic Bottles or Metal</div><div class="check-note">These won't soak up water, go soggy, or fall apart when wet.</div></div></div>
+        <div class="check-row"><span style="font-size:22px;">🫙</span><div><div class="check-label">Need to shape it yourself? → Clay</div><div class="check-note">Clay can become almost any shape before it dries and hardens.</div></div></div>
+        <div class="check-row"><span style="font-size:22px;">⚡</span><div><div class="check-label">Need electricity to flow through it? → Metal or LED Lights</div><div class="check-note">These conduct electricity safely to power circuits and lights.</div></div></div>
+        <div class="check-row"><span style="font-size:22px;">♻️</span><div><div class="check-label">Tip: check the recycling bin before buying anything!</div><div class="check-note">Cardboard boxes, plastic bottles, and old fabric are free treasure.</div></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ PRESENTING ═══ -->
+    <div class="panel" id="panel-presenting">
+      <p class="panel-eyebrow">Step 5 reference</p>
+      <h2 class="panel-title">🎤 Ways to Present Your Project</h2>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">A great presentation tells three things: what your project is, how it works, and why you made it. Pick the format that suits you best!</div></div>
+      <div class="fmt-grid">
+        <div class="fmt-card">
+          <span class="fmt-icon">🖼️</span>
+          <div class="fmt-title">Poster</div>
+          <div class="fmt-desc">Draw and write about your project on a large sheet of paper or card.</div>
+          <div class="fmt-tips">
+            <div class="fmt-tip">🖊️ Use big, clear headings</div>
+            <div class="fmt-tip">📸 Add drawings or photos</div>
+            <div class="fmt-tip">🌈 Use colour to organise sections</div>
+            <div class="fmt-tip">📋 Include a clear title at the top</div>
+          </div>
+        </div>
+        <div class="fmt-card">
+          <span class="fmt-icon">💻</span>
+          <div class="fmt-title">Slideshow</div>
+          <div class="fmt-desc">Create a series of slides on a computer or tablet to show your journey.</div>
+          <div class="fmt-tips">
+            <div class="fmt-tip">📄 One idea per slide</div>
+            <div class="fmt-tip">🖼️ More pictures, fewer words</div>
+            <div class="fmt-tip">🔢 8–12 slides is ideal</div>
+            <div class="fmt-tip">🔠 Use large fonts — size 24 or bigger</div>
+          </div>
+        </div>
+        <div class="fmt-card">
+          <span class="fmt-icon">🏆</span>
+          <div class="fmt-title">Live Demo</div>
+          <div class="fmt-desc">Bring your creation and demonstrate how it works in front of others.</div>
+          <div class="fmt-tips">
+            <div class="fmt-tip">🗣️ Practise speaking out loud first</div>
+            <div class="fmt-tip">👀 Show it, then explain it</div>
+            <div class="fmt-tip">❓ Invite questions at the end</div>
+            <div class="fmt-tip">⏱️ Aim for 3–5 minutes</div>
+          </div>
+        </div>
+        <div class="fmt-card">
+          <span class="fmt-icon">🎥</span>
+          <div class="fmt-title">Video</div>
+          <div class="fmt-desc">Film yourself explaining and demonstrating your project step by step.</div>
+          <div class="fmt-tips">
+            <div class="fmt-tip">📝 Write a script or notes first</div>
+            <div class="fmt-tip">💡 Film near a window for good light</div>
+            <div class="fmt-tip">🎬 Keep it under 3 minutes</div>
+            <div class="fmt-tip">🔊 Speak slowly and clearly</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CHECKLIST ═══ -->
+    <div class="panel" id="panel-checklist">
+      <p class="panel-eyebrow">Print this out!</p>
+      <h2 class="panel-title">✅ Project Checklist</h2>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Print this page and tick each box as you complete it. You can also write it out in your notebook!</div></div>
+
+      <p class="panel-eyebrow">All 8 steps</p>
+      <div class="check-list" style="margin-bottom:24px;">
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">🌱</span><div><div class="check-label">Step 1 — I have written my project statement (what, why, and who it's for).</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">🛠️</span><div><div class="check-label">Step 2 — I have listed all my materials and explained why I chose them.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">📐</span><div><div class="check-label">Step 3 — I have drawn a blueprint and thought about safety and stability.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">📋</span><div><div class="check-label">Step 4 — I have written a step-by-step build plan with time estimates.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">🎤</span><div><div class="check-label">Step 5 — I have chosen a presentation format and planned what I will share.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">🔍</span><div><div class="check-label">Step 6 — I have tested my project and written a reflection with improvements.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">🚀</span><div><div class="check-label">Step 7 — I have listed at least 3 ideas for a future, improved version.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-icon">🏆</span><div><div class="check-label">Step 8 — I have written my final project statement using all 7 steps.</div></div></div>
+      </div>
+
+      <p class="panel-eyebrow">Bonus quality checks</p>
+      <div class="check-list">
+        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🛡️</span><div><div class="check-label">My project is safe for others to use or touch.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🤝</span><div><div class="check-label">Someone else has tried my project and given me feedback.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🗣️</span><div><div class="check-label">I can explain my project clearly without reading my notes.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🏷️</span><div><div class="check-label">All my sketches and diagrams are labelled.</div></div></div>
+        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🌟</span><div><div class="check-label">I am proud of what I have made!</div></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ TIPS ═══ -->
+    <div class="panel" id="panel-tips">
+      <p class="panel-eyebrow">From Ollie the Owl</p>
+      <h2 class="panel-title">💡 Top Tips for Young Inventors</h2>
+      <div class="tips-grid">
+        <div class="tip-card"><span class="tip-icon">💡</span><div><div class="tip-title">Start with a problem</div><div class="tip-body">The best projects solve a real problem. Look around you — what is annoying, hard, or missing? That's your starting point!</div></div></div>
+        <div class="tip-card"><span class="tip-icon">✏️</span><div><div class="tip-title">Draw before you build</div><div class="tip-body">A quick sketch saves a lot of wasted materials and time. Even a rough drawing helps you think things through.</div></div></div>
+        <div class="tip-card"><span class="tip-icon">🔁</span><div><div class="tip-title">It's OK to start again</div><div class="tip-body">Every great inventor fails many times before they succeed. Starting over is not giving up — it's learning!</div></div></div>
+        <div class="tip-card"><span class="tip-icon">🤝</span><div><div class="tip-title">Ask for help</div><div class="tip-body">If you're stuck, ask a teacher, parent, or classmate. Explaining your idea out loud often helps you find the answer yourself!</div></div></div>
+        <div class="tip-card"><span class="tip-icon">♻️</span><div><div class="tip-title">Reuse and recycle</div><div class="tip-body">Before buying new materials, look at what you have at home. Cardboard boxes, bottle tops, and old fabric are treasure!</div></div></div>
+        <div class="tip-card"><span class="tip-icon">📸</span><div><div class="tip-title">Take photos as you go</div><div class="tip-body">Photograph each step of your build. These are perfect for your presentation and show how hard you worked!</div></div></div>
+        <div class="tip-card"><span class="tip-icon">🧪</span><div><div class="tip-title">Test small first</div><div class="tip-body">Before building the whole thing, test your riskiest idea with a tiny version. This saves time and materials!</div></div></div>
+        <div class="tip-card"><span class="tip-icon">🎉</span><div><div class="tip-title">Celebrate your effort</div><div class="tip-body">The process matters as much as the result. Be proud of every step forward, even the small ones!</div></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ WORDS ═══ -->
+    <div class="panel" id="panel-words">
+      <p class="panel-eyebrow">Word list</p>
+      <h2 class="panel-title">📖 Words to Know</h2>
+      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">These are the special words used in this guide. Read them before you start so you understand everything!</div></div>
+      <div class="gloss-grid">
+        <div class="gloss-card"><div class="gloss-word"><span>🌱</span> Concept</div><div class="gloss-def">Your main idea — the thing you want to make or solve.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>📐</span> Blueprint</div><div class="gloss-def">A detailed drawing of your project showing its shape, size, and parts.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🏗️</span> Structure</div><div class="gloss-def">The frame or body of your project that holds everything together.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>⚡</span> Function</div><div class="gloss-def">What your project does — its job or purpose.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🔬</span> Property</div><div class="gloss-def">A quality of a material, like being strong, light, bendy, or waterproof.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🔁</span> Iteration</div><div class="gloss-def">Making a new and improved version of your design after testing it.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🔍</span> Reflection</div><div class="gloss-def">Thinking carefully about what worked well and what could be better.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🎤</span> Presentation</div><div class="gloss-def">The way you share your finished project with other people.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🏋️</span> Stability</div><div class="gloss-def">How well your project stays upright and does not wobble or fall over.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🚀</span> Enhancement</div><div class="gloss-def">An improvement or extra feature that makes your project even better.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>🛡️</span> Safety</div><div class="gloss-def">Making sure your project cannot hurt anyone who uses or touches it.</div></div>
+        <div class="gloss-card"><div class="gloss-word"><span>👥</span> Audience</div><div class="gloss-def">The people who will use, see, or benefit from your project.</div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const pages = ['home','step1','step2','step3','step4','step5','step6','step7','step8','materials','presenting','checklist','tips','words'];
+
+function show(id) {
+  pages.forEach(p => {
+    const panel = document.getElementById('panel-' + p);
+    if (panel) panel.classList.toggle('active', p === id);
+  });
+  document.querySelectorAll('.nav-btn, .step-nav-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + id + "'")) {
+      btn.classList.add('active');
+    }
+  });
+  document.querySelector('.main').scrollTo ? document.querySelector('.main').scrollTo(0,0) : window.scrollTo(0,0);
+  if (window.innerWidth <= 640) closeSidebar();
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+</script>
+</body>
+</html>
