@@ -117,7 +117,7 @@ select.sort{font-family:"Nunito";font-weight:700;font-size:13.5px;color:var(--in
 <div class="wrap">
   <header class="hero">
     <h1><span class="book-emoji">📚</span> Find a <span class="pop">Book</span></h1>
-    <p>Search, pick a year group, choose what you like — then go find it on the shelf!</p>
+    <p>Search, pick a classroom, choose what you like — then go find it on the shelf!</p>
   </header>
 
   <div class="searchbar">
@@ -127,7 +127,7 @@ select.sort{font-family:"Nunito";font-weight:700;font-size:13.5px;color:var(--in
   </div>
 
   <div class="panel">
-    <div class="ptitle"><span class="dot"></span>Year Group <span class="hint">pick one</span></div>
+    <div class="ptitle"><span class="dot"></span>Classrooms <span class="hint">pick one</span></div>
     <div class="chips" id="yearChips"></div>
   </div>
 
@@ -146,8 +146,8 @@ select.sort{font-family:"Nunito";font-weight:700;font-size:13.5px;color:var(--in
     <div class="spacer"></div>
     <span class="sortlab">Sort:</span>
     <select class="sort" id="sort">
+      <option value="year">By classroom</option>
       <option value="coll">By collection</option>
-      <option value="year">By year group</option>
       <option value="title">By title (A–Z)</option>
       <option value="author">By author (A–Z)</option>
     </select>
@@ -165,7 +165,7 @@ const YEAR_COLORS=["#ff9ab1","#ffb454","#ffd64a","#9ee37d","#5ec5b6","#6aa9e6","
 const COLL_PAL=["#5ec5b6","#67c9bb","#ffb454","#6aa9e6","#b79cf6","#f4845f","#cf9a5a","#e88be0","#ef5d68","#52cdb4","#8d99ae","#b4a99a","#c2b8a3"];
 const GENRE_PAL=["#d6452b","#f0a202","#3a8a5d","#3f7cac","#9b5de5","#e76f51","#2a9d8f","#c1121f","#e07be0","#457b9d","#8d6a3f"];
 const $=s=>document.querySelector(s);
-const state={q:"",year:null,colls:new Set(),genres:new Set(),sort:"coll",shown:0};
+const state={q:"",year:null,colls:new Set(),genres:new Set(),sort:"year",shown:0};
 const PAGE=60;
 
 function buildChips(){
@@ -242,7 +242,7 @@ function draw(){
   const grid=$("#grid"); grid.innerHTML="";
   if(!filtered.length){
     const yr = state.year!==null ? ` in ${DATA.years[state.year]}` : "";
-    grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="big">🐛</div><h3>No books match yet${yr?` —${yr}`:""}</h3><div>Try a different year group, remove a filter, or search another word.</div></div>`;
+    grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="big">🐛</div><h3>No books match yet${yr?` —${yr}`:""}</h3><div>Try a different classroom, remove a filter, or search another word.</div></div>`;
     $("#more").style.display="none";return;
   }
   const slice=filtered.slice(0,state.shown);
