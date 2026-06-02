@@ -64,18 +64,25 @@ body{font-family:'Fredoka','Baloo 2','Comic Sans MS',system-ui,sans-serif;
 /* home */
 .home{position:fixed;top:12px;left:12px;z-index:7;border:none;background:rgba(255,255,255,.7);
   color:var(--accent);font-family:inherit;font-size:.8rem;padding:7px 13px;border-radius:30px;cursor:pointer}
-.backsite{position:fixed;top:12px;right:12px;z-index:8;text-decoration:none;
+.backsite{position:fixed;top:12px;z-index:8;text-decoration:none;
   background:rgba(255,255,255,.78);backdrop-filter:blur(4px);color:var(--accent);font-family:inherit;
   font-size:.82rem;font-weight:500;padding:8px 15px;border-radius:30px;
   box-shadow:0 6px 16px -8px rgba(120,70,80,.45);transition:.2s}
+.backsite{right:12px}
+.backsite.full{right:172px;background:var(--accent);color:#fff}
+.backsite.full:hover{background:#a9624f}
 .backsite:hover{background:#fff;transform:translateY(-1px)}
+.fullbook{text-decoration:none;font-family:inherit;font-weight:500;font-size:1.05rem;
+  color:#fff;background:var(--accent);padding:12px 28px;border-radius:40px;margin-top:10px;
+  box-shadow:0 12px 26px -10px rgba(194,123,106,.7);transition:.2s}
+.fullbook:hover{transform:translateY(-2px);background:#a9624f}
 
 .petals{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
 .petal{position:absolute;top:-6%;width:13px;height:13px;background:#f7b8cd;border-radius:80% 0 80% 0;opacity:.6;animation:fall linear infinite}
 @keyframes fall{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(112vh) translateX(40px) rotate(400deg)}}
 
 @media (prefers-reduced-motion:reduce){.page.active{animation:none}.petal{display:none}}
-@media (max-width:430px){.dots{padding:0 50px}.arrow{width:46px;height:46px}}
+@media (max-width:430px){.dots{padding:0 50px}.arrow{width:46px;height:46px}.backsite.full{display:none}}
 </style>
 </head>
 <body>
@@ -283,11 +290,13 @@ body{font-family:'Fredoka','Baloo 2','Comic Sans MS',system-ui,sans-serif;
         <h2>The End</h2>
         <p class="kanji small">花見 · Where learning blooms</p>
         <button class="again" id="againBtn">Read it again ↺</button>
+        <a class="fullbook" href="bloom.html">Read the full book ✿</a>
         <p class="grownups">For grown-ups: just like the little seed, children grow with time, care, and a little every day. Find tools to help at <a href="index.html"><b>Hanami Education</b></a>.</p>
       </div></section>
 </div>
 
 <button class="home" id="homeBtn" hidden>✿ cover</button>
+<a class="backsite full" href="bloom.html">✿ Full Book</a>
 <a class="backsite" href="index.html">← Hanami Education</a>
 <button class="nav left" id="navL" aria-label="Previous page"></button>
 <button class="nav right" id="navR" aria-label="Next page"></button>
