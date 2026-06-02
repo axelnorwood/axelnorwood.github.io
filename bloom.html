@@ -35,15 +35,22 @@ code{font-family:ui-monospace,Menlo,monospace;background:var(--blush);padding:.0
 
 /* top bar */
 header.bar{position:fixed;top:0;left:0;right:0;height:62px;z-index:50;
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:0 16px;backdrop-filter:blur(10px);
   background:rgba(255,250,246,.82);border-bottom:1px solid var(--line)}
 .bar .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;letter-spacing:.01em}
 .bar .brand .kanji{color:var(--rose);font-size:1.15rem}
 .bar .brand b{font-weight:600}
 .bar .brand small{color:var(--soft);font-weight:400;font-family:var(--serif);font-size:.72rem;display:block;letter-spacing:.06em;text-transform:uppercase}
+.bar-right{display:flex;align-items:center;gap:8px}
+.barlink{font-family:var(--display);font-size:.8rem;font-weight:600;text-decoration:none;
+  color:var(--rose-deep);border:1px solid var(--pink);background:var(--paper);
+  padding:7px 13px;border-radius:30px;transition:.2s;white-space:nowrap;line-height:1}
+.barlink:hover{background:var(--rose);color:#fff;border-color:var(--rose)}
+.barlink.solid{background:var(--rose);color:#fff;border-color:var(--rose)}
+.barlink.solid:hover{background:var(--rose-deep)}
 .iconbtn{appearance:none;border:1px solid var(--line);background:var(--paper);color:var(--rose);
-  width:42px;height:42px;border-radius:12px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+  width:42px;height:42px;border-radius:12px;cursor:pointer;display:grid;place-items:center;transition:.2s;flex-shrink:0}
 .iconbtn:hover{background:var(--blush);border-color:var(--pink)}
 .iconbtn svg{width:20px;height:20px}
 .counter{font-size:.78rem;color:var(--soft);font-variant-numeric:tabular-nums;min-width:64px;text-align:right}
@@ -63,6 +70,10 @@ nav.toc li a{display:block;text-decoration:none;color:var(--ink);padding:11px 12
   font-size:.98rem;transition:.18s;border:1px solid transparent}
 nav.toc li a:hover{background:var(--petal);border-color:var(--line)}
 nav.toc li a[aria-current="true"]{background:var(--blush);border-color:var(--pink);color:var(--rose-deep);font-weight:600}
+nav.toc .tocextra{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+nav.toc .tocextra a{display:block;text-decoration:none;color:var(--rose-deep);background:var(--petal);
+  border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:.92rem;font-family:var(--display);font-weight:600;transition:.18s}
+nav.toc .tocextra a:hover{background:var(--blush);border-color:var(--pink)}
 nav.toc .tocfoot{margin-top:auto;padding:14px 8px 4px;color:var(--soft);font-size:.74rem;border-top:1px solid var(--line)}
 
 /* stage */
@@ -119,12 +130,19 @@ tbody tr:nth-child(even){background:var(--petal)}
 #cover h1{font-family:var(--display);font-weight:700;color:var(--rose-deep);
   font-size:clamp(4rem,18vw,8.5rem);line-height:.9;margin:0;letter-spacing:-.02em}
 #cover .subtitle{font-family:var(--display);font-size:clamp(1.05rem,3.6vw,1.45rem);color:var(--ink);margin:18px 0 6px;max-width:24ch}
-#cover .tagline{color:var(--soft);font-style:italic;margin:4px 0 34px}
+#cover .tagline{color:var(--soft);font-style:italic;margin:4px 0 22px}
+#cover .cover-links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px}
 #cover .begin{appearance:none;cursor:pointer;border:none;background:var(--rose);color:#fff;
   font-family:var(--display);font-size:1.05rem;font-weight:600;padding:15px 38px;border-radius:40px;
   box-shadow:var(--shadow);transition:.22s;letter-spacing:.01em}
 #cover .begin:hover{background:var(--rose-deep);transform:translateY(-2px)}
+#cover .clink{font-family:var(--display);font-weight:600;font-size:.95rem;text-decoration:none;
+  color:var(--rose-deep);border:1px solid var(--pink);background:var(--paper);
+  padding:13px 24px;border-radius:40px;transition:.22s}
+#cover .clink:hover{background:var(--blush);transform:translateY(-2px)}
 #cover .credit{position:absolute;bottom:22px;left:0;right:0;color:var(--soft);font-size:.8rem;letter-spacing:.08em}
+#cover .credit a{color:var(--rose);text-decoration:none;border-bottom:1px solid rgba(192,73,122,.4)}
+#cover .credit a:hover{color:var(--rose-deep)}
 #cover.active{display:flex}
 
 /* falling petals */
@@ -143,6 +161,9 @@ tbody tr:nth-child(even){background:var(--petal)}
 @media (max-width:560px){
   main{padding:84px 18px 32px}
   .pager{flex-direction:row}
+  .bar .brand small{display:none}
+  .barlink.kids{display:none}
+  .counter{display:none}
 }
 </style>
 </head>
@@ -157,7 +178,10 @@ tbody tr:nth-child(even){background:var(--petal)}
     <span class="kanji">花見</span>
     <span><b>Bloom</b><small>Hanami Education</small></span>
   </div>
-  <div class="counter" id="counter">—</div>
+  <div class="bar-right">
+    <a class="barlink kids" href="bloomkids.html">✿ Kids Book</a>
+    <a class="barlink solid" href="index.html">hanamieducation.com</a>
+  </div>
 </header>
 
 <div id="scrim"></div>
@@ -168,6 +192,10 @@ tbody tr:nth-child(even){background:var(--petal)}
     <li><a href="#cover" class="toc-link" data-idx="0">Cover</a></li>
     <li><a href="#a-note-to-you" data-idx="1" class="toc-link">A Note to You</a></li><li><a href="#chapter-1" data-idx="2" class="toc-link">1 &middot; Why Bloom?</a></li><li><a href="#chapter-2" data-idx="3" class="toc-link">2 &middot; How Your Brain Grows</a></li><li><a href="#chapter-3" data-idx="4" class="toc-link">3 &middot; Believe You Can Bloom</a></li><li><a href="#chapter-4" data-idx="5" class="toc-link">4 &middot; Strong Roots</a></li><li><a href="#chapter-5" data-idx="6" class="toc-link">5 &middot; Growing Every Day</a></li><li><a href="#chapter-6" data-idx="7" class="toc-link">6 &middot; A Garden You Can See</a></li><li><a href="#you-are-blooming" data-idx="8" class="toc-link">You Are Blooming</a></li><li><a href="#garden-tools" data-idx="9" class="toc-link">Garden Tools</a></li>
   </ol>
+  <div class="tocextra">
+    <a href="bloomkids.html">✿ Kids Picture Book</a>
+    <a href="index.html">← hanamieducation.com</a>
+  </div>
   <div class="tocfoot">A Hanami Education book · written for you.</div>
 </nav>
 
@@ -179,8 +207,11 @@ tbody tr:nth-child(even){background:var(--petal)}
     <h1>Bloom</h1>
     <p class="subtitle">How to Grow Into a Learner Who Never Stops</p>
     <p class="tagline">A Hanami Education book — written for you.</p>
-    <button class="begin" id="beginBtn">Begin reading →</button>
-    <div class="credit">花見 · Where learning blooms · hanamieducation.com</div>
+    <div class="cover-links">
+      <button class="begin" id="beginBtn">Begin reading →</button>
+      <a class="clink" href="bloomkids.html">✿ Kids Picture Book</a>
+    </div>
+    <div class="credit">花見 · Where learning blooms · <a href="index.html">hanamieducation.com</a></div>
   </section>
 
   <article class="page" id="a-note-to-you" data-idx="1">
@@ -226,7 +257,7 @@ tbody tr:nth-child(even){background:var(--petal)}
 <article class="page" id="garden-tools" data-idx="9">
      <p class="kicker">Resources</p>
      <h1>Garden Tools</h1>
-     <p class="brandline">花見 · Hanami Education · <em>Where learning blooms</em></p><p>A few Hanami Education tools to help you keep growing — and they always send you back to real books, paper, and life. (Some are great to explore with a grown-up.)</p><p><strong>To Read</strong> — a little every day is sunlight for your brain.</p><ul><li><a href="https://hanamieducation.com/bookfinder.html" target="_blank" rel="noopener">The Book Finder</a> — find any book by level and interest.</li><li><a href="https://hanamieducation.com/reading-atlas.html" target="_blank" rel="noopener">The Reading Atlas</a> — 200 great series for grades 1–5.</li><li><a href="https://hanamieducation.com/checklisttool.html" target="_blank" rel="noopener">Reading Checklist Aid</a> — tips and timers for a reading habit.</li><li><a href="https://hanamieducation.com/reading-checklist.html" target="_blank" rel="noopener">Reading Checklist Guide</a> — what to do before, during, and after reading.</li></ul><p><strong>To Write</strong> — the hardest part is starting, so begin with a spark.</p><ul><li><a href="https://hanamieducation.com/story-generator.html" target="_blank" rel="noopener">The Story Spinner</a> — spin up a story idea to write.</li><li><a href="https://hanamieducation.com/promptgenerator.html" target="_blank" rel="noopener">Prompt-o-Matic</a> — a fresh writing prompt for your year.</li><li><a href="https://hanamieducation.com/Writing-Guides.html" target="_blank" rel="noopener">Writing Guides</a> — examples, tips, and grammar in one place.</li><li><a href="https://hanamieducation.com/mylife.html" target="_blank" rel="noopener">The Story of Me</a> — a journal about you, one prompt at a time.</li></ul><p><strong>To Make and Build</strong> — pick an idea you love, then go one step at a time.</p><ul><li><a href="https://hanamieducation.com/project-guide.html" target="_blank" rel="noopener">The Project Picker</a> — tap an interest for a step-by-step project.</li><li><a href="https://hanamieducation.com/projectmaker.html" target="_blank" rel="noopener">The Project Maker</a> — turn your idea into a real plan.</li></ul><p><strong>To Grow Skills</strong> — choose one thing and practice without fear.</p><ul><li><a href="https://hanamieducation.com/goalsetter.html" target="_blank" rel="noopener">Goal Setter</a> — find the skill worth working on.</li><li><a href="https://hanamieducation.com/firststepsports.html" target="_blank" rel="noopener">First Step Sports</a> — try a new sport, tear-free.</li><li><a href="https://hanamieducation.com/wouldyourather.html" target="_blank" rel="noopener">Would You Rather</a> — a fun thinking-and-debating game.</li></ul><p><strong>To Make Friends and Talk</strong> — getting along is a skill too.</p><ul><li><a href="https://hanamieducation.com/friendship.html" target="_blank" rel="noopener">Making Friends and Resolving Conflict 101</a> — make friends and solve problems calmly.</li><li><a href="https://hanamieducation.com/conversation.html" target="_blank" rel="noopener">Conversation Starters</a> — questions that spark real talk.</li></ul><h3>A Day That Helps You Grow</h3><p>Here's an example of a balanced day, with time to focus and time to play.</p><div class="table-wrap"><table><thead><tr><th>Time</th><th>What You Do</th><th>How You Do It</th></tr></thead><tbody><tr><td>Morning</td><td>Morning Meeting</td><td>Talk together as a group</td></tr><tr><td>Mid-Morning</td><td>Skill Practice</td><td>Work with a partner</td></tr><tr><td>Late Morning</td><td>Group Project</td><td>Work as a team</td></tr><tr><td>Midday</td><td>Your Own Task</td><td>Your choice</td></tr><tr><td>Afternoon</td><td>Think and Plan</td><td>Write in a journal</td></tr><tr><td>End of Day</td><td>Share and Check</td><td>Help a friend</td></tr></tbody></table></div><h3>Quick Reminders</h3><p><strong>Chapter 1 — Why Bloom?</strong></p><p>Every skill is a key that makes you free. One win leads to the next. Get your first win!</p><p><strong>Chapter 2 — How Your Brain Grows</strong></p><p>See it, say it, do it. Come back to it often. Practice until it's easy.</p><p><strong>Chapter 3 — Believe You Can Bloom</strong></p><p>Be kind to yourself. Mistakes are clues. Grow a little every day. Start with easy wins.</p><p><strong>Chapter 4 — Strong Roots</strong></p><p>Get the basics solid. Plant seeds early. Take care of yourself first.</p><p><strong>Chapter 5 — Growing Every Day</strong></p><p>Focus, then play. Ask for help. Mix it up. Teach a friend.</p><p><strong>Chapter 6 — A Garden You Can See</strong></p><p>Use pictures for steps. Keep charts of your growth. Start with a curious question.</p><h3>Our Promise</h3><p>We believe the strongest learners grow with real books, pencils, and paper — not screens. Every tool here is built to send you back to the real world: holding a book, writing by hand, and building habits that last because they are grounded in real life.</p><p class="epigraph"><em>Bloom is a Hanami Education book.</em></p><p class="epigraph"><em>花見 · Where learning blooms · hanamieducation.com</em></p>
+     <p class="brandline">花見 · Hanami Education · <em>Where learning blooms</em></p><p>A few Hanami Education tools to help you keep growing — and they always send you back to real books, paper, and life. (Some are great to explore with a grown-up.)</p><p><strong>To Read</strong> — a little every day is sunlight for your brain.</p><ul><li><a href="https://hanamieducation.com/bookfinder.html" target="_blank" rel="noopener">The Book Finder</a> — find any book by level and interest.</li><li><a href="https://hanamieducation.com/reading-atlas.html" target="_blank" rel="noopener">The Reading Atlas</a> — 200 great series for grades 1–5.</li><li><a href="https://hanamieducation.com/checklisttool.html" target="_blank" rel="noopener">Reading Checklist Aid</a> — tips and timers for a reading habit.</li><li><a href="https://hanamieducation.com/reading-checklist.html" target="_blank" rel="noopener">Reading Checklist Guide</a> — what to do before, during, and after reading.</li></ul><p><strong>To Write</strong> — the hardest part is starting, so begin with a spark.</p><ul><li><a href="https://hanamieducation.com/story-generator.html" target="_blank" rel="noopener">The Story Spinner</a> — spin up a story idea to write.</li><li><a href="https://hanamieducation.com/promptgenerator.html" target="_blank" rel="noopener">Prompt-o-Matic</a> — a fresh writing prompt for your year.</li><li><a href="https://hanamieducation.com/Writing-Guides.html" target="_blank" rel="noopener">Writing Guides</a> — examples, tips, and grammar in one place.</li><li><a href="https://hanamieducation.com/mylife.html" target="_blank" rel="noopener">The Story of Me</a> — a journal about you, one prompt at a time.</li></ul><p><strong>To Make and Build</strong> — pick an idea you love, then go one step at a time.</p><ul><li><a href="https://hanamieducation.com/project-guide.html" target="_blank" rel="noopener">The Project Picker</a> — tap an interest for a step-by-step project.</li><li><a href="https://hanamieducation.com/projectmaker.html" target="_blank" rel="noopener">The Project Maker</a> — turn your idea into a real plan.</li></ul><p><strong>To Grow Skills</strong> — choose one thing and practice without fear.</p><ul><li><a href="https://hanamieducation.com/goalsetter.html" target="_blank" rel="noopener">Goal Setter</a> — find the skill worth working on.</li><li><a href="https://hanamieducation.com/firststepsports.html" target="_blank" rel="noopener">First Step Sports</a> — try a new sport, tear-free.</li><li><a href="https://hanamieducation.com/wouldyourather.html" target="_blank" rel="noopener">Would You Rather</a> — a fun thinking-and-debating game.</li></ul><p><strong>To Make Friends and Talk</strong> — getting along is a skill too.</p><ul><li><a href="https://hanamieducation.com/friendship.html" target="_blank" rel="noopener">Making Friends and Resolving Conflict 101</a> — make friends and solve problems calmly.</li><li><a href="https://hanamieducation.com/conversation.html" target="_blank" rel="noopener">Conversation Starters</a> — questions that spark real talk.</li></ul><h3>A Day That Helps You Grow</h3><p>Here's an example of a balanced day, with time to focus and time to play.</p><div class="table-wrap"><table><thead><tr><th>Time</th><th>What You Do</th><th>How You Do It</th></tr></thead><tbody><tr><td>Morning</td><td>Morning Meeting</td><td>Talk together as a group</td></tr><tr><td>Mid-Morning</td><td>Skill Practice</td><td>Work with a partner</td></tr><tr><td>Late Morning</td><td>Group Project</td><td>Work as a team</td></tr><tr><td>Midday</td><td>Your Own Task</td><td>Your choice</td></tr><tr><td>Afternoon</td><td>Think and Plan</td><td>Write in a journal</td></tr><tr><td>End of Day</td><td>Share and Check</td><td>Help a friend</td></tr></tbody></table></div><h3>Quick Reminders</h3><p><strong>Chapter 1 — Why Bloom?</strong></p><p>Every skill is a key that makes you free. One win leads to the next. Get your first win!</p><p><strong>Chapter 2 — How Your Brain Grows</strong></p><p>See it, say it, do it. Come back to it often. Practice until it's easy.</p><p><strong>Chapter 3 — Believe You Can Bloom</strong></p><p>Be kind to yourself. Mistakes are clues. Grow a little every day. Start with easy wins.</p><p><strong>Chapter 4 — Strong Roots</strong></p><p>Get the basics solid. Plant seeds early. Take care of yourself first.</p><p><strong>Chapter 5 — Growing Every Day</strong></p><p>Focus, then play. Ask for help. Mix it up. Teach a friend.</p><p><strong>Chapter 6 — A Garden You Can See</strong></p><p>Use pictures for steps. Keep charts of your growth. Start with a curious question.</p><h3>Our Promise</h3><p>We believe the strongest learners grow with real books, pencils, and paper — not screens. Every tool here is built to send you back to the real world: holding a book, writing by hand, and building habits that last because they are grounded in real life.</p><p class="epigraph"><em>Bloom is a Hanami Education book.</em></p><p class="epigraph"><em>花見 · Where learning blooms · <a href="index.html">hanamieducation.com</a></em></p>
    </article>
 
   <div class="pager" id="pager" hidden>
@@ -256,7 +287,6 @@ function show(i, push){
   counter.textContent = idx === 0 ? "Cover" : idx + " / " + (order.length - 1);
   progress.style.width = (idx / (order.length - 1)) * 100 + "%";
   pager.hidden = (idx === 0);
-  prevBtn.disabled = idx <= 1 ? false : false; // always allow back (to cover)
   prevBtn.disabled = idx === 0;
   nextBtn.disabled = idx === order.length - 1;
   nextBtn.textContent = idx === order.length - 1 ? "The End ❀" : "Next →";
@@ -289,7 +319,6 @@ window.addEventListener("popstate", () => {
   show(i >= 0 ? i : 0, false);
 });
 
-// petals
 (function(){
   if (matchMedia("(prefers-reduced-motion:reduce)").matches) return;
   const wrap = document.getElementById("petals"); if(!wrap) return;
@@ -306,7 +335,6 @@ window.addEventListener("popstate", () => {
   }
 })();
 
-// init from hash
 (function(){
   const h = location.hash.slice(1);
   const i = order.indexOf(h);
