@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt-O-Matic · Years 1–6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#fff4d6; --bg2:#ffe0ec;
+    --ink:#2d2150; --ink-soft:#6b5e8c;
+    --card:#ffffff; --panel:#fffaf2;
+    --accent:#ff5a8c; --accent-2:#ffd23f;
+    --shadow:#2d2150;
+    --radius:26px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Nunito',sans-serif; color:var(--ink);
+    min-height:100vh; padding:26px 16px 70px;
+    display:flex; flex-direction:column; align-items:center;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(255,210,63,.55), transparent 38%),
+      radial-gradient(circle at 88% 14%, rgba(255,90,140,.4), transparent 40%),
+      radial-gradient(circle at 50% 100%, rgba(110,200,255,.45), transparent 45%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+    background-attachment:fixed;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    transition:background .4s ease;
+  }
+  .wrap{width:100%; max-width:600px;}
+  header{text-align:center; margin-bottom:18px;}
+  .eyebrow{
+    display:inline-block; font-family:'Baloo 2',cursive; font-weight:700;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--ink); color:#fff; padding:5px 16px; border-radius:999px;
+    transform:rotate(-2deg); box-shadow:3px 3px 0 var(--accent);
+  }
+  h1{
+    font-family:'Baloo 2',cursive; font-weight:800; line-height:.95;
+    font-size:clamp(40px,11vw,68px); margin-top:14px; letter-spacing:-.02em;
+    color:var(--ink);
+    text-shadow:4px 4px 0 var(--accent-2), 8px 8px 0 var(--accent);
+  }
+  .sub{font-size:15px; font-weight:700; color:var(--ink-soft); margin-top:14px;}
+
+  .years{display:grid; grid-template-columns:repeat(6,1fr); gap:9px; margin:22px 0 16px;}
+  .yr{
+    font-family:'Baloo 2',cursive; font-weight:800; font-size:24px; cursor:pointer;
+    padding:12px 0 9px; border:3px solid var(--ink); border-radius:18px;
+    background:#fff; color:var(--ink); box-shadow:0 4px 0 var(--ink);
+    transition:transform .12s, box-shadow .12s, background .2s, color .2s;
+  }
+  .yr small{display:block; font-family:'Nunito'; font-size:8.5px; font-weight:800;
+    letter-spacing:.04em; opacity:.55; margin-top:1px;}
+  .yr:hover{transform:translateY(-2px); box-shadow:0 6px 0 var(--ink);}
+  .yr:active{transform:translateY(2px); box-shadow:0 2px 0 var(--ink);}
+  .yr.on{background:var(--accent); color:#fff;}
+  .yr.on small{opacity:.85;}
+
+  .controls{display:flex; gap:10px; align-items:flex-end; margin-bottom:18px; flex-wrap:wrap;}
+  .field{flex:1; min-width:150px;}
+  .field label{display:block; font-size:11px; font-weight:800; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--ink-soft); margin:0 0 5px 4px;}
+  select{
+    width:100%; font-family:'Nunito'; font-weight:800; font-size:15px; color:var(--ink);
+    padding:11px 14px; border:3px solid var(--ink); border-radius:14px; background:#fff;
+    cursor:pointer; appearance:none; box-shadow:0 3px 0 var(--ink);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%232d2150' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M3 6l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center;
+  }
+  select:focus{outline:none;}
+  .countpill{font-family:'Baloo 2',cursive; font-weight:700; font-size:14px;
+    color:#fff; background:var(--ink); padding:9px 14px; border-radius:14px; white-space:nowrap;}
+
+  .card{
+    position:relative; background:var(--card);
+    border:4px solid var(--ink); border-radius:var(--radius);
+    box-shadow:0 10px 0 var(--shadow); padding:26px 24px 24px; min-height:210px;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:14px;
+    background:repeating-linear-gradient(90deg, var(--accent) 0 22px, var(--accent-2) 22px 44px);
+  }
+  .card.pop{animation:pop .45s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes pop{0%{transform:scale(.94) rotate(-1deg);}60%{transform:scale(1.02) rotate(.5deg);}100%{transform:scale(1) rotate(0);}}
+  .tags{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:14px 0 14px;}
+  .genre{font-family:'Baloo 2',cursive; font-size:13px; font-weight:700; color:var(--ink);
+    background:var(--accent-2); padding:5px 14px; border-radius:999px; border:2.5px solid var(--ink);}
+  .meta{font-size:12px; font-weight:800; color:var(--ink-soft);}
+  .prompt{font-family:'Baloo 2',cursive; font-weight:600; line-height:1.25;
+    font-size:clamp(22px,4.4vw,29px); color:var(--ink);}
+  .starter{margin-top:15px; padding-top:14px; border-top:3px dotted #e7ddf0;
+    font-size:15px; font-weight:700; color:var(--ink-soft); display:flex; gap:9px; align-items:flex-start;}
+  .starter .dot{font-size:20px; line-height:1.1;}
+
+  .actions{display:flex; gap:12px; margin-top:20px;}
+  .btn{font-family:'Baloo 2',cursive; font-weight:800; cursor:pointer;
+    border:4px solid var(--ink); border-radius:18px; transition:transform .1s, box-shadow .1s;}
+  .btn-main{flex:1; font-size:21px; padding:15px 0; background:var(--accent); color:#fff;
+    box-shadow:0 6px 0 var(--ink); display:flex; align-items:center; justify-content:center; gap:9px;}
+  .btn-main:hover{transform:translateY(-2px); box-shadow:0 8px 0 var(--ink);}
+  .btn-main:active{transform:translateY(4px); box-shadow:0 2px 0 var(--ink);}
+  .btn-main .spin{display:inline-block; font-size:24px;}
+  .btn-main.rolling .spin{animation:spin .5s linear;}
+  @keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+  .btn-icon{width:60px; font-size:24px; background:var(--accent-2); color:var(--ink);
+    box-shadow:0 6px 0 var(--ink);}
+  .btn-icon:hover{transform:translateY(-2px); box-shadow:0 8px 0 var(--ink);}
+  .btn-icon:active{transform:translateY(4px); box-shadow:0 2px 0 var(--ink);}
+  .btn-icon.done{background:#5fd38a;}
+
+  .hint{text-align:center; font-size:13px; font-weight:800; color:var(--ink-soft); margin-top:18px;}
+  kbd{font-family:'Baloo 2',cursive; background:#fff; border:2.5px solid var(--ink);
+    border-radius:8px; padding:1px 9px; font-size:12px; box-shadow:0 2px 0 var(--ink);}
+
+  .confetti{position:fixed; top:-12px; width:11px; height:14px; z-index:50;
+    pointer-events:none; border-radius:2px; animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(106vh) rotate(720deg); opacity:.9;}}
+
+  @media(max-width:430px){
+    .years{gap:6px;} .yr{font-size:20px; padding:9px 0 7px;}
+    .card{padding:22px 18px; box-shadow:0 8px 0 var(--shadow);}
+    .btn-main{font-size:18px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Years 1 – 6</span>
+    <h1>Prompt-O-Matic</h1>
+    <p class="sub">🎲 Pick a year, spin the machine, and grab a writing mission!</p>
+  </header>
+
+  <div class="years" id="years"></div>
+
+  <div class="controls">
+    <div class="field">
+      <label for="genre-filter">🎯 Genre</label>
+      <select id="genre-filter"></select>
+    </div>
+    <span class="countpill" id="count"></span>
+  </div>
+
+  <div class="card" id="card">
+    <div class="tags">
+      <span class="genre" id="genre">Ready!</span>
+      <span class="meta" id="meta"></span>
+    </div>
+    <p class="prompt" id="prompt">Smash the button to get your first writing mission! 🚀</p>
+    <p class="starter" id="starter" style="display:none;"><span class="dot">💡</span><span id="starter-text"></span></p>
+    <div class="actions">
+      <button class="btn btn-main" id="gen"><span class="spin">🎰</span> Spin a prompt!</button>
+      <button class="btn btn-icon" id="copy" aria-label="Copy prompt" title="Copy">📋</button>
+    </div>
+  </div>
+
+  <p class="hint">⌨️ <kbd>space</kbd> to spin · <kbd>1</kbd>–<kbd>6</kbd> to pick a year</p>
+</div>
+
+<script>
+const ACCENTS = {
+  1:{a:'#ff5a8c', b:'#ffd23f', bg1:'#fff4d6', bg2:'#ffe0ec'},
+  2:{a:'#ff7a3c', b:'#ffd23f', bg1:'#fff0d6', bg2:'#ffe2cc'},
+  3:{a:'#3cc36b', b:'#c8f04f', bg1:'#e9ffd6', bg2:'#d2f7e6'},
+  4:{a:'#2e9fd8', b:'#7be0ff', bg1:'#d6f3ff', bg2:'#e0ecff'},
+  5:{a:'#8b5bd8', b:'#d6a8ff', bg1:'#eee2ff', bg2:'#f6e6ff'},
+  6:{a:'#e8467a', b:'#ff9ec4', bg1:'#ffe0ec', bg2:'#ffd6e6'}
+};
+
+const DATA = {
+  1:{age:"Ages 5–6",time:"1–2 sentences",items:[
+    {g:"Describe",p:"Draw your favourite toy, then write a sentence to tell me about it.",s:"Start: My favourite toy is…"},
+    {g:"Recount",p:"What did you do at the weekend? Write a sentence about the best bit.",s:"Start: At the weekend I…"},
+    {g:"Imagine",p:"You find a tiny door in the garden. What is behind it?",s:"Start: Behind the door I see…"},
+    {g:"Describe",p:"Write a sentence about your favourite animal and one thing it can do.",s:"Try a 'because': …because it can…"},
+    {g:"List",p:"Make a list of three things you would pack for a trip to the beach.",s:"Use bullet points or the word 'and'."},
+    {g:"Imagine",p:"A friendly monster comes for tea. What food do you give it?",s:"Start: I give the monster…"},
+    {g:"Describe",p:"Look outside. Write a sentence about the weather today.",s:"Try using a colour or feeling word."},
+    {g:"Recount",p:"Write a sentence about something that made you laugh.",s:"Start: I laughed when…"},
+    {g:"Describe",p:"Who is in your family? Write a sentence about one of them.",s:"Use a capital letter for their name."},
+    {g:"Describe",p:"What is your favourite food? Write a sentence saying why you like it.",s:"Start: I like… because…"},
+    {g:"List",p:"Draw a rocket and label three parts of it.",s:"Write one word for each part."},
+    {g:"Imagine",p:"If you had a magic pet, what would it be?",s:"Start: My magic pet can…"},
+    {g:"Imagine",p:"Write a sentence about what you want to be when you grow up.",s:"Start: When I grow up I want to…"},
+    {g:"Describe",p:"What makes you happy? Write a sentence about it.",s:"Start: I feel happy when…"},
+    {g:"Describe",p:"Describe a snowman. What is it wearing?",s:"Use words like 'big', 'cold' or 'round'."},
+    {g:"Recount",p:"Write a sentence about your favourite game to play outside.",s:"Start: My favourite game is…"},
+    {g:"Imagine",p:"You found a shiny coin. What will you buy with it?",s:"Start: I will buy…"},
+    {g:"Describe",p:"Write a sentence about your best friend.",s:"Say one kind thing about them."},
+    {g:"Describe",p:"What sound does the rain make? Write a sentence about a rainy day.",s:"Try a sound word like 'splash'."},
+    {g:"Imagine",p:"A bird builds a nest in your tree. Write a sentence about the baby birds.",s:"Start: The baby birds…"},
+    {g:"Describe",p:"Write a sentence about the colour you like best.",s:"Start: My favourite colour is…"},
+    {g:"Imagine",p:"A big balloon carries you up into the sky. What do you see?",s:"Start: Up high I can see…"},
+    {g:"Recount",p:"Write a sentence about your favourite thing to do at school.",s:"Start: At school I like to…"},
+    {g:"Describe",p:"What does your house look like? Write a sentence about it.",s:"Use a number or a colour word."},
+    {g:"Imagine",p:"You have a robot helper. What does it do for you?",s:"Start: My robot can…"},
+    {g:"List",p:"Write three things you can hear right now.",s:"Use 'and' to join the last two."},
+    {g:"Describe",p:"Write a sentence about the sea.",s:"Is it calm or splashy?"},
+    {g:"Imagine",p:"A fairy gives you one wish. What do you wish for?",s:"Start: I wish for…"},
+    {g:"Recount",p:"Write a sentence about a present you really liked.",s:"Start: My favourite present was…"},
+    {g:"Describe",p:"What is your favourite story? Write a sentence about it.",s:"Say who is in the story."},
+    {g:"Imagine",p:"You have wings for a day. Where do you fly?",s:"Start: I fly to…"},
+    {g:"Describe",p:"Write a sentence about a flower in the garden.",s:"What colour is it?"},
+    {g:"List",p:"Name three foods that are good for you.",s:"Write them as a list."},
+    {g:"Imagine",p:"A teddy bear can talk. What does it say?",s:"Use speech: 'Hello!' said Teddy."},
+    {g:"Describe",p:"Write a sentence about the night sky.",s:"Can you see the moon or stars?"},
+    {g:"Recount",p:"Write a sentence about playing with a friend.",s:"Start: I played…"},
+    {g:"Imagine",p:"You build a sandcastle. What is hidden inside it?",s:"Start: Inside my castle there is…"},
+    {g:"Describe",p:"Write a sentence about your favourite kind of car.",s:"Try a 'fast' or 'big' word."},
+    {g:"Imagine",p:"A puppy follows you home. What do you name it?",s:"Say why you chose that name."},
+    {g:"Describe",p:"Write a sentence about how you help at home.",s:"Start: I help by…"}
+  ]},
+  2:{age:"Ages 6–7",time:"3–4 sentences",items:[
+    {g:"Narrative",p:"Write a short story about a lost puppy that finds its way home.",s:"Use a beginning, middle and end."},
+    {g:"Recount",p:"Tell me about your best day ever. What happened and why was it so good?",s:"Use words like first, then, finally."},
+    {g:"Imagine",p:"You wake up and you can fly! Where do you go first?",s:"Describe what you can see from above."},
+    {g:"Description",p:"Describe a magical forest. What can you see, hear and smell?",s:"Try to use three describing words."},
+    {g:"Instructions",p:"Write instructions for making a jam sandwich.",s:"Use numbers for each step."},
+    {g:"Narrative",p:"A dragon moves in next door. Is it scary or kind?",s:"Tell us how the dragon behaves."},
+    {g:"Letter",p:"Write a short letter to your favourite story character.",s:"Start: Dear…"},
+    {g:"Imagine",p:"You find a key that opens anything. What do you unlock?",s:"Use 'and' or 'but' to join ideas."},
+    {g:"Recount",p:"Write about a time you helped someone.",s:"How did it make you feel?"},
+    {g:"Imagine",p:"Imagine your toys come alive at night. What do they do?",s:"Pick two toys and what they say."},
+    {g:"Description",p:"Describe your favourite place. Why do you love it?",s:"Use 'I love it because…'"},
+    {g:"Narrative",p:"Write a story about a pirate looking for treasure.",s:"Where is the treasure hidden?"},
+    {g:"Imagine",p:"The school turns into a jungle for a day. What happens?",s:"What animals appear in the classroom?"},
+    {g:"Instructions",p:"Write instructions for how to look after a pet.",s:"Start each step with a 'bossy' verb."},
+    {g:"Narrative",p:"You find an egg that is about to hatch. What comes out?",s:"Describe the surprise inside."},
+    {g:"Description",p:"Write about your favourite season and what you do in it.",s:"Mention the weather and one activity."},
+    {g:"Imagine",p:"A spaceship lands in your playground. Who is inside?",s:"Are they friendly? What do they want?"},
+    {g:"Letter",p:"Write a thank you note to someone special.",s:"Say exactly what you are thanking them for."},
+    {g:"Description",p:"Describe a busy day at the zoo.",s:"Name three animals you saw."},
+    {g:"Imagine",p:"You shrink small enough to ride a bumblebee. Where do you go?",s:"Describe how the world looks now."},
+    {g:"Narrative",p:"A snowman comes to life in your garden. What happens next?",s:"Where does the snowman want to go?"},
+    {g:"Recount",p:"Write about a trip you went on with your family.",s:"Use first, then and after that."},
+    {g:"Imagine",p:"You find a magic paintbrush. What do you paint?",s:"What happens when you paint it?"},
+    {g:"Description",p:"Describe a castle on a hill.",s:"Use two or three describing words."},
+    {g:"Instructions",p:"Write instructions for building a sandcastle.",s:"Use numbers for each step."},
+    {g:"Letter",p:"Write a postcard from a holiday, real or made-up.",s:"Start: Dear… Today I…"},
+    {g:"Narrative",p:"A tiny mouse wants to be brave. Write its adventure.",s:"What scary thing does it face?"},
+    {g:"Imagine",p:"You can talk to animals for one day. Who do you talk to?",s:"What do they tell you?"},
+    {g:"Description",p:"Describe a rainbow after the rain.",s:"Name some of the colours."},
+    {g:"Recount",p:"Write about the funniest thing that happened this week.",s:"Why was it so funny?"},
+    {g:"Narrative",p:"A star falls from the sky into your back garden. What is it?",s:"Is it warm? Does it speak?"},
+    {g:"Instructions",p:"Write instructions for planting a seed.",s:"Begin each step with a verb."},
+    {g:"Imagine",p:"Your shadow runs off on its own. What does it do?",s:"How do you get it back?"},
+    {g:"Description",p:"Describe a busy fairground at night.",s:"What can you see and hear?"},
+    {g:"Narrative",p:"A little robot is lost in the park. Help it get home.",s:"Who helps the robot?"},
+    {g:"Letter",p:"Write a letter inviting someone to a party.",s:"Say when and where it is."},
+    {g:"Imagine",p:"You discover a tunnel under your bed. Where does it go?",s:"Describe what you find."},
+    {g:"Description",p:"Describe your favourite weather and why you like it.",s:"Use a 'because' sentence."},
+    {g:"Narrative",p:"A cat and a dog become best friends. How did it happen?",s:"What do they do together?"},
+    {g:"Recount",p:"Write about a time you were really proud of yourself.",s:"What did you do?"}
+  ]},
+  3:{age:"Ages 7–8",time:"1 paragraph",items:[
+    {g:"Narrative",p:"Write the opening of a story set on a stormy night at an old lighthouse.",s:"Set the scene before anything happens."},
+    {g:"Description",p:"Describe a creature no one has ever seen before. How does it look and move?",s:"Use adjectives and a simile (like a…)."},
+    {g:"Persuasion",p:"Persuade your teacher to let the class have an extra playtime.",s:"Give two good reasons."},
+    {g:"Diary",p:"Write a diary entry for a character who got lost on a school trip.",s:"Use 'I' and the past tense (Today I…)."},
+    {g:"Imagine",p:"You shrink to the size of an ant for one day. Describe your adventure.",s:"Think about everyday objects, now huge."},
+    {g:"Explanation",p:"Explain to an alien how to make and eat breakfast cereal.",s:"Use time words: first, next, after that."},
+    {g:"Narrative",p:"A mysterious parcel arrives with your name on it. What's inside?",s:"Build suspense before you open it."},
+    {g:"Description",p:"Describe your dream bedroom with no rules and no limits.",s:"Include sights, sounds and one surprise."},
+    {g:"Narrative",p:"Write a story about a child who discovers they have a superpower.",s:"How do they find out? What goes wrong?"},
+    {g:"Description",p:"Describe a market on a hot, busy afternoon.",s:"What can you hear and smell?"},
+    {g:"Persuasion",p:"Persuade someone to read your favourite book.",s:"Don't give away the ending!"},
+    {g:"Letter",p:"Write a letter from a knight to their family back home.",s:"Describe one thing the knight has seen."},
+    {g:"Instructions",p:"Explain how to play your favourite game.",s:"Number each rule clearly."},
+    {g:"Imagine",p:"A door in the library leads somewhere strange. Where?",s:"Describe stepping through for the first time."},
+    {g:"Diary",p:"Write a diary entry as a Roman soldier far from home.",s:"What do they miss most?"},
+    {g:"Description",p:"Describe a storm rolling in over the sea.",s:"Try personification (the clouds growled…)."},
+    {g:"Narrative",p:"You find a treasure map tucked inside an old book. What happens next?",s:"Where does the map lead?"},
+    {g:"Explanation",p:"Write a fact file about an imaginary animal.",s:"Include habitat, food and a fun fact."},
+    {g:"Persuasion",p:"Persuade your family to get a pet.",s:"Answer one worry a grown-up might have."},
+    {g:"Description",p:"Describe what it would be like to live on the moon.",s:"What would be hard? What would be fun?"},
+    {g:"Narrative",p:"Write a story about a magical object found in the attic.",s:"What does the object do?"},
+    {g:"Description",p:"Describe a dragon guarding its treasure.",s:"Use a simile for its size or scales."},
+    {g:"Persuasion",p:"Persuade people to recycle more at home.",s:"Give two reasons and a slogan."},
+    {g:"Diary",p:"Write a diary entry as an astronaut on their first day in space.",s:"What can they see from the window?"},
+    {g:"Explanation",p:"Explain how a plant grows from a tiny seed.",s:"Use first, next, then and finally."},
+    {g:"Imagine",p:"You can become any animal for a day. Which one, and why?",s:"Describe what you do as that animal."},
+    {g:"Narrative",p:"A character wakes to find the whole town is silent and empty.",s:"Build a mysterious atmosphere."},
+    {g:"Description",p:"Describe a snowy mountain at sunrise.",s:"Use colours and 'sparkling' words."},
+    {g:"Letter",p:"Write a letter to your future self.",s:"Ask them at least one question."},
+    {g:"Instructions",p:"Write instructions for making and flying a kite.",s:"Add a safety tip."},
+    {g:"Narrative",p:"A magic carpet appears at your window. Where does it take you?",s:"Describe the journey through the air."},
+    {g:"Description",p:"Describe a haunted house, but make it funny, not scary.",s:"Give the ghosts silly habits."},
+    {g:"Persuasion",p:"Persuade your class to keep a classroom pet.",s:"Answer one worry about looking after it."},
+    {g:"Diary",p:"Write a diary entry as a Victorian child going to school.",s:"How is it different from school today?"},
+    {g:"Explanation",p:"Explain why we need to sleep.",s:"Give two clear reasons."},
+    {g:"Narrative",p:"You find a bottle with a message inside. What does it say?",s:"What do you decide to do?"},
+    {g:"Narrative",p:"A clumsy wizard's spell goes completely wrong. What happens?",s:"How do they fix the mess?"},
+    {g:"Description",p:"Describe an underwater world you discover.",s:"Use sound and colour together."},
+    {g:"Narrative",p:"Retell a fairy tale from the villain's point of view.",s:"Make us see their side of the story."},
+    {g:"Explanation",p:"Explain how to be a good friend.",s:"Give three pieces of advice."}
+  ]},
+  4:{age:"Ages 8–9",time:"2 paragraphs",items:[
+    {g:"Narrative",p:"Write a story where a character makes a wish that goes wrong.",s:"Show how they feel when it backfires."},
+    {g:"Persuasion",p:"Write a poster persuading people to look after the local park.",s:"Use a slogan and at least two reasons."},
+    {g:"Description",p:"Describe a busy market using all five senses.",s:"One sentence per sense if you can."},
+    {g:"Newspaper",p:"Write a short news report about a giant footprint found in town.",s:"Answer who, what, where and when."},
+    {g:"Imagine",p:"You discover a secret room in your school. What's the secret?",s:"Plan a problem and how it is solved."},
+    {g:"Diary",p:"Write a diary entry as an explorer on the day they found something amazing.",s:"Use feelings and time connectives."},
+    {g:"Instructions",p:"Write instructions for trapping (and freeing) a mischievous goblin.",s:"Add a warning or top tip."},
+    {g:"Narrative",p:"Two friends find a map to buried treasure. Write what happens next.",s:"Include some dialogue with speech marks."},
+    {g:"Narrative",p:"Write a story that includes a thunderstorm, a stranger and a secret.",s:"Link all three by the end."},
+    {g:"Persuasion",p:"Persuade people to visit your imaginary holiday destination.",s:"Use exciting, exaggerated language."},
+    {g:"Description",p:"Describe an old, abandoned house from the outside.",s:"Build an eerie atmosphere."},
+    {g:"Newspaper",p:"Write a newspaper report about an unusual event at your school.",s:"Include a made-up quote from a witness."},
+    {g:"Narrative",p:"A character finds a phone that can call the past. What do they ask?",s:"What changes because of the call?"},
+    {g:"Explanation",p:"Write a set of rules for a brand new sport you invented.",s:"Explain how a team wins."},
+    {g:"Description",p:"Describe a character so the reader can picture them, without naming them.",s:"Show their mood through their actions."},
+    {g:"Narrative",p:"Write a story where the weather suddenly changes everything.",s:"Use the change as a turning point."},
+    {g:"Letter",p:"Write a letter of complaint from a fairy-tale villain.",s:"Keep it formal but funny."},
+    {g:"Explanation",p:"Explain how something works as if to a much younger child.",s:"Use a comparison they'd understand."},
+    {g:"Narrative",p:"A treasure chest washes up on the beach. Write the discovery.",s:"Slow the moment they open it down."},
+    {g:"Description",p:"Describe a feast fit for a king, using all your senses.",s:"Make the reader feel hungry."},
+    {g:"Narrative",p:"Write a story where a character swaps lives with someone for a day.",s:"What surprises them most?"},
+    {g:"Persuasion",p:"Write an advert for a brand new invention.",s:"Use a catchy name and a slogan."},
+    {g:"Description",p:"Describe a jungle deep in the rainforest.",s:"Layer in sounds and movement."},
+    {g:"Newspaper",p:"Report on a daring rescue that happened in your area.",s:"Include a quote from a witness."},
+    {g:"Imagine",p:"You wake up as the teacher for a day. What do you change?",s:"Explain why your changes are better."},
+    {g:"Diary",p:"Write the diary of a survivor on a desert island.",s:"What do they find and how do they cope?"},
+    {g:"Instructions",p:"Write a survival guide for being lost in the woods.",s:"Add a clear warning."},
+    {g:"Narrative",p:"A character finds a creature that shouldn't exist. What do they do?",s:"Show their reaction, don't just name it."},
+    {g:"Persuasion",p:"Persuade tourists to visit your home town.",s:"Mention three things to do there."},
+    {g:"Description",p:"Describe a storm at sea from the deck of a ship.",s:"Use powerful verbs for the waves."},
+    {g:"Newspaper",p:"Write a report about a mystery animal spotted in the local lake.",s:"Answer who, what, where and when."},
+    {g:"Narrative",p:"Write a story where a small act of kindness changes everything.",s:"Show the ripple effect it causes."},
+    {g:"Explanation",p:"Explain how a volcano erupts.",s:"Use cause-and-effect connectives."},
+    {g:"Description",p:"Describe an enchanted garden where nothing is quite normal.",s:"Pick three unusual details."},
+    {g:"Letter",p:"Write a letter from an evacuee child during wartime.",s:"Describe their new home and how they feel."},
+    {g:"Narrative",p:"Two characters are trapped somewhere and must work together.",s:"Make their plan succeed or fail."},
+    {g:"Persuasion",p:"Write a leaflet persuading people to drink more water.",s:"Use facts and a bold heading."},
+    {g:"Description",p:"Describe a fairground ride from the point of view of the rider.",s:"Match your sentence length to the speed."},
+    {g:"Narrative",p:"A character discovers their pet can understand every word they say.",s:"What is the first thing they ask it?"},
+    {g:"Explanation",p:"Explain the rules of a board game you love.",s:"Make it clear enough for a beginner."}
+  ]},
+  5:{age:"Ages 9–10",time:"2–3 paragraphs",items:[
+    {g:"Narrative",p:"Write a story that begins: 'The lights flickered, and then everything changed.'",s:"Use the opening line, then build tension."},
+    {g:"Discussion",p:"Should children have homework? Give arguments for and against.",s:"Two points each side, then your view."},
+    {g:"Description",p:"Describe an abandoned theme park at dawn.",s:"Use personification (the rides slept…)."},
+    {g:"Speech",p:"Write a speech persuading your class to choose your idea for the school trip.",s:"Open with a rhetorical question."},
+    {g:"Recount",p:"Write a survivor's account of a day a volcano erupted near their village.",s:"First person, past tense, vivid detail."},
+    {g:"Imagine",p:"Time travel is real but you only get one trip. Where and when, and why?",s:"Justify your choice with detail."},
+    {g:"Narrative",p:"A character receives a letter from their future self. What does it warn them?",s:"Reveal the warning gradually."},
+    {g:"Explanation",p:"Explain how a simple invention could make everyday life better.",s:"Describe the problem, then the solution."},
+    {g:"Narrative",p:"Write a mystery: something valuable has vanished from the museum.",s:"Plant at least one clue for the reader."},
+    {g:"Description",p:"Describe a forest at the exact moment night turns to day.",s:"Show the change, don't just name it."},
+    {g:"Discussion",p:"Should zoos exist? Present both sides of the argument.",s:"Use formal connectives: however, although."},
+    {g:"Diary",p:"Write the diary of someone living through a great storm or flood.",s:"Track how their mood changes."},
+    {g:"Narrative",p:"A new student arrives who is hiding an unusual secret. Write the meeting.",s:"Hint at the secret without stating it."},
+    {g:"Persuasion",p:"Persuade your headteacher to make one big change to the school.",s:"Predict and answer an objection."},
+    {g:"Description",p:"Describe a city street using personification and metaphor.",s:"Give the street a mood of its own."},
+    {g:"Narrative",p:"Write a story where the main character must make a brave choice.",s:"Make the choice cost them something."},
+    {g:"Discussion",p:"Are video games good or bad for children? Write a balanced report.",s:"Stay fair before giving your opinion."},
+    {g:"Imagine",p:"You find a door in your house that wasn't there before.",s:"Decide whether to open it, and why."},
+    {g:"Newspaper",p:"Write a newspaper front page from the day a famous discovery was made.",s:"Add a headline and a strapline."},
+    {g:"Description",p:"Describe a character's bedroom to reveal what kind of person they are.",s:"Let objects tell the reader about them."},
+    {g:"Narrative",p:"Write a story that ends with: 'And nothing was ever the same again.'",s:"Build towards that final line."},
+    {g:"Discussion",p:"Should school uniforms be compulsory? Argue both sides.",s:"Two points each side, then your view."},
+    {g:"Description",p:"Describe a deserted shipwreck on the ocean floor.",s:"Use stillness and silence."},
+    {g:"Speech",p:"Write a speech accepting an award for something you achieved.",s:"Thank others and inspire the audience."},
+    {g:"Recount",p:"Write a first-hand account of a dramatic rescue you witnessed.",s:"First person, past tense, vivid detail."},
+    {g:"Imagine",p:"You are the last person in the city. Describe your first day.",s:"Show how the silence feels."},
+    {g:"Narrative",p:"A character finds a diary that seems to predict the future.",s:"What do they do with what they read?"},
+    {g:"Explanation",p:"Explain how the water cycle works.",s:"Use technical vocabulary correctly."},
+    {g:"Narrative",p:"Write a story where the 'thief' is actually doing something good.",s:"Surprise the reader at the end."},
+    {g:"Description",p:"Describe a mountain village in the depths of winter.",s:"Use the cold to set the mood."},
+    {g:"Discussion",p:"Should wild animals ever be kept as pets? Present both sides.",s:"Use formal connectives throughout."},
+    {g:"Diary",p:"Write the diary of someone on a long voyage of discovery.",s:"Track their hopes and their fears."},
+    {g:"Narrative",p:"A stranger hands your character a key and walks away. What does it open?",s:"Delay the answer to build suspense."},
+    {g:"Persuasion",p:"Write a campaign poster for a cause you care about.",s:"Use a slogan, facts and emotion."},
+    {g:"Description",p:"Describe the same place in daylight, then again at midnight.",s:"Show how the mood transforms."},
+    {g:"Narrative",p:"Write a story where the main character cannot tell anyone the truth.",s:"Show the pressure of the secret."},
+    {g:"Discussion",p:"Is technology making us lazier or smarter? Argue both sides.",s:"Stay balanced before concluding."},
+    {g:"Imagine",p:"A portal opens in the school hall. Where does it lead?",s:"Describe the first to step through."},
+    {g:"Newspaper",p:"Report on a record-breaking event, real or imagined.",s:"Add a headline and a strong opening line."},
+    {g:"Description",p:"Describe a character through their hands alone.",s:"Let the hands hint at their life."}
+  ]},
+  6:{age:"Ages 10–11",time:"3+ paragraphs",items:[
+    {g:"Narrative",p:"Write a suspenseful story where the main character realises they are being followed.",s:"Control pace: short sentences for tension."},
+    {g:"Balanced argument",p:"'Mobile phones should be banned in schools.' Argue both sides, then conclude.",s:"Use connectives: however, furthermore."},
+    {g:"Description",p:"Describe a city after everyone has vanished.",s:"Use metaphor and varied sentence lengths."},
+    {g:"Persuasion",p:"Write a persuasive article convincing readers to protect the oceans.",s:"Use facts, emotion and a call to action."},
+    {g:"Diary",p:"Write a diary entry from someone who has just made a difficult decision.",s:"Show inner conflict and consequences."},
+    {g:"Narrative",p:"A door appears that wasn't there yesterday. Your character steps through.",s:"Use a flashback somewhere in the story."},
+    {g:"Speech",p:"Write a speech for the whole school about a cause you believe in.",s:"Use repetition and direct address (you…)."},
+    {g:"Setting",p:"Open a mystery: a remote inn, a missing guest, and a locked room.",s:"Plant one clue the reader might miss."},
+    {g:"Narrative",p:"Write a story that moves between the present and one important flashback.",s:"Make the flashback explain the present."},
+    {g:"Balanced argument",p:"'Homework should be abolished.' Write a balanced argument and your verdict.",s:"Weigh evidence before deciding."},
+    {g:"Description",p:"Describe a landscape changing through the four seasons in one piece.",s:"Find a thread to link the sections."},
+    {g:"Narrative",p:"Write the opening of a dystopia where one rule controls everyone.",s:"Reveal the rule through small details."},
+    {g:"Narrative",p:"A character finds an old letter that changes how they see their family.",s:"Delay the revelation for effect."},
+    {g:"Persuasion",p:"Persuade your reader that space exploration is, or isn't, worth the cost.",s:"Acknowledge the strongest counter-argument."},
+    {g:"Setting",p:"Write a tense scene set entirely during a power cut.",s:"Use the dark to build atmosphere."},
+    {g:"Description",p:"Describe a marketplace so vividly the reader can hear and smell it.",s:"Layer in sounds, smells and movement."},
+    {g:"Narrative",p:"Write a story where the narrator is hiding something from the reader.",s:"Drop hints, then reveal at the end."},
+    {g:"Balanced argument",p:"Should social media have an age limit? Argue both sides and conclude.",s:"Use formal, impersonal language."},
+    {g:"Narrative",p:"Write a flashback that reveals why a character behaves the way they do.",s:"Connect past cause to present effect."},
+    {g:"Narrative",p:"Open a story with a single line of dialogue that hooks the reader.",s:"Make us need to know who is speaking."},
+    {g:"Narrative",p:"Write a story whose ending forces the reader to rethink the start.",s:"Plant a detail that only later makes sense."},
+    {g:"Balanced argument",p:"'Zoos do more harm than good.' Argue both sides and conclude.",s:"Use evidence, then give your verdict."},
+    {g:"Description",p:"Describe a derelict factory slowly reclaimed by nature.",s:"Contrast decay with new growth."},
+    {g:"Persuasion",p:"Write an article arguing for or against year-round schooling.",s:"Anticipate and answer the other side."},
+    {g:"Diary",p:"Write the diary of someone keeping a secret that grows too heavy.",s:"Let the strain build entry by entry."},
+    {g:"Narrative",p:"Open with a character running, but reveal why only at the end.",s:"Control the pace to hold tension."},
+    {g:"Speech",p:"Write a speech convincing adults to take young people seriously.",s:"Use rhetorical questions and repetition."},
+    {g:"Setting",p:"Set a scene in a city where it has rained for forty days.",s:"Make the weather feel oppressive."},
+    {g:"Narrative",p:"Write a story told entirely through what one character notices.",s:"Reveal them by their attention."},
+    {g:"Balanced argument",p:"Should exams be replaced by coursework? Weigh both sides.",s:"Keep your tone formal and fair."},
+    {g:"Description",p:"Describe a single moment stretched out as if time slowed down.",s:"Expand a second into a paragraph."},
+    {g:"Narrative",p:"A character receives a gift with no name attached. Who sent it?",s:"Hold back the answer for effect."},
+    {g:"Persuasion",p:"Persuade readers that reading fiction matters in a digital age.",s:"Blend logic with a memorable image."},
+    {g:"Setting",p:"Open in a place that feels safe but slowly turns sinister.",s:"Shift the mood with small signals."},
+    {g:"Narrative",p:"Write a story where the antagonist believes they are the hero.",s:"Make their reasoning convincing."},
+    {g:"Description",p:"Describe a storm using only sound.",s:"Avoid naming what you can see."},
+    {g:"Balanced argument",p:"Should children have smartphones? Argue both sides, then decide.",s:"Cite costs and benefits before concluding."},
+    {g:"Narrative",p:"End a story with a question the reader has to answer themselves.",s:"Make the question impossible to ignore."},
+    {g:"Diary",p:"Write two diary entries, years apart, that show how a person changed.",s:"Echo the first entry in the second."},
+    {g:"Setting",p:"Describe an ordinary room moments after something extraordinary happened.",s:"Let the aftermath imply the event."}
+  ]}
+};
+
+let current = 1, lastKey = null;
+const $ = id => document.getElementById(id);
+
+function buildYears(){
+  const c = $('years'); c.innerHTML='';
+  for(let y=1;y<=6;y++){
+    const b=document.createElement('button');
+    b.className='yr'+(y===current?' on':'');
+    b.innerHTML = y+'<small>'+DATA[y].age.replace('Ages ','')+'</small>';
+    b.addEventListener('click',()=>setYear(y));
+    c.appendChild(b);
+  }
+}
+
+function applyAccent(){
+  const c=ACCENTS[current], r=document.documentElement.style;
+  r.setProperty('--accent',c.a); r.setProperty('--accent-2',c.b);
+  r.setProperty('--bg1',c.bg1); r.setProperty('--bg2',c.bg2);
+}
+
+function buildGenres(){
+  const sel=$('genre-filter');
+  const genres=[...new Set(DATA[current].items.map(i=>i.g))].sort();
+  sel.innerHTML='<option value="*">✨ All genres</option>'+genres.map(g=>`<option value="${g}">${g}</option>`).join('');
+}
+
+function pool(){
+  const f=$('genre-filter').value;
+  return DATA[current].items.filter(i=>f==='*'||i.g===f);
+}
+
+function updateCount(){
+  const n=pool().length;
+  $('count').textContent='🎟️ '+n;
+}
+
+function setYear(y){
+  current=y; lastKey=null;
+  buildYears(); applyAccent(); buildGenres(); updateCount();
+  $('eyebrow').textContent='Year '+y+' · '+DATA[y].age;
+  generate();
+}
+
+function confettiBurst(){
+  const colors=['#ff5a8c','#ffd23f','#3cc36b','#2e9fd8','#8b5bd8','#ff7a3c'];
+  for(let i=0;i<26;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(1.1+Math.random()*0.9)+'s';
+    c.style.animationDelay=(Math.random()*0.15)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2200);
+  }
+}
+
+function generate(){
+  const p=pool();
+  if(!p.length)return;
+  let i=Math.floor(Math.random()*p.length);
+  const key=()=>p[i].p;
+  if(p.length>1){let guard=0;while(key()===lastKey&&guard++<20)i=Math.floor(Math.random()*p.length);}
+  lastKey=key();
+  const item=p[i];
+  $('genre').textContent=item.g;
+  $('meta').textContent='Year '+current+' · aim for '+DATA[current].time;
+  $('prompt').textContent=item.p;
+  $('starter-text').textContent=item.s;
+  $('starter').style.display='flex';
+
+  const card=$('card'), btn=$('gen');
+  card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
+  btn.classList.add('rolling'); setTimeout(()=>btn.classList.remove('rolling'),500);
+  confettiBurst();
+}
+
+$('gen').addEventListener('click',generate);
+$('genre-filter').addEventListener('change',()=>{updateCount();generate();});
+
+$('copy').addEventListener('click',async()=>{
+  const text=$('prompt').textContent+' ('+$('starter-text').textContent+')';
+  try{await navigator.clipboard.writeText(text);}catch(e){}
+  const btn=$('copy'); btn.classList.add('done'); btn.textContent='✅';
+  setTimeout(()=>{btn.classList.remove('done'); btn.textContent='📋';},1100);
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='SELECT')return;
+  if(e.code==='Space'){e.preventDefault();generate();}
+  else if(e.key>='1'&&e.key<='6')setYear(+e.key);
+});
+
+setYear(1);
+</script>
+</body>
+</html>
