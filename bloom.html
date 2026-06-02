@@ -78,13 +78,13 @@ nav.toc .tocfoot{margin-top:auto;padding:14px 8px 4px;color:var(--soft);font-siz
 
 /* stage */
 main{max-width:var(--maxw);margin:0 auto;padding:96px 22px 40px}
-.page{display:none;animation:rise .5s ease both}
+.page{display:none;animation:rise .5s ease both;scroll-margin-top:84px}
 .page.active{display:block}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
 .kicker{font-family:var(--serif);text-transform:uppercase;letter-spacing:.22em;font-size:.7rem;color:var(--pink);margin:0 0 6px}
 .page h1{font-family:var(--display);font-weight:600;line-height:1.12;color:var(--rose-deep);
-  font-size:clamp(1.9rem,5.4vw,2.7rem);margin:0 0 22px;letter-spacing:-.01em}
+  font-size:clamp(1.9rem,5.4vw,2.7rem);margin:0 0 22px;letter-spacing:-.01em;scroll-margin-top:84px}
 .page h1 .sub{display:block;font-size:.5em;color:var(--soft);font-weight:400;margin-top:.4em;line-height:1.3}
 .page h1::after{content:"❀";display:block;color:var(--blush);font-size:.5em;margin-top:.35em}
 .page h3{font-family:var(--display);font-weight:600;color:var(--rose);font-size:1.22rem;margin:1.9em 0 .5em}
@@ -179,6 +179,7 @@ tbody tr:nth-child(even){background:var(--petal)}
     <span><b>Bloom</b><small>Hanami Education</small></span>
   </div>
   <div class="bar-right">
+    <span class="counter" id="counter"></span>
     <a class="barlink kids" href="bloomkids.html">✿ Kids Book</a>
     <a class="barlink solid" href="index.html">hanamieducation.com</a>
   </div>
@@ -279,22 +280,40 @@ const toc = document.getElementById("toc");
 const scrim = document.getElementById("scrim");
 let idx = 0;
 
-function show(i, push){
+// Scroll the viewport so the start of the active reading page is clearly
+// brought into view, just below the fixed header. `smooth` gives a visible
+// downward motion (e.g. when leaving the cover) so it's obvious the book opened.
+function scrollToReading(smooth){
+  const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const behavior = (smooth && !reduce) ? "smooth" : "auto";
+  if (idx === 0){
+    window.scrollTo({ top: 0, behavior });
+    return;
+  }
+  const page = pages[idx];
+  const head = (page && page.querySelector("h1, .kicker")) || page;
+  if (!head){ window.scrollTo({ top: 0, behavior }); return; }
+  const headerH = (document.querySelector("header.bar")?.offsetHeight || 62) + 16;
+  const y = head.getBoundingClientRect().top + window.pageYOffset - headerH;
+  window.scrollTo({ top: Math.max(0, y), behavior });
+}
+
+function show(i, push, smooth){
   idx = Math.max(0, Math.min(order.length - 1, i));
   const id = order[idx];
   pages.forEach(p => p.classList.toggle("active", p.id === id));
   tocLinks.forEach(a => a.setAttribute("aria-current", a.getAttribute("href") === "#" + id ? "true" : "false"));
-  counter.textContent = idx === 0 ? "Cover" : idx + " / " + (order.length - 1);
+  if (counter) counter.textContent = idx === 0 ? "Cover" : idx + " / " + (order.length - 1);
   progress.style.width = (idx / (order.length - 1)) * 100 + "%";
   pager.hidden = (idx === 0);
   prevBtn.disabled = idx === 0;
   nextBtn.disabled = idx === order.length - 1;
   nextBtn.textContent = idx === order.length - 1 ? "The End ❀" : "Next →";
   if (push && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
-  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  scrollToReading(smooth);
   closeToc();
 }
-function go(i){ show(i, true); }
+function go(i){ show(i, true, true); }
 function openToc(){ toc.classList.add("open"); scrim.classList.add("open"); }
 function closeToc(){ toc.classList.remove("open"); scrim.classList.remove("open"); }
 
@@ -316,7 +335,7 @@ document.addEventListener("keydown", e => {
 window.addEventListener("popstate", () => {
   const h = location.hash.slice(1);
   const i = order.indexOf(h);
-  show(i >= 0 ? i : 0, false);
+  show(i >= 0 ? i : 0, false, false);
 });
 
 (function(){
@@ -338,7 +357,7 @@ window.addEventListener("popstate", () => {
 (function(){
   const h = location.hash.slice(1);
   const i = order.indexOf(h);
-  show(i >= 0 ? i : 0, false);
+  show(i >= 0 ? i : 0, false, false);
 })();
 </script>
 </body>
