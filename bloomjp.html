@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bloom — A Hanami Education Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose:#c0497a; --rose-deep:#9c3a63; --pink:#d97a9e; --blush:#f6dde7;
+  --petal:#fdf3f7; --cream:#fffaf6; --paper:#fffdfb; --ink:#3b2e34; --soft:#7d6b72;
+  --line:#efd9e2; --shadow:0 18px 50px -28px rgba(140,40,80,.45);
+  --serif:"Spectral",Georgia,serif; --display:"Fraunces","Spectral",Georgia,serif;
+  --maxw:680px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:var(--serif); color:var(--ink); line-height:1.72;
+  background:
+    radial-gradient(1200px 700px at 85% -10%, #fbe7ef 0%, transparent 55%),
+    radial-gradient(900px 600px at -10% 110%, #fce9f0 0%, transparent 50%),
+    var(--cream);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--rose);text-underline-offset:2px;text-decoration-thickness:1px}
+a:hover{color:var(--rose-deep)}
+code{font-family:ui-monospace,Menlo,monospace;background:var(--blush);padding:.05em .35em;border-radius:4px;font-size:.85em}
+
+/* progress */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;
+  background:linear-gradient(90deg,var(--pink),var(--rose));transition:width .4s ease}
+
+/* top bar */
+header.bar{position:fixed;top:0;left:0;right:0;height:62px;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:0 16px;backdrop-filter:blur(10px);
+  background:rgba(255,250,246,.82);border-bottom:1px solid var(--line)}
+.bar .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;letter-spacing:.01em}
+.bar .brand .kanji{color:var(--rose);font-size:1.15rem}
+.bar .brand b{font-weight:600}
+.bar .brand small{color:var(--soft);font-weight:400;font-family:var(--serif);font-size:.72rem;display:block;letter-spacing:.06em;text-transform:uppercase}
+.bar-right{display:flex;align-items:center;gap:8px}
+.barlink{font-family:var(--display);font-size:.8rem;font-weight:600;text-decoration:none;
+  color:var(--rose-deep);border:1px solid var(--pink);background:var(--paper);
+  padding:7px 13px;border-radius:30px;transition:.2s;white-space:nowrap;line-height:1}
+.barlink:hover{background:var(--rose);color:#fff;border-color:var(--rose)}
+.barlink.solid{background:var(--rose);color:#fff;border-color:var(--rose)}
+.barlink.solid:hover{background:var(--rose-deep)}
+.iconbtn{appearance:none;border:1px solid var(--line);background:var(--paper);color:var(--rose);
+  width:42px;height:42px;border-radius:12px;cursor:pointer;display:grid;place-items:center;transition:.2s;flex-shrink:0}
+.iconbtn:hover{background:var(--blush);border-color:var(--pink)}
+.iconbtn svg{width:20px;height:20px}
+.counter{font-size:.78rem;color:var(--soft);font-variant-numeric:tabular-nums;min-width:64px;text-align:right}
+
+/* contents drawer */
+#scrim{position:fixed;inset:0;background:rgba(60,30,45,.38);z-index:70;opacity:0;visibility:hidden;transition:.28s}
+#scrim.open{opacity:1;visibility:visible}
+nav.toc{position:fixed;top:0;left:0;bottom:0;width:312px;max-width:84vw;z-index:80;
+  background:var(--paper);border-right:1px solid var(--line);box-shadow:var(--shadow);
+  transform:translateX(-104%);transition:transform .32s cubic-bezier(.5,.1,.2,1);
+  display:flex;flex-direction:column;padding:22px 18px;overflow:auto}
+nav.toc.open{transform:translateX(0)}
+nav.toc .tochead{font-family:var(--display);font-size:1.5rem;color:var(--rose-deep);margin:6px 6px 4px}
+nav.toc .tocsub{color:var(--soft);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin:0 6px 16px}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc li a{display:block;text-decoration:none;color:var(--ink);padding:11px 12px;border-radius:10px;
+  font-size:.98rem;transition:.18s;border:1px solid transparent}
+nav.toc li a:hover{background:var(--petal);border-color:var(--line)}
+nav.toc li a[aria-current="true"]{background:var(--blush);border-color:var(--pink);color:var(--rose-deep);font-weight:600}
+nav.toc .tocextra{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+nav.toc .tocextra a{display:block;text-decoration:none;color:var(--rose-deep);background:var(--petal);
+  border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:.92rem;font-family:var(--display);font-weight:600;transition:.18s}
+nav.toc .tocextra a:hover{background:var(--blush);border-color:var(--pink)}
+nav.toc .tocfoot{margin-top:auto;padding:14px 8px 4px;color:var(--soft);font-size:.74rem;border-top:1px solid var(--line)}
+
+/* stage */
+main{max-width:var(--maxw);margin:0 auto;padding:96px 22px 40px}
+.page{display:none;animation:rise .5s ease both;scroll-margin-top:84px}
+.page.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.kicker{font-family:var(--serif);text-transform:uppercase;letter-spacing:.22em;font-size:.7rem;color:var(--pink);margin:0 0 6px}
+.page h1{font-family:var(--display);font-weight:600;line-height:1.12;color:var(--rose-deep);
+  font-size:clamp(1.9rem,5.4vw,2.7rem);margin:0 0 22px;letter-spacing:-.01em;scroll-margin-top:84px}
+.page h1 .sub{display:block;font-size:.5em;color:var(--soft);font-weight:400;margin-top:.4em;line-height:1.3}
+.page h1::after{content:"❀";display:block;color:var(--blush);font-size:.5em;margin-top:.35em}
+.page h3{font-family:var(--display);font-weight:600;color:var(--rose);font-size:1.22rem;margin:1.9em 0 .5em}
+.page p{margin:0 0 1.05em;font-size:1.06rem}
+.page strong{color:var(--rose-deep)}
+.epigraph{text-align:center;color:var(--rose);font-style:italic;margin:1.6em auto;max-width:36ch}
+.brandline{text-align:center;color:var(--soft);font-size:.92rem;letter-spacing:.04em;border-bottom:1px solid var(--line);padding-bottom:1.1em;margin-bottom:1.4em}
+
+ul,ol{margin:0 0 1.2em;padding-left:0;list-style:none}
+.page li{position:relative;padding:.18em 0 .18em 1.7em;margin:.25em 0;font-size:1.05rem}
+.page ul li::before{content:"❀";position:absolute;left:0;top:.2em;color:var(--pink);font-size:.85em}
+.page ol{counter-reset:n}
+.page ol li{counter-increment:n}
+.page ol li::before{content:counter(n);position:absolute;left:0;top:.15em;color:#fff;background:var(--rose);
+  width:1.25em;height:1.25em;border-radius:50%;display:grid;place-items:center;font-size:.78em;font-weight:600}
+
+blockquote{margin:1.5em 0;padding:1.1em 1.3em;text-align:center;font-family:var(--display);
+  font-size:1.18rem;font-weight:600;color:var(--rose-deep);background:var(--petal);
+  border-top:2px solid var(--pink);border-bottom:2px solid var(--pink);border-radius:6px}
+
+.table-wrap{overflow-x:auto;margin:1.4em 0;border-radius:12px;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;background:var(--paper);font-size:.96rem;overflow:hidden;border-radius:12px}
+th{background:var(--rose);color:#fff;text-align:left;padding:11px 14px;font-family:var(--display);font-weight:600}
+td{padding:10px 14px;border-top:1px solid var(--line)}
+tbody tr:nth-child(even){background:var(--petal)}
+
+/* page nav buttons */
+.pager{display:flex;justify-content:space-between;gap:12px;margin:34px 0 8px;
+  border-top:1px solid var(--line);padding-top:22px}
+.pager button{flex:1;appearance:none;cursor:pointer;font-family:var(--display);font-size:.98rem;
+  padding:13px 16px;border-radius:14px;border:1px solid var(--pink);background:var(--paper);
+  color:var(--rose-deep);transition:.2s;display:flex;align-items:center;gap:8px;justify-content:center}
+.pager button:hover:not(:disabled){background:var(--rose);color:#fff;border-color:var(--rose)}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .next{background:var(--rose);color:#fff;border-color:var(--rose)}
+.pager .next:hover:not(:disabled){background:var(--rose-deep)}
+
+/* cover */
+#cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  min-height:100vh;padding:24px;position:relative;overflow:hidden}
+#cover .kanji-big{font-family:var(--display);color:var(--rose);font-size:1.4rem;letter-spacing:.5em;margin-bottom:8px;padding-left:.5em}
+#cover .florets{color:var(--pink);letter-spacing:.5em;font-size:1.1rem;margin-bottom:18px}
+#cover h1{font-family:var(--display);font-weight:700;color:var(--rose-deep);
+  font-size:clamp(4rem,18vw,8.5rem);line-height:.9;margin:0;letter-spacing:-.02em}
+#cover .subtitle{font-family:var(--display);font-size:clamp(1.05rem,3.6vw,1.45rem);color:var(--ink);margin:18px 0 6px;max-width:24ch}
+#cover .tagline{color:var(--soft);font-style:italic;margin:4px 0 22px}
+#cover .cover-links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px}
+#cover .begin{appearance:none;cursor:pointer;border:none;background:var(--rose);color:#fff;
+  font-family:var(--display);font-size:1.05rem;font-weight:600;padding:15px 38px;border-radius:40px;
+  box-shadow:var(--shadow);transition:.22s;letter-spacing:.01em}
+#cover .begin:hover{background:var(--rose-deep);transform:translateY(-2px)}
+#cover .clink{font-family:var(--display);font-weight:600;font-size:.95rem;text-decoration:none;
+  color:var(--rose-deep);border:1px solid var(--pink);background:var(--paper);
+  padding:13px 24px;border-radius:40px;transition:.22s}
+#cover .clink:hover{background:var(--blush);transform:translateY(-2px)}
+#cover .credit{position:absolute;bottom:22px;left:0;right:0;color:var(--soft);font-size:.8rem;letter-spacing:.08em}
+#cover .credit a{color:var(--rose);text-decoration:none;border-bottom:1px solid rgba(192,73,122,.4)}
+#cover .credit a:hover{color:var(--rose-deep)}
+#cover.active{display:flex}
+
+/* falling petals */
+.petals{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.petal{position:absolute;top:-8%;width:14px;height:14px;background:var(--pink);opacity:.55;
+  border-radius:80% 0 80% 0;animation:fall linear infinite}
+@keyframes fall{
+  0%{transform:translateY(-10vh) rotate(0);opacity:0}
+  12%{opacity:.6}
+  100%{transform:translateY(112vh) translateX(40px) rotate(420deg);opacity:.15}}
+#cover>*{position:relative;z-index:1}
+
+@media (prefers-reduced-motion:reduce){
+  .petal{display:none}.page{animation:none}html{scroll-behavior:auto}
+}
+@media (max-width:560px){
+  main{padding:84px 18px 32px}
+  .pager{flex-direction:row}
+  .bar .brand small{display:none}
+  .barlink.kids{display:none}
+  .counter{display:none}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="bar">
+  <button class="iconbtn" id="menuBtn" aria-label="Open contents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div class="brand" role="button" id="brandHome" tabindex="0" title="Back to cover">
+    <span class="kanji">花見</span>
+    <span><b>Bloom</b><small>Hanami Education</small></span>
+  </div>
+  <div class="bar-right">
+    <span class="counter" id="counter"></span>
+    <a class="barlink lang" href="bloom-ja.html">日本語</a>
+    <a class="barlink kids" href="bloomkids.html">✿ Kids Book</a>
+    <a class="barlink solid" href="index.html">hanamieducation.com</a>
+  </div>
+</header>
+
+<div id="scrim"></div>
+<nav class="toc" id="toc" aria-label="Contents">
+  <div class="tochead">Contents</div>
+  <div class="tocsub">花見 · Where learning blooms</div>
+  <ol>
+    <li><a href="#cover" class="toc-link" data-idx="0">Cover</a></li>
+    <li><a href="#a-note-to-you" data-idx="1" class="toc-link">A Note to You</a></li><li><a href="#chapter-1" data-idx="2" class="toc-link">1 &middot; Why Bloom?</a></li><li><a href="#chapter-2" data-idx="3" class="toc-link">2 &middot; How Your Brain Grows</a></li><li><a href="#chapter-3" data-idx="4" class="toc-link">3 &middot; Believe You Can Bloom</a></li><li><a href="#chapter-4" data-idx="5" class="toc-link">4 &middot; Strong Roots</a></li><li><a href="#chapter-5" data-idx="6" class="toc-link">5 &middot; Growing Every Day</a></li><li><a href="#chapter-6" data-idx="7" class="toc-link">6 &middot; A Garden You Can See</a></li><li><a href="#you-are-blooming" data-idx="8" class="toc-link">You Are Blooming</a></li><li><a href="#garden-tools" data-idx="9" class="toc-link">Garden Tools</a></li>
+  </ol>
+  <div class="tocextra">
+    <a href="bloom-ja.html">🌐 日本語版 (Japanese)</a>
+    <a href="bloomkids.html">✿ Kids Picture Book</a>
+    <a href="index.html">← hanamieducation.com</a>
+  </div>
+  <div class="tocfoot">A Hanami Education book · written for you.</div>
+</nav>
+
+<main>
+  <section class="page" id="cover">
+    <div class="petals" id="petals"></div>
+    <div class="kanji-big">花 見</div>
+    <div class="florets">❀ ❀ ❀</div>
+    <h1>Bloom</h1>
+    <p class="subtitle">How to Grow Into a Learner Who Never Stops</p>
+    <p class="tagline">A Hanami Education book — written for you.</p>
+    <div class="cover-links">
+      <button class="begin" id="beginBtn">Begin reading →</button>
+      <a class="clink" href="bloom-ja.html">🌐 日本語</a>
+      <a class="clink" href="bloomkids.html">✿ Kids Picture Book</a>
+    </div>
+    <div class="credit">花見 · Where learning blooms · <a href="index.html">hanamieducation.com</a></div>
+  </section>
+
+  <article class="page" id="a-note-to-you" data-idx="1">
+     <p class="kicker">Welcome</p>
+     <h1>A Note to You<br><span class='sub'>The Tree and the Blossom</span></h1>
+     <p>Have you ever seen a cherry tree in spring? Its branches fill up with soft pink flowers. People stop to look. They sit under the tree and smile. In Japan, this is called <em>hanami</em> — "flower viewing." It is one of the most beautiful sights in the world.</p><p>But here is something most people forget. <strong>A cherry tree does not bloom in one day.</strong></p><p>All winter, the tree looks bare and brown. You might think nothing is happening. But under the bark, deep in the roots, the tree is working. It is getting ready. Then, when spring comes, it bursts into bloom — all at once, like magic. It was not magic, though. It was time, and care, and slow growing that no one could see.</p><p><strong>You are like that tree.</strong></p><p>Right now, you are learning and growing, even on the days it feels like nothing is happening. Every new thing you learn is a tiny bud forming. And one day, you will bloom in ways that will surprise you.</p><p>This little book is about how to bloom. Not by accident — but on purpose. It will show you why learning is worth it, how your brain grows, and how to help yourself become someone who loves to learn for your whole life.</p><p>Let's begin.</p>
+   </article>
+<article class="page" id="chapter-1" data-idx="2">
+     <p class="kicker">Chapter 1</p>
+     <h1>Chapter 1<br><span class='sub'>Why Bloom?</span></h1>
+     <p>Let's start with a fair question. <strong>Why should you bother to learn at all?</strong></p><p>Lots of people give boring answers. "Because it's on the test." "Because you'll need it later." "Because I said so." None of those make you <em>want</em> to learn. They make learning feel like a chore.</p><p>Here is a better answer. <strong>Learning makes you free.</strong></p><h3>Every skill is a key</h3><p>Think about a baby. A baby can't walk. It can't talk. It can't even feed itself. It needs help with everything.</p><p>Now think about you. You can walk anywhere you like. You can talk to anyone. You can read, count, run, and do a hundred things a baby can't. What changed? <strong>You learned skills.</strong> And each skill set you free a little more.</p><ul><li>When you learned to read, you didn't need anyone to tell you what a sign said.</li><li>When you learn to cook, you can make your own food.</li><li>When you learn to ride a bike, you can go places on your own.</li></ul><p>Every skill is like a key. Each one opens a door. Behind every door is more freedom — more things you can do all by yourself. <strong>The more you learn, the freer you become.</strong></p><h3>One flower makes more flowers</h3><p>Here is something cool about learning. It builds on itself.</p><p>When you learn something new and get it right, you feel proud. That good feeling gives you the courage to try the next thing. And when you do <em>that</em>, you feel even braver. So you try something harder. Around and around it goes.</p><blockquote>learn something → feel proud → want to try more → learn even more</blockquote><p>This is why some people seem to "just love learning." They are not magic. They simply got one good start — one happy "I did it!" — and it grew from there, like one flower opening, then another, then a whole branch full.</p><p><strong>This means your first win matters most.</strong> If you have never felt that "I did it!" feeling, your job is to get just one. Pick something small. Try it. Get it. That little bloom will make you want the next one. And soon you won't be able to stop.</p><p><strong>Remember: every skill makes you more free — and the more you learn, the easier learning gets.</strong></p>
+   </article>
+<article class="page" id="chapter-2" data-idx="3">
+     <p class="kicker">Chapter 2</p>
+     <h1>Chapter 2<br><span class='sub'>How Your Brain Grows</span></h1>
+     <p>Learning is not just an idea. It is something real that happens inside your head. When you learn, your brain actually <em>changes</em>. Tiny paths grow between the cells in your brain — like little roots spreading through soil.</p><p>When you understand this, you can help your brain grow faster. Here's how.</p><h3>Use more than one sense</h3><p>The more parts of your brain you use at once, the stronger the path becomes. So don't just read about something. <strong>See it, say it, and do it.</strong></p><p>If you want to learn a new word, you could:</p><ul><li><strong>See</strong> it written down.</li><li><strong>Say</strong> it out loud.</li><li><strong>Do</strong> something with it — write it, draw it, or use it in a sentence.</li></ul><p>Now your brain has three paths to that word instead of one. It's much harder to forget.</p><h3>Come back to it again and again</h3><p>Have you ever learned something and then forgotten it a week later? That's normal. Your brain clears out things it thinks you don't need. The way to keep something is to <strong>use it again and again.</strong></p><p>This is like watering a plant. Water it once and walk away, and it dies. Water it a little bit, again and again, and it grows. So go back to what you learned — the next day, the next week, the next month. Each time, the path gets stronger.</p><p><strong>Plan to come back, or plan to forget.</strong></p><h3>Practice makes a path</h3><p>Imagine walking across a grassy field. The first time, you leave almost no mark. But walk the same way every day, and soon you wear a clear little trail. After that, your feet just follow it without thinking.</p><p>Your brain works the same way. When you practice something over and over, it becomes easy and automatic — like a trail your brain follows without trying. <strong>Whatever you practice, you become.</strong></p><h3>Start early</h3><p>Some things are easier to learn when you're young, like a new language. You don't have to be perfect right away. Just being around something — hearing it, seeing it, playing with it — plants seeds in your brain. Later, when you really learn it, those seeds are ready to grow.</p><p><strong>Remember: see it, say it, do it — then come back to it again and again until it becomes easy.</strong></p>
+   </article>
+<article class="page" id="chapter-3" data-idx="4">
+     <p class="kicker">Chapter 3</p>
+     <h1>Chapter 3<br><span class='sub'>Believe You Can Bloom</span></h1>
+     <p>Here is one of the most important secrets in this whole book. <strong>The story you tell yourself matters.</strong></p><p>Two students can sit in the same class and learn the same lesson. One walks out thinking, "I can do this." The other walks out thinking, "I'm just not good at this." Often, the difference is not how smart they are. It's the story in their head.</p><p>A flower that believes it can't bloom won't even try. Let's make sure your story helps you grow.</p><h3>Be kind to the voice in your head</h3><p>We all have a little voice inside. Sometimes it's mean. It says things like, "This is too hard," or "Everyone is better than me."</p><p>You don't have to believe that voice. You can talk back to it. Try saying: "This is hard <em>right now</em>, but I'm getting better." Writing down what you tried and what got easier can help you see how far you've come.</p><h3>Mistakes are not the end</h3><p>Most people think a mistake means they failed. <strong>That's not true. A mistake is just a clue.</strong> It tells you what to fix next time.</p><p>Every expert you've ever seen made tons of mistakes on the way. The mistakes were part of how they got good. So don't try to be perfect. Try to get a little better than yesterday.</p><h3>How growing really works</h3><p>Real growing is slow, and that's okay. Here are some things to remember:</p><ul><li><strong>Start small.</strong> Get the basics right first. Big things are just small things put together.</li><li><strong>Slow, then smooth, then fast.</strong> When you start, you'll be slow and clumsy. That's normal. With practice, it gets smooth. Then it gets fast. You can't rush this — slow comes first.</li><li><strong>Try, miss, try again.</strong> Growing isn't getting it right the first time. It's trying, missing, fixing, and trying again.</li><li><strong>Enjoy the journey.</strong> If you only care about the finish line, every step feels like pain. But if you find something fun in the practice itself, you'll want to keep going.</li><li><strong>A little every day beats a lot once in a while.</strong> Ten minutes a day is better than three hours one time. Small and steady wins.</li></ul><h3>See others bloom</h3><p>It helps to see someone else do the thing you want to do — especially someone a bit like you. It makes you think, "If they can, maybe I can too." Watch them. Ask them how they did it. A friend who learned it last month can be the best teacher of all.</p><h3>Skip the scary question</h3><p>There's one question that stops a lot of people: <em>"Can I, or can't I?"</em> The moment you stop to ask it, doubt creeps in.</p><p>The trick is to not even ask. And the way to do that is to <strong>win a few easy things first.</strong> When you've succeeded at lots of small stuff, you stop wondering if you can. You just go for it.</p><p><strong>Remember: be kind to yourself, treat mistakes as clues, grow a little every day, and start with easy wins.</strong></p>
+   </article>
+<article class="page" id="chapter-4" data-idx="5">
+     <p class="kicker">Chapter 4</p>
+     <h1>Chapter 4<br><span class='sub'>Strong Roots</span></h1>
+     <p>A tall tree needs deep roots. If the roots are weak, the tree falls over in the first storm. Learning is the same. Before you can grow tall, you need a strong base.</p><h3>Get the basics really solid</h3><p>When learning feels hard, it's often because something underneath is shaky. A kid who struggles with big math problems usually just needs to get the small ones rock-solid first.</p><p>So spend extra time on the basics. Make them so easy that you don't even have to think about them. Then, when you learn harder things, your brain has space to focus on what's new. <strong>Strong basics make everything else easier.</strong></p><h3>Plant seeds early</h3><p>You don't have to wait for a lesson to start learning something. You can sprinkle it into your day. Sing it in a song. Play with it. Notice it around you. By the time you "officially" learn it, it already feels familiar — like a seed that was planted long ago and is ready to grow.</p><h3>Take care of yourself first</h3><p>Here's something simple but true. <strong>You can't bloom if you're not okay.</strong></p><p>If you are hungry, tired, or scared, it's very hard to learn. If you feel left out or alone, your mind is busy with that instead of learning. So the first step to growing is making sure you feel safe, rested, and like you belong. Only then can your brain relax and grow.</p><p>If learning feels impossible some days, ask yourself: am I hungry? Tired? Upset? Sometimes you need to fix that first.</p><h3>Getting better gives you more freedom</h3><p>The best reason to get good at something is that it lets you do more. A stronger reader gets to read better books. A stronger swimmer gets to swim in deeper water. The skill is its own reward. <strong>Getting better means getting freer.</strong></p><p><strong>Remember: build strong basics, plant seeds early, take care of yourself first, and enjoy the freedom that growing brings.</strong></p>
+   </article>
+<article class="page" id="chapter-5" data-idx="6">
+     <p class="kicker">Chapter 5</p>
+     <h1>Chapter 5<br><span class='sub'>Growing Every Day</span></h1>
+     <p>Now let's talk about what to actually <em>do</em>, day by day, to keep growing.</p><h3>Play is the best learning</h3><p>Think about a musician. When they first start, they can only play simple notes. It's slow. But after lots of practice, something amazing happens — they can play freely, make up their own music, and have fun with it. The more they learn, the more fun they get to have.</p><p>Learning is just like that. <strong>The better you get, the more fun it becomes.</strong> Play is not a break from learning. Play <em>is</em> learning, at its very best. So the hard practice now is what unlocks the fun later.</p><h3>Focus, then play</h3><p>Good learning has a rhythm, like breathing in and out:</p><ul><li><strong>Focus.</strong> Pick one thing and practice it carefully until it gets smooth.</li><li><strong>Play.</strong> Then let go, mix things up, and have fun using what you learned.</li></ul><p>Focus to get good. Play to make it yours. Then pick the next thing and do it again.</p><h3>Do it with help, then do it alone</h3><p>When you learn something new, it usually goes in three steps:</p><ol><li>Someone shows you how.</li><li>You do it together with them.</li><li>You do it all by yourself.</li></ol><p>The goal is to need help less and less. But it's also fine to ask for help again if you get stuck. Going back for a little help is not failing — it's smart.</p><h3>Use helpers</h3><p>You don't have to keep everything in your head. Use:</p><ul><li><strong>Checklists</strong> that show the steps.</li><li><strong>Examples</strong> of good work to copy from.</li><li><strong>Guides</strong> that walk you through it.</li></ul><p>These let you work on your own without getting stuck. That's real independence.</p><h3>Mix it up</h3><p>Doing the same thing for too long makes your brain sleepy. Keep it fresh:</p><ul><li>Talk about it with a partner.</li><li>Work on a project with a group.</li><li>Keep a "wonder wall" — a place to write down questions you're curious about.</li></ul><h3>Teach a friend</h3><p>Here's a magic trick. <strong>The best way to learn something is to teach it.</strong> When you explain something to a friend, you understand it better yourself. And checking your own work, or a friend's work, helps you see what "good" looks like.</p><p><strong>Remember: practice with focus, then play; ask for help when you need it; mix things up; and teach others to learn even more.</strong></p>
+   </article>
+<article class="page" id="chapter-6" data-idx="7">
+     <p class="kicker">Chapter 6</p>
+     <h1>Chapter 6<br><span class='sub'>A Garden You Can See</span></h1>
+     <p>A good garden is easy to enjoy because you can <em>see</em> everything growing. Your learning space can work the same way. When the right things are around you, they help you grow without anyone having to remind you.</p><h3>Pictures help you remember</h3><p>Some skills have lots of steps, and steps are easy to forget. A simple row of little pictures — one for each step — can help you remember the order. After a while, you won't even need the pictures. The steps will just be in your head. <strong>A picture is easier to remember than a list of words.</strong></p><h3>A board for your day</h3><p>It helps to see your day laid out — what you're doing and when. A simple chart on the wall means you don't have to keep asking "What's next?" You can just look and know.</p><h3>Charts that show you grow</h3><p>It feels great to see how far you've come. So keep charts:</p><ul><li>Books you've read.</li><li>Skills you've mastered.</li><li>Questions you've wondered about.</li></ul><p>Watching the chart fill up is like watching a plant grow taller. It makes you want to keep going.</p><h3>Start with a question</h3><p>The best way to begin learning something new is to get curious first. A big interesting question — or a cool picture or object — makes you <em>want</em> to find out more. Then, as you learn, you can fill the space with your own work and watch your understanding bloom.</p><p><strong>Remember: use pictures for steps, charts to see your growth, and a curious question to begin.</strong></p>
+   </article>
+<article class="page" id="you-are-blooming" data-idx="8">
+     <p class="kicker">Closing</p>
+     <h1>You Are Blooming<br><span class='sub'>The End (and the Beginning)</span></h1>
+     <p>We started with a cherry tree in spring. Remember? It doesn't bloom in a day. It grows slowly, all through the cold winter, getting ready. Then, when the time is right, it bursts into flower.</p><p>You are doing the same thing right now.</p><p>Let's remember the most important ideas:</p><ul><li><strong>Learning makes you free.</strong> Every skill is a key that opens a new door.</li><li><strong>Your brain grows like a garden.</strong> Use many senses, come back often, and practice until it's easy.</li><li><strong>Believe you can bloom.</strong> Be kind to yourself, treat mistakes as clues, and grow a little every day.</li><li><strong>Build strong roots.</strong> Get the basics solid and take care of yourself first.</li><li><strong>Grow every day.</strong> Practice, play, ask for help, and teach others.</li><li><strong>Make your growth easy to see.</strong> Use pictures, charts, and big curious questions.</li></ul><p>Here is the biggest secret of all. The goal of this book is <em>not</em> to make you learn one thing. The goal is to help you <strong>love learning</strong> — so that for the rest of your life, you can teach yourself anything you want.</p><p>A student who loves to learn becomes a grown-up who never stops growing. That is the most wonderful thing you can give yourself.</p><p>So be patient. Keep going, even on the slow days. Water your roots a little every day. And one spring, when you least expect it, you will look back and see how far you've bloomed.</p><p>We can't wait to see it.</p><p class="epigraph"><em>— Your friends at Hanami Education</em></p>
+   </article>
+<article class="page" id="garden-tools" data-idx="9">
+     <p class="kicker">Resources</p>
+     <h1>Garden Tools</h1>
+     <p class="brandline">花見 · Hanami Education · <em>Where learning blooms</em></p><p>A few Hanami Education tools to help you keep growing — and they always send you back to real books, paper, and life. (Some are great to explore with a grown-up.)</p><p><strong>To Read</strong> — a little every day is sunlight for your brain.</p><ul><li><a href="https://hanamieducation.com/bookfinder.html" target="_blank" rel="noopener">The Book Finder</a> — find any book by level and interest.</li><li><a href="https://hanamieducation.com/reading-atlas.html" target="_blank" rel="noopener">The Reading Atlas</a> — 200 great series for grades 1–5.</li><li><a href="https://hanamieducation.com/checklisttool.html" target="_blank" rel="noopener">Reading Checklist Aid</a> — tips and timers for a reading habit.</li><li><a href="https://hanamieducation.com/reading-checklist.html" target="_blank" rel="noopener">Reading Checklist Guide</a> — what to do before, during, and after reading.</li></ul><p><strong>To Write</strong> — the hardest part is starting, so begin with a spark.</p><ul><li><a href="https://hanamieducation.com/story-generator.html" target="_blank" rel="noopener">The Story Spinner</a> — spin up a story idea to write.</li><li><a href="https://hanamieducation.com/promptgenerator.html" target="_blank" rel="noopener">Prompt-o-Matic</a> — a fresh writing prompt for your year.</li><li><a href="https://hanamieducation.com/Writing-Guides.html" target="_blank" rel="noopener">Writing Guides</a> — examples, tips, and grammar in one place.</li><li><a href="https://hanamieducation.com/mylife.html" target="_blank" rel="noopener">The Story of Me</a> — a journal about you, one prompt at a time.</li></ul><p><strong>To Make and Build</strong> — pick an idea you love, then go one step at a time.</p><ul><li><a href="https://hanamieducation.com/project-guide.html" target="_blank" rel="noopener">The Project Picker</a> — tap an interest for a step-by-step project.</li><li><a href="https://hanamieducation.com/projectmaker.html" target="_blank" rel="noopener">The Project Maker</a> — turn your idea into a real plan.</li></ul><p><strong>To Grow Skills</strong> — choose one thing and practice without fear.</p><ul><li><a href="https://hanamieducation.com/goalsetter.html" target="_blank" rel="noopener">Goal Setter</a> — find the skill worth working on.</li><li><a href="https://hanamieducation.com/firststepsports.html" target="_blank" rel="noopener">First Step Sports</a> — try a new sport, tear-free.</li><li><a href="https://hanamieducation.com/wouldyourather.html" target="_blank" rel="noopener">Would You Rather</a> — a fun thinking-and-debating game.</li></ul><p><strong>To Make Friends and Talk</strong> — getting along is a skill too.</p><ul><li><a href="https://hanamieducation.com/friendship.html" target="_blank" rel="noopener">Making Friends and Resolving Conflict 101</a> — make friends and solve problems calmly.</li><li><a href="https://hanamieducation.com/conversation.html" target="_blank" rel="noopener">Conversation Starters</a> — questions that spark real talk.</li></ul><h3>A Day That Helps You Grow</h3><p>Here's an example of a balanced day, with time to focus and time to play.</p><div class="table-wrap"><table><thead><tr><th>Time</th><th>What You Do</th><th>How You Do It</th></tr></thead><tbody><tr><td>Morning</td><td>Morning Meeting</td><td>Talk together as a group</td></tr><tr><td>Mid-Morning</td><td>Skill Practice</td><td>Work with a partner</td></tr><tr><td>Late Morning</td><td>Group Project</td><td>Work as a team</td></tr><tr><td>Midday</td><td>Your Own Task</td><td>Your choice</td></tr><tr><td>Afternoon</td><td>Think and Plan</td><td>Write in a journal</td></tr><tr><td>End of Day</td><td>Share and Check</td><td>Help a friend</td></tr></tbody></table></div><h3>Quick Reminders</h3><p><strong>Chapter 1 — Why Bloom?</strong></p><p>Every skill is a key that makes you free. One win leads to the next. Get your first win!</p><p><strong>Chapter 2 — How Your Brain Grows</strong></p><p>See it, say it, do it. Come back to it often. Practice until it's easy.</p><p><strong>Chapter 3 — Believe You Can Bloom</strong></p><p>Be kind to yourself. Mistakes are clues. Grow a little every day. Start with easy wins.</p><p><strong>Chapter 4 — Strong Roots</strong></p><p>Get the basics solid. Plant seeds early. Take care of yourself first.</p><p><strong>Chapter 5 — Growing Every Day</strong></p><p>Focus, then play. Ask for help. Mix it up. Teach a friend.</p><p><strong>Chapter 6 — A Garden You Can See</strong></p><p>Use pictures for steps. Keep charts of your growth. Start with a curious question.</p><h3>Our Promise</h3><p>We believe the strongest learners grow with real books, pencils, and paper — not screens. Every tool here is built to send you back to the real world: holding a book, writing by hand, and building habits that last because they are grounded in real life.</p><p class="epigraph"><em>Bloom is a Hanami Education book.</em></p><p class="epigraph"><em>花見 · Where learning blooms · <a href="index.html">hanamieducation.com</a></em></p>
+   </article>
+
+  <div class="pager" id="pager" hidden>
+    <button class="prev" id="prevBtn">← Back</button>
+    <button class="next" id="nextBtn">Next →</button>
+  </div>
+</main>
+
+<script>
+const order = ["cover", "a-note-to-you", "chapter-1", "chapter-2", "chapter-3", "chapter-4", "chapter-5", "chapter-6", "you-are-blooming", "garden-tools"];
+const pages = [...document.querySelectorAll(".page")];
+const tocLinks = [...document.querySelectorAll(".toc-link")];
+const counter = document.getElementById("counter");
+const progress = document.getElementById("progress");
+const pager = document.getElementById("pager");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const toc = document.getElementById("toc");
+const scrim = document.getElementById("scrim");
+let idx = 0;
+
+// Scroll the viewport so the start of the active reading page is clearly
+// brought into view, just below the fixed header. `smooth` gives a visible
+// downward motion (e.g. when leaving the cover) so it's obvious the book opened.
+function scrollToReading(smooth){
+  const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const behavior = (smooth && !reduce) ? "smooth" : "auto";
+  if (idx === 0){
+    window.scrollTo({ top: 0, behavior });
+    return;
+  }
+  const page = pages[idx];
+  const head = (page && page.querySelector("h1, .kicker")) || page;
+  if (!head){ window.scrollTo({ top: 0, behavior }); return; }
+  const headerH = (document.querySelector("header.bar")?.offsetHeight || 62) + 16;
+  const y = head.getBoundingClientRect().top + window.pageYOffset - headerH;
+  window.scrollTo({ top: Math.max(0, y), behavior });
+}
+
+function show(i, push, smooth){
+  idx = Math.max(0, Math.min(order.length - 1, i));
+  const id = order[idx];
+  pages.forEach(p => p.classList.toggle("active", p.id === id));
+  tocLinks.forEach(a => a.setAttribute("aria-current", a.getAttribute("href") === "#" + id ? "true" : "false"));
+  if (counter) counter.textContent = idx === 0 ? "Cover" : idx + " / " + (order.length - 1);
+  progress.style.width = (idx / (order.length - 1)) * 100 + "%";
+  pager.hidden = (idx === 0);
+  prevBtn.disabled = idx === 0;
+  nextBtn.disabled = idx === order.length - 1;
+  nextBtn.textContent = idx === order.length - 1 ? "The End ❀" : "Next →";
+  if (push && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
+  scrollToReading(smooth);
+  closeToc();
+}
+function go(i){ show(i, true, true); }
+function openToc(){ toc.classList.add("open"); scrim.classList.add("open"); }
+function closeToc(){ toc.classList.remove("open"); scrim.classList.remove("open"); }
+
+document.getElementById("menuBtn").onclick = () => toc.classList.contains("open") ? closeToc() : openToc();
+scrim.onclick = closeToc;
+document.getElementById("beginBtn").onclick = () => go(1);
+document.getElementById("brandHome").onclick = () => go(0);
+document.getElementById("brandHome").onkeydown = e => { if(e.key==="Enter") go(0); };
+prevBtn.onclick = () => go(idx - 1);
+nextBtn.onclick = () => go(idx + 1);
+tocLinks.forEach(a => a.onclick = e => { e.preventDefault(); go(order.indexOf(a.getAttribute("href").slice(1))); });
+
+document.addEventListener("keydown", e => {
+  if (e.target.matches("input,textarea")) return;
+  if (e.key === "ArrowRight") go(idx + 1);
+  if (e.key === "ArrowLeft") go(idx - 1);
+  if (e.key === "Escape") closeToc();
+});
+window.addEventListener("popstate", () => {
+  const h = location.hash.slice(1);
+  const i = order.indexOf(h);
+  show(i >= 0 ? i : 0, false, false);
+});
+
+(function(){
+  if (matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  const wrap = document.getElementById("petals"); if(!wrap) return;
+  for (let k=0;k<14;k++){
+    const p=document.createElement("div"); p.className="petal";
+    const s=8+Math.random()*12;
+    p.style.left=Math.random()*100+"%";
+    p.style.width=p.style.height=s+"px";
+    p.style.opacity=.3+Math.random()*.4;
+    p.style.animationDuration=(7+Math.random()*8)+"s";
+    p.style.animationDelay=(-Math.random()*10)+"s";
+    p.style.background=Math.random()>.5?"var(--pink)":"var(--blush)";
+    wrap.appendChild(p);
+  }
+})();
+
+(function(){
+  const h = location.hash.slice(1);
+  const i = order.indexOf(h);
+  show(i >= 0 ? i : 0, false, false);
+})();
+</script>
+</body>
+</html>
