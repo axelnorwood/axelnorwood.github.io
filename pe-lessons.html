@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PE Lesson Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; }
+[hidden] { display: none !important; }
+/* Layout: control rail (left, sticky) + lesson sheet laid out as a minute-by-minute session timeline. Stacks on phones. */
+:root {
+  --bg: #eceff2;
+  --surface: #ffffff;
+  --ink: #15202a;
+  --muted: #586774;
+  --line: #d3dae1;
+  --soft: #f4f6f8;
+  --brand: #e2512a;
+  --sport: #16a34a;
+  --sport-ink: var(--sport);
+  --sport-soft: color-mix(in oklab, var(--sport) 12%, var(--surface));
+  --display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+  --body: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'DM Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e151c; --surface: #17212b; --ink: #e6ecf1; --muted: #95a3b0; --line: #2a3744; --soft: #1d2833; --brand: #ff7a52;
+    --sport-ink: color-mix(in oklab, var(--sport) 62%, white);
+    --sport-soft: color-mix(in oklab, var(--sport) 20%, var(--surface));
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e151c; --surface: #17212b; --ink: #e6ecf1; --muted: #95a3b0; --line: #2a3744; --soft: #1d2833; --brand: #ff7a52;
+  --sport-ink: color-mix(in oklab, var(--sport) 62%, white);
+  --sport-soft: color-mix(in oklab, var(--sport) 20%, var(--surface));
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+button, select { font-family: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+.app { max-width: 1180px; margin: 0 auto; padding-block: 22px 60px; display: grid; grid-template-columns: 330px minmax(0,1fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0,1fr); } }
+
+/* Rail */
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: grid; gap: 18px; }
+@media (max-width: 860px) { .rail { position: static; } }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand h1 { font-family: var(--display); font-weight: 900; font-size: 40px; line-height: .9; margin: 0; text-transform: uppercase; letter-spacing: .01em; text-wrap: balance; }
+.brand h1 span { color: var(--brand); }
+.tagline { margin: 6px 0 0; color: var(--muted); font-size: 13.5px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 16px; }
+.field { display: grid; gap: 8px; }
+.label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.sports { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; }
+.sport-btn { display: grid; justify-items: center; gap: 4px; padding: 8px 2px 6px; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); font-size: 11px; font-weight: 600; line-height: 1.15; text-align: center; min-width: 0; }
+.sport-btn span { overflow-wrap: anywhere; }
+.sport-btn[aria-pressed="true"] { border-color: var(--c); background: color-mix(in oklab, var(--c) 14%, var(--surface)); }
+.sport-btn svg { color: var(--c); }
+.filters { display: flex; flex-wrap: wrap; gap: 5px; }
+.filters button { border: 1px solid var(--line); background: transparent; border-radius: 99px; padding: 4px 10px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); font-size: 14.5px; font-weight: 600; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { flex: 1 1 auto; padding: 8px 10px; border-radius: 99px; border: 1px solid var(--line); background: var(--soft); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { flex: 1 1 auto; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; font-size: 14px; }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn:active { transform: translateY(1px); }
+
+/* Sheet */
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; min-width: 0; }
+.sheet-head { padding: 22px 24px 18px; background: var(--sport-soft); border-bottom: 1px solid var(--line); display: grid; gap: 14px; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 8px 16px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.meta-row b { color: var(--ink); font-weight: 500; }
+.sheet-title { display: flex; gap: 14px; align-items: center; }
+.sheet-title .ico { width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; display: grid; place-items: center; background: var(--surface); color: var(--sport-ink); border: 1px solid var(--line); }
+.sheet-title h2 { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 44px); line-height: .95; margin: 0; text-transform: uppercase; text-wrap: balance; }
+.sheet-title p { margin: 2px 0 0; color: var(--sport-ink); font-weight: 700; }
+.intent { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; }
+@media (max-width: 620px) { .intent { grid-template-columns: minmax(0,1fr); } }
+.intent div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-width: 0; }
+.intent h3 { margin: 0 0 6px; }
+.intent p, .intent ul { margin: 0; font-size: 14.5px; }
+.intent ul { padding-left: 18px; }
+.cue { display: inline-block; margin-top: 8px; font-weight: 800; font-style: italic; color: var(--sport-ink); }
+
+/* Timeline bar */
+.bar { display: flex; height: 34px; border-radius: 8px; overflow: hidden; gap: 2px; }
+.bar div { background: var(--sport); display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--mono); font-size: 11px; font-weight: 500; min-width: 0; overflow: hidden; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Phases */
+.phases { display: grid; }
+.phase { display: grid; grid-template-columns: 86px minmax(0,1fr); border-top: 1px solid var(--line); }
+.phase:first-child { border-top: 0; }
+.clock { padding: 18px 10px 18px 24px; font-family: var(--mono); font-variant-numeric: tabular-nums; border-right: 1px dashed var(--line); }
+.clock .t { font-size: 15px; font-weight: 500; }
+.clock .d { font-size: 11.5px; color: var(--muted); }
+.ph-body { padding: 16px 22px 18px; display: grid; gap: 10px; min-width: 0; }
+.ph-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.ph-kind { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--sport-ink); }
+.ph-name { font-family: var(--display); font-size: 25px; font-weight: 800; line-height: 1; margin: 2px 0 0; text-transform: uppercase; letter-spacing: .01em; }
+.ph-desc { margin: 0; max-width: 64ch; }
+.shuffle { border: 1px solid var(--line); background: var(--soft); border-radius: 99px; padding: 6px 12px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.shuffle svg { transition: transform .35s; }
+.shuffle:hover svg { transform: rotate(180deg); }
+.teach { background: var(--soft); border-radius: 10px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; }
+.teach b { font-weight: 700; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+.adapt { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; font-size: 13.5px; }
+@media (max-width: 620px) { .adapt { grid-template-columns: minmax(0,1fr); } .phase { grid-template-columns: minmax(0,1fr); } .clock { border-right: 0; padding: 14px 20px 0; display: flex; gap: 10px; align-items: baseline; } .ph-body { padding: 8px 20px 18px; } }
+.adapt div { border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; min-width: 0; }
+.adapt .k { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); display: block; margin-bottom: 2px; }
+
+.sheet-foot { padding: 16px 24px 20px; border-top: 1px solid var(--line); display: grid; gap: 10px; background: var(--soft); }
+.gear { display: flex; flex-wrap: wrap; gap: 6px; }
+.gear span { font-size: 13px; padding: 5px 10px; border-radius: 99px; background: var(--surface); border: 1px solid var(--line); }
+.note { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+.seg.tight button { padding: 7px 0; flex: 1 1 0; min-width: 34px; }
+.units { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 6px; }
+.units button { text-align: left; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+.units button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.uoi { background: var(--surface); border: 1px dashed var(--sport-ink); border-radius: 12px; padding: 10px 14px; }
+.uoi p { margin: 4px 0 0; font-size: 14px; }
+.uoi .label { color: var(--sport-ink); }
+.assess { padding: 18px 24px 20px; border-bottom: 1px solid var(--line); display: grid; gap: 12px; }
+.assess-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; align-items: flex-end; }
+.assess-head h3 { margin: 2px 0 0; font-family: var(--display); font-weight: 800; font-size: 22px; text-transform: uppercase; line-height: 1; }
+.wk { font-size: 13px; color: var(--muted); max-width: 46ch; }
+.wk b { color: var(--ink); }
+.objs { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 300px; overflow-y: auto; }
+.obj { width: 100%; display: grid; grid-template-columns: 22px auto minmax(0,1fr); gap: 10px; align-items: start; text-align: left; border: 1px solid transparent; background: transparent; border-radius: 10px; padding: 7px 8px; font-size: 14px; }
+.obj:hover { background: var(--soft); }
+.obj[aria-pressed="true"] { background: var(--sport-soft); border-color: color-mix(in oklab, var(--sport) 40%, transparent); }
+.obj-box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+.obj[aria-pressed="true"] .obj-box { background: var(--sport); border-color: var(--sport); color: #fff; }
+.obj-code { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding-top: 2px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ladder { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+@media (max-width: 720px) { .ladder { grid-template-columns: minmax(0,1fr); } }
+.rung { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 13px; }
+.rung p { margin: 3px 0 0; }
+.rung.r1 { border-color: var(--sport-ink); }
+.umap ol { list-style: none; margin: 6px 0 4px; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 6px; }
+@media (max-width: 620px) { .umap ol { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+.umap button { width: 100%; display: grid; gap: 1px; text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 9px; font-size: 12px; min-width: 0; }
+.umap button span { overflow-wrap: anywhere; }
+.umap button em { font-style: normal; font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
+.umap button[aria-pressed="true"] { border-color: var(--sport-ink); background: var(--sport-soft); }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--surface); padding: 10px 18px; border-radius: 99px; font-weight: 600; font-size: 14px; z-index: 30; }
+.flash { animation: flash .5s ease; }
+@keyframes flash { from { background: var(--sport-soft); } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } .shuffle svg { transition: none; } }
+textarea.copybox { width: 100%; height: 160px; font-family: var(--mono); font-size: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); padding: 10px; }
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <div>
+      <div class="brand"><h1>PE Lesson <span>Builder</span></h1></div>
+      <p class="tagline">Pick your grade, unit and week. Get a timed lesson linked to the K3–G5 tracker objectives, the PE standards and your UOI units.</p>
+    </div>
+    <div class="panel">
+      <div class="field"><span class="label">Grade</span><div class="seg tight" id="grades"></div></div>
+      <div class="field"><span class="label">School PE unit</span><div class="units" id="units"></div></div>
+      <div class="field">
+        <span class="label">Activity</span>
+        <div class="filters" id="filters" hidden></div>
+        <div class="sports" id="sports"></div>
+      </div>
+      <div class="field"><label class="label" for="skill">Focus skill</label><select id="skill"></select></div>
+      <div class="field"><span class="label">Unit week</span><div class="seg tight" id="weeks"></div></div>
+      <div class="field"><span class="label">Lesson length (minutes)</span><div class="seg" id="mins"></div></div>
+      <div class="field"><span class="label">Class level</span><div class="seg" id="level"></div></div>
+      <div class="actions">
+        <button class="btn primary" id="regen">New lesson</button>
+        <button class="btn" id="copy">Copy plan</button>
+      </div>
+      <div id="copyFallback" hidden>
+        <p class="note">Copying is blocked here. Select the text below and copy it.</p>
+        <textarea class="copybox" id="copyText" readonly></textarea>
+      </div>
+    </div>
+  </aside>
+
+  <main class="sheet" id="sheet"></main>
+</div>
+<div id="toastRoot"></div>
+
+<script>
+"use strict";
+/* ---------- Icons (from First Steps) ---------- */
+function sportIcon(id, size, stroke) {
+  size = size || 24; stroke = stroke || 2; var color = "currentColor";
+  var P = 'fill="none" stroke="currentColor" stroke-width="' + stroke + '" stroke-linecap="round" stroke-linejoin="round"';
+  var icons = {
+    soccer:'<g '+P+'><circle cx="12" cy="12" r="9"/><path d="M12 7.5l3.2 2.3-1.2 3.8h-4L8.8 9.8z" fill="'+color+'" stroke="none"/><path d="M12 7.5L8.8 9.8M12 7.5l3.2 2.3M9.8 13.6L7 16.4M14.2 13.6L17 16.4M14 13.6h-4"/></g>',
+    baseball:'<g '+P+'><circle cx="12" cy="12" r="9"/><path d="M6.5 5.8C8.2 8 8.6 12 6.2 16.6M17.5 5.8C15.8 8 15.4 12 17.8 16.6"/></g>',
+    hockey:'<g '+P+'><path d="M5 4v9a5 5 0 0 0 5 5h7"/><circle cx="18.5" cy="18" r="1.6" fill="'+color+'" stroke="none"/></g>',
+    rugby:'<g '+P+'><ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-40 12 12)"/><path d="M9 15l6-6M10.5 13.2l1.2 1.2M13.2 10.5l1.2 1.2"/></g>',
+    basketball:'<g '+P+'><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18"/><path d="M5.5 5.5C8 8 8 16 5.5 18.5M18.5 5.5C16 8 16 16 18.5 18.5"/></g>',
+    badminton:'<g '+P+'><path d="M5 19l9-11"/><ellipse cx="15.5" cy="6.5" rx="3.5" ry="2.4" transform="rotate(-45 15.5 6.5)"/></g>',
+    golf:'<g '+P+'><path d="M12 3v13"/><path d="M12 3l6 2.5L12 8" fill="'+color+'" stroke="none"/><circle cx="9" cy="19" r="1.4" fill="'+color+'" stroke="none"/><path d="M7 20.5c1.5-1 8-1 10 0"/></g>',
+    tennis:'<g '+P+'><circle cx="12" cy="12" r="9"/><path d="M4.5 6C8 9 8 15 4.5 18M19.5 6C16 9 16 15 19.5 18"/></g>',
+    dance:'<g '+P+'><circle cx="12" cy="4.5" r="1.8"/><path d="M12 6.3v6M12 8.5l-4 2M12 8.5l4 2M12 12.3l-3 6M12 12.3l3 6"/></g>',
+    skateboarding:'<g '+P+'><path d="M4 15.5l3.5-3.5 2.5 1.5 3-3 4 2"/><path d="M3.5 18.5h13"/><circle cx="6.5" cy="20.3" r="1.1" fill="'+color+'" stroke="none"/><circle cx="13.5" cy="20.3" r="1.1" fill="'+color+'" stroke="none"/></g>',
+    frisbee:'<g '+P+'><ellipse cx="12" cy="13" rx="9" ry="3.4"/><path d="M4.4 11.6c1.3 1.6 4.2 2.7 7.6 2.7s6.3-1.1 7.6-2.7"/></g>',
+    wrestling:'<g '+P+'><circle cx="8.5" cy="5" r="1.7"/><circle cx="15.5" cy="5" r="1.7"/><path d="M8.5 6.8v3l-2 2M8.5 9.8l3 1.5 4-2.5M15.5 6.8v3l2 2.5M9 14l-1.5 6M11.5 11.3l1 8.7M16 12.3l1 7.7"/></g>',
+    teamwork:'<g '+P+'><circle cx="7" cy="6" r="1.8"/><circle cx="17" cy="6" r="1.8"/><path d="M7 8v6M17 8v6M7 10.5h10M7 14l-2 6M7 14l2 6M17 14l-2 6M17 14l2 6"/></g>',
+    parachute:'<g '+P+'><path d="M3 11a9 7 0 0 1 18 0"/><path d="M3 11c1.5 1.2 3 1.2 4.5 0 1.5 1.2 3 1.2 4.5 0 1.5 1.2 3 1.2 4.5 0 1.5 1.2 3 1.2 4.5 0"/><path d="M5 12l6 8M19 12l-6 8"/><circle cx="12" cy="20" r="1.3" fill="'+color+'" stroke="none"/></g>',
+    dancing:'<g '+P+'><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5" fill="'+color+'"/><circle cx="17.5" cy="16" r="2.5" fill="'+color+'"/><path d="M9 9l11-2"/></g>',
+    ctf:'<g '+P+'><path d="M6 21V3"/><path d="M6 4h12l-3 4 3 4H6" fill="'+color+'" fill-opacity=".25"/><path d="M3 21h6"/></g>',
+    volleyball:'<g '+P+'><circle cx="12" cy="12" r="9"/><path d="M12 3c-1.5 4-.5 7 3 9M12 12c-3 2.2-6.5 2.4-9 1M12 12c.5 4 3.5 6.5 7.5 5.5"/></g>',
+    tabletennis:'<g '+P+'><circle cx="10" cy="10" r="6"/><path d="M14.3 14.3l5 5"/><circle cx="19" cy="5.5" r="1.6" fill="'+color+'" stroke="none"/></g>',
+    flagfootball:'<g '+P+'><ellipse cx="10" cy="14" rx="7" ry="4.3" transform="rotate(-30 10 14)"/><path d="M7.8 15l4-2.6"/><path d="M17 3v8"/><path d="M17 3.2l4 1.6-4 1.6" fill="'+color+'"/></g>',
+    tag:'<g '+P+'><circle cx="15" cy="4.5" r="1.7"/><path d="M15 6.5l-2 5.5 3 2v5.5M13 12l-3 3.5M15 8.5l3.5 2M15 8.5l-3.5 1"/><path d="M2.5 9h4M2 13h4.5M3 17h3.5"/></g>',
+    dodgeball:'<g '+P+'><circle cx="15" cy="12" r="6"/><path d="M12 7.5c2 2 2 7 0 9"/><path d="M2.5 9h5M2 12h5M2.5 15h5"/></g>',
+    jumprope:'<g '+P+'><circle cx="12" cy="4.5" r="1.6"/><path d="M12 6.2v5.3M12 8l-3 2M12 8l3 2M12 11.5l-2 4M12 11.5l2 4"/><path d="M8 10c-4 4-3 10 4 10s8-6 4-10"/></g>',
+    relay:'<g '+P+'><rect x="9.5" y="2.5" width="5" height="12" rx="2.5" transform="rotate(40 12 8.5)"/><path d="M3 17.5h18M3 21h18"/></g>',
+    tobibako:'<g '+P+'><path d="M6 20.5l1.6-12h8.8l1.6 12z"/><path d="M6.6 16.5h10.8M7.1 12.5h9.8"/><path d="M8.5 8.5c0-2.5 7-2.5 7 0"/></g>',
+    tetsubo:'<g '+P+'><path d="M3 5h18M5 5v16M19 5v16"/><path d="M10.5 5v3M13.5 5v3"/><circle cx="12" cy="10" r="1.6"/><path d="M12 11.6v4.4M10 20.5l2-4.5 2 4.5"/></g>',
+    judo:'<g '+P+'><path d="M3 10.5h18v3.5H3z"/><path d="M11 12.3l-3 8M13 12.3l3 8"/><rect x="10" y="10" width="4" height="4.5" rx="1" fill="'+color+'" stroke="none"/></g>',
+    undokai:'<g '+P+'><path d="M12 21V9"/><path d="M8 3h8l-1.5 6h-5z"/><path d="M8.7 6h6.6"/><circle cx="5.5" cy="15" r="1.5" fill="'+color+'" stroke="none"/><circle cx="18.5" cy="13" r="1.5" fill="'+color+'" stroke="none"/><circle cx="16" cy="18" r="1.5" fill="'+color+'" stroke="none"/></g>'
+  };
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" aria-hidden="true" style="display:block">'+(icons[id]||icons.soccer)+'</svg>';
+}
+var shuffleIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.6-5.7L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-13.6 5.7L4 16"/><path d="M4 20v-4h4"/></svg>';
+
+/* ---------- Sport data (from First Steps) ---------- */
+var SPORTS = [
+ {id:"soccer",name:"Soccer",tag:"Rhythm, movement & decision making",accent:"#16a34a",
+  equipment:["Soccer ball (size 3/4/5 by age)","Cones or markers","Small open space","Bibs for teams"],
+  skills:[["Dribbling","Tap, tap, look",["Inside & outside of foot","Keep the ball close","Look up often"]],["Trapping / Receiving","Soft foot",["Use inside of foot","Cushion the ball gently"]],["Passing","Point your toes where you want the ball to go",["Plant non-kicking foot beside ball","Use inside of foot","Follow through to target"]],["Shooting","Laces, lean, low",["Strike with laces","Lean slightly forward","Aim low for accuracy"]]],
+  solo:[["Toe Taps","Alternate feet tapping the top of the ball","Rhythm, coordination"],["Inside-Outside Dribble","Tap with inside then outside of same foot","Ball control, agility"],["Wall Passes","Pass to a wall and trap the rebound","Passing accuracy, first touch"],["Figure-8 Dribble","Dribble around two cones in a figure 8","Turning, balance"],["Juggling (beginner)","Drop, kick once, catch","Timing, foot-eye coordination"]],
+  partner:[["Passing Gates","Pass through a small gate","Accuracy, communication"],["Keep Away (3v1)","Simple possession game","Spacing, decisions"],["Moving Pass & Follow","Pass then run to partner's spot","Movement after passing"],["1v1 Dribble Challenge","Beat a defender in a small area","Creativity, confidence"]],
+  games:[["3-Goal Game","Three small goals, score in any","Finding space"],["No-Steal Dribbling","Defenders block but can't take the ball","Dribbling confidence"],["4v4 Small-Sided","No keepers, small field","Teamwork, movement"],["End-Zone Soccer","Score by dribbling into a zone","Control, teamwork"]],
+  strength:["squats","lunges","side shuffles","plank holds","quick-feet ladders"]},
+ {id:"baseball",name:"Baseball",tag:"Timing, coordination & teamwork",accent:"#dc2626",
+  equipment:["Soft practice balls","Gloves (optional early)","Light bats","Cones for bases","Batting tee"],
+  skills:[["Throwing","Step, point, throw",["Front shoulder at target","Step with opposite foot","Throw over the top"]],["Catching","Soft hands",["Triangle hands for high balls","Pinkies together for low balls","Watch it in"]],["Fielding Grounders","Down, scoop, up",["Feet wide, knees bent","Glove low, eyes down","Scoop then stand to throw"]],["Hitting","See it, swing it",["Feet shoulder-width","Hands together on bat","Swing level and smooth"]]],
+  solo:[["Wall Throws","Throw at a wall and catch","Accuracy, reaction"],["Self Toss & Catch","Toss up, catch with two hands","Tracking, soft hands"],["Batting Tee Swings","Hit off a tee or cone","Swing mechanics, balance"],["Rolling Grounders","Roll out, run to field it","Footwork, fielding form"],["Shadow Swinging","Swing with no ball","Rhythm, body control"]],
+  partner:[["Partner Catch","Start close, move back over time","Accuracy, communication"],["Rolling Grounders","One rolls, one fields","Staying low, clean scoops"],["Soft Toss Hitting","Gentle toss from the side","Timing, smooth swing"],["Relay Throws","Race to throw & catch down a line","Teamwork, quick hands"]],
+  games:[["Home Run Derby","Hit off a tee for distance/accuracy","Hitting confidence"],["Base Running Tag","Run bases while a fielder tags","Speed, awareness"],["3-Ball Fielding","Field three grounders fast","Footwork, readiness"],["Mini Baseball (3v3)","Short field, soft ball, simple rules","Game flow, fun"]],
+  strength:["squats","lunges","plank holds","side shuffles","quick sprints"]},
+ {id:"hockey",name:"Hockey",tag:"Agility, coordination & teamwork",accent:"#0891b2",
+  equipment:["Hockey sticks","Ball or soft puck","Cones or markers","Shin guards & mouthguard (optional)"],
+  skills:[["Grip & Stance","Low and ready",["Hands apart on the stick","Knees bent, back straight","Stick on the ground"]],["Stick Handling","Soft taps, eyes up",["Use the flat side","Keep ball close","Move wrists, not whole arms"]],["Passing","Point your stick where you want it to go",["Step toward target","Push, don't slap","Follow through"]],["Receiving","Soft stick",["Cushion the ball","Angle stick slightly back"]],["Shooting","Low, smooth, strong",["Hands slide together","Step forward","Push or sweep to goal"]]],
+  solo:[["Straight-Line Dribble","Move the ball forward in small taps","Control, rhythm"],["Side-to-Side Handling","Move ball left and right in front","Wrist control, reactions"],["Cone Weave","Dribble through cones zig-zag","Agility, control"],["Wall Trap","Push to wall, trap the rebound","Receiving, soft touch"],["Shadow Movement","Practice stance & footwork, no ball","Balance, readiness"]],
+  partner:[["Partner Passing","Start close, increase distance","Accuracy, communication"],["Moving Pass & Follow","Pass then run to partner's spot","Movement after passing"],["1v1 Dribble Challenge","Beat a defender in a small area","Creativity, confidence"],["Triangle Passing","Three players pass around a triangle","Spacing, timing"]],
+  games:[["Gate Dribble Game","Dribble through gates for points","Control, awareness"],["Keep Away (3v1)","Simple possession game","Teamwork, spacing"],["Small Goal Hockey (3v3)","No keepers, small goals","Passing, movement"],["End-Zone Hockey","Score by dribbling into a zone","Control, teamwork"]],
+  strength:["squats","lunges","side shuffles","plank holds","quick-feet ladders"]},
+ {id:"rugby",name:"Rugby",tag:"Teamwork, courage & smart movement",accent:"#7c3aed",
+  equipment:["Rugby balls (size 3/4/5)","Cones or markers","Tag belts or bibs","Open field or gym"],
+  skills:[["Ball Carrying","Two hands, eyes forward",["Hold with two hands","Keep elbows in","Run with eyes up"]],["Passing (Backwards)","Pass back, run forward",["Ball at your hip","Step toward teammate","Swing arms gently"]],["Catching","Hands out, pull in",["Hands form a 'W'","Reach toward ball","Bring to chest"]],["Evasion","Sell the fake",["Light on your feet","Fake one way, go the other","Keep ball secure"]],["Scoring a Try","Ball to ground",["Run into the end zone","Place ball down with control"]]],
+  solo:[["Ball Handling Patterns","Move ball around hips, head, legs","Grip, comfort"],["Wall Passes","Pass at a wall and catch","Accuracy, soft hands"],["Zig-Zag Running","Run through cones with the ball","Evasion, footwork"],["Drop Catch","Drop ball, catch before it lands","Reaction time"],["Shadow Evasion","Sidesteps without a ball","Agility, balance"]],
+  partner:[["Partner Passing","Pass while moving slowly","Accuracy, communication"],["2v1 Attack Drill","Two attackers vs one defender","Support play, timing"],["Passing Chain","Pass down a line while moving","Teamwork, rhythm"],["Tag and Pass","Pass to avoid being tagged","Decision making"]],
+  games:[["End-Zone Touch","Touch the ball down in the zone","Running lines"],["Keep Ball","Possession with backward passes only","Passing accuracy"],["3-Second Rule","Carrier must pass within 3 seconds","Support play"],["Channel Rugby","Narrow lanes for straight running","Discipline, structure"]],
+  strength:["squats","lunges","plank holds","side shuffles","short sprints"]},
+ {id:"basketball",name:"Basketball",tag:"Rhythm, agility & teamwork",accent:"#ea580c",
+  equipment:["Basketballs (size 5/6/7)","Hoops (any height)","Cones or floor markers","Bibs"],
+  skills:[["Dribbling","Bounce low, eyes forward",["Use fingertips, not palm","Ball at waist height or lower","Eyes up"]],["Passing","Step, push, snap",["Chest pass: step & push from chest","Bounce pass: aim 2/3 of the way","Aim for the hands"]],["Catching","Reach and cushion",["Hands ready","Absorb the ball softly"]],["Shooting (Set Shot)","Elbow in, flick up",["Feet shoulder-width","Elbow under the ball","Gooseneck follow-through"]],["Defensive Stance","Low and wide",["Knees bent","Back straight","Hands active"]]],
+  solo:[["Stationary Dribble","Right, left, then alternate","Control, rhythm"],["Around the World","Ball around waist, head, legs","Comfort with ball"],["Wall Shooting Form","Shoot form at a wall, no hoop","Technique, muscle memory"],["Figure-8 Dribble","Dribble around legs in a figure 8","Coordination, footwork"],["Mikan Footwork","Step under hoop, alternate feet","Layup rhythm"]],
+  partner:[["Partner Passing","Chest, bounce, overhead","Accuracy, communication"],["Moving Pass & Follow","Pass then run to partner's spot","Teamwork, movement"],["1v1 Mirror Defense","One moves, the other mirrors","Footwork, reaction"],["Give and Go","Pass, cut to basket, receive again","Timing, teamwork"]],
+  games:[["Dribble Tag","Dribble while tagging others","Ball control, awareness"],["Knockout Dribble","Protect your ball, knock others away","Shielding, control"],["3-Shot Challenge","Layup, short, then long shot","Shooting variety"],["3v3 Small-Sided","Half court, simple rules","Spacing, teamwork"]],
+  strength:["squats","lunges","plank holds","lateral shuffles","jump-stops"]},
+ {id:"badminton",name:"Badminton",tag:"Quick reactions & precise control",accent:"#0d9488",
+  equipment:["Lightweight rackets","Plastic shuttlecocks","Net or rope at net height","Cones"],
+  skills:[["Grip","Handshake grip",["Hold like shaking hands","Relax your fingers"]],["Ready Position","Light and ready",["Knees bent","Racket up","Feet shoulder-width"]],["Underhand Serve","Low swing, high flight",["Shuttle in front","Swing gently upward","Aim high and deep"]],["Forehand & Backhand","Reach and tap",["Smooth swing","Contact in front of body"]],["Footwork","Step, then hit",["Small steps","Move before you swing"]]],
+  solo:[["Shuttle Keep-Up","Tap the shuttle upward repeatedly","Hand-eye coordination"],["Wall Rally","Hit gently against a wall","Timing, control"],["Shadow Footwork","Move to imaginary court corners","Agility, balance"],["Drop Hit","Drop the shuttle, hit it upward","Timing, clean contact"],["Racket Control","Flip the shuttle on the racket face","Touch, feel"]],
+  partner:[["Gentle Rally","Hit back and forth slowly","Control, rhythm"],["Serve & Return","One serves, one returns","Accuracy, consistency"],["Target Practice","Hit into marked zones","Placement, precision"],["Net Rally","Short soft hits near the net","Touch, quick reactions"]],
+  games:[["Keep It Up","How many hits can you sustain?","Control"],["Court Corners","Hit to corners called out","Placement, movement"],["Mini Rally to 5","Short rallies, first to 5","Consistency"],["King/Queen of Court","Winners move up, others rotate","Game flow"]],
+  strength:["lunges","squats","side shuffles","plank holds","light jumps"]},
+ {id:"golf",name:"Golf",tag:"Patience, focus & repeatable movement",accent:"#65a30d",
+  equipment:["Clubs (a 7-iron is great)","Foam or plastic balls","Cones and targets","Hoops or putting mats"],
+  skills:[["Grip","Firm but gentle, like holding a small bird",["Hands together","Light pressure, not tight"]],["Stance & Posture","Athletic and comfortable",["Feet shoulder-width","Knees slightly bent","Back straight, arms relaxed"]],["Alignment","Aim your body where you want the ball to go",["Feet, hips & shoulders face the target"]],["Swing Basics","Back… and through",["Smooth takeaway","Rotate shoulders","Swing through, not at, the ball"]],["Putting","Tick tock",["Short pendulum motion","Eyes over the ball"]]],
+  solo:[["Air Swings","Swing with no ball","Rhythm, balance"],["Line-Up Drill","Lay a club down to check alignment","Accuracy"],["Coin Strike","Brush a coin or leaf off the ground","Clean contact"],["Putting Gate","Putt through two close objects","Straight stroke"],["Slow-Motion Swing","Move slowly to feel each part","Body awareness"]],
+  partner:[["Target Challenge","Take turns aiming at cones","Accuracy"],["Distance Ladder","Hit to short, medium, long targets","Control"],["Putting Relay","Race to sink putts in sequence","Teamwork, consistency"],["Chip and Catch","Chip soft balls for a partner to catch","Touch, trajectory"]],
+  games:[["Closest to Target","Closest to a cone wins","Aim"],["Putting Course","Build a mini course with obstacles","Creativity, touch"],["Chip to the Circle","Land inside a marked circle","Distance control"],["3-Club Challenge","Use only 3 shot types","Adaptability"]],
+  strength:["squats","lunges","plank holds","shoulder circles","light jumps"]},
+ {id:"tennis",name:"Tennis",tag:"Timing, footwork & controlled power",accent:"#ca8a04",
+  equipment:["Lightweight rackets","Foam or low-compression balls","Net or rope","Cones, chalk, targets"],
+  skills:[["Grip","Shake hands with the racket",["'Shake hands' grip for forehand","'Thumb on top' for backhand"]],["Ready Position","Ready and balanced",["Knees bent","Racket in front","Light on your toes"]],["Forehand","Brush up the ball",["Turn body sideways","Swing low to high","Contact in front"]],["Backhand","Turn, swing, follow through",["Two-handed for beginners","Turn shoulders","Smooth swing"]],["Serve","Toss, reach, tap",["Toss slightly in front","Swing upward","Aim diagonally"]]],
+  solo:[["Bounce Hit","Bounce ball, hit it upward","Timing, control"],["Wall Rally","Hit gently against a wall","Consistency, rhythm"],["Shadow Swings","Forehand/backhand, no ball","Technique, balance"],["Toss and Catch","Toss up, catch with off hand","Tracking, coordination"],["Footwork Ladder","Quick steps through a ladder","Agility"]],
+  partner:[["Gentle Rally","Hit back and forth slowly","Control, consistency"],["Drop-Hit Rally","Each drop-hits to start","Timing"],["Target Rally","Hit into marked zones","Accuracy"],["Net Play (Volleys)","Tap the ball near the net","Quick reactions"]],
+  games:[["Keep It Alive","How many hits can you sustain?","Consistency"],["Court Corners","Hit to corners called out","Placement"],["Mini Tennis","Play inside the service boxes","Control, short swings"],["King/Queen of Court","Winners move up, others rotate","Game flow"]],
+  strength:["lunges","squats","plank holds","side shuffles","light jumps"]},
+ {id:"dance",name:"Gymnastics",tag:"Shapes, balance, rolls & landings",accent:"#db2777",
+  equipment:["Mats or a soft surface","Speaker & music","Ribbons or scarves (optional)","Tape line on the floor"],
+  skills:[["Shapes & Positions","Strong shapes, still body",["Straight, Tuck, Star","Pike, Straddle"]],["Balance Positions","Tall body, tight core",["One-leg stand","Arabesque","Scale"]],["Rolls","Round like a ball",["Log roll","Egg roll","Forward roll (progression)"]],["Jumps & Landings","Soft knees, quiet landing",["Straight jump","Star jump","Half turn"]],["Movement Patterns","Move with the beat",["Step touch","Grapevine","March with arms"]]],
+  solo:[["Balance Challenge","Hold a pose 5–10 seconds","Stability"],["Shape Flow","Move between shapes smoothly","Body control"],["Rhythm Walk","Walk, skip, hop to music","Timing"],["Core Basics","Tuck holds, plank, hollow body","Strength"],["Roll Progressions","Roll safely on a soft surface","Coordination"]],
+  partner:[["Mirror Movement","One leads, one follows","Awareness, creativity"],["Shape Copy","Partner makes a shape, you copy","Observation"],["Rhythm Echo","Repeat a clapped/stepped pattern","Timing"],["Group Sequence","Build a short routine together","Teamwork, expression"]],
+  games:[["Freeze Dance","Move to music, freeze on cue","Control"],["Balance Beam Line","Walk a taped line","Balance"],["Shape Stations","Move between shape stations","Transitions"],["Obstacle Course","Over, under and through stations: crawl, roll, jump, balance, land","Travel, sequencing"]],
+  strength:["plank holds","bridges","squats","lunges","hollow-body holds"]},
+ {id:"skateboarding",name:"Skateboard",tag:"Balance, courage & patient repetition",accent:"#9333ea",
+  equipment:["Skateboards","Helmets (always)","Knee, elbow & wrist pads","Smooth traffic-free space","Cones"],
+  skills:[["Stance & Balance","Bend the knees, stay low",["Find regular or goofy","Feet over the bolts","Knees soft, eyes up"]],["Pushing","Push, place, glide",["Front foot on the board","Push gently with back foot","Return foot to the board to roll"]],["Turning","Lean, don't twist",["Lean toward toes or heels","Use ankles and knees","Look where you want to go"]],["Stopping","Drag it slow",["Take back foot off","Drag sole lightly on the ground","Or step off onto your foot"]],["Falling Safely","Crouch, roll, don't reach",["Bend low before you fall","Avoid stiff straight arms","Roll with it and relax"]]],
+  solo:[["Grass Balance","Balance on the board on grass or carpet","Balance, confidence"],["Push & Coast","One push, then glide as long as you can","Pushing control"],["Tic-Tacs","Lift the nose and swivel left-right","Steering, board feel"],["Manual Hold","Lift the nose slightly while rolling slowly","Balance, core control"],["Foot Placement Practice","Hop on/off finding the bolts each time","Stance memory"]],
+  partner:[["Hand-Hold Roll","Partner steadies you as you roll","Balance, trust"],["Follow the Leader","Copy a partner's slow path and turns","Steering, awareness"],["Cone Slalom","Take turns weaving through cones","Turning control"],["Spot & Cheer","One spots while the other tries a skill","Confidence, feedback"]],
+  games:[["Coast Distance","How far can you roll from one push?","Pushing, balance"],["Slow Race","Last to the line without stopping wins","Control"],["Cone Weave Challenge","Weave a cone line cleanly","Turning"],["Add-On Lines","Each player adds one move to a sequence","Creativity, memory"]],
+  strength:["squats","lunges","calf raises","plank holds","single-leg balance holds"]},
+ {id:"frisbee",name:"Ultimate",tag:"Throwing, cutting & teamwork",accent:"#0284c7",
+  equipment:["Flying discs (175g)","Cones for end zones","Bibs","Flat open field"],
+  skills:[["Backhand Throw","Step, snap, flat",["Grip with thumb on top","Step across your body","Snap the wrist, keep the disc level"]],["Forehand (Flick)","Two fingers, quick wrist",["Two fingers under the rim","Elbow in","Snap the wrist, don't swing the arm"]],["Catching","Clap it, two hands",["Pancake: one hand top, one bottom","Watch the disc into your hands","Rim catch for high/low discs"]],["Pivoting","Plant and turn",["Keep one foot planted","Pivot to find a throwing lane","No steps with the disc"]],["Cutting","Sharp, then go",["Change direction hard","Cut into open space","Make eye contact with the thrower"]]],
+  solo:[["Wall Throws","Throw at a wall, catch the return","Throwing accuracy"],["Throw & Chase","Throw far, sprint, catch your own disc","Throwing, tracking"],["Flat-Disc Drill","Throw keeping the disc perfectly level","Wrist control"],["Self Toss & Pancake","Toss up, practise the clap catch","Catching"],["Pivot Footwork","Plant a foot and pivot through angles","Pivoting"]],
+  partner:[["Partner Catch","Backhand & forehand back and forth","Accuracy, communication"],["Distance Ladder","Step back after each clean catch","Throwing power"],["Cut & Throw","One cuts to space, the other hits them","Timing, leading the receiver"],["Mark & Pivot","One defends; thrower pivots to find a lane","Decision making"]],
+  games:[["Keep Away (3v1)","Keep the disc from the defender","Spacing, quick throws"],["End Zone Catch","Score by catching in the zone","Cutting, teamwork"],["500","Throw up for grabs; points for clean catches","Catching, tracking"],["Mini Ultimate (3v3)","Small field, no contact","Game flow, teamwork"]],
+  strength:["squats","lunges","side shuffles","plank holds","short sprints"]},
+ {id:"wrestling",name:"Wrestling",tag:"Leverage, balance & honest grit",accent:"#b45309",
+  equipment:["Mats or padded surface","Close-fitting clothing","Headgear (recommended)","Coach supervision"],
+  skills:[["Stance","Low, square, ready",["Knees bent, back straight","Hands up and active","Weight on the balls of your feet"]],["Motion & Footwork","Short steps, stay low",["Don't cross your feet","Keep your stance","Circle and change angles"]],["Level Change","Bend the knees, not the back",["Drop your hips","Keep your head up","Spring back up with control"]],["Penetration Step","Step in, drive forward",["Lead knee drops toward the mat","Step deep between their feet","Drive forward, not down"]],["Sprawl (Defense)","Hips down, legs back",["Shoot your legs back fast","Drop your hips","Keep your weight heavy"]]],
+  solo:[["Stance & Motion","Hold stance and move in all directions","Balance, footwork"],["Level Change Reps","Drop and raise your level smoothly","Hip control"],["Penetration Step","Step in to a knee, return to stance","Takedown entry"],["Sprawl Drill","From stance, sprawl and recover","Defense, reaction"],["Forward Rolls","Roll safely on the mat","Falling, coordination"]],
+  partner:[["Hand Fighting","Lightly fight for inside hand position","Control, tempo"],["Mirror Motion","Stay in stance and mirror your partner","Footwork, awareness"],["Down-Position Holds","Practise top/bottom start positions","Position, base"],["Light Takedown Reps","Walk through a takedown slowly","Technique, trust"]],
+  games:[["Knee Tag","Gently tap your partner's knee","Level change, reactions"],["Hand Slap","Tap the back of partner's hands","Speed, hand fighting"],["Stance Sumo","Push partner out of a circle, staying low","Balance, leverage"],["King of the Position","Hold a position vs gentle resistance","Base, grit"]],
+  strength:["squats","lunges","plank holds","bridges","rows"]},
+ {id:"volleyball",name:"Volleyball",tag:"Teamwork, footwork & soft touch",accent:"#1d4ed8",
+  equipment:["Soft volleyballs or beach balls","Net or rope (lower for beginners)","Cones","Court lines or tape"],
+  skills:[["Ready Position","Low, light, ready",["Feet wide, knees bent","Arms out in front","Weight on toes"]],["Forearm Pass (Bump)","Platform, lift, legs",["Thumbs together, arms flat","Contact on forearms","Lift with legs, not arms"]],["Overhead Pass (Set)","Make a window, flick",["Hands above forehead, diamond window","Bend knees under the ball","Push up and extend"]],["Underhand Serve","Hold, swing, follow",["Opposite foot forward","Ball held low in front","Swing through to the target"]],["Communication","Call it: \"Mine!\"",["Call early and loudly","Turn to face the ball","Trust the caller"]]],
+  solo:[["Self Bump","Bump the ball straight up, catch, repeat","Platform control"],["Wall Sets","Set against a wall above head height","Hand shape, rhythm"],["Toss & Set","Toss up, set to yourself","Timing, footwork"],["Serve to Target","Serve at a hoop or cone zone","Accuracy"],["Shadow Footwork","Shuffle to cones and freeze in ready position","Movement to the ball"]],
+  partner:[["Toss & Bump","One tosses, one bumps back to the hands","Platform angle"],["Pepper","Bump, set, hit back and forth","Ball control, teamwork"],["Serve & Catch","Serve over the net; partner catches","Serving accuracy"],["Catch-Throw Over the Net","Catch and throw from set position","Reading the ball"]],
+  games:[["Newcomb (Catch Volleyball)","Catch and throw over the net, three passes per side","Game shape, positioning"],["Team Keep-Up","Count how many touches the team keeps it up","Cooperation, calling"],["Target Serves","Points for landing in marked zones","Serving placement"],["3v3 Mini Volley","Small court, one catch allowed","Rallying, rotation"]],
+  strength:["squats","lunges","plank holds","shoulder circles","light jumps"]},
+ {id:"tabletennis",name:"Table Tennis",tag:"Reflexes, control & spin",accent:"#e11d48",
+  equipment:["Tables (or desks with a book as a net)","Paddles","Plenty of balls","Cups or targets"],
+  skills:[["Grip","Shake hands with the paddle",["Index finger on the back","Relaxed hold"]],["Ready Position","Elbows in, paddle up",["Arm's length from the table","Knees bent","Paddle in front"]],["Forehand Drive","Close the door",["Turn slightly to the side","Swing up and forward","Finish near your forehead"]],["Backhand Push","Push and point",["Paddle in front of tummy","Push forward gently","Point to the target"]],["Serve","Toss up, hit down",["Ball rests on open palm","Toss up, hit as it falls","Bounce on your side first"]]],
+  solo:[["Paddle Bounce","Bounce the ball up on the paddle","Touch, control"],["Edge Bounce","Alternate forehand and backhand faces","Paddle control"],["Wall Rally","Hit against a wall with the table pushed up","Rhythm, consistency"],["Shadow Strokes","Forehand and backhand with no ball","Technique"],["Cup Target","Serve to knock over a cup","Accuracy"]],
+  partner:[["Forehand Rally","Diagonal forehand-to-forehand rally","Consistency"],["Backhand Push Rally","Diagonal backhand pushes","Control"],["Serve & Return","One serves, one returns to a zone","Serve, reaction"],["Target Cups","Score by hitting partner's cups","Placement"]],
+  games:[["Round the Table","Hit once, run to the other side; miss and you're out","Movement, fun"],["Rally Count","Pairs try to beat their best rally","Cooperation"],["First to 5","Short games, swap partners each round","Game flow"],["King of the Table","Winners stay, challengers rotate in","Competition"]],
+  strength:["side shuffles","squats","lunges","plank holds","quick-feet ladders"]},
+ {id:"flagfootball",name:"Flag Football",tag:"Speed, catching & smart plays (no tackling)",accent:"#4338ca",
+  equipment:["Flag belts (two flags each)","Soft footballs","Cones for end zones","Bibs"],
+  skills:[["Flag Pulling","Eyes on the hips, grab, hold it up",["Stay square to the runner","Reach for the flag, not the body","Hold the flag up and shout \"Flag!\""]],["Ball Carrying","High and tight",["Ball tucked against the chest","Elbow covers the ball","Run with eyes up"]],["Throwing","Fingers on the laces, step, point",["Side-on to the target","Step with opposite foot","Follow through to the target"]],["Catching","Make a diamond",["Thumbs together for high balls","Pinkies together for low balls","Look it in, tuck it away"]],["Route Running","Plant and cut",["Run straight to the cone","Plant outside foot","Turn and show your hands"]]],
+  solo:[["Flag Dodge Shadow","Sidestep and spin while protecting your flags","Evasion"],["Wall Throws","Throw at a wall target and catch","Throwing accuracy"],["Self Toss Catch","Toss high, catch with a diamond","Hand shape"],["Cone Routes","Run slant, out and stop routes","Footwork, cutting"],["Drop & Go","Drop the ball, scoop, and sprint","Reaction"]],
+  partner:[["Pitch & Catch","Throw and catch, step back after each clean catch","Accuracy, distance"],["1v1 Flag Pull","Runner tries to reach a cone line","Evasion, pulling"],["Route & Throw","One runs a route, the other leads the pass","Timing"],["Handoff Exchange","Practise clean handoffs on the move","Ball security"]],
+  games:[["Everybody Flag Tag","All wear flags; collect as many as you can","Agility, awareness"],["End-Zone Run","Runners try to cross; defenders pull flags","Evasion"],["3-Down Challenge","Three plays to reach the end zone","Planning, teamwork"],["4v4 Flag Football","No contact, everyone gets a turn at quarterback","Game play"]],
+  strength:["squats","lunges","side shuffles","plank holds","short sprints"]},
+ {id:"tag",name:"Tag Games",tag:"Oni-gokko: dodging, speed & spatial awareness",accent:"#d97706",
+  equipment:["Bibs for taggers (oni)","Ribbons or tails","Cones for boundaries","Hoops as safe zones"],
+  skills:[["Dodging","Fake, then go",["Small steps before you move","Fake with shoulders","Push off hard the other way"]],["Safe Tagging","Soft touch, shoulders or back",["Open hand, light touch","Never push or grab","Call \"Tag!\""]],["Changing Speed","Slow, then burst",["Jog to stay relaxed","Burst when the gap opens","Slow down to stop safely"]],["Spatial Awareness","Heads up, find space",["Look up, not down","Move into empty space","Watch the oni and the edges"]],["Teamwork Rescues","Free your friend",["Check who needs freeing","Move together","Celebrate rescues"]]],
+  solo:[["Shadow Dodges","Dodge an imaginary oni between cones","Footwork"],["Speed Change Run","Walk, jog, sprint on calls","Acceleration"],["Cone Zig-Zag","Weave cones at speed","Agility"],["Reaction Starts","Sprint from different starting positions on a clap","Reaction time"],["Freeze & Balance","Run, then freeze on one foot on the whistle","Body control"]],
+  partner:[["Mirror Tag","Copy your partner, then try to escape on \"Go\"","Reaction, focus"],["Tail Tag (Shippo-tori)","Grab your partner's tail while guarding yours","Dodging, grabbing"],["Shadow Tag (Kage-oni)","Step on your partner's shadow to tag (sunny days)","Awareness, fun"],["Tag & Swap","Tagged player becomes the chaser straight away","Quick decisions"]],
+  games:[["Iro-oni (Colour Tag)","Oni calls a colour; touch it to be safe","Scanning, speed"],["Kōri-oni (Freeze Tag)","Tagged players freeze until a teammate frees them","Teamwork, rescues"],["Keidoro (Cops & Robbers)","Cops capture robbers into jail; robbers free them","Strategy, teamwork"],["Takara-tori (Treasure Capture)","Steal treasure from the other side without being tagged","Planning, courage"]],
+  strength:["squats","lunges","side shuffles","plank holds","short sprints"]},
+ {id:"dodgeball",name:"Dodgeball",tag:"Throwing, catching & teamwork (Japanese dodgeball rules)",accent:"#c2410c",
+  equipment:["Soft foam balls","Cones or court lines","Bibs","Pins or skittles"],
+  skills:[["Throwing","Step, aim low, follow",["Side-on, step with opposite foot","Aim below the shoulders","Follow through"]],["Catching","Hug the ball",["Arms out, eyes on the ball","Pull it into your chest","Bend knees to absorb"]],["Dodging","Watch the ball, move your feet",["Stay on your toes","Side-step, don't turn your back","Stay inside the court"]],["Team Passing","Pass to the open side",["Look before you pass","Quick passes move the defence","Call names"]],["Outfield Play (Gaiya)","Pass and pressure",["Outfielders work with the inside team","Throw from the side","Return by hitting someone"]]],
+  solo:[["Wall Throws","Throw at a wall, catch the rebound","Accuracy, catching"],["Target Throws","Knock down cones from a line","Aim"],["Self Toss Catch","Toss, clap, catch","Hand-eye coordination"],["Dodge Steps","Shuffle and side-step between lines","Footwork"],["Reaction Catch","Bounce off a wall and catch fast","Reaction time"]],
+  partner:[["Partner Throw & Catch","Step back after each catch","Throwing power"],["Dodge the Roll","One rolls, one jumps or side-steps","Dodging"],["Hit the Target","Partner holds a hoop target","Accuracy"],["Catch-Back","Catch then throw back fast","Quick hands"]],
+  games:[["Japanese Dodgeball","Hit players go to the outfield (gaiya) and return by hitting someone","Teamwork, strategy"],["Doctor Dodgeball","Each team's doctor can revive teammates","Strategy, roles"],["Pin Guard","Protect your pin while knocking theirs","Defending, aim"],["Dodgebee","Soft disc instead of a ball","Throwing variety"]],
+  strength:["squats","side shuffles","plank holds","push-ups","light jumps"]},
+ {id:"jumprope",name:"Jump Rope",tag:"Nawatobi: rhythm, stamina & coordination",accent:"#c026d3",
+  equipment:["Individual ropes (sized to height)","Long ropes for group jumping","Soft floor or grass","Stopwatch","Nawatobi skill cards"],
+  skills:[["Turning","Wrists, not arms",["Elbows close to body","Small circles with wrists","Rope just brushes the floor"]],["Basic Bounce","Small jumps, light feet",["Jump on the balls of your feet","Only 2–3 cm high","Soft knees"]],["Rhythm","Turn, jump, turn, jump",["Steady beat","Count out loud","Relax shoulders"]],["Crossing (Ayatobi)","Cross, jump, open",["Cross arms at the waist","Hands out wide past hips","Open on the next jump"]],["Long Rope Entry (Ōnawa)","Go when it hits the ground",["Stand beside a turner","Run in as the rope passes your face","Jump in the middle"]]],
+  solo:[["Bounce Count","Most basic jumps in 30 seconds","Rhythm, stamina"],["Side Swing & Jump","Swing to the side, then jump through","Timing"],["Run-Through","Jog while turning the rope","Coordination"],["Single-Leg Hops","Five on each leg","Balance"],["Cross-Over Try","One cross jump, then build","Skill progression"]],
+  partner:[["Two in One Rope","Partner jumps in front of the turner","Teamwork, timing"],["Long Rope Entry","Two turners, one jumper enters and exits","Timing"],["Rhythm Echo","Copy partner's jump pattern","Rhythm"],["Count Coach","Partner counts and calls the cue","Feedback"]],
+  games:[["8-ji Tobi (Figure-8 Long Rope)","Class runs through the long rope in a figure 8","Teamwork, timing"],["Nawatobi Card Ladder","Tick off skills from easy to hard","Progression, goals"],["Snake Jump","Wiggle a rope on the floor; jump without touching","Fun, footwork"],["Class Record","Count total jumps for the class; beat it next time","Motivation"]],
+  strength:["calf raises","squats","plank holds","light jumps","single-leg balance holds"]},
+ {id:"relay",name:"Running & Relay",tag:"Starts, speed & baton passing",accent:"#0369a1",
+  equipment:["Batons","Cones","Start and finish lines","Stopwatch","Coloured bands"],
+  skills:[["Starts","Low, lean, drive",["Front foot just behind the line","Lean forward","Drive arms on \"Go\""]],["Sprint Form","Arms like pistons",["Run tall","Arms swing cheek to pocket","Land on the balls of the feet"]],["Baton Pass","Reach back, look forward",["Receiver starts early","Hand back, palm open","Call \"Hai!\" to signal"]],["Curve Running","Lean in",["Lean slightly to the inside","Stay in your lane","Keep the arms driving"]],["Pacing","Even and steady",["Don't start too fast","Breathe in rhythm","Finish strong"]]],
+  solo:[["Wall Drives","Lean on a wall, drive knees","Sprint posture"],["A-Skips","Skip with high knees","Running mechanics"],["Reaction Starts","Start from kneeling, sitting, or lying on a clap","Reaction"],["Curve Runs","Run the bend at 70% speed","Curve technique"],["Seated Arm Swing","Sit and pump arms fast","Arm action"]],
+  partner:[["Baton Pass Walk","Pass the baton while walking","Exchange technique"],["Partner Starts","Partner calls start; race to a cone","Reaction"],["Hand-Off Zone","Pass inside a marked zone at jog speed","Timing, zone"],["Chase Starts","Chase partner who starts 2 m ahead","Acceleration"]],
+  games:[["Shuttle Relay","Teams run back and forth to cones","Speed, teamwork"],["Ribbon Relay","Pass a ribbon instead of a baton","Exchanges"],["Undōkai Class Relay","Whole-class relay with mixed lap lengths","Teamwork, spirit"],["Beat the Clock","Team times; try to beat the last time","Goal setting"]],
+  strength:["squats","lunges","calf raises","plank holds","short sprints"]},
+ {id:"tobibako",name:"Tobibako",tag:"Vaulting box: run-up, take-off & landing",accent:"#9a3412",
+  equipment:["Vaulting boxes (adjustable steps)","Springboard","Landing mats","Cones for run-up marks"],
+  skills:[["Run-Up","Even steps, speed up",["Start from the same mark","Build speed smoothly","Look at the box"]],["Two-Foot Take-Off","Bang the board",["Last step is a small hop","Land on both feet on the board","Spring up, not forward"]],["Hand Placement","Hands far, push",["Hands on the far end","Shoulders over hands","Push the box away"]],["Straddle Vault","Push, legs wide, land",["Open legs wide","Push hard through hands","Bring legs together to land"]],["Landing","Land like a cat",["Two feet together","Bend knees","Arms forward, freeze for 2 seconds"]]],
+  solo:[["Bunny Hops","Two-foot hops along a line","Take-off power"],["Board Jumps","Run, two-foot jump on the board, land on mat","Take-off timing"],["Frog Jumps","Hands down, jump feet up to hands","Hand-foot coordination"],["Straddle on a Low Box","Straddle over 1–2 steps","Vault pattern"],["Landing Freeze","Jump off a step, stick the landing","Safe landing"]],
+  partner:[["Leapfrog","Vault over partner's curled back","Straddle shape"],["Spot & Support","Teacher or trained partner supports the upper arm","Confidence, safety"],["Board Rhythm Echo","Copy partner's run-up rhythm","Approach timing"],["Height Ladder","Choose your box height and coach each other","Goal setting"]],
+  games:[["Leapfrog Train","Line leapfrog across the gym","Fun, rhythm"],["Landing Judge","Partners score landings 1–3","Feedback"],["Station Circuit","Hop, board, frog jump, vault stations","Progression"],["Box Height Challenge","Pick your safe challenge level","Self-assessment"]],
+  strength:["squats","tuck jumps","plank holds","push-ups","frog jumps"]},
+ {id:"tetsubo",name:"Tetsubo",tag:"Horizontal bar: grip, support & rotation",accent:"#57534e",
+  equipment:["Low horizontal bars (chest height)","Mats underneath","Pullover assist belt","Chalk (optional)"],
+  skills:[["Grip","Thumbs around the bar",["Overhand grip","Thumbs wrap underneath","Hands shoulder-width"]],["Front Support","Arms straight, tummy on bar",["Jump up to straight arms","Bar at the hips","Body tight, look forward"]],["Forward Roll Down (Zenmawari-ori)","Tuck chin, roll slow",["Start in front support","Bend forward slowly","Hold the bar, lower feet softly"]],["Pullover (Sakaagari)","Kick up, pull in",["Hands on bar, one foot forward","Kick the leg up and over","Pull the bar to your belly"]],["Hanging Holds","Strong arms, still body",["Bent-arm hang","Tuck and hold","Lower slowly"]]],
+  solo:[["Dead Hang","Hang as long as you can","Grip strength"],["Front Support Hold","Hold front support 10 seconds","Support strength"],["Sloth Hang","Hang with arms and legs on the bar","Grip, fun"],["Hand Walk","Shuffle hands along the bar while hanging","Grip, coordination"],["Bent-Arm Hold","Chin above the bar, hold","Pulling strength"]],
+  partner:[["Spotted Pullover","Teacher or trained partner supports back and legs","Rotation, confidence"],["Count the Hold","Partner counts your hold time","Feedback"],["Copy the Shape","Copy partner's shape on the bar","Body control"],["Kick-Up Practice","Partner guides the kick with a hand","Pullover timing"]],
+  games:[["Hold Challenge","Longest hang wins, then beat your best","Grip, motivation"],["Bar Shape Stations","Different shape at each bar","Variety"],["Tetsubo Skill Card","Tick off skills from easy to hard","Progression"],["Ninja Hang","Hang and lift knees when the ninja walks by","Reaction, core"]],
+  strength:["dead hangs","plank holds","hollow-body holds","rows","tuck-ups"]},
+ {id:"judo",name:"Judo",tag:"Budō: respect, balance & safe falling",accent:"#334155",
+  equipment:["Tatami or thick mats","Judogi or sturdy long-sleeved clothing","Clear safe space","Trained teacher supervision"],
+  skills:[["Rei (Bowing)","Respect first",["Bow entering and leaving the mat","Bow to your partner","Listen in seiza"]],["Ukemi (Breakfalls)","Chin tucked, slap the mat",["Chin to chest","Arms slap at 45°","Breathe out on impact"]],["Shizentai (Stance)","Natural and balanced",["Feet shoulder-width","Knees soft","Upright posture"]],["Kumikata (Grip)","Sleeve and collar",["One hand on sleeve","One on collar","Relaxed, not stiff"]],["Kuzushi (Off-Balance)","Off balance first",["Push or pull gently","Move your feet","Feel your partner's weight"]]],
+  solo:[["Back Breakfall","Rock back from squat, slap the mat","Safe falling"],["Side Breakfall","Fall to each side from crouch","Safe falling"],["Rolling Breakfall","Forward roll over the shoulder","Coordination"],["Tsugi-ashi Walk","Sliding steps in stance","Footwork"],["Shadow Uchikomi","Practise throw entry with no partner","Technique"]],
+  partner:[["Grip & Move","Hold grips and move around the mat gently","Balance, posture"],["Kuzushi Push-Pull","Take turns breaking balance slowly","Control, sensitivity"],["Uchikomi","Entry reps without throwing","Technique, trust"],["Hold & Escape","Light hold-down; partner escapes in 20 s","Groundwork"]],
+  games:[["Sumo Circle","Push partner out of a circle, low stance","Balance, leverage"],["Turtle Flip","Try to turn a partner on all fours over","Groundwork, effort"],["Balance Breaker","Stand on one foot; gently unbalance each other","Balance"],["Sock Tag on Knees","Take socks while protecting yours","Groundwork movement"]],
+  strength:["squats","plank holds","bridges","push-ups","rows"]},
+ {id:"undokai",name:"Sports Day",tag:"Undōkai events: tamaire, tug of war & team races",accent:"#b91c1c",
+  equipment:["Beanbags or small balls","Tall basket on a pole","Tug-of-war rope","Ankle ties","Large ball (ōdama)"],
+  skills:[["Underhand Toss (Tamaire)","Scoop and loft",["Eyes on the basket","Swing low to high","Release high in the air"]],["Team Pull (Tsunahiki)","Low, lean, together",["Rope under the arm","Lean back, feet ahead","Pull on the team call"]],["Rhythm Steps (Mukade)","Left, right, together",["Same foot first for everyone","Call the rhythm out loud","Hands on shoulders"]],["Quick Starts","Ready, set, burst",["Front foot forward","Lean slightly","Drive the arms"]],["Teamwork & Cheering","Loud, kind, together",["Encourage every runner","Cheer for both teams","Thank your team"]]],
+  solo:[["Basket Toss","Toss beanbags into a hoop or basket","Accuracy, arc"],["Lean & Hold","Hold a rope lean against a post","Body position"],["Rhythm Walk","Walk to a chant, same foot first","Rhythm"],["Reaction Starts","Start on a clap from different positions","Reaction"],["Ball Carry Balance","Carry a ball on a paddle without dropping","Balance, focus"]],
+  partner:[["Three-Legged Walk","Ankles tied, walk to the call","Rhythm, trust"],["Toss & Catch","Beanbag throw and catch","Hand-eye"],["Mini Tug","Pairs pull a short rope from crouch","Body position"],["Pair Rhythm Walk","Hands on shoulders, step together","Cooperation"]],
+  games:[["Tamaire","Teams throw as many balls as possible into the basket in 1 minute","Teamwork, accuracy"],["Tsunahiki","Tug of war with a team rhythm call","Cooperation, strength"],["Mukade Race","Centipede walk with feet tied in lines","Rhythm, communication"],["Ōdama Korogashi","Teams roll a giant ball around a cone and back","Teamwork, control"]],
+  strength:["squats","lunges","plank holds","rows","short sprints"]},
+ {id:"dancing",name:"Dance",tag:"Rhythm, expression & teamwork (Soran Bushi, Bon Odori, rhythm dance)",accent:"#be185d",
+  equipment:["Speaker & music","Open space with a clear floor","Mirror or tablet to film (optional)","Happi coats, towels or scarves (optional)"],
+  skills:[["Finding the Beat","Count 5, 6, 7, 8",["Clap or step on the beat","Count out loud in 8s","Start on \"1\""]],["Basic Steps","Step, touch, bounce",["Step touch side to side","Grapevine","Bounce through the knees"]],["Soran Bushi Moves","Low, strong, pull the net",["Wide low stance","Pull the net, push the boat","Shout \"Dokkoisho!\" together"]],["Bon Odori Circle","Clap, step, flow",["Move round the circle together","Soft hands and claps","Copy the leader"]],["Freestyle & Expression","Big, small, fast, slow",["Change levels and size","Show a feeling with your body","Freeze to finish"]]],
+  solo:[["Beat Walk","Walk the room on the beat, clap on 1","Rhythm"],["8-Count Copy","Copy the teacher's 8-count, then add your own","Memory, timing"],["Level Changes","High, middle, low on each 8-count","Body control"],["Mirror Practice","Practise a sequence facing a mirror or tablet","Self-assessment"],["Freeze Frames","Dance, then freeze in a strong shape on a cue","Control, expression"]],
+  partner:[["Mirror Dance","One leads, one mirrors; swap on the music change","Awareness, creativity"],["Question & Answer","Partner dances 8 counts; you answer with 8","Creativity, timing"],["Teach Me a Move","Teach your partner one move in 8 counts","Communication"],["Canon","Same moves, partner starts 4 counts later","Timing, focus"]],
+  games:[["Freeze Dance","Dance to the music, freeze when it stops","Control, listening"],["Pass the Move","In a circle, each dancer adds one move","Creativity, memory"],["Dance Battle (Friendly)","Small groups take turns; audience cheers effort","Confidence"],["Group Performance","Combine moves into a 32-count routine and share","Teamwork, expression"]],
+  strength:["squats","lunges","plank holds","calf raises","light jumps"]},
+ {id:"ctf",name:"Capture the Flag",tag:"Strategy, speed & teamwork",accent:"#0f766e",
+  equipment:["Two flags or bibs","Cones for the halfway line and jails","Bibs in two colours","Hoops as safe zones (optional)"],
+  skills:[["Dodging","Fake, then go",["Small steps before you move","Fake with shoulders","Burst into space"]],["Safe Tagging","Soft touch, shoulders or back",["Open hand, light touch","No pushing or grabbing","Call \"Tag!\""]],["Attacking Runs","Go together, go wide",["Run in pairs or threes","Spread defenders out","Sprint when they look away"]],["Defending","Watch the middle, stay between",["Stay between attacker and flag","Don't stand on the flag","Talk to teammates"]],["Team Strategy","Make a plan, then adapt",["Choose attackers, defenders and rescuers","Agree a signal","Change the plan at half-time"]]],
+  solo:[["Shadow Dodges","Dodge imaginary defenders through cones","Footwork"],["Speed Change Run","Walk, jog, sprint on calls","Acceleration"],["Grab & Go","Sprint, grab a beanbag, sprint back","Speed, control"],["Reaction Starts","Sprint from different positions on a clap","Reaction"],["Scan & Point","Jog and point to open space when the whistle goes","Awareness"]],
+  partner:[["1v1 Line Cross","Attacker tries to cross a line; defender tags","Evasion, defending"],["Tail Tag","Grab your partner's bib while guarding yours","Dodging, grabbing"],["Jail Break Pair","One frees a jailed partner past a defender","Teamwork, timing"],["Mirror Defence","Defender mirrors the attacker side to side","Footwork, reaction"]],
+  games:[["Classic Capture the Flag","Steal the flag from the other half; tagged players go to jail","Strategy, teamwork"],["Multi-Flag","Several beanbag \"flags\" each side; most stolen wins","Decision making"],["Safe-Zone CTF","Hoops give 3-second safety","Inclusion, risk-taking"],["Pass-the-Flag","Flag must be passed to a teammate before crossing","Passing, support play"]],
+  strength:["squats","lunges","side shuffles","plank holds","short sprints"]}, {id:"teamwork",name:"Teamwork & Rules",tag:"Routines, signals, sharing and working together",accent:"#4d7c0f",
+  equipment:["Spot markers or hoops (one each)","Cones","Bibs in four colours","Soft balls and beanbags","Whistle or drum signal"],
+  skills:[["Listening & Signals","Freeze, eyes, ears",["Stop on the signal","Eyes on the teacher","Hands and equipment still"]],["Spaces & Lines","Find your spot",["Go to your home spot","Keep your space bubble","Line up quickly and quietly"]],["Sharing Equipment","Collect, use, return",["Take one and walk back","Share and take turns","Return it to the right place"]],["Taking Turns","My turn, your turn",["Wait behind the line","Count your turns","Cheer for others"]],["Working Together","Talk, plan, try",["Listen to every idea","Choose a plan together","Try again if it fails"]]],
+  solo:[["Space Bubbles","Move around without popping anyone's bubble","Spatial awareness"],["Statues","Move, then freeze on the signal in a shape","Listening, control"],["Number Groups","Make groups of the number called, then sit","Counting, organizing"],["Equipment Collect","Collect one item of a colour and return it","Routines, sharing"],["Home Spot Race","Travel a new way and get back to your spot","Spaces, travel"]],
+  partner:[["Partner Mirror","Copy your partner's moves; swap leader","Cooperation"],["Pass & Count","Pass a ball and count out loud together","Counting, sending"],["Pair Balance","Make a balance that needs both of you","Trust, problem solving"],["Guide Me","One leads, one follows the voice around cones","Communication"]],
+  games:[["Hoop Islands","Move between hoops; one hoop goes each round, so everyone must share","Cooperation, inclusion"],["River Crossing","Team crosses the gym using mats without touching the floor","Problem solving"],["Number Huddles","Groups of the number called, then a team task","Organizing, numbers"],["Class Pass Count","Whole class passes in a circle; beat the record","Teamwork, counting"]],
+  strength:["frog jumps","bear crawls","crab walks","plank holds","star jumps"]},
+ {id:"parachute",name:"Parachute & Balloon",tag:"Cooperation, rhythm and gentle control",accent:"#059669",
+  equipment:["Play parachute","Balloons (one each plus spares)","Soft balls and beanbags","Speaker & music"],
+  skills:[["Grip & Hold","Thumbs on top, hold tight",["Both hands on the handle or edge","Stand tall, step back","Hold steady together"]],["Making Waves","Small waves, big waves",["Shake gently for ripples","Big arms for big waves","Stop together on the signal"]],["Mushroom","Up together, step in, sit",["Lift high on \"3\"","Step in under it","Sit and tuck the edge"]],["Balloon Keep-Up","Soft taps, eyes up",["Tap with open hands","Watch the balloon","Move your feet under it"]],["Moving to Music","Walk, skip, turn to the beat",["Listen for the beat","Change direction on the music change","Freeze when it stops"]]],
+  solo:[["Balloon Tap","Keep the balloon up with hands only","Tracking, control"],["Body-Part Tap","Tap with the body part called (elbow, knee, head)","Coordination, listening"],["Balloon Walk","Walk while keeping it up","Travel with control"],["Tap & Freeze","Tap, freeze in a shape, catch","Body control"],["Music Moves","Travel to the music in different ways","Rhythm, travel"]],
+  partner:[["Partner Rally","Tap the balloon back and forth","Cooperation"],["Balloon Carry","Carry it between backs or shoulders without hands","Teamwork"],["Mirror Balloon","Copy your partner's balloon moves","Observation"],["Count Together","Count taps out loud; beat your score","Counting, rhythm"]],
+  games:[["Popcorn","Bounce soft balls off the parachute","Cooperation, effort"],["Swap Places","Lift high; called group runs under to swap","Listening, travel"],["Cat & Mouse","Mouse crawls under; cat chases on top","Spatial awareness, fun"],["Never Touch the Floor","Class keeps every balloon up for one song","Teamwork, control"]],
+  strength:["bear crawls","squats","arm circles","star jumps","plank holds"]}
+];
+var GROUPS = ["All","Team","Net & target","Gym & body","Playground","Japan PE"];
+var GROUP_OF = {
+ soccer:["Team"],baseball:["Team"],hockey:["Team"],rugby:["Team"],basketball:["Team"],frisbee:["Team"],flagfootball:["Team","Playground"],volleyball:["Team","Net & target","Japan PE"],
+ badminton:["Net & target"],golf:["Net & target"],tennis:["Net & target"],tabletennis:["Net & target","Japan PE"],
+ dance:["Gym & body","Japan PE"],skateboarding:["Gym & body"],wrestling:["Gym & body"],judo:["Gym & body","Japan PE"],tobibako:["Gym & body","Japan PE"],tetsubo:["Gym & body","Japan PE"],jumprope:["Gym & body","Playground","Japan PE"],
+ dancing:["Gym & body","Japan PE"],teamwork:["Playground"],parachute:["Playground"],ctf:["Team","Playground"],
+ tag:["Playground","Japan PE"],dodgeball:["Playground","Japan PE"],relay:["Playground","Japan PE"],undokai:["Playground","Japan PE"]
+};
+
+/* ---------- Teaching moves (from the Teacher's Toolkit) ---------- */
+var POOLS = {
+ warm: [
+  ["Traffic Lights","Move around the space: green = jog, amber = walk, red = freeze in a ready stance. Add a {sport} move on green."],
+  ["Follow My Leader","Lines of four. The leader picks the movement (skips, shuffles, high knees). Swap leader on each whistle."],
+  ["Mirror Warm-Up","Pairs face each other. One leads slow dynamic stretches, the other mirrors. Swap every 30 seconds."],
+  ["Equipment Wander","Everyone has equipment and moves freely, keeping control. On the whistle, change direction or speed."],
+  ["Corners","Call a corner and a movement (\"hop to corner 2\"). Last group there does three {strength}."],
+  ["Busy Bees","Jog in the space. Call a number: make groups of that size and hold a {sport} ready stance."]
+ ],
+ intro: [
+  ["Think-Aloud Demo","Demonstrate slowly while narrating each step, then at full speed. The class says the cue back to you.",["Clarify"]],
+  ["See-Think-Wonder","Show the skill once with no words. Ask: What did you see? What do you think matters? What do you wonder?",["Captivate","Clarify"]],
+  ["Freeze Frame","Students copy the key body shape and hold it. Check, then unfreeze into slow motion.",["Clarify","Control"]],
+  ["Spot the Mistake","Demo it right, then wrong. Thumbs up or down, then one student explains what changed.",["Challenge","Clarify"]],
+  ["Question of the Day","Open with: \"Why do you think the cue says '{cue}'?\" Come back to it at the end.",["Captivate","Confer"]]
+ ],
+ solo: [
+  ["Slow, Smooth, Fast","Three rounds: slow motion, smooth, then game speed. Students choose when to level up.",["Challenge","Care"]],
+  ["Stop & Fix","Whistle mid-drill. Everyone freezes while you fix one detail for the whole group, then restart.",["Clarify","Control"]],
+  ["Count Your Best","Count clean reps in 30 seconds, then try to beat your own score.",["Challenge"]],
+  ["Roam & Praise","Circulate and name specific effort (\"Great soft hands, Mia\"). Quietly support anyone stuck.",["Care"]]
+ ],
+ partner: [
+  ["Coach & Player","One works, one coaches using the success criteria. Swap after six reps.",["Confer","Clarify"]],
+  ["Think-Pair-Share","After a round, pairs agree on one tip that helped. Two pairs share with the group.",["Confer","Consolidate"]],
+  ["Cue Check","Before each round, partners say the cue to each other and show it once in slow motion.",["Consolidate","Confer"]],
+  ["Rotate Partners","Inside-outside circles. Change partner every two minutes so everyone works with different levels.",["Care","Control"]]
+ ],
+ game: [
+  ["Mid-Game Huddle","Stop at halfway. Teams get 30 seconds to agree one tactic, then restart.",["Confer","Challenge"]],
+  ["Freeze & Ask","Freeze play and ask a player: \"What made you choose that?\"",["Clarify","Challenge"]],
+  ["Skill Bonus Point","Award a bonus point for using today's skill well, so the focus stays on learning.",["Captivate","Challenge"]],
+  ["Beat Last Time","Record the best team score or rally. Next lesson, try to beat it.",["Challenge","Consolidate"]]
+ ],
+ cool: [
+  ["Two Stars & a Wish","Two things that went well and one next step, shared with a partner while stretching.",["Consolidate","Care"]],
+  ["Exit Line-Up","Before leaving, each student tells you the cue and one thing they improved.",["Consolidate"]],
+  ["I Used to Think… Now I Think…","Students finish the sentence about today's skill.",["Consolidate","Confer"]],
+  ["Fist to Five","Show 0–5 fingers for confidence. Note the 0–2s to support next lesson.",["Care","Consolidate"]],
+  ["Headline","Pairs write or say a five-word headline for today's lesson.",["Consolidate","Captivate"]]
+ ]
+};
+
+/* STEP adaptations (Space, Task, Equipment, People) */
+var ADAPT = {
+ warm:["Space: use a bigger area and walking pace.","Task: add a {sport} skill to every movement."],
+ intro:["Equipment: softer or larger kit; split the skill into two parts.","Task: perform it on the move or with the weaker side."],
+ solo:["Task: fewer reps, slower, stay stationary.","Space: smaller area plus a 30-second time challenge."],
+ partner:["People: start close; partner feeds gently.","People: add a passive defender; increase distance."],
+ game:["People: overload attackers (3v1, 4v2); add a safe zone.","Space: narrow the area or add a touch/time limit."],
+ cool:["Offer sentence stems or a drawing instead of speaking.","Coach a peer using today's cue."]
+};
+
+/* ---------- School context (from PE Units, PE Objectives, PE Standards, trackers, UOI schedule) ---------- */
+var STD={"GENERAL": ["Copy and repeat simple skills", "Copy, remember and repeat simple skills with control and co-ordination", "Select and use skills and ideas with co-ordination and control", "Select, use and perform with coo-ordination and fluency", "Performance shows precision, control and fluency", "Consistent performance showing precision, control and fluency", "Consistent performance with accuracy and fluency"], "DANCE": ["Compose and link movement phrases to make simple dances with clean beginning, middle and end.", "Compose and perform dance phrases and short dances that express communicate moods, ideas and feelings", "Apply basic compositional ideas to create dance which convey feelings and emotions", "Begin to design their own movement phrases that respond to the stimuli or emotion", "Create and perform dances using a range of movement patterns in response to a range of stimuli", "Extend compositional skills incorporating a wider range of dance styles and forms compose, develop and adapt motifs to make dance phrases and use these in longer dances", "Develop and perform a wide range of dance styles and adapt different dance phrases in response to their own evaluations of how to improve."], "GAMES": ["Throw and catch a ball with a partner", "Pass a ball accurately to a partner over a variety of distances", "Travel whilst bouncing a ball showing control", "Travel with a ball showing increasing control using both hands and feet.", "Travel with a ball showing changes of speed and directions using either foot or hand.", "Dribble effectively around obstacles. Show precision and accuracy when sending and receiving", "Dribble and pass, showing precision, accuracy and scoring goals with ease. Can receive and send ball, making sensible choices."], "GYM": ["Perform basic gymnastic actions like traveling, rolling and jumping", "Perform a variety of actions with increasing control repeat accurately sequences of gymnastic actions", "Perform a competent forward roll, rug roll, shoulder roll Explore combinations of mats and apparatus, and find different ways of using a shape, balance or travel", "Perform a range of rolls with control and accuracy Explore different combinations of apparatus to look at shape, balance and travel. Know how to utilize this equipment to enhance their movements,", "Perform a range of rolls including backwards roll consistently. perform a range of actions and agilities with consistency, fluency and clarity of movement", "Perform a range of rolls showing different entrances and exits. perform combinations of actions and agilities that show clear differences between levels, speeds and directions, with fluency and accuracy", "Perform a range of rolls with entrance, exits and poise during execution. Perform actions and agilities that show creativity, fluency and accuracy between movement phrases."], "ATH": ["Run at different speeds, jump with accuracy, use a small range of techniques", "Change speed and direction, link running and jumping, throw accurately", "Throw with accuracy and power, into a target, difference between sprinting and running, different roles in groups", "Increase the distance when they are running, organizing and preparing themselves, take different roles within a running sequence.", "Sustain and maintain running speed, improve on personal target, organize and manage an athletic event well", "Strength, stamina and speed when running, jumping and throwing, know rules, judge events", "Have strength and stamina whilst running, beginning to pace themselves,"], "ATH2": ["Choose which throwing and retrieving technique to use", "Choose when to run and when to jump. Select which throwing technique to use for accuracy and distance", "Choose and use throw to reach target, choose which role to play within group situation", "Choose with throw, running pace or action to complete to allow them to reduce their times/ increase distance within areas of athletics.", "Choose pace for running, plan and carry through an event", "Adapt skills and techniques to different challenges and equipment", "Confident use to adapt what they know to complete different challenges that they are set."], "EVAL": ["Describe and comment on their own and others actions Can describe what they have done Can watch others and say what they are doing", "They can talk about differences between their own and others’ performance and suggest improvements", "Describe and comment on their own performance and that of others and make simple suggestions to improve quality.", "Observe others carefully, in relation to the success criteria, begin to modify and change in response to what they see. Be confident to analyse and comment on what they see.", "From observation of others begin to describe constructively how to refine improve and modify performance. Refine own performance in response to comments of others’ and self analysis.", "Analyse the selected skills and techniques within the activity and suggest ways to improve the quality of performance demonstrating sound knowledge and understanding.", "Analyse and evaluate the skills and techniques that they observe, suggesting quality improvements based on their knowledge of the subject area. Demonstrate good communication skills to discuss improvements."], "FIT": ["Can describe how their bodies feel when still and when exercising. Can talk about how to exercise safely.", "They can understand how to exercise and describe how their bodies feel during different activities.", "Children suggest appropriate warm up ideas. Children dress appropriately for PE. Children work in a responsible and safe manner. Children recognise changes in body temperature, heart rate and breathing.", "Children begin to think about warm up activities that prepare them for exercise. They can talk confidently about the effect exercise has on their body and why they need to exercise to stay fit and healthy.", "Demonstrate activities for specific aspects of warm up- stretching, joint mobility, raising heart and breathing rates. Describe the effects of exercise on the body showing understanding of the principles of respiration, temperature, fatigue and recovery.", "Can show responsibility for personal warm up programme specific to the activity. Demonstrate all round safe practice, including handling equipment, safety of self and others, playing within accepted rules and conventions.", "Can plan and deliver effective warm-ups knowing what they are doing to their bodies and how this prepares them for exercise. Know how to lead a session in equipment gathering and placing them effectively and safely into place for the activity."]};
+var TRACK={"K3": [[1, "DANCE", "They follow the leader – jumps, hops, skips."], [2, "DANCE", "They respond to different stimuli with a range of actions."], [3, "DANCE", "They copy and explore basic body actions demonstrated by the teacher."], [4, "DANCE", "They copy simple movement patterns from each other and explore the movement."], [5, "DANCE", "They compose and link movement phrases to make simple dances with clean beginning, middle and end."], [6, "DANCE", "They practise and repeat their movement phrases and perform them in a controlled way."], [7, "GAMES", "They throw and catch a ball with a partner."], [8, "GAMES", "They move fluently, changing direction and speed easily and avoiding collisions."], [9, "GAMES", "They show control and accuracy with the basic actions for rolling, underarm throwing, striking a ball and kicking."], [10, "GAMES", "They choose and use skills effectively for particular games."], [11, "GAMES", "They understand the concepts of aiming, hitting into space, and taking the ball to a good position for aiming."], [12, "GAMES", "They use skills in different ways in different games, and try to win by changing the way they use skills in response to their opponent’s actions."], [13, "GYM", "They perform basic gymnastic actions like traveling, rolling and jumping."], [14, "GYM", "They manage the space safely, showing good awareness of each other, mats and apparatus."], [15, "GYM", "They make up simple movement phrases in response to simple tasks."], [16, "GYM", "They link and repeat basic gymnastic actions."], [17, "GYM", "They perform movement phrases with control and accuracy."]], "G1": [[1, "DANCE", "They can link several movements together with control and coordination."], [2, "DANCE", "They talk about different stimuli as the starting point for creating dance phrases and short dances."], [3, "DANCE", "They explore actions in response to stimuli, explore ideas, moods and feelings by improvising, and by experimenting with actions, dynamics, directions, levels and a growing range of possible movements."], [4, "DANCE", "They compose and perform dance phrases and short dances that express communicate moods, ideas and feelings."], [5, "DANCE", "They remember and repeat a short dance phrase, showing greater control, coordination and spatial awareness."], [6, "GAMES", "They pass a ball accurately to a partner over a variety of distances."], [7, "GAMES", "They perform a range of rolling, throwing, striking, kicking, catching and gathering skills, with control."], [8, "GAMES", "They show a good awareness of others in running, chasing and avoiding games, making simple decisions about when and where to run."], [9, "GAMES", "They vary skills and show some understanding of simple tactics."], [10, "GAMES", "They choose and use tactics to suit different situations and react to situations in a way that helps their partners and makes it difficult for their opponents."], [11, "GYM", "They perform a variety of actions with increasing control and repeat accurately sequences of gymnastic actions."], [12, "GYM", "They move smoothly from a position of stillness to a travelling movement, and move smoothly and in a controlled way from one position of stillness to another."], [13, "GYM", "They choose, use and vary simple compositional ideas to create and perform a sequence, devising, repeating and performing a short sequence in which there is a clear beginning, middle and end."], [14, "GYM", "They adapt the sequence to include apparatus or a partner."], [15, "GYM", "They use different combinations of floor, mats, and apparatus, showing control, accuracy, and fluency."]], "G2": [[1, "DANCE", "They improvise freely with a partner, translating ideas from stimuli to movement."], [2, "DANCE", "They show an imaginative response to different stimuli through their use of language and choice of movement."], [3, "DANCE", "they incorporate different qualities and dynamics into their movements."], [4, "DANCE", "They explore and develop new actions while working with a partner or a small group."], [5, "DANCE", "They apply basic compositional ideas to create dances which convey feelings and emotions."], [6, "DANCE", "They link actions to make dance phrases, working with a partner and in a small group."], [7, "DANCE", "They perform short dances with expression, showing an awareness of others when moving."], [8, "DANCE", "They describe what makes a good dance phrase."], [9, "GAMES", "They travel whilst bouncing a ball showing control."], [10, "GAMES", "They use a range of skills to help them keep possession and control of the ball."], [11, "GAMES", "They perform the basic skills needed for the games with control and consistency."], [12, "GAMES", "They use a range of skills with increasing control."], [13, "GAMES", "In pairs, they make up a game and play a simple rallying game."], [14, "GAMES", "They use a range of skills to keep possession and make progress towards a goal, on their own and with others."], [15, "GAMES", "They choose good places to stand when receiving, and give reasons for their choice."], [16, "GAMES", "They choose and use batting or throwing skills to make the game hard for their opponents."], [17, "GYM", "They perform a competent forward roll, rug roll, and shoulder roll."], [18, "GYM", "They explore combinations of mats and apparatus, and find different ways of using a shape, balance or travel."], [19, "GYM", "They practise an action or short sequence of movements, and improve the quality of the actions and transitions."], [20, "GYM", "They show control, accuracy and fluency of movement when performing actions on their own and with a partner."], [21, "GYM", "They plan and perform a movement sequence showing contrasts in speed, level and direction."], [22, "GYM", "They devise and perform a gymnastic sequence, showing a clear beginning, middle and end."], [23, "GYM", "They adapt a sequence to include different levels, speeds or directions."], [24, "GYM", "They work well on their own and contribute to pair sequences."]], "G3": [[1, "DANCE", "They respond and perform with a partner, demonstrating actions that link with fluency and accuracy."], [2, "DANCE", "They respond to the stimuli through the appropriate language, creating their own ideas and movement phrases."], [3, "DANCE", "They use a range of actions and begin to combine movement phrases and patterns."], [4, "DANCE", "They begin to respond within a small group of partnership, to speed and level."], [5, "DANCE", "They begin to design their own movement phrases that respond to the stimuli or emotion."], [6, "DANCE", "They use a range of movement and dance phrases within different ways (unison, canon) with a partner of group."], [7, "DANCE", "They remember, perform and evaluate short dance phrases, showing an understanding and an awareness of others."], [8, "GAMES", "They travel with a ball showing increasing control using both hands and feet."], [9, "GAMES", "They know and use a range of skills that allow them to keep hold of the ball, before passing to a member of their team."], [10, "GAMES", "They perform an advancing range of skills with accuracy and control, repeatedly in a range of situations."], [11, "GAMES", "They use a range of different skills with increasing control and skill."], [12, "GAMES", "In small groups, they make up a game with simple rules."], [13, "GAMES", "They use a range of learnt techniques to ensure fair play and that they know how to score goals and win the game."], [14, "GAMES", "They choose where they should position themselves to be a defender and an attacker."], [15, "GAMES", "They choose the best skills to use to play the different sides within a game, knowing the skills that they should use to be successful."], [16, "GYM", "They perform a range of rolls with control and accuracy."], [17, "GYM", "They explore different combinations of apparatus to look at shape, balance and travel."], [18, "GYM", "They know how to utilize this equipment to enhance their movements."], [19, "GYM", "They practise and refine an action or short sequence showing quality movement phrases, combining different actions for effect."], [20, "GYM", "They begin to perform with a partner or group."], [21, "GYM", "They begin to develop a longer and more varied movement phrase with smooth, planned links between actions."], [22, "GYM", "They perform a sequence where the children combine speed, level, direction, and a variety of shapes."], [23, "GYM", "They work within different groups to contribute to a variety of different sequences."]], "G4": [[1, "DANCE", "They respond to a variety of stimuli showing a range of actions performed with control and fluency."], [2, "DANCE", "They think about character and narrative ideas created by the stimulus, and respond through movement."], [3, "DANCE", "They experiment with a wide range of actions, varying and combining spatial patterns, speed, tension and continuity when working on their own, with a partner and in a group."], [4, "DANCE", "They create and perform dances using a range of movement patterns in response to a range of stimuli."], [5, "DANCE", "They use different compositional ideas to create motifs incorporating unison, canon, action and reaction, question and answer."], [6, "DANCE", "They remember, practise and combine longer, more complex dance phrases."], [7, "GAMES", "They travel with a ball showing changes of speed and directions using either foot or hand."], [8, "GAMES", "They use a range of techniques when passing, (e.g. high, low, bounced, fast, slow)."], [9, "GAMES", "They keep a game going using a range of different ways of throwing."], [10, "GAMES", "They strike a ball with intent and throw it more accurately when bowling and/or fielding."], [11, "GAMES", "They effectively play a competitive net/wall game keep and use rules they are given."], [12, "GAMES", "They try to make things difficult for their opponent by directing the ball to space, at different speeds and heights."], [13, "GAMES", "They judge how far they can run to score points."], [14, "GYM", "They perform a range of rolls including backwards roll consistently."], [15, "GYM", "They perform a range of actions and agilities with consistency, fluency and clarity of movement."], [16, "GYM", "They make similar or contrasting shapes on the floor and apparatus, working to combine actions and maintain the quality of performance when performing at the same time as a partner."], [17, "GYM", "They develop a longer and more varied movement sequence, demonstrating smooth transitions between actions."], [18, "GYM", "They combine actions to make sequences with changes of speed, level and direction, and clarity of shape."], [19, "GYM", "They gradually increase the length of sequences."], [20, "GYM", "They work with a partner to make up a short sequence using the floor, mats, and apparatus, showing consistency, fluency, and clarity of movement."]], "G5": [[1, "DANCE", "They perform a variety of dance styles with accuracy and consistency."], [2, "DANCE", "They explore, improvise and choose appropriate material to create new motifs in a chosen dance style."], [3, "DANCE", "They respond to a range of stimuli, improvising freely using a range of controlled movements and patterns."], [4, "DANCE", "They extend compositional skills incorporating a wider range of dance styles and forms."], [5, "DANCE", "They compose, develop and adapt motifs to make dance phrases and use these in longer dances."], [6, "DANCE", "They select and use a range of compositional ideas to create motifs that demonstrate their dance idea."], [7, "GAMES", "They dribble effectively around obstacles."], [8, "GAMES", "They show precision and accuracy when sending and receiving."], [9, "GAMES", "They perform skills with accuracy, confidence and control."], [10, "GAMES", "They combine and perform skills with control, adapting them to meet the needs of the situation."], [11, "GAMES", "They play shots on both sides of the body and above their heads in practices and when the opportunity arises in a game."], [12, "GAMES", "They use different ways of bowling."], [13, "GAMES", "They play recognized versions of net games, showing tactical awareness and knowledge of rules and scoring."], [14, "GAMES", "They play, choosing and using skills which meet the needs of the situation."], [15, "GAMES", "They choose when to pass or dribble, so that they keep possession and make progress towards the goal."], [16, "GAMES", "They hit the ball with purpose, varying the speed, height and direction."], [17, "GAMES", "They hit the ball from both sides of the body."], [18, "GYM", "They Perform a range of rolls showing different entrances and exits."], [19, "GYM", "They perform combinations of actions and agilities that show clear differences between levels, speeds and directions, with fluency and accuracy ."], [20, "GYM", "They perform actions, shapes and balances clearly, consistently and fluently, with good body tension and extension."], [21, "GYM", "They plan and perform with precision, control and fluency, a movement sequence showing a wide range of actions including variations in speed, levels and directions."], [22, "GYM", "They repeat accurately a longer sequence with more difficult actions, with an emphasis on extension, clear body shape, and changes in direction."], [23, "GYM", "They adapt sequences to include a partner or a small group."]]};
+
+var GRADES = ["K1","K2","K3","G1","G2","G3","G4","G5"];
+var YEAR_IDX = { K3: 0, G1: 1, G2: 2, G3: 3, G4: 4, G5: 5 };          /* standards Year 1..6 */
+var YEAR_NAME = ["Year 1","Year 2","Year 3","Year 4","Year 5","Year 6","Extended Year 7"];
+var UNITS = [
+ { id: "teamwork", name: "Teamwork & Organization", sports: ["teamwork","tag"], area: "GAMES", ey: ["health","adventure","body"] },
+ { id: "soccer", name: "Soccer", sports: ["soccer"], area: "GAMES", ey: ["games","body"] },
+ { id: "dance", name: "Dance", sports: ["dancing"], area: "DANCE", ey: ["music"] },
+ { id: "ball", name: "Mini Basketball & Ball Games", sports: ["basketball","dodgeball","volleyball","flagfootball"], area: "GAMES", ey: ["games"] },
+ { id: "gym", name: "Gymnastics & Obstacle Course", sports: ["dance","tobibako","tetsubo"], area: "GYM", ey: ["athletic","body"] },
+ { id: "parachute", name: "Parachute & Balloon", sports: ["parachute"], area: "GAMES", area2: "DANCE", ey: ["games","music"] },
+ { id: "tag", name: "Tag", sports: ["tag","ctf"], area: "GAMES", ey: ["adventure","games"] },
+ { id: "fitness", name: "Fitness (Cross Country / Family Day)", sports: ["relay","jumprope","undokai"], area: "ATH", ey: ["health","adventure"] },
+ { id: "other", name: "Any sport", sports: null }
+];
+/* PE Objectives, 3–5 years (used for K1 and K2, which have no tracker) */
+var EY = {
+ health: ["Aware of some elements of a healthy lifestyle (rest, well-balanced nutrition, exercise) and that it is important to be physically active.","Recognize some basic changes that occur to their bodies when exercising and be aware of safety when exercising."],
+ body: ["Develop spatial awareness, gross motor skills and creative skills through movement."],
+ athletic: ["Learn a variety of movements and vocabulary (jump, hop, slide, rock), moving on the floor and on apparatus.","Create small movement patterns, holding body weight in stillness on different bases; try a basic skill such as a pin jump.","Explore different ways of moving with small equipment."],
+ games: ["Explore coordination, manipulation and balance in a range of games.","Travel in different ways, keeping body control, changing speed and direction.","Handle small equipment using various body parts.","Join in and follow instructions for simple games needing little or no equipment."],
+ music: ["Explore locomotor and non-locomotor skills (travelling, changing direction and pathways, transferring weight) with music as a stimulus.","Use imagination to respond to stimuli, express feelings and moods, and try short sequences with basic step patterns."],
+ adventure: ["Explore and develop the ability to solve tasks individually, in pairs or in small groups."]
+};
+var EY_LABEL = { health: "Health", body: "Body control", athletic: "Athletic", games: "Games", music: "Movement to music", adventure: "Adventure challenge" };
+var UOI = {
+ "K1|teamwork": { theme: "Who We Are", text: "Start class with a short talk on occupations: why do firefighters, police officers and nurses need to be healthy? How does being healthy help someone do their job? Tie each activity back to it." },
+ "K2|gym": { theme: "Who We Are (Semester 2, indoor gym)", text: "Look for: moving freely and confidently (slithering, crawling, rolling, skipping, sliding, hopping); catching a large ball; jumping off an object and landing well; travelling around, under, over and through equipment; noticing how activity affects their bodies." },
+ "K3|teamwork": { theme: "How We Organize Ourselves", text: "Organization tasks and games tie directly to the unit. Emphasize numbers: groups of the number called, counting passes, numbered spots and scorekeeping." },
+ "G1|dance": { theme: "How We Express Ourselves (Unit 6)", text: "Using your body to express yourself. Give the free dance and creativity part of the lesson extra time and talk about feelings and ideas behind movements." }
+};
+
+/* Phase splits (fractions of lesson time) */
+var SPLITS = {
+ "Early years": {warm:.15,intro:.10,solo:.20,partner:.12,game:.33,cool:.10},
+ Beginner:   {warm:.15,intro:.16,solo:.20,partner:.18,game:.21,cool:.10},
+ Developing: {warm:.13,intro:.14,solo:.18,partner:.20,game:.25,cool:.10},
+ Confident:  {warm:.12,intro:.10,solo:.13,partner:.20,game:.35,cool:.10}
+};
+var LEVELS = ["Early years","Beginner","Developing","Confident"];
+var ORDER = ["warm","intro","solo","partner","game","cool"];
+var KIND = {warm:"Warm-up",intro:"Skill focus",solo:"Solo drill",partner:"Partner drill",game:"Mini game",cool:"Cool-down & reflect"};
+
+/* ---------- State ---------- */
+var KEY = "pe-lesson-builder-v2";
+var S = { grade: "G2", unit: "soccer", sport: "soccer", skill: 0, week: 1, mins: 40, level: "Developing", group: "All", obj: null, pick: {} };
+try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.sport) S = Object.assign(S, saved); } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+function sport() { return SPORTS.filter(function (s) { return s.id === S.sport; })[0] || SPORTS[0]; }
+function unit() { return UNITS.filter(function (u) { return u.id === S.unit; })[0] || UNITS[0]; }
+function rnd(n) { return Math.floor(Math.random() * n); }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function isEY() { return S.grade === "K1" || S.grade === "K2"; }
+function defaultLevel(g) { return { K1:"Early years",K2:"Early years",K3:"Early years",G1:"Beginner",G2:"Beginner",G3:"Developing",G4:"Developing",G5:"Confident" }[g]; }
+function defaultMins(g) { return g.charAt(0) === "K" ? 30 : 40; }
+
+/* Which tracker area this lesson assesses */
+function area() {
+  var u = unit();
+  if (u.id !== "other") return u.area;
+  if (S.sport === "dancing") return "DANCE";
+  if (["dance","tobibako","tetsubo","judo","wrestling","skateboarding"].indexOf(S.sport) > -1) return "GYM";
+  if (["relay","jumprope","undokai"].indexOf(S.sport) > -1) return "ATH";
+  return "GAMES";
+}
+function areaLabel(a) { return { GAMES: "Games", DANCE: "Dance", GYM: "Gym", ATH: "Athletics & fitness" }[a]; }
+
+/* Objective list for the current grade + unit: [{id, code, text}] */
+function objectives() {
+  var u = unit(), a = area(), out = [];
+  if (isEY()) {
+    var cats = u.ey || (a === "DANCE" ? ["music"] : a === "GYM" ? ["athletic","body"] : a === "ATH" ? ["health","adventure"] : ["games"]);
+    cats.forEach(function (c) { EY[c].forEach(function (t, i) { out.push({ id: c + i, code: EY_LABEL[c], text: t }); }); });
+    return out;
+  }
+  if (a === "ATH") {
+    var y = YEAR_IDX[S.grade];
+    out.push({ id: "ath1", code: "Std · Athletics", text: STD.ATH[y] });
+    out.push({ id: "ath2", code: "Std · Athletics", text: STD.ATH2[y] });
+    out.push({ id: "fit", code: "Std · Fitness", text: STD.FIT[y] });
+    return out;
+  }
+  var areas = [a]; if (u.area2) areas.push(u.area2);
+  (TRACK[S.grade] || []).forEach(function (o) {
+    if (areas.indexOf(o[1]) > -1) out.push({ id: "t" + o[0], code: S.grade + " #" + o[0], text: o[2] });
+  });
+  return out;
+}
+/* Suggest 2 objectives per week, rotating through the list across the unit */
+function suggestObj() {
+  var list = objectives(); if (!list.length) return [];
+  var start = ((S.week - 1) * 2) % list.length;
+  var ids = [list[start].id]; if (list.length > 1) ids.push(list[(start + 1) % list.length].id);
+  return ids;
+}
+function chosenObj() {
+  var list = objectives(), ids = S.obj || suggestObj();
+  var c = list.filter(function (o) { return ids.indexOf(o.id) > -1; });
+  return c.length ? c : list.slice(0, 1);
+}
+
+/* Emerging / Expected / Exceeding ladder from the PE Standards */
+function ladder() {
+  var a = area(), key = a === "ATH" ? "ATH" : a;
+  if (isEY()) return [
+    ["Emerging", "Explores movement with adult support; copies one action at a time."],
+    ["Expected", "Meets the 3–5 years objectives above with growing confidence."],
+    ["Exceeding", "Year 1: " + STD.GENERAL[0] + ". " + STD[key][0]]
+  ];
+  var y = YEAR_IDX[S.grade];
+  var em = y === 0 ? "Working within the early years objectives: explores and copies movements with support." : YEAR_NAME[y - 1] + ": " + STD.GENERAL[y - 1] + ". " + STD[key][y - 1];
+  return [
+    ["Emerging", em],
+    ["Expected", YEAR_NAME[y] + ": " + STD.GENERAL[y] + ". " + STD[key][y]],
+    ["Exceeding", YEAR_NAME[y + 1] + ": " + STD.GENERAL[y + 1] + ". " + STD[key][y + 1]]
+  ];
+}
+function fitnessPrompt() { return isEY() ? "Ask: How does your body feel now? Is your heart beating fast or slow? How do we stay safe?" : STD.FIT[YEAR_IDX[S.grade]]; }
+function evalPrompt() { return isEY() ? "Can you show me one thing you did today? What did your friend do well?" : STD.EVAL[YEAR_IDX[S.grade]]; }
+function weekNote() {
+  if (S.week === 1) return ["Baseline week", "Set routines and rules. Watch for first evidence of the objectives and give a 1 where you see it."];
+  if (S.week >= 5) return ["Assessment week", "Look for consolidation. Update tracker scores (1 initial, 2 about 50% independent, 3 consolidated) and have older students self-assess on iPads."];
+  return ["Build week", "Teach and practise. Aim to see each objective at least three times before you score it."];
+}
+
+function fill(t, sp) {
+  var sk = sp.skills[S.skill] || sp.skills[0];
+  return t.replace(/\{sport\}/g, sp.name.toLowerCase()).replace(/\{cue\}/g, sk[1]).replace(/\{strength\}/g, sp.strength[S.pick.str || 0] || "squats");
+}
+function listFor(k, sp) {
+  return { warm: POOLS.warm, intro: POOLS.intro, solo: sp.solo, partner: sp.partner, game: sp.games, cool: POOLS.cool }[k];
+}
+function rollAll() {
+  var sp = sport(), p = {};
+  ORDER.forEach(function (k) { p[k] = rnd(listFor(k, sp).length); p[k + "T"] = rnd((POOLS[k] || POOLS.cool).length); });
+  p.str = rnd(sp.strength.length);
+  S.pick = p;
+}
+function roll(k) {
+  var sp = sport(), list = listFor(k, sp), pool = POOLS[k];
+  if (list.length > 1) { var o = S.pick[k]; while (S.pick[k] === o) S.pick[k] = rnd(list.length); }
+  if (pool && (k === "solo" || k === "partner" || k === "game")) { var t = S.pick[k + "T"]; if (pool.length > 1) while (S.pick[k + "T"] === t) S.pick[k + "T"] = rnd(pool.length); }
+  if (k === "warm") S.pick.str = rnd(sp.strength.length);
+}
+if (!S.pick || S.pick.warm == null) rollAll();
+
+function minutes() {
+  var sp = SPLITS[S.level] || SPLITS.Developing, out = {}, used = 0;
+  ORDER.forEach(function (k, i) {
+    if (i === ORDER.length - 1) return;
+    out[k] = Math.max(2, Math.round(S.mins * sp[k])); used += out[k];
+  });
+  out.cool = Math.max(2, S.mins - used);
+  return out;
+}
+
+function build() {
+  var sp = sport(), sk = sp.skills[S.skill] || sp.skills[0], m = minutes(), t = 0, phases = [];
+  ORDER.forEach(function (k) {
+    var p = { k: k, kind: KIND[k], start: t, mins: m[k] }; t += m[k];
+    var i = S.pick[k] % listFor(k, sp).length;
+    if (k === "warm") { var w = POOLS.warm[i]; p.name = w[0]; p.desc = fill(w[1], sp); p.teach = ["Body check", fitnessPrompt()]; p.tags = ["Captivate","Control"]; }
+    else if (k === "intro") { var it = POOLS.intro[i]; p.name = sk[0]; p.desc = "Introduce today's focus using the cue below. Share the tracker objectives in student-friendly words."; p.teach = [it[0], fill(it[1], sp)]; p.tags = it[2]; p.cue = sk[1]; }
+    else if (k === "cool") { var c = POOLS.cool[i]; p.name = "Stretch & Reflect"; p.desc = "Slow walk, then stretch calves, quads and shoulders. Breathe in for 4, out for 4. Evaluating focus: " + evalPrompt(); p.teach = [c[0], c[1]]; p.tags = c[2]; }
+    else { var d = listFor(k, sp)[i], pool = POOLS[k], tm = pool[S.pick[k + "T"] % pool.length]; p.name = d[0]; p.desc = d[1] + ". Keep the cue “" + sk[1] + "” in every rep."; p.builds = d[2]; p.teach = [tm[0], tm[1]]; p.tags = tm[2]; }
+    p.easier = fill(ADAPT[k][0], sp); p.harder = fill(ADAPT[k][1], sp);
+    phases.push(p);
+  });
+  return { sp: sp, sk: sk, phases: phases };
+}
+
+/* ---------- Render ---------- */
+function seg(id, items, cur, attr) {
+  document.getElementById(id).innerHTML = items.map(function (v) {
+    var val = Array.isArray(v) ? v[0] : v, lab = Array.isArray(v) ? v[1] : v;
+    return '<button aria-pressed="' + (String(val) === String(cur)) + '" data-' + attr + '="' + esc(val) + '">' + esc(lab) + '</button>';
+  }).join("");
+}
+function renderControls() {
+  seg("grades", GRADES, S.grade, "grade");
+  seg("units", UNITS.map(function (u) { return [u.id, u.name]; }), S.unit, "unit");
+  var u = unit(), all = u.id === "other";
+  document.getElementById("filters").hidden = !all;
+  if (all) seg("filters", GROUPS, S.group, "group");
+  var list = all ? SPORTS.filter(function (s) { return S.group === "All" || (GROUP_OF[s.id] || []).indexOf(S.group) > -1; })
+                 : u.sports.map(function (id) { return SPORTS.filter(function (s) { return s.id === id; })[0]; });
+  document.getElementById("sports").innerHTML = list.map(function (s) {
+    return '<button class="sport-btn" style="--c:' + s.accent + '" aria-pressed="' + (s.id === S.sport) + '" data-sport="' + s.id + '">' + sportIcon(s.id, 22) + '<span>' + esc(s.name) + '</span></button>';
+  }).join("");
+  var sp = sport();
+  document.getElementById("skill").innerHTML = sp.skills.map(function (k, i) { return '<option value="' + i + '"' + (i == S.skill ? " selected" : "") + '>' + esc(k[0]) + '</option>'; }).join("");
+  seg("weeks", [1,2,3,4,5,6], S.week, "week");
+  seg("mins", [20,25,30,40,45,60], S.mins, "mins");
+  seg("level", LEVELS, S.level, "level");
+}
+
+function renderSheet(flashKey) {
+  var L = build(), sp = L.sp, sk = L.sk, u = unit(), objs = objectives(), chosen = chosenObj().map(function (o) { return o.id; });
+  document.documentElement.style.setProperty("--sport", sp.accent);
+  var bar = L.phases.map(function (p, i) {
+    var op = [1, .82, .68, .82, 1, .6][i];
+    return '<div style="flex:' + p.mins + ';opacity:' + op + '" title="' + esc(p.kind) + '">' + p.mins + '</div>';
+  }).join("");
+  var uoi = UOI[S.grade + "|" + S.unit];
+  var uoiHTML = uoi ? '<div class="uoi"><span class="label">UOI link · ' + esc(uoi.theme) + '</span><p>' + esc(uoi.text) + '</p></div>' : "";
+  var wk = weekNote();
+  var objHTML = objs.map(function (o) {
+    var on = chosen.indexOf(o.id) > -1;
+    return '<li><button class="obj" aria-pressed="' + on + '" data-obj="' + o.id + '"><span class="obj-box">' + (on ? "✓" : "") + '</span><span class="obj-code">' + esc(o.code) + '</span><span class="obj-text">' + esc(o.text) + '</span></button></li>';
+  }).join("");
+  var lad = ladder().map(function (r, i) { return '<div class="rung r' + i + '"><span class="label">' + r[0] + '</span><p>' + esc(r[1]) + '</p></div>'; }).join("");
+  var source = isEY() ? "PE Objectives · 3–5 years" : (area() === "ATH" ? "PE Standards · " + YEAR_NAME[YEAR_IDX[S.grade]] + " (no tracker strand)" : S.grade + " PE Tracker · " + areaLabel(area()) + (u.area2 ? " + " + areaLabel(u.area2) : ""));
+
+  var phases = L.phases.map(function (p) {
+    var teach = p.teach ? '<div class="teach"><span class="label">' + (p.k === "warm" ? "Health & fitness talk" : "Teaching move") + '</span><div><b>' + esc(p.teach[0]) + '.</b> ' + esc(p.teach[1]) + '</div></div>' : "";
+    var cue = p.cue ? '<span class="cue">Cue: “' + esc(p.cue) + '”</span>' : "";
+    var builds = p.builds ? '<span class="tag" style="color:var(--sport-ink);border-color:var(--sport-ink)">Builds: ' + esc(p.builds) + '</span>' : "";
+    var tags = (p.tags || []).map(function (t) { return '<span class="tag">' + t + '</span>'; }).join("");
+    return '<section class="phase' + (flashKey === p.k ? " flash" : "") + '">' +
+      '<div class="clock"><div class="t">' + p.start + '′</div><div class="d">' + p.mins + ' min</div></div>' +
+      '<div class="ph-body">' +
+        '<div class="ph-top"><div><div class="ph-kind">' + p.kind + '</div><h3 class="ph-name">' + esc(p.name) + '</h3></div>' +
+        '<button class="shuffle" data-roll="' + p.k + '" aria-label="Swap ' + esc(p.kind) + '">' + shuffleIcon + 'Swap</button></div>' +
+        '<p class="ph-desc">' + esc(p.desc) + '</p>' + cue + teach +
+        '<div class="tags">' + builds + tags + '</div>' +
+        '<div class="adapt"><div><span class="k">Make it easier</span>' + esc(p.easier) + '</div><div><span class="k">Make it harder</span>' + esc(p.harder) + '</div></div>' +
+      '</div></section>';
+  }).join("");
+
+  var unitMap = u.id === "other" ? "" : '<div class="umap"><span class="label">Unit map · tap a week</span><ol>' + [1,2,3,4,5,6].map(function (w) {
+    var s = sp.skills[Math.min(w - 1, sp.skills.length - 1)][0];
+    var note = w === 1 ? "Baseline" : w >= 5 ? "Assess" : "Build";
+    return '<li><button data-week="' + w + '" aria-pressed="' + (w === S.week) + '"><b>Wk ' + w + '</b><span>' + esc(s) + '</span><em>' + note + '</em></button></li>';
+  }).join("") + '</ol></div>';
+
+  document.getElementById("sheet").innerHTML =
+    '<header class="sheet-head">' +
+      '<div class="meta-row"><span><b>' + S.grade + '</b></span><span>' + esc(u.id === "other" ? "Any sport" : u.name) + '</span><span>Week <b>' + S.week + '</b> of 4–6</span><span><b>' + S.mins + '</b> min</span><span>' + S.level + '</span></div>' +
+      '<div class="sheet-title"><span class="ico">' + sportIcon(sp.id, 30, 1.9) + '</span><div><h2>' + esc(sp.name) + ': ' + esc(sk[0]) + '</h2><p>' + esc(sp.tag) + '</p></div></div>' +
+      uoiHTML +
+      '<div class="intent">' +
+        '<div><h3 class="label">Learning intention</h3><p>Today we are working on <b>' + esc(sk[0]) + '</b>, using the cue to guide every rep.</p><span class="cue">“' + esc(sk[1]) + '”</span></div>' +
+        '<div><h3 class="label">Success criteria: I can…</h3><ul>' + sk[2].map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>' +
+      '</div>' +
+      '<div class="bar" role="img" aria-label="Minutes per phase">' + bar + '</div>' +
+    '</header>' +
+    '<section class="assess">' +
+      '<div class="assess-head"><div><span class="label">Assess this lesson</span><h3>' + esc(source) + '</h3></div><div class="wk"><b>' + wk[0] + '.</b> ' + esc(wk[1]) + '</div></div>' +
+      '<p class="note">Tap to choose the objectives you will watch for today. Two are suggested for week ' + S.week + '.</p>' +
+      '<ul class="objs">' + objHTML + '</ul>' +
+      '<div class="ladder">' + lad + '</div>' +
+      '<p class="note">Tracker scoring: 1 = initial evidence · 2 = about 50% independent · 3 = consolidated (most of the time, independently and correctly). Update weekly, at least by the last day of each month.</p>' +
+    '</section>' +
+    '<div class="phases">' + phases + '</div>' +
+    '<footer class="sheet-foot">' + unitMap + '<span class="label">Equipment</span><div class="gear">' + sp.equipment.map(function (e) { return '<span>' + esc(e) + '</span>'; }).join("") + '</div>' +
+    '<p class="note">Easier/harder ideas use STEP: change the Space, Task, Equipment or People. Tags show which of the 7 Cs each phase leans on.</p></footer>';
+}
+
+function planText() {
+  var L = build(), u = unit(), out = [], uoi = UOI[S.grade + "|" + S.unit];
+  out.push(S.grade + " PE · " + (u.id === "other" ? "Any sport" : u.name) + " · Week " + S.week + " · " + S.mins + " min");
+  out.push(L.sp.name.toUpperCase() + ": " + L.sk[0]);
+  if (uoi) out.push("UOI link (" + uoi.theme + "): " + uoi.text);
+  out.push("Learning intention: Today we are working on " + L.sk[0] + ", using the cue to guide every rep.");
+  out.push("Cue: \"" + L.sk[1] + "\"");
+  out.push("Success criteria: " + L.sk[2].join("; "));
+  out.push("Assessment objectives:");
+  chosenObj().forEach(function (o) { out.push("  [" + o.code + "] " + o.text); });
+  ladder().forEach(function (r) { out.push("  " + r[0] + ": " + r[1]); });
+  out.push("Equipment: " + L.sp.equipment.join(", "));
+  out.push("");
+  L.phases.forEach(function (p) {
+    out.push(p.start + "–" + (p.start + p.mins) + " min | " + p.kind.toUpperCase() + ": " + p.name);
+    out.push("  " + p.desc);
+    if (p.teach) out.push("  " + (p.k === "warm" ? "Health talk" : "Teaching move") + ": " + p.teach[0] + ". " + p.teach[1]);
+    out.push("  Easier: " + p.easier + "  Harder: " + p.harder);
+  });
+  return out.join("\n");
+}
+
+function toast(msg) {
+  var r = document.getElementById("toastRoot");
+  r.innerHTML = '<div class="toast" role="status">' + esc(msg) + '</div>';
+  clearTimeout(toast.t); toast.t = setTimeout(function () { r.innerHTML = ""; }, 2000);
+}
+function refresh(flash) { renderControls(); renderSheet(flash); save(); }
+function setSport(id) { S.sport = id; S.skill = Math.min(S.week - 1, sport().skills.length - 1); rollAll(); }
+
+document.addEventListener("click", function (e) {
+  var b = e.target.closest("button"); if (!b) return;
+  var d = b.dataset;
+  if (d.grade) { S.grade = d.grade; S.level = defaultLevel(S.grade); S.mins = defaultMins(S.grade); S.obj = null; refresh(); }
+  else if (d.unit) { S.unit = d.unit; var u = unit(); if (u.sports) setSport(u.sports[0]); S.obj = null; refresh(); }
+  else if (d.group) { S.group = d.group; refresh(); }
+  else if (d.sport) { setSport(d.sport); if (unit().id === "other") S.obj = null; refresh(); }
+  else if (d.week) { S.week = +d.week; S.skill = Math.min(S.week - 1, sport().skills.length - 1); S.obj = null; refresh(); }
+  else if (d.mins) { S.mins = +d.mins; refresh(); }
+  else if (d.level) { S.level = d.level; refresh(); }
+  else if (d.obj) {
+    var cur = chosenObj().map(function (o) { return o.id; }), i = cur.indexOf(d.obj);
+    if (i > -1) { if (cur.length > 1) cur.splice(i, 1); } else cur.push(d.obj);
+    S.obj = cur; refresh();
+  }
+  else if (d.roll) { roll(d.roll); refresh(d.roll); }
+  else if (b.id === "regen") { rollAll(); refresh(); toast("New lesson ready"); }
+  else if (b.id === "copy") {
+    var txt = planText();
+    try {
+      navigator.clipboard.writeText(txt).then(function () { document.getElementById("copyFallback").hidden = true; toast("Lesson copied"); }, function () { showFallback(txt); });
+    } catch (err) { showFallback(txt); }
+  }
+});
+function showFallback(txt) {
+  var fb = document.getElementById("copyFallback"), ta = document.getElementById("copyText");
+  ta.value = txt; fb.hidden = false; ta.focus(); ta.select();
+}
+document.getElementById("skill").addEventListener("change", function (e) { S.skill = +e.target.value; refresh(); });
+
+refresh();
+</script>
+
+</body>
+</html>
