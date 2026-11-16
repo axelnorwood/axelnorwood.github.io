@@ -41,7 +41,6 @@ button{font-family:inherit}
 .ra-header .desc{font-size:.98rem;color:var(--ink-soft);max-width:440px;margin:.7rem auto 0}
 
 /* top action row */
-.top-actions{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:1.15rem auto 0}
 .pill-btn{display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;font-weight:800;padding:.55rem .95rem;border-radius:9999px;
 border:1.5px solid var(--ink);background:var(--ink);color:var(--paper-2);cursor:pointer;transition:transform .12s,box-shadow .12s;white-space:nowrap}
 .pill-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
@@ -77,35 +76,57 @@ border:1.5px solid var(--ink);background:var(--ink);color:var(--paper-2);cursor:
 .finger .f-d{font-size:.66rem;color:var(--ink-faint);margin-top:.3rem;line-height:1.3}
 .guide-note{margin-top:.75rem;font-style:italic;color:var(--ink-faint)}
 
-/* search */
-.search-wrap{position:relative;margin:1.25rem auto 0}
-.search-wrap .s-ico{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--ink-faint);pointer-events:none}
-.search-input{width:100%;font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--ink);
-padding:.85rem 2.7rem;border:1.5px solid var(--line);border-radius:9999px;background:var(--paper-2);box-shadow:var(--shadow);outline:none;transition:border-color .15s}
+/* sticky nav: search + list on top, then grade / type / mood */
+.nav-anchor{height:0;margin-top:1.25rem}
+.nav{position:sticky;top:0;z-index:40;margin:0 -1rem;padding:.6rem 1rem;
+background:rgba(251,247,239,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem .6rem;align-items:center;
+grid-template-areas:"search search list" "grades grades type" "moods moods moods"}
+.search-wrap{grid-area:search;position:relative;min-width:0}
+.search-wrap .s-ico{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--ink-faint);pointer-events:none;display:flex}
+.search-input{width:100%;height:44px;font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--ink);
+padding:0 2.6rem;border:1.5px solid var(--line);border-radius:9999px;background:var(--paper-2);outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
 .search-input::placeholder{color:var(--ink-faint);font-weight:500}
 .search-input:focus{border-color:var(--core)}
-.search-clear{position:absolute;right:.65rem;top:50%;transform:translateY(-50%);background:var(--line);border:none;
-width:26px;height:26px;border-radius:50%;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.search-clear{position:absolute;right:.55rem;top:50%;transform:translateY(-50%);background:var(--line);border:none;
+width:28px;height:28px;border-radius:50%;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .search-clear:hover{background:var(--ink-faint);color:#fff}
-
-/* filter bar */
-.filter-bar{position:sticky;top:0;z-index:40;margin:1rem -1rem 0;padding:.7rem 1rem;
-background:rgba(251,247,239,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.filter-bar.dim{opacity:.5;pointer-events:none}
-.filter-bar-inner{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:.5rem}
-.frow{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
-.flabel{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);margin-right:.1rem}
-.grade-btn{min-width:40px;height:40px;border-radius:.6rem;border:1.5px solid var(--line);font-size:1rem;font-weight:800;cursor:pointer;
+.list-btn{grid-area:list;height:44px;display:inline-flex;align-items:center;gap:.4rem;padding:0 .95rem;border-radius:9999px;
+border:1.5px solid var(--line);background:var(--paper-2);color:var(--ink);font-size:.85rem;font-weight:800;cursor:pointer;white-space:nowrap;transition:border-color .14s}
+.list-btn:hover{border-color:var(--ink)}
+.list-btn svg{color:var(--accent);flex-shrink:0}
+.list-btn .badge{background:var(--accent);color:#fff;border-radius:9999px;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;padding:0 .35rem}
+.nav-grades{grid-area:grades;display:flex;align-items:center;gap:.35rem;min-width:0}
+.flabel{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);margin-right:.15rem}
+.grade-btn{flex:0 0 auto;min-width:42px;height:40px;border-radius:.6rem;border:1.5px solid var(--line);font-size:1rem;font-weight:800;cursor:pointer;
 background:var(--paper-2);color:var(--ink-soft);transition:all .14s}
 .grade-btn:hover{border-color:var(--ink-faint)}
-.grade-btn.active{background:var(--ink);color:var(--paper-2);border-color:var(--ink);transform:translateY(-1px)}
+.grade-btn.active{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
 .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:.6rem;overflow:hidden;background:var(--paper-2)}
-.seg button{padding:.5rem 1rem;font-size:.88rem;font-weight:800;border:none;cursor:pointer;background:transparent;color:var(--ink-soft);transition:all .14s}
+.seg.nav-type{grid-area:type}
+.seg button{padding:.5rem 1rem;font-size:.88rem;font-weight:800;border:none;cursor:pointer;background:transparent;color:var(--ink-soft);transition:all .14s;white-space:nowrap}
 .seg button.active{background:var(--core);color:#fff}
-.genre-btn{padding:.32rem .7rem;font-size:.78rem;font-weight:700;border:1.5px solid var(--line);border-radius:9999px;background:var(--paper-2);color:var(--ink-soft);cursor:pointer;transition:all .14s}
+.nav-moods{grid-area:moods;display:flex;align-items:center;gap:.4rem;min-width:0;min-height:34px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+margin:0 -1rem;padding:2px 1rem;
+-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 1rem,#000 calc(100% - 1.75rem),transparent);
+mask-image:linear-gradient(90deg,transparent 0,#000 1rem,#000 calc(100% - 1.75rem),transparent)}
+.nav-moods::-webkit-scrollbar{display:none}
+.genre-btn{flex:0 0 auto;white-space:nowrap;padding:.36rem .75rem;font-size:.78rem;font-weight:700;border:1.5px solid var(--line);border-radius:9999px;background:var(--paper-2);color:var(--ink-soft);cursor:pointer;transition:all .14s}
 .genre-btn:hover{border-color:var(--ink-faint)}
 .genre-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.clear-btn{font-size:.76rem;font-weight:800;color:var(--stretch);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.search-note{font-size:.78rem;font-weight:700;color:var(--ink-faint);white-space:nowrap}
+.nav .muted{opacity:.55}
+button:focus-visible,[role=button]:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+@media(max-width:520px){
+.nav-inner{grid-template-areas:"search search list" "grades grades grades" "type moods moods"}
+.nav-grades .grade-btn{flex:1 1 0;min-width:0}
+.list-btn{padding:0 .8rem}
+.list-btn .lb-label{display:none}
+.seg button{padding:.45rem .6rem;font-size:.78rem}
+.nav-moods{margin:0 -1rem 0 0;padding:2px 1.5rem 2px 0;
+-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 1.75rem),transparent);
+mask-image:linear-gradient(90deg,#000 calc(100% - 1.75rem),transparent)}
+}
 
 /* list */
 .count-row{display:flex;align-items:baseline;justify-content:space-between;margin:1.25rem 0 .85rem;flex-wrap:wrap;gap:.5rem}
@@ -117,7 +138,7 @@ background:var(--paper-2);color:var(--ink-soft);transition:all .14s}
 .empty .big{font-family:var(--serif);font-size:1.3rem;color:var(--ink-soft);margin-bottom:.3rem}
 
 .book-list{display:flex;flex-direction:column;gap:.6rem}
-.book-card{border:1px solid var(--line);border-radius:.9rem;background:var(--paper-2);box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .15s,transform .15s,border-color .15s;scroll-margin-top:140px}
+.book-card{border:1px solid var(--line);border-radius:.9rem;background:var(--paper-2);box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .15s,transform .15s,border-color .15s;scroll-margin-top:185px}
 .book-card:hover{box-shadow:var(--shadow-lift);transform:translateY(-1px)}
 .book-card.is-read{border-color:var(--core)}
 .book-card.flash{animation:flash 1.1s ease}
@@ -190,7 +211,7 @@ background:var(--paper-2);color:var(--ink-soft);transition:all .14s}
 .reset-link{font-size:.74rem;color:var(--stretch);background:none;border:none;cursor:pointer;text-decoration:underline;margin-top:1.75rem;display:block}
 
 /* toast */
-.toast{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper-2);
+.toast{position:fixed;bottom:4.6rem;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper-2);
 font-size:.88rem;font-weight:800;padding:.7rem 1.15rem;border-radius:9999px;box-shadow:var(--shadow-lift);z-index:130;
 display:flex;align-items:center;gap:.5rem;max-width:90vw;animation:toastIn .25s ease}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -202,6 +223,39 @@ display:flex;align-items:center;gap:.5rem;max-width:90vw;animation:toastIn .25s 
 .finger .f-d{display:none}
 .tier-chip span.t{display:none}
 }
+
+/* list tools, search groups, pager */
+.count-actions{display:flex;align-items:center;gap:.85rem}
+.pill-btn.sm{font-size:.78rem;padding:.4rem .8rem}
+.group-head{font-family:var(--serif);font-size:1.15rem;font-weight:700;color:var(--ink);margin:1rem 0 .1rem;display:flex;align-items:baseline;gap:.5rem}
+.group-head:first-child{margin-top:0}
+.group-head .gc{font-family:var(--sans);font-size:.76rem;font-weight:800;color:var(--ink-faint)}
+.empty .cta{margin-top:.9rem}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:1.5rem;flex-wrap:wrap}
+.pager .cta{background:var(--paper-2)}
+.pager .gap{flex:1}
+
+/* floating back + top */
+.back-chip{position:fixed;left:max(1rem,calc(50vw - 404px));bottom:1.1rem;z-index:60;display:inline-flex;align-items:center;gap:.45rem;max-width:calc(100vw - 5.75rem);
+padding:.7rem 1.05rem;border-radius:9999px;border:none;background:var(--ink);color:var(--paper-2);font-size:.85rem;font-weight:700;cursor:pointer;box-shadow:var(--shadow-lift);animation:chipIn .22s ease}
+.back-chip svg{flex-shrink:0}
+.back-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.back-chip b{font-weight:800}
+@keyframes chipIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.top-fab{position:fixed;right:max(1rem,calc(50vw - 404px));bottom:1.1rem;z-index:60;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);
+background:var(--paper-2);color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+.top-fab:hover{border-color:var(--ink-faint);color:var(--ink)}
+
+/* list sheet additions */
+.sheet-actions{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding:.8rem 1.25rem;border-bottom:1px solid var(--line-soft)}
+.sheet-hint{font-size:.78rem;color:var(--ink-faint);font-weight:700}
+.shelf-item .si-spine.hook{background:var(--hook)}.shelf-item .si-spine.core{background:var(--core)}.shelf-item .si-spine.stretch{background:var(--stretch)}
+button.si-main{display:flex;align-items:center;gap:.5rem;text-align:left;background:none;border:none;cursor:pointer;padding:.15rem .25rem;border-radius:.5rem;color:inherit}
+button.si-main:hover .si-title{color:var(--accent)}
+.si-main .si-text{flex:1;min-width:0}
+.si-main .si-go{color:var(--ink-faint);display:flex;flex-shrink:0}
+.toast{width:max-content}
+.list-btn{justify-content:center}
 </style>
 </head>
 <body>
@@ -704,11 +758,235 @@ const I = {
     d: "M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"
   }))
 };
+const h = React.createElement;
+const strokeIcon = (d, s) => () => h("svg", {
+  width: s || 16,
+  height: s || 16,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2.3",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": "true"
+}, h("path", { d }));
+Object.assign(I, {
+  download: strokeIcon("M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"),
+  back: strokeIcon("M19 12H5m0 0 6-6m-6 6 6 6"),
+  fwd: strokeIcon("M5 12h14m0 0-6-6m6 6-6 6"),
+  up: strokeIcon("M12 19V5m0 0-6 6m6-6 6 6", 18),
+  go: strokeIcon("m9 6 6 6-6 6")
+});
+const TYPE_LABEL = { fiction: "Stories", nonfiction: "True Stuff" };
+const GRADES = [1, 2, 3, 4, 5];
+
+/* ---------- PDF writer (no libraries): builds a real PDF file for the saved list ---------- */
+const PDF_W = {
+  F1: "278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584,350,556,350,222,556,333,1000,556,556,333,1000,667,333,1000,350,611,350,350,222,222,333,333,350,556,1000,333,1000,500,333,944,350,500,667,278,333,556,556,556,556,260,556,333,737,370,556,584,333,737,333,400,584,333,333,333,556,537,278,333,333,365,556,834,834,834,611,667,667,667,667,667,667,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,500,556,556,556,556,278,278,278,278,556,556,556,556,556,556,556,584,611,556,556,556,556,500,556,500".split(",").map(Number),
+  F2: "278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584,350,556,350,278,556,500,1000,556,556,333,1000,667,333,1000,350,611,350,350,278,278,500,500,350,556,1000,333,1000,556,333,944,350,500,667,278,333,556,556,556,556,280,556,333,737,370,556,584,333,737,333,400,584,333,333,333,611,556,278,333,333,365,556,834,834,834,611,722,722,722,722,722,722,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,556,556,556,556,556,278,278,278,278,611,611,611,611,611,611,611,584,611,611,611,611,611,556,611,556".split(",").map(Number),
+  F3: "250,333,555,500,500,1000,833,278,333,333,500,570,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,570,570,570,500,930,722,667,722,722,667,611,778,778,389,500,778,667,944,722,778,611,778,722,556,667,722,722,1000,722,722,667,333,278,333,581,500,333,500,556,444,556,444,333,500,556,278,333,556,278,833,556,500,556,556,444,389,333,556,500,722,500,500,444,394,220,394,520,350,500,350,333,500,500,1000,500,500,333,1000,556,333,1000,350,667,350,350,333,333,500,500,350,500,1000,333,1000,389,333,722,350,444,722,250,333,500,500,500,500,220,500,333,747,300,500,570,333,747,333,400,570,300,300,333,556,540,250,333,300,330,500,750,750,750,500,722,722,722,722,722,722,1000,722,667,667,667,667,389,389,389,389,722,722,778,778,778,778,778,570,778,722,722,722,722,722,611,556,500,500,500,500,500,500,722,444,444,444,444,444,278,278,278,278,500,556,500,500,500,500,500,570,500,556,556,556,556,500,556,500".split(",").map(Number)
+};
+const CP1252 = { 8364: 128, 8218: 130, 402: 131, 8222: 132, 8230: 133, 8224: 134, 8225: 135, 710: 136, 8240: 137, 352: 138, 8249: 139, 338: 140, 381: 142, 8216: 145, 8217: 146, 8220: 147, 8221: 148, 8226: 149, 8211: 150, 8212: 151, 732: 152, 8482: 153, 353: 154, 8250: 155, 339: 156, 382: 158, 376: 159 };
+const pdfCode = ch => {
+  const c = ch.charCodeAt(0);
+  if (c >= 32 && c < 127 || c >= 160 && c <= 255) return c;
+  return CP1252[c] || 63;
+};
+const pdfWidth = (str, font, size) => {
+  let w = 0;
+  for (const ch of str) w += PDF_W[font][pdfCode(ch) - 32] || 500;
+  return w * size / 1000;
+};
+const pdfStr = str => {
+  let o = "(";
+  for (const ch of str) {
+    const c = pdfCode(ch);
+    if (c === 40 || c === 41 || c === 92) o += "\\" + String.fromCharCode(c);else if (c < 127) o += String.fromCharCode(c);else o += "\\" + c.toString(8);
+  }
+  return o + ")";
+};
+const pdfWrap = (text, font, size, width, firstIndent) => {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let cur = "";
+  let avail = width - (firstIndent || 0);
+  words.forEach(w => {
+    const t = cur ? cur + " " + w : w;
+    if (!cur || pdfWidth(t, font, size) <= avail) cur = t;else {
+      lines.push(cur);
+      cur = w;
+      avail = width;
+    }
+  });
+  if (cur) lines.push(cur);
+  return lines;
+};
+function buildListPdf(books, opts) {
+  opts = opts || {};
+  const PW = opts.letter ? 612 : 595.28;
+  const PH = opts.letter ? 792 : 841.89;
+  const M = 54;
+  const R = PW - M;
+  const TX = M + 24;
+  const TW = R - TX;
+  const FLOOR = 62;
+  const INK = "0.165 0.133 0.094",
+    SOFT = "0.361 0.318 0.259",
+    FAINT = "0.541 0.490 0.416",
+    RULE = "0.910 0.875 0.812";
+  const DOT = { hook: "0.941 0.659 0.094", core: "0.184 0.561 0.420", stretch: "0.761 0.337 0.231" };
+  const DARK = { hook: "0.478 0.329 0.063", core: "0.114 0.365 0.267", stretch: "0.541 0.208 0.133" };
+  const n = v => String(Math.round(v * 100) / 100);
+  const pages = [];
+  let ops, y;
+  const text = (s, x, yy, font, size, color) => ops.push(`BT /${font} ${size} Tf ${color} rg ${n(x)} ${n(yy)} Td ${pdfStr(s)} Tj ET`);
+  const rule = yy => ops.push(`${RULE} RG 0.8 w ${n(M)} ${n(yy)} m ${n(R)} ${n(yy)} l S`);
+  const dot = (cx, cy, r, color) => {
+    const k = r * 0.5523;
+    ops.push(`${color} rg ${n(cx + r)} ${n(cy)} m ${n(cx + r)} ${n(cy + k)} ${n(cx + k)} ${n(cy + r)} ${n(cx)} ${n(cy + r)} c ` + `${n(cx - k)} ${n(cy + r)} ${n(cx - r)} ${n(cy + k)} ${n(cx - r)} ${n(cy)} c ${n(cx - r)} ${n(cy - k)} ${n(cx - k)} ${n(cy - r)} ${n(cx)} ${n(cy - r)} c ` + `${n(cx + k)} ${n(cy - r)} ${n(cx + r)} ${n(cy - k)} ${n(cx + r)} ${n(cy)} c f`);
+  };
+  const newPage = () => {
+    ops = [];
+    pages.push(ops);
+    y = PH - M;
+  };
+
+  // page 1 heading
+  newPage();
+  y -= 22;
+  text("My Want to Read List", M, y, "F3", 26, INK);
+  y -= 19;
+  text(`${books.length} series to look for  ·  ${opts.date || ""}  ·  Tick the box when you've read one`, M, y, "F1", 9.5, FAINT);
+  y -= 15;
+  let lx = M;
+  ["hook", "core", "stretch"].forEach(t => {
+    dot(lx + 3, y + 3, 3, DOT[t]);
+    const label = TIER_INFO[t].label;
+    text(label, lx + 10, y, "F2", 8.5, DARK[t]);
+    lx += 10 + pdfWidth(label, "F2", 8.5) + 16;
+  });
+  y -= 10;
+  rule(y);
+
+  // entries, grouped by grade
+  GRADES.forEach(g => {
+    const group = books.filter(b => b.grade === g);
+    if (!group.length) return;
+    group.forEach((b, i) => {
+      const titleLines = pdfWrap(b.title, "F3", 13, TW);
+      const whyLines = pdfWrap(b.why, "F1", 10, TW);
+      const headsLabel = "Heads up: ";
+      const headsIndent = pdfWidth(headsLabel, "F2", 9);
+      const headsLines = pdfWrap(b.challenges, "F1", 9, TW, headsIndent);
+      const entryH = titleLines.length * 15 + 13 + whyLines.length * 13 + 2 + headsLines.length * 12 + 10;
+      const headH = i === 0 ? 30 : 0;
+      if (y - headH - entryH < FLOOR) newPage();
+      if (i === 0) {
+        y -= 24;
+        text(`GRADE ${g}`, M, y, "F2", 9.5, FAINT);
+        y -= 6;
+      }
+      // checkbox + title
+      y -= 15;
+      ops.push(`${FAINT} RG 0.9 w ${n(M)} ${n(y - 1.5)} 11 11 re S`);
+      titleLines.forEach((ln, j) => {
+        if (j) y -= 15;
+        text(ln, TX, y, "F3", 13, INK);
+      });
+      // tier, type, mood, level
+      y -= 13;
+      dot(TX + 3, y + 2.8, 2.8, DOT[b.tier]);
+      const tl = tierLabel(b.tier);
+      text(tl, TX + 10, y, "F2", 8.5, DARK[b.tier]);
+      text(`  ·  ${TYPE_LABEL[b.type]}  ·  ${b.genre}  ·  ${b.level}`, TX + 10 + pdfWidth(tl, "F2", 8.5), y, "F1", 8.5, FAINT);
+      // why
+      y -= 2;
+      whyLines.forEach(ln => {
+        y -= 13;
+        text(ln, TX, y, "F1", 10, SOFT);
+      });
+      // heads up
+      headsLines.forEach((ln, j) => {
+        y -= 12;
+        if (j === 0) {
+          text(headsLabel, TX, y, "F2", 9, FAINT);
+          text(ln, TX + headsIndent, y, "F1", 9, FAINT);
+        } else text(ln, TX, y, "F1", 9, FAINT);
+      });
+      y -= 10;
+    });
+  });
+
+  // page footers
+  pages.forEach((p, i) => {
+    ops = p;
+    text("The Reading Atlas", M, 36, "F1", 8, FAINT);
+    const pn = `Page ${i + 1} of ${pages.length}`;
+    text(pn, R - pdfWidth(pn, "F1", 8), 36, "F1", 8, FAINT);
+  });
+
+  // file assembly
+  const objs = ["<< /Type /Catalog /Pages 2 0 R >>", null];
+  const add = s => objs.push(s);
+  const font = name => add(`<< /Type /Font /Subtype /Type1 /BaseFont /${name} /Encoding /WinAnsiEncoding >>`);
+  const f1 = font("Helvetica"),
+    f2 = font("Helvetica-Bold"),
+    f3 = font("Times-Bold");
+  const kids = [];
+  pages.forEach(p => {
+    const stream = p.join("\n");
+    const c = add(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
+    const pg = add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R /F3 ${f3} 0 R >> >> /Contents ${c} 0 R >>`);
+    kids.push(pg + " 0 R");
+  });
+  objs[1] = `<< /Type /Pages /Kids [${kids.join(" ")}] /Count ${kids.length} >>`;
+  const info = add(`<< /Title ${pdfStr("My Want to Read List")} /Creator ${pdfStr("The Reading Atlas")} >>`);
+  let out = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n";
+  const offs = [];
+  objs.forEach((o, i) => {
+    offs.push(out.length);
+    out += `${i + 1} 0 obj\n${o}\nendobj\n`;
+  });
+  const xref = out.length;
+  out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + offs.map(o => String(o).padStart(10, "0") + " 00000 n \n").join("");
+  out += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R /Info ${info} 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  const bytes = new Uint8Array(out.length);
+  for (let i = 0; i < out.length; i++) bytes[i] = out.charCodeAt(i) & 255;
+  return bytes;
+}
+
+/* ---------- where you were last time: link (#g=3&t=fiction&m=Humor) first, then this device ---------- */
+const VIEW_KEY = "atlas:view";
+function readInitialView() {
+  const v = { grade: 3, type: "fiction", genres: [], query: "" };
+  try {
+    const s = JSON.parse(localStorage.getItem(VIEW_KEY) || "null");
+    if (s) {
+      if (GRADES.includes(s.g)) v.grade = s.g;
+      if (TYPE_LABEL[s.t]) v.type = s.t;
+    }
+  } catch (e) {}
+  try {
+    const p = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const g = parseInt(p.get("g"), 10);
+    if (GRADES.includes(g)) v.grade = g;
+    const t = p.get("t");
+    if (TYPE_LABEL[t]) v.type = t;
+    const m = p.get("m");
+    if (m) v.genres = m.split("|").filter(Boolean);
+    const q = p.get("q");
+    if (q) v.query = q;
+  } catch (e) {}
+  const ok = new Set(BOOKS.filter(b => b.grade === v.grade && b.type === v.type).map(b => b.genre));
+  v.genres = v.genres.filter(x => ok.has(x));
+  return v;
+}
 function ReadingAtlas() {
-  const [grade, setGrade] = useState(3);
-  const [type, setType] = useState("fiction");
-  const [selectedGenres, setSelectedGenres] = useState([]);
-  const [query, setQuery] = useState("");
+  const init = useMemo(readInitialView, []);
+  const [grade, setGrade] = useState(init.grade);
+  const [type, setType] = useState(init.type);
+  const [selectedGenres, setSelectedGenres] = useState(init.genres);
+  const [query, setQuery] = useState(init.query);
   const [expanded, setExpanded] = useState(null);
   const [bookmarks, setBookmarks] = useState(new Set());
   const [showGuide, setShowGuide] = useState(false);
@@ -716,7 +994,12 @@ function ReadingAtlas() {
   const [sortStretch, setSortStretch] = useState(false);
   const [toast, setToast] = useState(null);
   const [flashKey, setFlashKey] = useState(null);
+  const [trail, setTrail] = useState([]); // places to go "Back" to after a jump
+  const [showTop, setShowTop] = useState(false);
   const cardRefs = useRef({});
+  const searchRef = useRef(null);
+  const navTopRef = useRef(null);
+  const closeRef = useRef(null);
   const keyOf = b => `${b.grade}-${b.type}-${b.title}`;
   const bookByKey = useMemo(() => {
     const m = {};
@@ -745,6 +1028,21 @@ function ReadingAtlas() {
       localStorage.setItem(skey, JSON.stringify(Array.from(set)));
     } catch (e) {}
   }, []);
+
+  // remember the current view on this device and in the address bar (so a link opens the same view)
+  useEffect(() => {
+    try {
+      localStorage.setItem(VIEW_KEY, JSON.stringify({ g: grade, t: type }));
+    } catch (e) {}
+    try {
+      const p = new URLSearchParams();
+      p.set("g", grade);
+      p.set("t", type);
+      if (selectedGenres.length) p.set("m", selectedGenres.join("|"));
+      if (query.trim()) p.set("q", query.trim());
+      window.history.replaceState(null, "", "#" + p.toString());
+    } catch (e) {}
+  }, [grade, type, selectedGenres, query]);
   const fireToast = msg => setToast({
     msg,
     id: Date.now()
@@ -756,18 +1054,16 @@ function ReadingAtlas() {
   }, [toast]);
   const toggleWant = b => {
     const k = keyOf(b);
-    setBookmarks(prev => {
-      const n = new Set(prev);
-      if (n.has(k)) {
-        n.delete(k);
-        fireToast("Removed from Want to Read");
-      } else {
-        n.add(k);
-        fireToast("Added to Want to Read!");
-      }
-      persist("atlas:wanttoread", n);
-      return n;
-    });
+    const n = new Set(bookmarks);
+    if (n.has(k)) {
+      n.delete(k);
+      fireToast("Removed from Want to Read");
+    } else {
+      n.add(k);
+      fireToast("Added to Want to Read!");
+    }
+    persist("atlas:wanttoread", n);
+    setBookmarks(n);
   };
   const norm = s => s.toLowerCase();
   const q = norm(query.trim());
@@ -796,7 +1092,29 @@ function ReadingAtlas() {
     const set = new Set(BOOKS.filter(b => b.grade === grade && b.type === type).map(b => b.genre));
     return Array.from(set);
   }, [grade, type]);
-  const toggleArr = val => setSelectedGenres(cur => cur.includes(val) ? cur.filter(x => x !== val) : [...cur, val]);
+
+  // ---------- moving around ----------
+  // If the list has scrolled under the sticky bar, bring its start back into view.
+  const toListTop = () => {
+    const el = navTopRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top;
+    if (top < 0) window.scrollTo({ top: window.scrollY + top, behavior: "smooth" });
+  };
+  // Grade / type buttons: always work, even mid-search (they end the search).
+  const browse = (g, t) => {
+    setQuery("");
+    if (g != null) setGrade(g);
+    if (t != null) setType(t);
+    setSelectedGenres([]);
+    setExpanded(null);
+    setTrail([]);
+    toListTop();
+  };
+  const toggleMood = val => {
+    setSelectedGenres(cur => cur.includes(val) ? cur.filter(x => x !== val) : [...cur, val]);
+    toListTop();
+  };
   const flash = k => {
     setExpanded(k);
     setTimeout(() => {
@@ -815,17 +1133,47 @@ function ReadingAtlas() {
     flash(keyOf(pick));
     fireToast(`How about: ${pick.title}`);
   };
-
-  // jump from a "you might also like" tag
-  const jumpToTitle = title => {
-    const target = bookByTitle[title];
-    if (!target) return; // not in our atlas — leave as plain text
+  const hereLabel = () => {
+    if (showShelf) return "your list";
+    if (expanded && bookByKey[expanded]) return bookByKey[expanded].title;
+    if (searching) return "search results";
+    return `Grade ${grade} ${TYPE_LABEL[type]}`;
+  };
+  // Jump to any book (from an "if you like this" tag or from the saved list), remembering where we came from.
+  const jumpToBook = target => {
+    const here = {
+      grade,
+      type,
+      genres: selectedGenres,
+      query,
+      expanded,
+      shelf: showShelf,
+      y: window.scrollY,
+      label: hereLabel()
+    };
+    setTrail(t => [...t.slice(-9), here]);
     setQuery("");
     setGrade(target.grade);
     setType(target.type);
     setSelectedGenres([]);
     setShowShelf(false);
     flash(keyOf(target));
+  };
+  const jumpToTitle = title => {
+    const target = bookByTitle[title];
+    if (target) jumpToBook(target); // titles not in the atlas stay plain text
+  };
+  const goBack = () => {
+    const s = trail[trail.length - 1];
+    if (!s) return;
+    setTrail(trail.slice(0, -1));
+    setGrade(s.grade);
+    setType(s.type);
+    setSelectedGenres(s.genres);
+    setQuery(s.query);
+    setExpanded(s.expanded);
+    setShowShelf(!!s.shelf);
+    setTimeout(() => window.scrollTo(0, s.y), 60);
   };
   const clearAllData = () => {
     setBookmarks(new Set());
@@ -834,40 +1182,99 @@ function ReadingAtlas() {
     setShowShelf(false);
   };
   const wantList = useMemo(() => Array.from(bookmarks).map(k => bookByKey[k]).filter(Boolean), [bookmarks, bookByKey]);
+  const downloadPdf = () => {
+    if (!wantList.length) return;
+    try {
+      const bytes = buildListPdf(wantList, {
+        letter: /-(US|CA|MX|PH)$/i.test(navigator.language || ""),
+        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+      });
+      const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "my-reading-list.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      fireToast("Saved your list as a PDF");
+    } catch (e) {
+      fireToast("Couldn't make the PDF — please try again");
+    }
+  };
+
+  // keyboard: "/" jumps to search, Esc closes the list or clears the search
+  useEffect(() => {
+    const onKey = e => {
+      const tag = (e.target && e.target.tagName || "").toLowerCase();
+      const typing = tag === "input" || tag === "textarea";
+      if (e.key === "Escape") {
+        if (showShelf) setShowShelf(false);else if (query) setQuery("");else if (typing) e.target.blur();
+        return;
+      }
+      if (e.key === "/" && !typing && !showShelf && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        if (searchRef.current) searchRef.current.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showShelf, query]);
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 700);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  // while the list is open: keep the page behind it still, and hand focus back afterwards
+  useEffect(() => {
+    if (!showShelf) return;
+    const prev = document.activeElement;
+    const ov = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    if (closeRef.current) closeRef.current.focus();
+    return () => {
+      document.body.style.overflow = ov;
+      try {
+        if (prev && prev.focus) prev.focus({ preventScroll: true });
+      } catch (e) {}
+    };
+  }, [showShelf]);
   const renderCard = b => {
     const k = keyOf(b);
     const open = expanded === k;
     const want = bookmarks.has(k);
-    return /*#__PURE__*/React.createElement("div", {
+    return h("div", {
       key: k,
       ref: el => cardRefs.current[k] = el,
       className: `book-card ${flashKey === k ? 'flash' : ''}`
-    }, /*#__PURE__*/React.createElement("button", {
+    }, h("button", {
       className: "book-header",
       "aria-expanded": open,
       onClick: () => setExpanded(open ? null : k)
-    }, /*#__PURE__*/React.createElement("span", {
+    }, h("span", {
       className: `spine ${b.tier}`
-    }), /*#__PURE__*/React.createElement("span", {
+    }), h("span", {
       className: "bh-main"
-    }, /*#__PURE__*/React.createElement("span", {
+    }, h("span", {
       className: "book-title"
-    }, b.title), /*#__PURE__*/React.createElement("span", {
+    }, b.title), h("span", {
       className: "book-meta"
-    }, /*#__PURE__*/React.createElement("span", {
+    }, h("span", {
       className: "book-genre"
-    }, b.genre), /*#__PURE__*/React.createElement("span", {
+    }, b.genre), h("span", {
       className: `book-tier ${b.tier}`
-    }, /*#__PURE__*/React.createElement("span", {
+    }, h("span", {
       className: "d"
-    }), tierLabel(b.tier)), searching && /*#__PURE__*/React.createElement("span", {
+    }), tierLabel(b.tier)), searching && h("span", {
       className: "from-tag"
-    }, "Grade ", b.grade, " \xB7 ", b.type === "fiction" ? "Fiction" : "Non-fiction"))), /*#__PURE__*/React.createElement("span", {
+    }, TYPE_LABEL[b.type]))), h("span", {
       className: "mini-actions"
-    }, /*#__PURE__*/React.createElement("span", {
+    }, h("span", {
       className: `icon-btn ${want ? 'on-save' : ''}`,
       role: "button",
       tabIndex: 0,
+      "aria-pressed": want,
+      "aria-label": want ? `Remove ${b.title} from Want to Read` : `Add ${b.title} to Want to Read`,
       title: want ? "In your Want to Read list" : "Add to Want to Read",
       onClick: e => {
         e.stopPropagation();
@@ -880,250 +1287,309 @@ function ReadingAtlas() {
           toggleWant(b);
         }
       }
-    }, /*#__PURE__*/React.createElement(I.bookmark, {
+    }, h(I.bookmark, {
       f: want
-    })), /*#__PURE__*/React.createElement("span", {
+    })), h("span", {
       className: `chev ${open ? 'open' : ''}`
-    }, /*#__PURE__*/React.createElement(I.chev, null)))), open && /*#__PURE__*/React.createElement("div", {
+    }, h(I.chev, null)))), open && h("div", {
       className: "book-detail"
-    }, /*#__PURE__*/React.createElement("div", {
+    }, h("div", {
       className: "book-detail-inner"
-    }, /*#__PURE__*/React.createElement("div", {
+    }, h("div", {
       className: "dlabel good"
-    }, /*#__PURE__*/React.createElement(I.good, null), " Why you'll like it"), /*#__PURE__*/React.createElement("div", {
+    }, h(I.good, null), " Why you'll like it"), h("div", {
       className: "dtext"
-    }, b.why), /*#__PURE__*/React.createElement("div", {
+    }, b.why), h("div", {
       className: "dlabel heads"
-    }, /*#__PURE__*/React.createElement(I.heads, null), " Heads up"), /*#__PURE__*/React.createElement("div", {
+    }, h(I.heads, null), " Heads up"), h("div", {
       className: "dtext"
-    }, b.challenges), /*#__PURE__*/React.createElement("div", {
+    }, b.challenges), h("div", {
       className: "dlabel try"
-    }, /*#__PURE__*/React.createElement(I.spark, null), " If you like this, try"), /*#__PURE__*/React.createElement("div", {
+    }, h(I.spark, null), " If you like this, try"), h("div", {
       className: "similar"
-    }, b.similar.map(s => {
-      const known = !!bookByTitle[s];
-      return /*#__PURE__*/React.createElement("span", {
-        key: s,
-        className: `stag ${known ? '' : 'dead'}`,
-        onClick: () => known && jumpToTitle(s),
-        title: known ? `Go to ${s}` : s
-      }, s, known && /*#__PURE__*/React.createElement(I.chev, null));
-    })), /*#__PURE__*/React.createElement("div", {
+    }, b.similar.map(s => bookByTitle[s] ? h("button", {
+      key: s,
+      className: "stag",
+      onClick: () => jumpToTitle(s),
+      title: `Go to ${s}`
+    }, s, h(I.go, null)) : h("span", {
+      key: s,
+      className: "stag dead"
+    }, s))), h("div", {
       className: "level-line"
-    }, "Reading level: ", /*#__PURE__*/React.createElement("b", null, b.level)), /*#__PURE__*/React.createElement("div", {
+    }, "Reading level: ", h("b", null, b.level)), h("div", {
       className: "detail-cta"
-    }, /*#__PURE__*/React.createElement("button", {
+    }, h("button", {
       className: `cta ${want ? 'save-on' : ''}`,
       onClick: () => toggleWant(b)
-    }, /*#__PURE__*/React.createElement(I.bookmark, {
+    }, h(I.bookmark, {
       f: want
     }), " ", want ? "On your list" : "Want to read")))));
   };
-  return /*#__PURE__*/React.createElement("div", {
+  const finger = (cls, num, label, note) => h("div", {
+    className: `finger ${cls}`
+  }, h("div", {
+    className: "f-n"
+  }, num), h("div", {
+    className: "f-l"
+  }, label), h("div", {
+    className: "f-d"
+  }, note));
+  const otherType = type === "fiction" ? "nonfiction" : "fiction";
+  const backTo = trail.length ? trail[trail.length - 1].label : null;
+  return h("div", {
     className: "wrap"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, h("div", {
     className: "ra-header"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, h("div", {
     className: "eyebrow"
-  }, "Grades 1\u20135 \xB7 Pick Your Next Read"), /*#__PURE__*/React.createElement("h1", null, "The Reading ", /*#__PURE__*/React.createElement("em", null, "Atlas")), /*#__PURE__*/React.createElement("div", {
+  }, "Grades 1–5 \xB7 Pick Your Next Read"), h("h1", null, "The Reading ", h("em", null, "Atlas")), h("div", {
     className: "desc"
-  }, "200 awesome book series, sorted by grade and what you're in the mood for. Find one you like and save it to read later."), /*#__PURE__*/React.createElement("div", {
-    className: "top-actions"
-  }, /*#__PURE__*/React.createElement("button", {
-    className: "pill-btn surprise",
-    onClick: surprise
-  }, /*#__PURE__*/React.createElement(I.dice, null), " Surprise me"), /*#__PURE__*/React.createElement("button", {
-    className: "pill-btn ghost",
-    onClick: () => setShowShelf(true)
-  }, /*#__PURE__*/React.createElement(I.list, null), " Want to Read ", bookmarks.size > 0 && /*#__PURE__*/React.createElement("span", {
-    className: "badge"
-  }, bookmarks.size))), /*#__PURE__*/React.createElement("div", {
+  }, "200 awesome book series, sorted by grade and what you're in the mood for. Find one you like and save it to read later."), h("div", {
     className: "tiers"
-  }, Object.entries(TIER_INFO).map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+  }, Object.entries(TIER_INFO).map(([k, v]) => h("div", {
     key: k,
     className: "tier-chip"
-  }, /*#__PURE__*/React.createElement("span", {
+  }, h("span", {
     className: `d ${k}`
-  }), /*#__PURE__*/React.createElement("b", null, v.label), /*#__PURE__*/React.createElement("span", {
+  }), h("b", null, v.label), h("span", {
     className: "t"
-  }, "\u2014 ", v.blurb)))), /*#__PURE__*/React.createElement("button", {
+  }, "— ", v.blurb)))), h("button", {
     className: "helper-link",
+    "aria-expanded": showGuide,
     onClick: () => setShowGuide(s => !s)
-  }, showGuide ? "Hide the tip ↑" : "How do I know if a book is right for me?")), showGuide && /*#__PURE__*/React.createElement("div", {
+  }, showGuide ? "Hide the tip ↑" : "How do I know if a book is right for me?")), showGuide && h("div", {
     className: "guide"
-  }, /*#__PURE__*/React.createElement("h3", null, "The Five-Finger Trick"), /*#__PURE__*/React.createElement("p", null, "A fast way to check if a book is a good fit \u2014 try it right in the library or bookstore."), /*#__PURE__*/React.createElement("h4", null, "1. Open to a page in the middle."), /*#__PURE__*/React.createElement("p", null, "Pick a page that's mostly words, not pictures."), /*#__PURE__*/React.createElement("h4", null, "2. Read it, and put up a finger for every word you don't know."), /*#__PURE__*/React.createElement("h4", null, "3. Count your fingers when you reach the end of the page:"), /*#__PURE__*/React.createElement("div", {
+  }, h("h3", null, "The Five-Finger Trick"), h("p", null, "A fast way to check if a book is a good fit — try it right in the library or bookstore."), h("h4", null, "1. Open to a page in the middle."), h("p", null, "Pick a page that's mostly words, not pictures."), h("h4", null, "2. Read it, and put up a finger for every word you don't know."), h("h4", null, "3. Count your fingers when you reach the end of the page:"), h("div", {
     className: "hand"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "finger easy"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "f-n"
-  }, "0\u20131"), /*#__PURE__*/React.createElement("div", {
-    className: "f-l"
-  }, "Easy"), /*#__PURE__*/React.createElement("div", {
-    className: "f-d"
-  }, "Great for a relaxing read")), /*#__PURE__*/React.createElement("div", {
-    className: "finger ok"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "f-n"
-  }, "2\u20133"), /*#__PURE__*/React.createElement("div", {
-    className: "f-l"
-  }, "Just right"), /*#__PURE__*/React.createElement("div", {
-    className: "f-d"
-  }, "The sweet spot!")), /*#__PURE__*/React.createElement("div", {
-    className: "finger hard"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "f-n"
-  }, "4"), /*#__PURE__*/React.createElement("div", {
-    className: "f-l"
-  }, "A stretch"), /*#__PURE__*/React.createElement("div", {
-    className: "f-d"
-  }, "Maybe read with a buddy")), /*#__PURE__*/React.createElement("div", {
-    className: "finger no"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "f-n"
-  }, "5+"), /*#__PURE__*/React.createElement("div", {
-    className: "f-l"
-  }, "Too hard"), /*#__PURE__*/React.createElement("div", {
-    className: "f-d"
-  }, "Save it for later"))), /*#__PURE__*/React.createElement("h4", null, "Two more quick checks"), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", null, "The movie test:"), " after a page, can you picture what happened in your head? If it's blank, the words might be too tricky."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", null, "The \"do I care?\" test:"), " do you actually want to know what happens next? Even a perfect-level book is the wrong book if it bores you."), /*#__PURE__*/React.createElement("p", {
+  }, finger("easy", "0–1", "Easy", "Great for a relaxing read"), finger("ok", "2–3", "Just right", "The sweet spot!"), finger("hard", "4", "A stretch", "Maybe read with a buddy"), finger("no", "5+", "Too hard", "Save it for later")), h("h4", null, "Two more quick checks"), h("p", null, h("b", null, "The movie test:"), " after a page, can you picture what happened in your head? If it's blank, the words might be too tricky."), h("p", null, h("b", null, "The \"do I care?\" test:"), " do you actually want to know what happens next? Even a perfect-level book is the wrong book if it bores you."), h("p", {
     className: "guide-note"
-  }, "Putting a too-hard book back isn't a \"no\" \u2014 it's just a \"not yet.\"")), /*#__PURE__*/React.createElement("div", {
+  }, "Putting a too-hard book back isn't a \"no\" — it's just a \"not yet.\"")),
+  // ---------- sticky bar ----------
+  h("div", {
+    ref: navTopRef,
+    className: "nav-anchor"
+  }), h("nav", {
+    className: "nav",
+    "aria-label": "Find books"
+  }, h("div", {
+    className: "nav-inner"
+  }, h("div", {
     className: "search-wrap"
-  }, /*#__PURE__*/React.createElement("span", {
+  }, h("span", {
     className: "s-ico"
-  }, /*#__PURE__*/React.createElement(I.search, null)), /*#__PURE__*/React.createElement("input", {
+  }, h(I.search, null)), h("input", {
+    ref: searchRef,
     className: "search-input",
     type: "text",
     value: query,
-    onChange: e => setQuery(e.target.value),
-    placeholder: "Search a series, like 'Dog Man' or 'mystery'\u2026",
-    "aria-label": "Search books"
-  }), query && /*#__PURE__*/React.createElement("button", {
+    onChange: e => {
+      setQuery(e.target.value);
+      setExpanded(null);
+      toListTop();
+    },
+    placeholder: "Search every grade…",
+    "aria-label": "Search books in every grade",
+    enterKeyHint: "search"
+  }), query && h("button", {
     className: "search-clear",
-    onClick: () => setQuery(""),
+    onClick: () => {
+      setQuery("");
+      if (searchRef.current) searchRef.current.focus();
+    },
     "aria-label": "Clear search"
-  }, /*#__PURE__*/React.createElement(I.x, {
+  }, h(I.x, {
     s: 13
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: `filter-bar ${searching ? 'dim' : ''}`
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "filter-bar-inner"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "frow"
-  }, /*#__PURE__*/React.createElement("span", {
+  }))), h("button", {
+    className: "list-btn",
+    onClick: () => setShowShelf(true),
+    "aria-label": `Want to Read list, ${bookmarks.size} saved`,
+    title: "Want to Read list"
+  }, h(I.bookmark, {
+    f: bookmarks.size > 0
+  }), h("span", {
+    className: "lb-label"
+  }, "Want to Read"), bookmarks.size > 0 && h("span", {
+    className: "badge"
+  }, bookmarks.size)), h("div", {
+    className: `nav-grades ${searching ? 'muted' : ''}`,
+    role: "group",
+    "aria-label": "Grade"
+  }, h("span", {
     className: "flabel"
-  }, "Grade"), [1, 2, 3, 4, 5].map(g => /*#__PURE__*/React.createElement("button", {
+  }, "Grade"), GRADES.map(g => h("button", {
     key: g,
-    className: `grade-btn ${grade === g ? 'active' : ''}`,
+    className: `grade-btn ${!searching && grade === g ? 'active' : ''}`,
+    "aria-pressed": !searching && grade === g,
+    "aria-label": `Grade ${g}`,
+    onClick: () => browse(g, null)
+  }, g))), h("div", {
+    className: `seg nav-type ${searching ? 'muted' : ''}`,
+    role: "group",
+    "aria-label": "Type of book"
+  }, ["fiction", "nonfiction"].map(t => h("button", {
+    key: t,
+    className: !searching && type === t ? 'active' : '',
+    "aria-pressed": !searching && type === t,
+    onClick: () => browse(null, t)
+  }, TYPE_LABEL[t]))), h("div", {
+    className: "nav-moods",
+    role: "group",
+    "aria-label": "Mood"
+  }, searching ? h("span", {
+    className: "search-note"
+  }, "Searching every grade — tap a grade to browse again") : [h("button", {
+    key: "__all",
+    className: `genre-btn ${selectedGenres.length === 0 ? 'active' : ''}`,
+    "aria-pressed": selectedGenres.length === 0,
     onClick: () => {
-      setGrade(g);
       setSelectedGenres([]);
-      setExpanded(null);
+      toListTop();
     }
-  }, g))), /*#__PURE__*/React.createElement("div", {
-    className: "frow"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "flabel"
-  }, "Type"), /*#__PURE__*/React.createElement("div", {
-    className: "seg"
-  }, [{
-    k: "fiction",
-    l: "Stories"
-  }, {
-    k: "nonfiction",
-    l: "True Stuff"
-  }].map(o => /*#__PURE__*/React.createElement("button", {
-    key: o.k,
-    className: type === o.k ? 'active' : '',
-    onClick: () => {
-      setType(o.k);
-      setSelectedGenres([]);
-      setExpanded(null);
-    }
-  }, o.l)))), /*#__PURE__*/React.createElement("div", {
-    className: "frow"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "flabel"
-  }, "Mood"), selectedGenres.length > 0 && /*#__PURE__*/React.createElement("button", {
-    className: "clear-btn",
-    onClick: () => setSelectedGenres([])
-  }, "clear"), availableGenres.map(g => /*#__PURE__*/React.createElement("button", {
+  }, "All moods")].concat(availableGenres.map(g => h("button", {
     key: g,
     className: `genre-btn ${selectedGenres.includes(g) ? 'active' : ''}`,
-    onClick: () => toggleArr(g)
-  }, g))))), /*#__PURE__*/React.createElement("div", {
+    "aria-pressed": selectedGenres.includes(g),
+    onClick: () => toggleMood(g)
+  }, g)))))),
+  // ---------- list ----------
+  h("div", {
     className: "count-row"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "count"
-  }, searching ? /*#__PURE__*/React.createElement(React.Fragment, null, "Search results \xB7 ", /*#__PURE__*/React.createElement("b", null, pool.length), " found") : /*#__PURE__*/React.createElement(React.Fragment, null, "Grade ", grade, " \xB7 ", type === "fiction" ? "Stories" : "True Stuff", " \xB7 ", /*#__PURE__*/React.createElement("b", null, pool.length), " series")), !searching && pool.length > 1 && /*#__PURE__*/React.createElement("button", {
+  }, h("div", {
+    className: "count",
+    "aria-live": "polite"
+  }, searching ? h(React.Fragment, null, "Search results \xB7 ", h("b", null, pool.length), " found") : h(React.Fragment, null, "Grade ", grade, " \xB7 ", TYPE_LABEL[type], " \xB7 ", h("b", null, pool.length), " series")), pool.length > 1 && h("div", {
+    className: "count-actions"
+  }, !searching && h("button", {
     className: "sort-toggle",
     onClick: () => setSortStretch(s => !s)
-  }, sortStretch ? "Sorting: easiest first ↓" : "Sort by difficulty")), pool.length === 0 ? /*#__PURE__*/React.createElement("div", {
+  }, sortStretch ? "Sorting: easiest first ↓" : "Sort by difficulty"), h("button", {
+    className: "pill-btn surprise sm",
+    onClick: surprise
+  }, h(I.dice, null), " Surprise me"))), pool.length === 0 ? h("div", {
     className: "empty"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, h("div", {
     className: "big"
-  }, searching ? "No books match that search." : "Nothing here for that mood."), /*#__PURE__*/React.createElement("div", null, searching ? "Try a shorter word, or clear the search box." : "Try clearing the mood filter.")) : /*#__PURE__*/React.createElement("div", {
+  }, searching ? "No books match that search." : "Nothing here for that mood."), h("div", null, searching ? "Try a shorter word." : "Try a different mood."), h("button", {
+    className: "cta",
+    onClick: () => searching ? setQuery("") : setSelectedGenres([])
+  }, searching ? "Clear the search" : "Show all moods")) : searching ? h("div", {
     className: "book-list"
-  }, pool.map(renderCard)), /*#__PURE__*/React.createElement("div", {
+  }, GRADES.map(g => {
+    const items = pool.filter(b => b.grade === g);
+    if (!items.length) return null;
+    return [h("h2", {
+      key: `head-${g}`,
+      className: "group-head"
+    }, "Grade ", g, h("span", {
+      className: "gc"
+    }, items.length, " found"))].concat(items.map(renderCard));
+  })) : h("div", {
+    className: "book-list"
+  }, pool.map(renderCard)), !searching && h("div", {
+    className: "pager"
+  }, grade > 1 && h("button", {
+    className: "cta",
+    onClick: () => browse(grade - 1, null)
+  }, h(I.back, null), " Grade ", grade - 1), h("button", {
+    className: "cta",
+    onClick: () => browse(null, otherType)
+  }, "Grade ", grade, " ", TYPE_LABEL[otherType]), h("span", {
+    className: "gap"
+  }), grade < 5 && h("button", {
+    className: "cta",
+    onClick: () => browse(grade + 1, null)
+  }, "Grade ", grade + 1, " ", h(I.fwd, null))), h("div", {
     className: "ra-footer"
-  }, "The Reading Atlas \xB7 200 series across 5 grades \xB7 your lists are saved on this device"), showShelf && /*#__PURE__*/React.createElement("div", {
+  }, "The Reading Atlas \xB7 200 series across 5 grades \xB7 your list is saved on this device"),
+  // ---------- floating helpers ----------
+  backTo && !showShelf && h("button", {
+    className: "back-chip",
+    onClick: goBack
+  }, h(I.back, null), h("span", null, "Back to ", h("b", null, backTo))), showTop && !showShelf && h("button", {
+    className: "top-fab",
+    "aria-label": "Back to top",
+    title: "Back to top",
+    onClick: () => window.scrollTo({ top: 0, behavior: "smooth" })
+  }, h(I.up, null)),
+  // ---------- Want to Read sheet ----------
+  showShelf && h("div", {
     className: "overlay",
     onClick: () => setShowShelf(false)
-  }, /*#__PURE__*/React.createElement("div", {
+  }, h("div", {
     className: "sheet",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-label": "Want to Read list",
     onClick: e => e.stopPropagation()
-  }, /*#__PURE__*/React.createElement("div", {
+  }, h("div", {
     className: "sheet-head"
-  }, /*#__PURE__*/React.createElement("h2", null, /*#__PURE__*/React.createElement(I.bookmark, {
+  }, h("h2", null, h(I.bookmark, {
     f: true
-  }), " Want to Read ", /*#__PURE__*/React.createElement("span", {
+  }), " Want to Read ", h("span", {
     style: {
       fontFamily: 'var(--sans)',
       fontSize: '.95rem',
       fontWeight: 800,
       color: 'var(--ink-faint)'
     }
-  }, "(", wantList.length, ")")), /*#__PURE__*/React.createElement("button", {
+  }, "(", wantList.length, ")")), h("button", {
+    ref: closeRef,
     className: "sheet-close",
     onClick: () => setShowShelf(false),
     "aria-label": "Close"
-  }, /*#__PURE__*/React.createElement(I.x, {
+  }, h(I.x, {
     s: 16
-  }))), /*#__PURE__*/React.createElement("div", {
+  }))), wantList.length > 0 && h("div", {
+    className: "sheet-actions"
+  }, h("button", {
+    className: "pill-btn",
+    onClick: downloadPdf
+  }, h(I.download, null), " Download as PDF"), h("span", {
+    className: "sheet-hint"
+  }, "A printable checklist for the library or bookstore.")), h("div", {
     className: "sheet-body"
-  }, wantList.length === 0 ? /*#__PURE__*/React.createElement("div", {
+  }, wantList.length === 0 ? h("div", {
     className: "shelf-empty"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, h("div", {
     className: "se-big"
-  }, "Your list is empty."), /*#__PURE__*/React.createElement("div", null, "Tap the ribbon on any book to save it here for later.")) : wantList.map(b => {
+  }, "Your list is empty."), h("div", null, "Tap the ribbon on any book to save it here for later.")) : wantList.map(b => {
     const k = keyOf(b);
-    return /*#__PURE__*/React.createElement("div", {
+    return h("div", {
       key: k,
       className: "shelf-item"
-    }, /*#__PURE__*/React.createElement("span", {
+    }, h("span", {
       className: `si-spine ${b.tier}`
-    }), /*#__PURE__*/React.createElement("span", {
-      className: "si-main"
-    }, /*#__PURE__*/React.createElement("div", {
+    }), h("button", {
+      className: "si-main",
+      title: `Go to ${b.title}`,
+      onClick: () => jumpToBook(b)
+    }, h("span", {
+      className: "si-text"
+    }, h("div", {
       className: "si-title"
-    }, b.title), /*#__PURE__*/React.createElement("div", {
+    }, b.title), h("div", {
       className: "si-meta"
-    }, "Grade ", b.grade, " \xB7 ", b.genre, " \xB7 ", tierLabel(b.tier))), /*#__PURE__*/React.createElement("button", {
+    }, "Grade ", b.grade, " \xB7 ", b.genre, " \xB7 ", tierLabel(b.tier))), h("span", {
+      className: "si-go"
+    }, h(I.go, null))), h("button", {
       className: "si-x",
       title: "Remove",
+      "aria-label": `Remove ${b.title}`,
       onClick: () => toggleWant(b)
-    }, /*#__PURE__*/React.createElement(I.x, {
+    }, h(I.x, {
       s: 15
     })));
-  }), wantList.length > 0 && /*#__PURE__*/React.createElement("button", {
+  }), wantList.length > 0 && h("button", {
     className: "reset-link",
     onClick: clearAllData
-  }, "Clear my whole list")))), toast && /*#__PURE__*/React.createElement("div", {
+  }, "Clear my whole list")))), toast && h("div", {
     className: "toast",
+    role: "status",
     key: toast.id
   }, toast.msg));
 }
-ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(ReadingAtlas, null));
+ReactDOM.createRoot(document.getElementById('root')).render(h(ReadingAtlas, null));
 </script>
 </body>
 </html>
