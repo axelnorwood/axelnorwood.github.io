@@ -4,1318 +4,950 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Project Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+/* Layout idea: a calm menu on the left, one big friendly task at a time on the right, one bright colour per step. */
 :root{
-  --sun:#FFB830;--sky:#5BC8F5;--leaf:#5DC887;--berry:#FF6B9D;
-  --plum:#8B72E8;--clay:#FF7C4D;--teal:#26C6DA;
-  --cream:#FFFBF3;--white:#fff;--ink:#2B1F0E;--muted:#7A6652;
-  --border:#F0E0CC;--r:20px;
+  color-scheme:light;
+  --paper:#FFFBF3; --card:#FFFFFF; --ink:#2B1F0E; --muted:#6B5744; --line:#EBDAC4;
+  --berry:#D6336C; --berry-soft:#FFEAF3; --sun:#FFB830; --leaf:#2F9E5B;
+  --display:"Baloo 2","Nunito","Hiragino Maru Gothic ProN","Yu Gothic UI",system-ui,sans-serif;
+  --body:"Nunito","Hiragino Maru Gothic ProN","Yu Gothic UI","Trebuchet MS",system-ui,sans-serif;
+  --r:20px; --side:264px;
 }
-html{scroll-behavior:smooth;font-size:16px;}
-body{font-family:'Nunito','Comic Sans MS','Trebuchet MS',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;font-size:1rem;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:100%;scroll-behavior:smooth;}
+body{font-family:var(--body);font-weight:600;background:var(--paper);color:var(--ink);font-size:1.0625rem;line-height:1.55;min-height:100%;}
+button,input,textarea{font:inherit;color:inherit;}
+button{cursor:pointer;}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;}
+:focus-visible{outline:3px solid #1C7ED6;outline-offset:2px;border-radius:8px;}
+[hidden]{display:none !important;}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}html{scroll-behavior:auto;}}
 
-/* ── SIDEBAR LAYOUT ── */
-.layout{display:flex;min-height:100vh;}
+/* colour sets: --c strong, --cl light, --cd dark text */
+.c-sun{--c:#FFB830;--cl:#FFF6DC;--cd:#6B4B00;}
+.c-leaf{--c:#5DC887;--cl:#E4F8EC;--cd:#17603A;}
+.c-sky{--c:#5BC8F5;--cl:#E0F5FF;--cd:#0B5C7D;}
+.c-clay{--c:#FF8A5C;--cl:#FFF0E8;--cd:#8F370E;}
+.c-berry{--c:#FF7FAB;--cl:#FFEAF3;--cd:#96204F;}
+.c-plum{--c:#A58CF0;--cl:#EEE8FF;--cd:#44289F;}
+.c-teal{--c:#3FD0E0;--cl:#DFF8FB;--cd:#0A5F6B;}
+.c-gold{--c:#F5B93B;--cl:#FFF3D1;--cd:#6B4B00;}
 
-/* ── SIDEBAR ── */
-.sidebar{
-  width:220px;flex-shrink:0;
-  background:#fff;
-  border-right:2.5px solid var(--border);
-  position:fixed;top:0;left:0;bottom:0;
-  overflow-y:auto;z-index:200;
-  display:flex;flex-direction:column;
-}
-.sidebar-logo{
-  padding:20px 16px 14px;
-  border-bottom:2px solid var(--border);
-  text-align:center;
-}
-.sidebar-logo .owl{font-size:48px;display:block;margin-bottom:4px;}
-.sidebar-logo h1{font-size:16px;font-weight:900;color:var(--ink);line-height:1.2;}
-.sidebar-logo p{font-size:11px;font-weight:700;color:var(--muted);margin-top:3px;}
+/* ── menu ── */
+.side{position:fixed;inset:0 auto 0 0;width:var(--side);background:var(--card);border-right:2.5px solid var(--line);overflow-y:auto;z-index:200;display:flex;flex-direction:column;padding-bottom:20px;}
+.logo{padding:18px 16px 14px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:10px;}
+.logo .owl{font-size:2.6rem;line-height:1;}
+.logo h1{font-size:1.25rem;}
+.logo p{font-size:.85rem;color:var(--muted);font-weight:700;}
+.sec{padding:16px 16px 6px;font-size:.78rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--berry);}
+.nav{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 14px;background:none;border:0;border-left:5px solid transparent;text-align:left;font-weight:800;font-size:1rem;color:var(--ink);}
+.nav:hover{background:#FFF4EA;}
+.nav[aria-current="page"]{background:var(--berry-soft);border-left-color:var(--berry);color:#96204F;}
+.nav .ic{font-size:1.35rem;width:1.8rem;text-align:center;flex-shrink:0;}
+.badge{width:2rem;height:2rem;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.nav .mark{margin-left:auto;font-size:1.1rem;opacity:.25;filter:grayscale(1);}
+.nav.done .mark{opacity:1;filter:none;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(43,31,14,.4);z-index:150;}
 
-.sidebar-section-label{
-  padding:14px 16px 4px;
-  font-size:10px;font-weight:900;letter-spacing:1.5px;
-  text-transform:uppercase;color:var(--berry);
-}
+/* ── main ── */
+.main{margin-left:var(--side);min-width:0;}
+.top{position:sticky;top:0;z-index:100;background:rgba(255,251,243,.96);border-bottom:2px solid var(--line);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.btn.menu-btn{display:none;}
+.prog{flex:1;min-width:150px;}
+.prog-text{font-size:.9rem;font-weight:800;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;}
+.saved{color:var(--leaf);font-weight:800;font-size:.85rem;opacity:0;transition:opacity .3s;}
+.saved.on{opacity:1;}
+.bar{height:10px;background:var(--line);border-radius:10px;overflow:hidden;margin-top:4px;max-width:340px;}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#FFB830,#FF7FAB);border-radius:10px;transition:width .4s;}
+.size{display:flex;border:2.5px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);}
+.size button{background:none;border:0;min-width:46px;min-height:44px;font-weight:900;}
+.size button+button{border-left:2px solid var(--line);}
+.size button:hover{background:var(--berry-soft);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 18px;border-radius:14px;border:2.5px solid var(--line);background:var(--card);font-weight:800;font-size:1rem;text-align:center;}
+.btn:hover{border-color:var(--berry);}
+.btn.primary{background:var(--berry);border-color:var(--berry);color:#fff;box-shadow:0 4px 0 #A3245A;}
+.btn.primary:hover{background:#C2255C;}
+.btn.primary:active{transform:translateY(2px);box-shadow:0 2px 0 #A3245A;}
+.btn.big{font-size:1.15rem;min-height:58px;padding:12px 26px;}
+.btn.small{min-height:42px;padding:6px 12px;font-size:.92rem;border-radius:12px;}
+.btn[disabled]{opacity:.6;cursor:wait;}
 
-.nav-btn{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 16px;
-  font-family:inherit;font-size:13px;font-weight:800;
-  color:var(--muted);
-  background:transparent;border:none;
-  text-decoration:none;cursor:pointer;
-  border-radius:0;
-  transition:background 0.15s,color 0.15s;
-  width:100%;text-align:left;
-}
-.nav-btn:hover{background:#FFF0F5;color:var(--berry);}
-.nav-btn.active{background:linear-gradient(90deg,#FFF0F5,#FFF8F0);color:var(--berry);border-left:4px solid var(--berry);}
-.nav-btn .nb-icon{font-size:20px;flex-shrink:0;}
-.nav-btn .nb-label{line-height:1.3;}
-.nav-btn .nb-sub{font-size:10px;font-weight:600;color:var(--muted);display:block;margin-top:1px;}
-.nav-btn.active .nb-sub{color:#FF9E4F;}
-
-.step-nav-btn{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 16px 8px 12px;
-  font-family:inherit;font-size:12px;font-weight:800;
-  color:var(--muted);
-  background:transparent;border:none;
-  text-decoration:none;cursor:pointer;
-  transition:background 0.15s,color 0.15s;
-  width:100%;text-align:left;
-  border-left:3px solid transparent;
-}
-.step-nav-btn:hover{background:#FFF8F0;color:var(--clay);}
-.step-nav-btn.active{background:#FFF0E8;color:var(--clay);border-left-color:var(--clay);}
-.step-badge{
-  width:26px;height:26px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;flex-shrink:0;color:#fff;font-weight:900;
-}
-
-/* ── MAIN CONTENT ── */
-.main{margin-left:220px;flex:1;min-width:0;}
-
-/* ── PANELS (pages) ── */
-.panel{display:none;padding:32px 36px 80px;width:100%;}
+.panel{display:none;padding:28px 32px 90px;max-width:1080px;}
 .panel.active{display:block;}
+.eyebrow{font-size:.8rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--berry);margin-bottom:4px;}
+.ptitle{font-size:1.9rem;margin-bottom:16px;}
+.sub{font-size:1.3rem;margin:28px 0 12px;}
+.lead{max-width:62ch;margin-bottom:18px;color:var(--muted);font-weight:700;}
 
-/* ── HOME HERO ── */
-.hero-panel{
-  background:linear-gradient(135deg,#FF9E4F 0%,#FF6B9D 55%,#8B72E8 100%);
-  color:#fff;padding:48px 36px;border-radius:0 0 40px 0;margin-bottom:36px;
-  position:relative;overflow:hidden;
-  margin-left:-36px;margin-right:-36px;margin-top:-32px;padding-left:48px;padding-right:48px;
-}
-.hero-panel::after{
-  content:'';position:absolute;
-  top:-60px;right:-60px;width:200px;height:200px;
-  background:rgba(255,255,255,0.1);border-radius:50%;
-}
-.hero-panel .h-owl{font-size:64px;display:block;margin-bottom:12px;}
-.hero-panel h2{font-size:32px;font-weight:900;margin-bottom:8px;line-height:1.2;}
-.hero-panel p{font-size:16px;font-weight:700;opacity:0.92;max-width:420px;line-height:1.6;}
+/* ── home ── */
+.hero{background:linear-gradient(135deg,#FF9E4F 0%,#F0568C 55%,#7C5CE0 100%);color:#fff;border-radius:28px;padding:28px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:22px;}
+.hero .owl{font-size:4.2rem;line-height:1;}
+.hero h2{font-size:2.1rem;margin-bottom:6px;}
+.hero p{font-weight:700;max-width:46ch;font-size:1.08rem;}
+.hero>div{flex:1;min-width:240px;}
+.box{background:var(--card);border:2.5px solid var(--line);border-radius:var(--r);padding:20px;}
+.mine{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.field label{display:block;font-weight:900;margin-bottom:6px;}
+.field input{width:100%;min-height:52px;border:2.5px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:700;background:var(--paper);}
+.field input:focus,textarea:focus{outline:none;border-color:#1C7ED6;background:#fff;}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.how div{background:var(--card);border:2.5px solid var(--line);border-radius:var(--r);padding:16px;font-weight:700;}
+.how b{display:block;font-family:var(--display);font-size:1.15rem;}
+.how .n{display:inline-flex;width:2rem;height:2rem;border-radius:50%;background:var(--sun);align-items:center;justify-content:center;font-weight:900;margin-bottom:6px;}
+.path{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.tile{background:var(--cl);border:2.5px solid var(--c);border-radius:var(--r);padding:14px 12px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:118px;position:relative;font-weight:800;color:var(--cd);}
+.tile:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1);}
+.tile .em{font-size:1.9rem;line-height:1;}
+.tile small{font-size:.8rem;font-weight:900;letter-spacing:.06em;}
+.tile .star{position:absolute;top:10px;right:10px;font-size:1.4rem;opacity:.2;filter:grayscale(1);}
+.tile.done .star{opacity:1;filter:none;}
+.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+.qcard{background:var(--card);border:2.5px solid var(--line);border-radius:18px;padding:16px;text-align:left;font-weight:800;display:flex;gap:10px;align-items:center;min-height:68px;}
+.qcard:hover{border-color:var(--berry);}
+.qcard span{font-size:1.7rem;}
+.qcard small{display:block;color:var(--muted);font-weight:700;font-size:.85rem;}
+.linkish{background:none;border:0;color:var(--muted);text-decoration:underline;font-weight:700;min-height:44px;}
 
-.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:28px;}
-.quick-card{
-  background:#fff;border-radius:18px;border:2.5px solid var(--border);
-  padding:20px 14px;text-align:center;cursor:pointer;
-  transition:transform 0.15s,box-shadow 0.15s;
-  text-decoration:none;display:block;
-}
-.quick-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1);}
-.quick-card .qc-icon{font-size:40px;display:block;margin-bottom:8px;}
-.quick-card .qc-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:3px;}
-.quick-card .qc-sub{font-size:11px;font-weight:600;color:var(--muted);}
+/* ── steps ── */
+.dots{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.dot{width:46px;height:46px;border-radius:50%;border:2.5px solid var(--line);background:var(--card);font-weight:900;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+.dot.done{background:#FFF3CC;border-color:var(--sun);}
+.dot[aria-current="step"]{border-color:var(--berry);background:var(--berry-soft);box-shadow:0 0 0 4px rgba(214,51,108,.15);}
+.shero{background:var(--cl);border-radius:var(--r);padding:20px;display:flex;gap:16px;align-items:flex-start;margin-bottom:16px;}
+.bubble{width:84px;height:84px;border-radius:22px;background:var(--c);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:2.2rem;line-height:1;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.12);}
+.bubble span{font-size:.7rem;font-weight:900;margin-top:6px;color:var(--ink);letter-spacing:.05em;}
+.shero h2{font-size:1.7rem;margin-bottom:4px;}
+.shero p{font-weight:700;max-width:60ch;margin-bottom:10px;}
+.owltip{background:#FFFBE6;border:2.5px solid #FFE066;border-radius:16px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;font-weight:700;color:#5C4700;max-width:820px;}
+.owltip>span{font-size:1.6rem;line-height:1.2;}
+.qlist{display:flex;flex-direction:column;gap:14px;margin-bottom:18px;max-width:820px;}
+.q{background:var(--card);border:2.5px solid var(--line);border-radius:18px;padding:16px 18px;}
+.q.ok{border-color:#8ADBB0;}
+.qhead{display:flex;gap:12px;align-items:flex-start;}
+.qicon{font-size:1.7rem;line-height:1.2;flex-shrink:0;}
+.qtext{font-weight:900;font-size:1.12rem;flex:1;line-height:1.35;}
+.qok{color:var(--leaf);font-weight:900;font-size:1.3rem;visibility:hidden;}
+.q.ok .qok{visibility:visible;}
+.qhint{color:var(--muted);font-weight:700;margin:6px 0 8px;}
+.qex{background:var(--paper);border-left:5px solid var(--sun);border-radius:10px;padding:8px 12px;font-weight:700;font-size:.97rem;margin-bottom:10px;}
+textarea{width:100%;border:2.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--paper);font-weight:700;line-height:1.5;resize:vertical;min-height:5.5rem;}
+.qtools{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
+.out{display:inline-flex;gap:8px;align-items:center;background:var(--cl);color:var(--cd);border:2.5px solid var(--c);border-radius:30px;padding:8px 16px;font-weight:900;}
+.navrow{display:flex;gap:12px;margin-top:26px;padding-top:20px;border-top:2px solid var(--line);max-width:820px;}
+.navrow .primary{flex:1;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{min-height:46px;border-radius:30px;border:2.5px solid var(--line);background:var(--card);padding:6px 14px;font-weight:800;display:inline-flex;align-items:center;gap:6px;}
+.chip[aria-pressed="true"]{background:#E4F8EC;border-color:#2F9E5B;color:#17603A;}
+.chip[aria-pressed="true"]::after{content:"✓";font-weight:900;}
+.ticks{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.tick{display:flex;gap:12px;align-items:center;font-weight:800;min-height:44px;}
+.tick input{width:28px;height:28px;accent-color:var(--leaf);flex-shrink:0;}
 
-/* ── SECTION TITLES ── */
-.panel-eyebrow{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--berry);margin-bottom:4px;}
-.panel-title{font-size:26px;font-weight:900;color:var(--ink);margin-bottom:20px;line-height:1.2;}
+/* drawing pad */
+.padwrap{border:2.5px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;margin-bottom:8px;}
+#pad{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair;}
+.padtools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+.sw{width:42px;height:42px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2.5px var(--line);}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 4px var(--ink);}
+.sofar{background:var(--paper);border:2.5px dashed var(--line);border-radius:14px;padding:12px 16px;margin-bottom:10px;font-weight:700;}
+.sofar b{font-weight:900;}
+.sofar li{margin-left:1.2rem;margin-top:4px;}
+.party{background:linear-gradient(135deg,#FFF6DC,#FFEAF3);border:2.5px solid #FFD6A5;border-radius:var(--r);padding:22px;margin-top:20px;text-align:center;max-width:820px;}
+.party .em{font-size:3.2rem;line-height:1;}
+.party h3{font-size:1.5rem;margin:6px 0;}
+.party p{max-width:46ch;margin:0 auto 14px;font-weight:700;color:var(--muted);}
 
-/* ── STEP PAGE ── */
-.step-hero{
-  border-radius:var(--r);padding:24px;margin-bottom:20px;
-  display:flex;align-items:flex-start;gap:16px;
-}
-.step-hero .sh-bubble{
-  width:70px;height:70px;border-radius:20px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-size:34px;flex-shrink:0;color:#fff;
-  box-shadow:0 4px 14px rgba(0,0,0,0.15);
-}
-.step-hero .sh-num{font-size:10px;font-weight:900;opacity:0.85;margin-top:2px;}
-.step-hero .sh-body h2{font-size:22px;font-weight:900;color:var(--ink);margin-bottom:5px;}
-.step-hero .sh-body p{font-size:13px;font-weight:600;color:var(--muted);line-height:1.65;}
+/* ── ideas ── */
+.ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.idea{background:var(--card);border:2.5px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:8px;}
+.idea.picked{border-color:#2F9E5B;background:#F3FCF6;}
+.idea .em{font-size:2.6rem;line-height:1;}
+.idea h3{font-size:1.3rem;}
+.idea p{font-weight:700;color:var(--muted);}
+.idea ul{margin-left:1.2rem;font-weight:700;font-size:.97rem;}
+.tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{border-radius:20px;padding:3px 10px;font-size:.85rem;font-weight:800;background:var(--paper);border:2px solid var(--line);}
+.idea .row{margin-top:auto;padding-top:8px;}
 
-.owl-tip{
-  background:#FFFBE6;border:2px solid #FFE066;border-radius:14px;
-  padding:12px 14px;margin-bottom:18px;
-  display:flex;align-items:flex-start;gap:10px;
-}
-.owl-tip .ot-icon{font-size:22px;flex-shrink:0;}
-.owl-tip .ot-text{font-size:13px;font-weight:700;color:#7A6000;line-height:1.55;}
+/* ── materials ── */
+.mats{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin-bottom:8px;}
+.mat{background:var(--card);border:2.5px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;}
+.mat.on{border-color:#2F9E5B;}
+.mathead{display:flex;gap:12px;align-items:center;}
+.mathead .em{font-size:2.3rem;line-height:1;}
+.mathead h3{font-size:1.2rem;flex:1;}
+.p{border-radius:20px;padding:3px 10px;font-size:.88rem;font-weight:800;border:2px solid;display:inline-flex;gap:4px;align-items:center;}
+.p-strong{background:#FFF0E8;color:#8F370E;border-color:#FFB899;}
+.p-light{background:#E0F5FF;color:#0B5C7D;border-color:#8ADDF5;}
+.p-flexible{background:#EEE8FF;color:#44289F;border-color:#C4B0F5;}
+.p-waterproof{background:#E4F8EC;color:#17603A;border-color:#8ADBB0;}
+.p-mouldable{background:#FFEAF3;color:#96204F;border-color:#FFB3D4;}
+.p-conductive{background:#FFF3CC;color:#6B4B00;border-color:#FFD966;}
+.p-natural{background:#F0FBF4;color:#2D6A4F;border-color:#95D5B2;}
+.p-decorative{background:#F5F3FF;color:#5E35B1;border-color:#C4B0F5;}
+button.p{min-height:44px;padding:6px 14px;font-size:.95rem;}
+button.p[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink);}
+.uses{font-weight:700;font-size:.97rem;}
+.uses b{font-weight:900;}
+.rows{display:flex;flex-direction:column;gap:8px;max-width:820px;}
+.rowc{background:var(--card);border:2.5px solid var(--line);border-radius:14px;padding:12px 16px;display:flex;gap:12px;align-items:center;font-weight:800;}
+.rowc small{display:block;color:var(--muted);font-weight:700;font-size:.92rem;}
+.rowc .em{font-size:1.6rem;}
+label.rowc{cursor:pointer;min-height:56px;}
+label.rowc input{width:30px;height:30px;accent-color:var(--leaf);flex-shrink:0;}
 
-/* ── QUESTION CARDS ── */
-.q-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.q-card{
-  background:#fff;border:2.5px solid var(--border);border-radius:16px;
-  padding:14px 16px;display:flex;align-items:flex-start;gap:12px;
-}
-.q-icon{font-size:24px;flex-shrink:0;margin-top:1px;}
-.q-text{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px;}
-.q-hint{font-size:12px;font-weight:600;color:var(--muted);line-height:1.55;}
-.q-example{
-  margin-top:8px;background:var(--cream);border-radius:10px;
-  padding:8px 10px;font-size:12px;font-weight:700;color:var(--ink);
-  border-left:3px solid var(--sun);
-}
+/* ── cards for presenting / tips / words ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.card{background:var(--card);border:2.5px solid var(--line);border-radius:var(--r);padding:18px;}
+.card .em{font-size:2.4rem;line-height:1;display:block;margin-bottom:8px;}
+.card h3{font-size:1.2rem;margin-bottom:4px;}
+.card p{font-weight:700;color:var(--muted);}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.card li{background:var(--paper);border-radius:10px;padding:6px 10px;font-weight:700;font-size:.95rem;}
 
-.output-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  border-radius:20px;padding:6px 14px;
-  font-size:12px;font-weight:800;margin-top:4px;
-}
+/* dialog + toast */
+dialog{border:0;border-radius:var(--r);padding:24px;max-width:420px;width:calc(100% - 32px);margin:auto;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.3);}
+dialog::backdrop{background:rgba(43,31,14,.5);}
+dialog h3{font-size:1.4rem;margin-bottom:8px;}
+dialog p{font-weight:700;margin-bottom:18px;}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;font-weight:800;padding:12px 20px;border-radius:16px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:600;max-width:calc(100% - 32px);text-align:center;}
+#toast.on{opacity:1;transform:translate(-50%,0);}
+.warn{background:#FFF0E8;border:2.5px solid #FFB899;color:#8F370E;border-radius:14px;padding:10px 14px;font-weight:800;margin-bottom:16px;}
 
-/* ── CHECK ROWS ── */
-.check-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.check-row{
-  background:#fff;border:2.5px solid var(--border);border-radius:14px;
-  padding:12px 14px;display:flex;align-items:flex-start;gap:12px;
-}
-.check-box{
-  width:24px;height:24px;border-radius:7px;border:2.5px solid var(--border);
-  flex-shrink:0;margin-top:1px;background:#fff;
-}
-.check-icon{font-size:22px;flex-shrink:0;}
-.check-label{font-size:13px;font-weight:800;color:var(--ink);}
-.check-note{font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.4;}
-
-/* ── MATERIAL GRID ── */
-/* ── MATERIAL ROWS ── */
-.mat-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:10px;margin-bottom:20px;}
-.mat-row{
-  background:#fff;border-radius:18px;border:2.5px solid var(--border);
-  padding:14px 16px;display:grid;
-  grid-template-columns:64px 1fr;gap:0 14px;align-items:start;
-}
-.mat-left{display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:2px;}
-.mat-icon{font-size:36px;line-height:1;}
-.mat-name{font-size:11px;font-weight:900;color:var(--ink);text-align:center;line-height:1.2;}
-.mat-right{}
-.mat-props{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
-.mat-prop-tag{
-  display:inline-flex;align-items:center;gap:4px;
-  border-radius:20px;padding:3px 9px;
-  font-size:11px;font-weight:800;line-height:1.3;
-}
-.prop-strong{background:#FFF0E8;color:#9B3D10;border:1.5px solid #FFB899;}
-.prop-light{background:#E0F5FF;color:#0B6A8F;border:1.5px solid #8ADDF5;}
-.prop-flexible{background:#EEE8FF;color:#4A2DB5;border:1.5px solid #C4B0F5;}
-.prop-waterproof{background:#E4F8EC;color:#1A6B40;border:1.5px solid #8ADBB0;}
-.prop-mouldable{background:#FFEAF3;color:#A3245A;border:1.5px solid #FFB3D4;}
-.prop-conductive{background:#FFF3CC;color:#7A5800;border:1.5px solid #FFD966;}
-.prop-natural{background:#F0FBF4;color:#2D6A4F;border:1.5px solid #95D5B2;}
-.prop-decorative{background:#F5F3FF;color:#5E35B1;border:1.5px solid #C4B0F5;}
-.mat-uses-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
-.mat-uses{display:flex;flex-wrap:wrap;gap:5px;}
-.mat-use-tag{
-  background:var(--cream);border:1.5px solid var(--border);
-  border-radius:8px;padding:3px 8px;
-  font-size:11px;font-weight:700;color:var(--ink);
-  display:inline-flex;align-items:center;gap:3px;
-}
-
-/* ── FORMAT GRID ── */
-.fmt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
-.fmt-card{
-  background:#fff;border-radius:var(--r);border:2.5px solid var(--border);
-  padding:20px 14px;text-align:center;
-}
-.fmt-icon{font-size:44px;display:block;margin-bottom:10px;}
-.fmt-title{font-size:15px;font-weight:900;color:var(--ink);margin-bottom:5px;}
-.fmt-desc{font-size:12px;font-weight:600;color:var(--muted);line-height:1.5;margin-bottom:12px;}
-.fmt-tips{display:flex;flex-direction:column;gap:5px;}
-.fmt-tip{background:var(--cream);border-radius:9px;padding:5px 9px;font-size:11px;font-weight:700;color:var(--ink);text-align:left;}
-
-/* ── GLOSSARY ── */
-.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
-.gloss-card{background:#fff;border-radius:14px;border:2.5px solid var(--border);padding:14px 16px;}
-.gloss-word{font-size:14px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:7px;margin-bottom:4px;}
-.gloss-def{font-size:12px;font-weight:600;color:var(--muted);line-height:1.55;}
-
-/* ── TIPS GRID ── */
-.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
-.tip-card{background:#fff;border-radius:var(--r);border:2.5px solid var(--border);padding:18px;display:flex;gap:12px;}
-.tip-icon{font-size:32px;flex-shrink:0;}
-.tip-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:4px;}
-.tip-body{font-size:12px;font-weight:600;color:var(--muted);line-height:1.6;}
-
-/* ── NAV ARROWS ── */
-.step-nav-row{
-  display:flex;gap:10px;margin-top:28px;padding-top:20px;
-  border-top:2px solid var(--border);
-}
-.snr-back,.snr-next{
-  display:flex;align-items:center;gap:8px;
-  padding:12px 20px;border-radius:14px;
-  font-family:inherit;font-size:14px;font-weight:800;
-  cursor:pointer;border:2.5px solid var(--border);
-  transition:all 0.15s;text-decoration:none;
-}
-.snr-back{background:#fff;color:var(--muted);}
-.snr-back:hover{border-color:#FF9E4F;color:var(--clay);}
-.snr-next{
-  flex:1;justify-content:center;
-  background:linear-gradient(135deg,#FF6B9D,#FF9E4F);
-  color:#fff;border-color:transparent;
-  box-shadow:0 4px 14px rgba(255,107,157,0.3);
-}
-.snr-next:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,107,157,0.4);}
-
-/* ── STEP PROGRESS (inside panel) ── */
-.step-progress{
-  display:flex;align-items:center;gap:0;margin-bottom:24px;
-  background:#fff;border:2.5px solid var(--border);border-radius:50px;
-  padding:8px 14px;overflow-x:auto;
-}
-.sp-dot{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  cursor:pointer;flex-shrink:0;padding:0 4px;
-}
-.sp-circle{
-  width:32px;height:32px;border-radius:50%;border:2.5px solid var(--border);
-  background:#fff;display:flex;align-items:center;justify-content:center;
-  font-size:14px;transition:all 0.15s;
-}
-.sp-circle.cur{border-color:var(--berry);background:#FFF0F5;box-shadow:0 0 0 3px rgba(255,107,157,0.15);}
-.sp-label{font-size:9px;font-weight:800;color:#BBA898;}
-.sp-label.cur{color:var(--berry);}
-.sp-line{width:16px;height:2px;background:var(--border);flex-shrink:0;margin-bottom:12px;}
-
-/* ── COLOUR HELPERS ── */
-.bg-sun{background:#FFF8E1;} .bg-leaf{background:#E4F8EC;} .bg-sky{background:#E0F5FF;}
-.bg-berry{background:#FFEAF3;} .bg-plum{background:#EEE8FF;} .bg-clay{background:#FFF0E8;}
-.bub-sun{background:#FFB830;} .bub-leaf{background:#5DC887;} .bub-sky{background:#5BC8F5;}
-.bub-berry{background:#FF6B9D;} .bub-plum{background:#8B72E8;} .bub-clay{background:#FF7C4D;}
-.bub-teal{background:#26C6DA;} .bub-gold{background:#F5A623;}
-.chip-sun{background:#FFF3CC;color:#7A5800;border:2px solid #FFD966;}
-.chip-leaf{background:#E4F8EC;color:#1A6B40;border:2px solid #8ADBB0;}
-.chip-sky{background:#E0F5FF;color:#0B6A8F;border:2px solid #8ADDF5;}
-.chip-berry{background:#FFEAF3;color:#A3245A;border:2px solid #FFB3D4;}
-.chip-plum{background:#EEE8FF;color:#4A2DB5;border:2px solid #C4B0F5;}
-.chip-clay{background:#FFF0E8;color:#9B3D10;border:2px solid #FFB899;}
-
-/* ── FONT SIZE BAR ── */
-.font-bar{
-  position:fixed;top:12px;right:16px;z-index:500;
-  display:flex;align-items:center;gap:6px;
-  background:#fff;border:2.5px solid var(--border);
-  border-radius:50px;padding:5px 10px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.10);
-}
-.font-bar-label{
-  font-size:11px;font-weight:900;color:var(--muted);
-  letter-spacing:0.5px;text-transform:uppercase;
-  padding-right:4px;border-right:2px solid var(--border);
-  margin-right:2px;
-}
-.font-btn{
-  background:none;border:none;cursor:pointer;
-  font-family:inherit;font-weight:900;color:var(--ink);
-  border-radius:50%;width:30px;height:30px;
-  display:flex;align-items:center;justify-content:center;
-  transition:background 0.15s,color 0.15s;
-  line-height:1;padding:0;
-}
-.font-btn:hover{background:#FFF0F5;color:var(--berry);}
-.font-btn:active{transform:scale(0.92);}
-.font-btn.size-plus{font-size:17px;}
-.font-btn.size-minus{font-size:13px;}
-.font-divider{width:1.5px;height:18px;background:var(--border);}
-
-/* ── MOBILE TOPBAR (hidden on desktop) ── */
-.mobile-topbar{display:none;background:#fff;border-bottom:2px solid var(--border);padding:12px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;}
-.mob-menu-btn{background:none;border:2px solid var(--border);border-radius:10px;padding:6px 10px;font-size:18px;cursor:pointer;}
-.mob-title{font-size:15px;font-weight:900;color:var(--ink);}
-
-/* ── OVERLAY ── */
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:150;}
-
-@media(max-width:640px){
-  .mobile-topbar{display:flex;}
-  .sidebar{transform:translateX(-100%);transition:transform 0.25s;top:0;}
-  .sidebar.open{transform:translateX(0);}
-  .sidebar-overlay.open{display:block;}
+@media (max-width:900px){
+  .side{transform:translateX(-100%);transition:transform .25s;}
+  .side.open{transform:none;}
+  .overlay.open{display:block;}
   .main{margin-left:0;}
-  .panel{padding:16px 16px 60px;}
-  .hero-panel{margin-left:-16px;margin-right:-16px;margin-top:-16px;padding-left:24px;padding-right:24px;border-radius:0 0 24px 0;}
-  .hero-panel h2{font-size:24px;}
-  .step-nav-row{flex-direction:column;}
-  .snr-next{justify-content:center;}
-  .mat-list{grid-template-columns:1fr;}
+  .btn.menu-btn{display:inline-flex;}
+  .top{padding:8px 16px;gap:8px;}
+  .panel{padding:18px 16px 80px;}
+  .path{grid-template-columns:repeat(2,1fr);}
+  .how,.mine{grid-template-columns:1fr;}
+  .pdf-long{display:none;}
+}
+@media (min-width:901px){.pdf-short{display:none;}}
+@media (max-width:480px){
+  .shero{flex-direction:column;}
+  .navrow{flex-direction:column-reverse;}
+  .mats{grid-template-columns:1fr;}
+  .hero h2{font-size:1.7rem;}
 }
 </style>
 </head>
 <body>
 
-<!-- MOBILE TOPBAR -->
-<div class="mobile-topbar">
-  <button class="mob-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
-  <span class="mob-title">🦉 My Project Maker</span>
-  <span style="width:44px;"></span>
+<div class="overlay" id="overlay"></div>
+<nav class="side" id="side" aria-label="Menu"></nav>
+
+<div class="main" id="main">
+  <header class="top">
+    <button class="btn small menu-btn" id="menuBtn" aria-controls="side" aria-expanded="false">☰ Menu</button>
+    <div class="prog">
+      <div class="prog-text"><span id="progText">⭐ 0 of 8 steps done</span><span class="saved" id="saved">✓ Saved</span></div>
+      <div class="bar" aria-hidden="true"><i id="progBar"></i></div>
+    </div>
+    <div class="size" role="group" aria-label="Text size">
+      <button id="sizeDown" aria-label="Make text smaller">A−</button>
+      <button id="sizeUp" aria-label="Make text bigger">A+</button>
+    </div>
+    <button class="btn primary small" data-pdf="mine"><span>📄</span><span class="pdf-long">Download my notes (PDF)</span><span class="pdf-short">PDF</span></button>
+  </header>
+  <main id="panels"></main>
 </div>
-<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-<!-- FONT SIZE BAR -->
-<div class="font-bar" role="group" aria-label="Text size controls">
-  <span class="font-bar-label">Text</span>
-  <button class="font-btn size-plus" onclick="changeSize(1)" title="Make text bigger" aria-label="Increase text size">A+</button>
-  <div class="font-divider"></div>
-  <button class="font-btn size-minus" onclick="changeSize(-1)" title="Make text smaller" aria-label="Decrease text size">A−</button>
-</div>
-
-<div class="layout">
-
-  <!-- ════════ SIDEBAR ════════ -->
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <span class="owl">🦉</span>
-      <h1>My Project Maker</h1>
-      <p>Ages 7 – 10</p>
-    </div>
-
-    <div class="sidebar-section-label">Start here</div>
-    <a class="nav-btn active" onclick="show('home')" href="#">
-      <span class="nb-icon">🏠</span>
-      <span class="nb-label">Home<span class="nb-sub">Welcome page</span></span>
-    </a>
-    <a class="nav-btn" onclick="show('tips')" href="#">
-      <span class="nb-icon">💡</span>
-      <span class="nb-label">Inventor Tips<span class="nb-sub">How to do your best</span></span>
-    </a>
-    <a class="nav-btn" onclick="show('materials')" href="#">
-      <span class="nb-icon">🛠️</span>
-      <span class="nb-label">Materials Guide<span class="nb-sub">What to build with</span></span>
-    </a>
-    <a class="nav-btn" onclick="show('presenting')" href="#">
-      <span class="nb-icon">🎤</span>
-      <span class="nb-label">Presenting<span class="nb-sub">How to share your work</span></span>
-    </a>
-    <a class="nav-btn" onclick="show('checklist')" href="#">
-      <span class="nb-icon">✅</span>
-      <span class="nb-label">Checklist<span class="nb-sub">Print &amp; tick off</span></span>
-    </a>
-    <a class="nav-btn" onclick="show('words')" href="#">
-      <span class="nb-icon">📖</span>
-      <span class="nb-label">Word List<span class="nb-sub">What words mean</span></span>
-    </a>
-
-    <div class="sidebar-section-label">The 8 Steps</div>
-    <a class="step-nav-btn" onclick="show('step1')" href="#">
-      <span class="step-badge bub-sun">🌱</span>1. Your Big Idea
-    </a>
-    <a class="step-nav-btn" onclick="show('step2')" href="#">
-      <span class="step-badge bub-leaf">🛠️</span>2. Materials
-    </a>
-    <a class="step-nav-btn" onclick="show('step3')" href="#">
-      <span class="step-badge bub-sky">📐</span>3. Shape &amp; Structure
-    </a>
-    <a class="step-nav-btn" onclick="show('step4')" href="#">
-      <span class="step-badge bub-clay">📋</span>4. Build Plan
-    </a>
-    <a class="step-nav-btn" onclick="show('step5')" href="#">
-      <span class="step-badge bub-berry">🎤</span>5. Present It
-    </a>
-    <a class="step-nav-btn" onclick="show('step6')" href="#">
-      <span class="step-badge bub-plum">🔍</span>6. Reflect
-    </a>
-    <a class="step-nav-btn" onclick="show('step7')" href="#">
-      <span class="step-badge bub-teal">🚀</span>7. Make It Better
-    </a>
-    <a class="step-nav-btn" onclick="show('step8')" href="#">
-      <span class="step-badge bub-gold">🏆</span>8. Final Statement
-    </a>
-  </nav>
-
-  <!-- ════════ MAIN ════════ -->
-  <main class="main">
-
-    <!-- ═══ HOME ═══ -->
-    <div class="panel active" id="panel-home">
-      <div class="hero-panel">
-        <span class="h-owl">🦉</span>
-        <h2>Welcome, Young Inventor!</h2>
-        <p>This guide helps you plan, build, and share an amazing project — one step at a time. Use the menu on the left to explore!</p>
-      </div>
-
-      <p class="panel-eyebrow">Jump to a section</p>
-      <div class="quick-grid">
-        <a class="quick-card" onclick="show('step1')" href="#">
-          <span class="qc-icon">👣</span>
-          <div class="qc-title">The 8 Steps</div>
-          <div class="qc-sub">Start your project plan</div>
-        </a>
-        <a class="quick-card" onclick="show('materials')" href="#">
-          <span class="qc-icon">🛠️</span>
-          <div class="qc-title">Materials</div>
-          <div class="qc-sub">What to build with</div>
-        </a>
-        <a class="quick-card" onclick="show('presenting')" href="#">
-          <span class="qc-icon">🎤</span>
-          <div class="qc-title">Presenting</div>
-          <div class="qc-sub">Share your work</div>
-        </a>
-        <a class="quick-card" onclick="show('checklist')" href="#">
-          <span class="qc-icon">✅</span>
-          <div class="qc-title">Checklist</div>
-          <div class="qc-sub">Print &amp; tick off</div>
-        </a>
-        <a class="quick-card" onclick="show('tips')" href="#">
-          <span class="qc-icon">💡</span>
-          <div class="qc-title">Tips</div>
-          <div class="qc-sub">Inventor secrets</div>
-        </a>
-        <a class="quick-card" onclick="show('words')" href="#">
-          <span class="qc-icon">📖</span>
-          <div class="qc-title">Word List</div>
-          <div class="qc-sub">Words explained</div>
-        </a>
-      </div>
-
-      <div class="owl-tip">
-        <span class="ot-icon">🦉</span>
-        <div class="ot-text">Hi! I'm Ollie the Owl. Use the menu on the left to go to any section. Ready to start? Tap <strong>The 8 Steps</strong> and begin with Step 1!</div>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 1 ═══ -->
-    <div class="panel" id="panel-step1">
-      <div class="step-hero bg-sun">
-        <div class="sh-bubble bub-sun">🌱<span class="sh-num">STEP 1</span></div>
-        <div class="sh-body">
-          <h2>Your Big Idea</h2>
-          <p>Every amazing project begins with a spark of an idea. This step helps you describe what you want to make and why it matters.</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Write your answers in a notebook. Tap each question to read the hint and example. There are no wrong answers here!</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">🤔</span>
-          <div>
-            <div class="q-text">What do you want to make or build?</div>
-            <div class="q-hint">Think of something you'd love to create — or a problem you want to fix.</div>
-            <div class="q-example">📝 Example: "A robot arm, a bird feeder, a board game, or an automatic plant waterer."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">❤️</span>
-          <div>
-            <div class="q-text">Why does it matter? What problem does it solve?</div>
-            <div class="q-hint">The best projects fix something that is annoying, hard, or missing.</div>
-            <div class="q-example">📝 Example: "My plants always die because I forget to water them."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">👥</span>
-          <div>
-            <div class="q-text">Who will use your project?</div>
-            <div class="q-hint">Think about who will benefit from your creation.</div>
-            <div class="q-example">📝 Example: "Me, my family, my class, younger kids, elderly people, or pets."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🌟</span>
-          <div>
-            <div class="q-text">Write one sentence that describes your whole project.</div>
-            <div class="q-hint">Include what it is, who it is for, and why you are making it.</div>
-            <div class="q-example">📝 Example: "I am making an automatic plant waterer for my mum so her flowers don't die."</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-sun">📋 Your output: A Project Statement</span>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('home')">🏠 Home</button>
-        <button class="snr-next" onclick="show('step2')">Next: Materials 🛠️ →</button>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 2 ═══ -->
-    <div class="panel" id="panel-step2">
-      <div class="step-hero bg-leaf">
-        <div class="sh-bubble bub-leaf">🛠️<span class="sh-num">STEP 2</span></div>
-        <div class="sh-body">
-          <h2>Materials &amp; Properties</h2>
-          <p>What will you use to build your project? Different materials have different strengths — choose ones that fit what your project needs!</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Check the <strong>Materials Guide</strong> in the menu for a full list of materials and what each one is good for!</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">📦</span>
-          <div>
-            <div class="q-text">List all the materials you might need.</div>
-            <div class="q-hint">Write every single thing you'll use — even tape and glue count!</div>
-            <div class="q-example">📝 Example: "Cardboard, wooden sticks, paint, string, and glue."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">💪</span>
-          <div>
-            <div class="q-text">Why is each material a good choice?</div>
-            <div class="q-hint">Think about whether it needs to be strong, light, waterproof, or flexible.</div>
-            <div class="q-example">📝 Example: "Cardboard is good because it is light and easy to cut."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🔍</span>
-          <div>
-            <div class="q-text">Where will you get these materials?</div>
-            <div class="q-hint">At home, at school, from a shop, or from the recycling bin?</div>
-            <div class="q-example">📝 Example: "Cardboard from the recycling bin, paint from the art cupboard."</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-leaf">🗺️ Your output: A Materials Map</span>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('step1')">← Back: Big Idea</button>
-        <button class="snr-next" onclick="show('step3')">Next: Shape &amp; Structure 📐 →</button>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 3 ═══ -->
-    <div class="panel" id="panel-step3">
-      <div class="step-hero bg-sky">
-        <div class="sh-bubble bub-sky">📐<span class="sh-num">STEP 3</span></div>
-        <div class="sh-body">
-          <h2>Shape, Structure &amp; Function</h2>
-          <p>Time to draw your blueprint! Think about how your project will look, how big it will be, and how it will work.</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Draw your project in your notebook. Show the front AND the side. Label all the parts. It does not have to be perfect — just clear!</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">✏️</span>
-          <div>
-            <div class="q-text">Draw a picture of your project and label all the parts.</div>
-            <div class="q-hint">Draw the front view and the side view. Add measurements if you can.</div>
-            <div class="q-example">📝 Example: Label the base, the walls, the lid, and any moving parts.</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🏗️</span>
-          <div>
-            <div class="q-text">How will it stay stable? Will it fall over?</div>
-            <div class="q-hint">A wide base or support legs help things stay upright.</div>
-            <div class="q-example">📝 Example: "I will make the base wider so it does not tip over."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">⚡</span>
-          <div>
-            <div class="q-text">Does it move, light up, make sounds, or do something special?</div>
-            <div class="q-hint">Describe how it works — wheels, hinges, buttons, strings, switches...</div>
-            <div class="q-example">📝 Example: "It has a wheel that spins when you push a button."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🛡️</span>
-          <div>
-            <div class="q-text">Is it safe? Are there any sharp edges or parts that could hurt someone?</div>
-            <div class="q-hint">Think about who will use it. Round off any sharp corners.</div>
-            <div class="q-example">📝 Example: "I will cover the sharp cardboard edges with tape."</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-sky">🗺️ Your output: A Blueprint Drawing</span>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('step2')">← Back: Materials</button>
-        <button class="snr-next" onclick="show('step4')">Next: Build Plan 📋 →</button>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 4 ═══ -->
-    <div class="panel" id="panel-step4">
-      <div class="step-hero bg-clay">
-        <div class="sh-bubble bub-clay">📋<span class="sh-num">STEP 4</span></div>
-        <div class="sh-body">
-          <h2>Your Build Plan</h2>
-          <p>Break your build into small steps so you know exactly what to do and when. Big projects are much easier when you take one step at a time!</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Write each build step in your notebook and put a time estimate next to it. Mark any steps where you need an adult's help!</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">1️⃣</span>
-          <div>
-            <div class="q-text">List every step of building your project in the right order.</div>
-            <div class="q-hint">Start from the very beginning — even "gather all the materials" is a step.</div>
-            <div class="q-example">📝 Example: "Step 1 — Gather materials. Step 2 — Cut the cardboard. Step 3 — Glue pieces. Step 4 — Paint it."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">⏰</span>
-          <div>
-            <div class="q-text">How long will each step take?</div>
-            <div class="q-hint">Write a time estimate next to each step. A whole project might take 1 hour or several days!</div>
-            <div class="q-example">📝 Example: "Cutting = 30 mins. Gluing = 20 mins. Drying = 2 hours."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🔧</span>
-          <div>
-            <div class="q-text">What tools will you need at each step?</div>
-            <div class="q-hint">Scissors, glue gun, ruler, tape, paintbrush, hammer... always ask an adult for help with sharp or hot tools!</div>
-            <div class="q-example">📝 Example: "Step 2 needs scissors and a ruler."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🤝</span>
-          <div>
-            <div class="q-text">Which steps need an adult's help?</div>
-            <div class="q-hint">Mark those steps clearly so you know when to ask.</div>
-            <div class="q-example">📝 Example: "Step 2 (cutting) — needs an adult."</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-clay">🗓️ Your output: A Build Sequence</span>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('step3')">← Back: Shape &amp; Structure</button>
-        <button class="snr-next" onclick="show('step5')">Next: Present It 🎤 →</button>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 5 ═══ -->
-    <div class="panel" id="panel-step5">
-      <div class="step-hero bg-berry">
-        <div class="sh-bubble bub-berry">🎤<span class="sh-num">STEP 5</span></div>
-        <div class="sh-body">
-          <h2>Presentation Plan</h2>
-          <p>How will you share your project with others? A great presentation tells the story of your project — the idea, the build, and what you learnt.</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Check the <strong>Presenting</strong> section in the menu to see all 4 formats with tips for each one!</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">🎯</span>
-          <div>
-            <div class="q-text">Which presentation format will you choose?</div>
-            <div class="q-hint">Poster, slideshow, live demonstration, or video — pick the one that suits you best.</div>
-            <div class="q-example">📝 Example: "I will do a live demonstration and bring my project in to show the class."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">💬</span>
-          <div>
-            <div class="q-text">What are the 3 most important things to explain?</div>
-            <div class="q-hint">Think: 1. What is it? 2. How does it work? 3. Why did you make it?</div>
-            <div class="q-example">📝 Example: "1. What the watering machine does. 2. How the timer works. 3. Why I made it for my mum."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">📸</span>
-          <div>
-            <div class="q-text">What photos, drawings, or objects will you include?</div>
-            <div class="q-hint">Photos of each build step make a presentation really interesting!</div>
-            <div class="q-example">📝 Example: "Photos of the building process, plus my blueprint drawing."</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-berry">🎤 Your output: A Presentation Outline</span>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('step4')">← Back: Build Plan</button>
-        <button class="snr-next" onclick="show('step6')">Next: Reflect 🔍 →</button>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 6 ═══ -->
-    <div class="panel" id="panel-step6">
-      <div class="step-hero bg-plum">
-        <div class="sh-bubble bub-plum">🔍<span class="sh-num">STEP 6</span></div>
-        <div class="sh-body">
-          <h2>Reflection &amp; Refinement</h2>
-          <p>The best inventors test their creations and make them better. Honest reflection is a superpower — it's how every great invention improves!</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Finding things to improve is NOT bad — it means you are thinking like a real scientist or engineer!</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">✅</span>
-          <div>
-            <div class="q-text">Does your project do what you planned in Step 1?</div>
-            <div class="q-hint">Compare your finished project to your original project statement.</div>
-            <div class="q-example">📝 Example: "Yes! It waters the plants. But the water comes out too fast."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🤩</span>
-          <div>
-            <div class="q-text">Ask someone else to try or look at your project. What do they think?</div>
-            <div class="q-hint">Ask a friend, classmate, or family member for honest feedback.</div>
-            <div class="q-example">📝 Example: "My friend said it was good but hard to carry."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🔧</span>
-          <div>
-            <div class="q-text">What would you change or fix if you did it again?</div>
-            <div class="q-hint">Write at least 2 things you would improve. This shows you have learnt!</div>
-            <div class="q-example">📝 Example: "I would make the base wider and add a handle."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">💭</span>
-          <div>
-            <div class="q-text">What is the one thing you are most proud of?</div>
-            <div class="q-hint">Celebrate the wins, big and small!</div>
-            <div class="q-example">📝 Example: "I am most proud that it actually works!"</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-plum">📝 Your output: A Refinement Summary</span>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('step5')">← Back: Present It</button>
-        <button class="snr-next" onclick="show('step7')">Next: Make It Better 🚀 →</button>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 7 ═══ -->
-    <div class="panel" id="panel-step7">
-      <div class="step-hero bg-sky">
-        <div class="sh-bubble bub-teal">🚀<span class="sh-num">STEP 7</span></div>
-        <div class="sh-body">
-          <h2>Enhancements &amp; Extensions</h2>
-          <p>Dream big! What cool features could you add if you had more time, more materials, or more skills? This is the "future version" of your project.</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">There are no limits here — dream as big as you like! These ideas are for your next version.</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">💫</span>
-          <div>
-            <div class="q-text">List 3 features you would love to add to a future version.</div>
-            <div class="q-hint">Think about lights, sounds, remote control, bigger size, or new colours.</div>
-            <div class="q-example">📝 Example: "1. LED lights. 2. A timer. 3. A louder buzzer to alert when done."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🔮</span>
-          <div>
-            <div class="q-text">Draw or describe what your "Version 2" would look like.</div>
-            <div class="q-hint">Let your imagination go wild — this is just for fun and future planning!</div>
-            <div class="q-example">📝 Example: "Version 2 would be smaller, solar-powered, and have a digital display."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🌍</span>
-          <div>
-            <div class="q-text">Could your project help even more people if it was bigger or different?</div>
-            <div class="q-hint">Think about how your idea could grow into something really big one day!</div>
-            <div class="q-example">📝 Example: "If it was bigger, it could water a whole school garden!"</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-sky">💡 Your output: Upgrade Ideas</span>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('step6')">← Back: Reflect</button>
-        <button class="snr-next" onclick="show('step8')">Next: Final Statement 🏆 →</button>
-      </div>
-    </div>
-
-    <!-- ═══ STEP 8 ═══ -->
-    <div class="panel" id="panel-step8">
-      <div class="step-hero bg-sun">
-        <div class="sh-bubble bub-gold">🏆<span class="sh-num">STEP 8</span></div>
-        <div class="sh-body">
-          <h2>Your Final Project Statement</h2>
-          <p>Pull everything together! Write a final paragraph that explains your whole project — the idea, how you built it, what you learnt, and what you are most proud of.</p>
-        </div>
-      </div>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Use all 7 previous steps to help you write. Read your statement out loud — if it sounds good, it is good!</div></div>
-      <div class="q-list">
-        <div class="q-card">
-          <span class="q-icon">📝</span>
-          <div>
-            <div class="q-text">Write your complete project story in your own words.</div>
-            <div class="q-hint">Aim for at least 4 sentences. Use your notebook answers to help you.</div>
-            <div class="q-example">📝 Example: "My project is an automatic plant waterer. I made it for my mum because her flowers always died. I used cardboard, a plastic bottle, and string. I learnt that the water flow is hard to control, and next time I would use a smaller hole."</div>
-          </div>
-        </div>
-        <div class="q-card">
-          <span class="q-icon">🎯</span>
-          <div>
-            <div class="q-text">Make sure your statement includes all 4 parts.</div>
-            <div class="q-hint">Check: What is it? Who is it for? How did you make it? What would you improve?</div>
-            <div class="q-example">📝 Tip: Read it to someone else and ask if they understand it.</div>
-          </div>
-        </div>
-      </div>
-      <span class="output-pill chip-sun">🏆 Your output: A Polished Final Statement</span>
-      <div style="background:linear-gradient(135deg,#FFF8E1,#FFEAF3);border:2.5px solid #FFD6A5;border-radius:var(--r);padding:20px;margin-top:20px;text-align:center;">
-        <span style="font-size:52px;display:block;margin-bottom:8px;">🎉</span>
-        <div style="font-size:20px;font-weight:900;color:var(--ink);margin-bottom:6px;">You did it, Inventor!</div>
-        <div style="font-size:13px;font-weight:600;color:var(--muted);max-width:360px;margin:0 auto;line-height:1.6;">You have completed all 8 steps. You now have a full project plan, a build guide, a reflection, and a final statement. You are ready to make something amazing!</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;">
-          <span style="background:#FFF3CC;color:#7A5800;border:2px solid #FFD966;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🌱 Big Thinker</span>
-          <span style="background:#E4F8EC;color:#1A6B40;border:2px solid #8ADBB0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🛠️ Builder</span>
-          <span style="background:#FFEAF3;color:#A3245A;border:2px solid #FFB3D4;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🎤 Presenter</span>
-          <span style="background:#EEE8FF;color:#4A2DB5;border:2px solid #C4B0F5;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🔍 Reflector</span>
-          <span style="background:#E0F5FF;color:#0B6A8F;border:2px solid #8ADDF5;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;">🚀 Dreamer</span>
-        </div>
-      </div>
-      <div class="step-nav-row">
-        <button class="snr-back" onclick="show('step7')">← Back: Make It Better</button>
-        <button class="snr-next" onclick="show('home')">🏠 Back to Home</button>
-      </div>
-    </div>
-
-    <!-- ═══ MATERIALS ═══ -->
-    <div class="panel" id="panel-materials">
-      <p class="panel-eyebrow">Step 2 reference</p>
-      <h2 class="panel-title">🛠️ Materials Guide</h2>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Each material has <strong>property tags</strong> (what it's like) and <strong>You can make</strong> ideas (what to build with it). Scan the tags to find the right one for your project!</div></div>
-
-      <!-- PROPERTY KEY -->
-      <p class="panel-eyebrow">Property colour key</p>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
-        <span class="mat-prop-tag prop-strong">💪 Strong</span>
-        <span class="mat-prop-tag prop-light">🪶 Light</span>
-        <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
-        <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
-        <span class="mat-prop-tag prop-mouldable">🫙 Mouldable</span>
-        <span class="mat-prop-tag prop-conductive">⚡ Conductive</span>
-        <span class="mat-prop-tag prop-natural">🌿 Natural</span>
-        <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
-      </div>
-
-      <div class="mat-list">
-
-        <!-- CARDBOARD -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">📦</span>
-            <span class="mat-name">Cardboard</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-light">🪶 Light</span>
-              <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">📦 Boxes &amp; frames</span>
-              <span class="mat-use-tag">🏠 Model buildings</span>
-              <span class="mat-use-tag">🚗 Vehicle bodies</span>
-              <span class="mat-use-tag">🎭 Masks &amp; armour</span>
-              <span class="mat-use-tag">🌉 Bridges</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- WOOD -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🪵</span>
-            <span class="mat-name">Wood</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-strong">💪 Strong</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🏗️ Sturdy bases</span>
-              <span class="mat-use-tag">📚 Shelves &amp; stands</span>
-              <span class="mat-use-tag">🔨 Frames &amp; supports</span>
-              <span class="mat-use-tag">🪑 Small furniture</span>
-              <span class="mat-use-tag">⚔️ Props &amp; tools</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- FABRIC -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🧵</span>
-            <span class="mat-name">Fabric</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-light">🪶 Light</span>
-              <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
-              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">👜 Pouches &amp; bags</span>
-              <span class="mat-use-tag">🪆 Soft toys</span>
-              <span class="mat-use-tag">🎪 Covers &amp; curtains</span>
-              <span class="mat-use-tag">🎀 Decorations</span>
-              <span class="mat-use-tag">👕 Costumes</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- PLASTIC BOTTLES -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🧴</span>
-            <span class="mat-name">Plastic Bottles</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-light">🪶 Light</span>
-              <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🪴 Plant waterers</span>
-              <span class="mat-use-tag">🎸 Shakers &amp; instruments</span>
-              <span class="mat-use-tag">🚀 Rockets &amp; launchers</span>
-              <span class="mat-use-tag">🐦 Bird feeders</span>
-              <span class="mat-use-tag">🎨 Paint holders</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- METAL -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🔩</span>
-            <span class="mat-name">Metal</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-strong">💪 Strong</span>
-              <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
-              <span class="mat-prop-tag prop-conductive">⚡ Conductive</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">⚙️ Moving parts</span>
-              <span class="mat-use-tag">🔋 Electrical circuits</span>
-              <span class="mat-use-tag">🗡️ Armatures &amp; hinges</span>
-              <span class="mat-use-tag">🧲 Magnetic gadgets</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- PAINT -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🖌️</span>
-            <span class="mat-name">Paint</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
-              <span class="mat-prop-tag prop-waterproof">💧 Waterproof</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🌈 Coloured surfaces</span>
-              <span class="mat-use-tag">🖼️ Murals &amp; designs</span>
-              <span class="mat-use-tag">🛡️ Protective coatings</span>
-              <span class="mat-use-tag">🔡 Signs &amp; labels</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- CLAY -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🫙</span>
-            <span class="mat-name">Clay</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-mouldable">🫙 Mouldable</span>
-              <span class="mat-prop-tag prop-strong">💪 Strong (when dry)</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🏺 Pots &amp; bowls</span>
-              <span class="mat-use-tag">🦖 Sculptures &amp; figures</span>
-              <span class="mat-use-tag">🪆 Miniature models</span>
-              <span class="mat-use-tag">🔘 Buttons &amp; beads</span>
-              <span class="mat-use-tag">🗺️ Map landforms</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- STRING & ROPE -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🪢</span>
-            <span class="mat-name">String &amp; Rope</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-light">🪶 Light</span>
-              <span class="mat-prop-tag prop-flexible">🌀 Flexible</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🧵 Pulleys &amp; levers</span>
-              <span class="mat-use-tag">📎 Joins &amp; ties</span>
-              <span class="mat-use-tag">🪁 Catapults</span>
-              <span class="mat-use-tag">🎣 Traps &amp; triggers</span>
-              <span class="mat-use-tag">🎀 Weaving &amp; art</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- LED LIGHTS -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">💡</span>
-            <span class="mat-name">LED Lights</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-conductive">⚡ Conductive</span>
-              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🔦 Torches &amp; lamps</span>
-              <span class="mat-use-tag">🌟 Light-up displays</span>
-              <span class="mat-use-tag">🚦 Traffic light models</span>
-              <span class="mat-use-tag">🎄 Glowing decorations</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- GEARS & WHEELS -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">⚙️</span>
-            <span class="mat-name">Gears &amp; Wheels</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-strong">💪 Strong</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🚗 Vehicles</span>
-              <span class="mat-use-tag">🎡 Spinning machines</span>
-              <span class="mat-use-tag">🏗️ Mechanical arms</span>
-              <span class="mat-use-tag">⚙️ Gear trains</span>
-              <span class="mat-use-tag">🪀 Wind-up toys</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- NATURAL ITEMS -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🌿</span>
-            <span class="mat-name">Natural Items</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-natural">🌿 Natural</span>
-              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">🖼️ Nature art &amp; collage</span>
-              <span class="mat-use-tag">🪺 Animal habitats</span>
-              <span class="mat-use-tag">🌍 Landscape models</span>
-              <span class="mat-use-tag">🎋 Mobiles &amp; hangings</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- STATIONERY -->
-        <div class="mat-row">
-          <div class="mat-left">
-            <span class="mat-icon">🖊️</span>
-            <span class="mat-name">Stationery</span>
-          </div>
-          <div class="mat-right">
-            <div class="mat-props">
-              <span class="mat-prop-tag prop-light">🪶 Light</span>
-              <span class="mat-prop-tag prop-decorative">🎨 Decorative</span>
-            </div>
-            <div class="mat-uses-label">✏️ You can make</div>
-            <div class="mat-uses">
-              <span class="mat-use-tag">📋 Labels &amp; signs</span>
-              <span class="mat-use-tag">📖 Instruction booklets</span>
-              <span class="mat-use-tag">🎁 Gift wrapping</span>
-              <span class="mat-use-tag">📐 Templates &amp; stencils</span>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- end mat-list -->
-
-      <!-- HOW TO CHOOSE -->
-      <p class="panel-eyebrow" style="margin-top:8px;">How to choose the right material</p>
-      <div class="check-list">
-        <div class="check-row"><span style="font-size:22px;">💪</span><div><div class="check-label">Need it to be strong? → Wood or Metal</div><div class="check-note">These hold heavy weights without bending or breaking.</div></div></div>
-        <div class="check-row"><span style="font-size:22px;">🪶</span><div><div class="check-label">Need it to be light? → Cardboard, Fabric or String</div><div class="check-note">Lighter materials are easier to carry, hang, or move around.</div></div></div>
-        <div class="check-row"><span style="font-size:22px;">💧</span><div><div class="check-label">Need it to be waterproof? → Plastic Bottles or Metal</div><div class="check-note">These won't soak up water, go soggy, or fall apart when wet.</div></div></div>
-        <div class="check-row"><span style="font-size:22px;">🫙</span><div><div class="check-label">Need to shape it yourself? → Clay</div><div class="check-note">Clay can become almost any shape before it dries and hardens.</div></div></div>
-        <div class="check-row"><span style="font-size:22px;">⚡</span><div><div class="check-label">Need electricity to flow through it? → Metal or LED Lights</div><div class="check-note">These conduct electricity safely to power circuits and lights.</div></div></div>
-        <div class="check-row"><span style="font-size:22px;">♻️</span><div><div class="check-label">Tip: check the recycling bin before buying anything!</div><div class="check-note">Cardboard boxes, plastic bottles, and old fabric are free treasure.</div></div></div>
-      </div>
-    </div>
-
-    <!-- ═══ PRESENTING ═══ -->
-    <div class="panel" id="panel-presenting">
-      <p class="panel-eyebrow">Step 5 reference</p>
-      <h2 class="panel-title">🎤 Ways to Present Your Project</h2>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">A great presentation tells three things: what your project is, how it works, and why you made it. Pick the format that suits you best!</div></div>
-      <div class="fmt-grid">
-        <div class="fmt-card">
-          <span class="fmt-icon">🖼️</span>
-          <div class="fmt-title">Poster</div>
-          <div class="fmt-desc">Draw and write about your project on a large sheet of paper or card.</div>
-          <div class="fmt-tips">
-            <div class="fmt-tip">🖊️ Use big, clear headings</div>
-            <div class="fmt-tip">📸 Add drawings or photos</div>
-            <div class="fmt-tip">🌈 Use colour to organise sections</div>
-            <div class="fmt-tip">📋 Include a clear title at the top</div>
-          </div>
-        </div>
-        <div class="fmt-card">
-          <span class="fmt-icon">💻</span>
-          <div class="fmt-title">Slideshow</div>
-          <div class="fmt-desc">Create a series of slides on a computer or tablet to show your journey.</div>
-          <div class="fmt-tips">
-            <div class="fmt-tip">📄 One idea per slide</div>
-            <div class="fmt-tip">🖼️ More pictures, fewer words</div>
-            <div class="fmt-tip">🔢 8–12 slides is ideal</div>
-            <div class="fmt-tip">🔠 Use large fonts — size 24 or bigger</div>
-          </div>
-        </div>
-        <div class="fmt-card">
-          <span class="fmt-icon">🏆</span>
-          <div class="fmt-title">Live Demo</div>
-          <div class="fmt-desc">Bring your creation and demonstrate how it works in front of others.</div>
-          <div class="fmt-tips">
-            <div class="fmt-tip">🗣️ Practise speaking out loud first</div>
-            <div class="fmt-tip">👀 Show it, then explain it</div>
-            <div class="fmt-tip">❓ Invite questions at the end</div>
-            <div class="fmt-tip">⏱️ Aim for 3–5 minutes</div>
-          </div>
-        </div>
-        <div class="fmt-card">
-          <span class="fmt-icon">🎥</span>
-          <div class="fmt-title">Video</div>
-          <div class="fmt-desc">Film yourself explaining and demonstrating your project step by step.</div>
-          <div class="fmt-tips">
-            <div class="fmt-tip">📝 Write a script or notes first</div>
-            <div class="fmt-tip">💡 Film near a window for good light</div>
-            <div class="fmt-tip">🎬 Keep it under 3 minutes</div>
-            <div class="fmt-tip">🔊 Speak slowly and clearly</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ CHECKLIST ═══ -->
-    <div class="panel" id="panel-checklist">
-      <p class="panel-eyebrow">Print this out!</p>
-      <h2 class="panel-title">✅ Project Checklist</h2>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">Print this page and tick each box as you complete it. You can also write it out in your notebook!</div></div>
-
-      <p class="panel-eyebrow">All 8 steps</p>
-      <div class="check-list" style="margin-bottom:24px;">
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">🌱</span><div><div class="check-label">Step 1 — I have written my project statement (what, why, and who it's for).</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">🛠️</span><div><div class="check-label">Step 2 — I have listed all my materials and explained why I chose them.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">📐</span><div><div class="check-label">Step 3 — I have drawn a blueprint and thought about safety and stability.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">📋</span><div><div class="check-label">Step 4 — I have written a step-by-step build plan with time estimates.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">🎤</span><div><div class="check-label">Step 5 — I have chosen a presentation format and planned what I will share.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">🔍</span><div><div class="check-label">Step 6 — I have tested my project and written a reflection with improvements.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">🚀</span><div><div class="check-label">Step 7 — I have listed at least 3 ideas for a future, improved version.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span class="check-icon">🏆</span><div><div class="check-label">Step 8 — I have written my final project statement using all 7 steps.</div></div></div>
-      </div>
-
-      <p class="panel-eyebrow">Bonus quality checks</p>
-      <div class="check-list">
-        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🛡️</span><div><div class="check-label">My project is safe for others to use or touch.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🤝</span><div><div class="check-label">Someone else has tried my project and given me feedback.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🗣️</span><div><div class="check-label">I can explain my project clearly without reading my notes.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🏷️</span><div><div class="check-label">All my sketches and diagrams are labelled.</div></div></div>
-        <div class="check-row"><div class="check-box"></div><span style="font-size:20px;">🌟</span><div><div class="check-label">I am proud of what I have made!</div></div></div>
-      </div>
-    </div>
-
-    <!-- ═══ TIPS ═══ -->
-    <div class="panel" id="panel-tips">
-      <p class="panel-eyebrow">From Ollie the Owl</p>
-      <h2 class="panel-title">💡 Top Tips for Young Inventors</h2>
-      <div class="tips-grid">
-        <div class="tip-card"><span class="tip-icon">💡</span><div><div class="tip-title">Start with a problem</div><div class="tip-body">The best projects solve a real problem. Look around you — what is annoying, hard, or missing? That's your starting point!</div></div></div>
-        <div class="tip-card"><span class="tip-icon">✏️</span><div><div class="tip-title">Draw before you build</div><div class="tip-body">A quick sketch saves a lot of wasted materials and time. Even a rough drawing helps you think things through.</div></div></div>
-        <div class="tip-card"><span class="tip-icon">🔁</span><div><div class="tip-title">It's OK to start again</div><div class="tip-body">Every great inventor fails many times before they succeed. Starting over is not giving up — it's learning!</div></div></div>
-        <div class="tip-card"><span class="tip-icon">🤝</span><div><div class="tip-title">Ask for help</div><div class="tip-body">If you're stuck, ask a teacher, parent, or classmate. Explaining your idea out loud often helps you find the answer yourself!</div></div></div>
-        <div class="tip-card"><span class="tip-icon">♻️</span><div><div class="tip-title">Reuse and recycle</div><div class="tip-body">Before buying new materials, look at what you have at home. Cardboard boxes, bottle tops, and old fabric are treasure!</div></div></div>
-        <div class="tip-card"><span class="tip-icon">📸</span><div><div class="tip-title">Take photos as you go</div><div class="tip-body">Photograph each step of your build. These are perfect for your presentation and show how hard you worked!</div></div></div>
-        <div class="tip-card"><span class="tip-icon">🧪</span><div><div class="tip-title">Test small first</div><div class="tip-body">Before building the whole thing, test your riskiest idea with a tiny version. This saves time and materials!</div></div></div>
-        <div class="tip-card"><span class="tip-icon">🎉</span><div><div class="tip-title">Celebrate your effort</div><div class="tip-body">The process matters as much as the result. Be proud of every step forward, even the small ones!</div></div></div>
-      </div>
-    </div>
-
-    <!-- ═══ WORDS ═══ -->
-    <div class="panel" id="panel-words">
-      <p class="panel-eyebrow">Word list</p>
-      <h2 class="panel-title">📖 Words to Know</h2>
-      <div class="owl-tip"><span class="ot-icon">🦉</span><div class="ot-text">These are the special words used in this guide. Read them before you start so you understand everything!</div></div>
-      <div class="gloss-grid">
-        <div class="gloss-card"><div class="gloss-word"><span>🌱</span> Concept</div><div class="gloss-def">Your main idea — the thing you want to make or solve.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>📐</span> Blueprint</div><div class="gloss-def">A detailed drawing of your project showing its shape, size, and parts.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🏗️</span> Structure</div><div class="gloss-def">The frame or body of your project that holds everything together.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>⚡</span> Function</div><div class="gloss-def">What your project does — its job or purpose.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🔬</span> Property</div><div class="gloss-def">A quality of a material, like being strong, light, bendy, or waterproof.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🔁</span> Iteration</div><div class="gloss-def">Making a new and improved version of your design after testing it.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🔍</span> Reflection</div><div class="gloss-def">Thinking carefully about what worked well and what could be better.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🎤</span> Presentation</div><div class="gloss-def">The way you share your finished project with other people.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🏋️</span> Stability</div><div class="gloss-def">How well your project stays upright and does not wobble or fall over.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🚀</span> Enhancement</div><div class="gloss-def">An improvement or extra feature that makes your project even better.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>🛡️</span> Safety</div><div class="gloss-def">Making sure your project cannot hurt anyone who uses or touches it.</div></div>
-        <div class="gloss-card"><div class="gloss-word"><span>👥</span> Audience</div><div class="gloss-def">The people who will use, see, or benefit from your project.</div></div>
-      </div>
-    </div>
-
-  </main>
-</div>
+<dialog id="resetDlg" aria-labelledby="resetTitle">
+  <h3 id="resetTitle">Start a new project?</h3>
+  <p>This clears all your answers and your drawing on this device. Download your PDF first if you want to keep them.</p>
+  <div class="row">
+    <button class="btn" id="resetNo">No, keep my notes</button>
+    <button class="btn primary" id="resetYes">Yes, start new</button>
+  </div>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
-const pages = ['home','step1','step2','step3','step4','step5','step6','step7','step8','materials','presenting','checklist','tips','words'];
+/* ═════════════ CONTENT ═════════════ */
+const STEPS = [
+ {n:1,icon:'🌱',color:'sun',short:'Your Big Idea',title:'Your Big Idea',
+  intro:'Every project starts with an idea. Say what you want to make and why it matters.',
+  tip:'There are no wrong answers. Type in the boxes. Your notes save by themselves.',
+  out:'A Project Statement',
+  qs:[
+   {id:'s1q1',icon:'🤔',text:'What do you want to make or build?',hint:'Think of something you would love to create, or a problem you want to fix.',ex:'A robot arm, a bird feeder, a board game, or a plant waterer.',starter:'I want to make '},
+   {id:'s1q2',icon:'❤️',text:'Why does it matter? What problem does it fix?',hint:'The best projects fix something that is annoying, hard, or missing.',ex:'My plants always die because I forget to water them.',starter:'It matters because '},
+   {id:'s1q3',icon:'👥',text:'Who will use your project?',hint:'Think about who it will help.',ex:'Me, my family, my class, younger kids, older people, or pets.',starter:'It is for '},
+   {id:'s1q4',icon:'🌟',text:'Write one sentence about your whole project.',hint:'Say what it is, who it is for, and why you are making it.',ex:'I am making a plant waterer for my mum so her flowers do not die.',starter:'I am making a '}
+  ]},
+ {n:2,icon:'🛠️',color:'leaf',short:'Materials',title:'Materials and Properties',
+  intro:'What will you build with? Each material is good at different things. Pick the ones that fit your project.',
+  tip:'Not sure what to pick? Open the Materials Guide in the menu.',
+  out:'A Materials Map',
+  qs:[
+   {id:'s2q1',icon:'📦',text:'List everything you need.',hint:'Write every single thing. Tape and glue count too!',ex:'Cardboard, wooden sticks, paint, string, and glue.',starter:'I need '},
+   {id:'s2q2',icon:'💪',text:'Why is each material a good choice?',hint:'Does it need to be strong, light, waterproof, or bendy?',ex:'Cardboard is good because it is light and easy to cut.',starter:'I chose '},
+   {id:'s2q3',icon:'🔍',text:'Where will you get your materials?',hint:'At home, at school, from a shop, or from the recycling bin?',ex:'Cardboard from the recycling bin. Paint from the art cupboard.',starter:'I will get '}
+  ]},
+ {n:3,icon:'📐',color:'sky',short:'Shape & Structure',title:'Shape, Structure and Function',
+  intro:'Time to draw your blueprint! Show how your project will look, how big it is, and how it works.',
+  tip:'Your drawing does not have to be perfect. It just has to be clear. Label the parts!',
+  out:'A Blueprint Drawing',
+  qs:[
+   {id:'s3q1',type:'draw',icon:'✏️',text:'Draw your project and label the parts.',hint:'Draw it here with your finger or mouse. Or draw on paper and write the labels below.',ex:'Label the base, the walls, the lid, and any moving parts.',starter:'The parts are: '},
+   {id:'s3q2',icon:'🏗️',text:'How will it stay standing? Could it fall over?',hint:'A wide base or support legs help things stay up.',ex:'I will make the base wider so it does not tip over.',starter:'It will stay up because '},
+   {id:'s3q3',icon:'⚡',text:'Does it move, light up, make sounds, or do something special?',hint:'Say how it works: wheels, hinges, buttons, strings, switches.',ex:'It has a wheel that spins when you push it.',starter:'It works by '},
+   {id:'s3q4',icon:'🛡️',text:'Is it safe? Are there sharp edges or parts that could hurt someone?',hint:'Think about who will use it. Cover or round off sharp corners.',ex:'I will cover the sharp cardboard edges with tape.',starter:'To make it safe I will '}
+  ]},
+ {n:4,icon:'📋',color:'clay',short:'Build Plan',title:'Your Build Plan',
+  intro:'Break your build into small steps. Big projects are easier one step at a time!',
+  tip:'Put a time next to each step. Mark the steps where you need a grown-up.',
+  out:'A Build Sequence',
+  qs:[
+   {id:'s4q1',icon:'1️⃣',text:'List every building step in the right order.',hint:'Start at the very beginning. "Get all my materials" is a step too.',ex:'1. Get materials. 2. Cut the cardboard. 3. Glue the pieces. 4. Paint it.',starter:'1. Get all my materials.\n2. ',rows:5},
+   {id:'s4q2',icon:'⏰',text:'How long will each step take?',hint:'Make a guess for each step. A project can take 1 hour or many days!',ex:'Cutting = 30 minutes. Gluing = 20 minutes. Drying = 2 hours.',starter:'Step 1 takes '},
+   {id:'s4q3',icon:'🔧',text:'What tools do you need?',hint:'Scissors, ruler, tape, paintbrush, glue. Always ask a grown-up to help with sharp or hot tools.',ex:'Step 2 needs scissors and a ruler.',starter:'I need '},
+   {id:'s4q4',icon:'🤝',text:'Which steps need a grown-up to help?',hint:'Mark them now so you know when to ask.',ex:'Step 2 (cutting) needs a grown-up.',starter:'I need help with '}
+  ]},
+ {n:5,icon:'🎤',color:'berry',short:'Present It',title:'Presentation Plan',
+  intro:'How will you share your project? A great talk tells the story: the idea, the build, and what you learnt.',
+  tip:'Open Presenting in the menu to see 4 ways to share, with tips for each.',
+  out:'A Presentation Outline',
+  qs:[
+   {id:'s5q1',icon:'🎯',text:'How will you present your project?',hint:'Poster, slideshow, live demo, or video. Pick the one that suits you.',ex:'I will do a live demo and show my project to the class.',starter:'I will present with a '},
+   {id:'s5q2',icon:'💬',text:'What are the 3 most important things to say?',hint:'1. What is it? 2. How does it work? 3. Why did you make it?',ex:'1. What the waterer does. 2. How the string works. 3. Why I made it for my mum.',starter:'1. '},
+   {id:'s5q3',icon:'📸',text:'What photos, drawings, or objects will you show?',hint:'Photos of each building step make a talk really interesting.',ex:'Photos of me building it, plus my blueprint drawing.',starter:'I will show '}
+  ]},
+ {n:6,icon:'🔍',color:'plum',short:'Test & Reflect',title:'Test, Reflect and Refine',
+  intro:'The best inventors test what they make and then make it better. Looking back honestly is a superpower!',
+  tip:'Finding things to fix is not bad. It means you think like a real engineer.',
+  out:'A Refinement Summary',
+  qs:[
+   {id:'s6q1',icon:'✅',text:'Does your project do what you planned in Step 1?',hint:'Look at your sentence from Step 1. Does your project match it?',ex:'Yes! It waters the plants. But the water comes out too fast.',starter:'My project '},
+   {id:'s6q2',icon:'🤩',text:'Ask someone to try your project. What do they think?',hint:'Ask a friend or someone in your family to tell you honestly.',ex:'My friend said it was good but hard to carry.',starter:'I asked '},
+   {id:'s6q3',icon:'🔧',text:'What would you change or fix next time?',hint:'Write at least 2 things. This shows what you have learnt!',ex:'I would make the base wider and add a handle.',starter:'Next time I would '},
+   {id:'s6q4',icon:'💭',text:'What are you most proud of?',hint:'Celebrate the wins, big and small!',ex:'I am most proud that it really works!',starter:'I am most proud that '}
+  ]},
+ {n:7,icon:'🚀',color:'teal',short:'Make It Better',title:'Make It Even Better',
+  intro:'Dream big! What would you add with more time, more materials, or more skills? This is your future version.',
+  tip:'There are no limits here. These ideas are for Version 2.',
+  out:'Upgrade Ideas',
+  qs:[
+   {id:'s7q1',icon:'💫',text:'List 3 things you would love to add.',hint:'Lights, sounds, remote control, a bigger size, new colours?',ex:'1. LED lights. 2. A timer. 3. A buzzer that tells me when it is done.',starter:'1. '},
+   {id:'s7q2',icon:'🔮',text:'What would Version 2 look like?',hint:'Let your imagination go wild. This one is just for fun.',ex:'Version 2 would be smaller and use power from the sun.',starter:'Version 2 would '},
+   {id:'s7q3',icon:'🌍',text:'Could your project help more people if it was bigger or different?',hint:'Think how your idea could grow one day.',ex:'If it was bigger, it could water a whole school garden!',starter:'It could help '}
+  ]},
+ {n:8,icon:'🏆',color:'gold',short:'Final Statement',title:'Your Final Project Statement',
+  intro:'Put it all together! Tell the whole story: your idea, how you built it, what you learnt, and what you are proud of.',
+  tip:'Read it out loud. If it sounds good, it is good!',
+  out:'A Polished Final Statement',
+  qs:[
+   {id:'s8q1',icon:'📝',text:'Write your whole project story in your own words.',hint:'Try for 4 sentences or more. Your notes from the other steps are shown below to help.',ex:'My project is a plant waterer. I made it for my mum because her flowers always died. I used a plastic bottle and string. Next time I would use a thicker string.',starter:'My project is ',rows:6},
+   {id:'s8q2',type:'ticks',icon:'🎯',text:'Check your story has all 4 parts.',hint:'Tick each part you can find in your story.',ticks:[['s8a','What is it?'],['s8b','Who is it for?'],['s8c','How did you make it?'],['s8d','What would you make better?']]}
+  ]}
+];
 
-function show(id) {
-  pages.forEach(p => {
-    const panel = document.getElementById('panel-' + p);
-    if (panel) panel.classList.toggle('active', p === id);
+const PROPS = {strong:['💪','Strong'],light:['🪶','Light'],flexible:['🌀','Bendy'],waterproof:['💧','Waterproof'],mouldable:['🤲','Mouldable'],conductive:['⚡','Carries electricity'],natural:['🌿','Natural'],decorative:['🎨','Decorative']};
+
+const MATERIALS = [
+ {icon:'📦',name:'Cardboard',props:['light','flexible'],uses:'boxes and frames, model buildings, vehicle bodies, masks, bridges'},
+ {icon:'🪵',name:'Wood',props:['strong','natural'],uses:'sturdy bases, shelves and stands, frames, small furniture'},
+ {icon:'🧵',name:'Fabric',props:['light','flexible','decorative'],uses:'pouches and bags, soft toys, covers, decorations, costumes'},
+ {icon:'🧴',name:'Plastic Bottles',props:['light','waterproof'],uses:'plant waterers, shakers, rockets, bird feeders, paint holders'},
+ {icon:'🔩',name:'Metal',props:['strong','waterproof','conductive'],uses:'moving parts, hinges, circuits, magnet gadgets'},
+ {icon:'🖌️',name:'Paint',props:['decorative'],uses:'colour, patterns, signs and labels, a coat that protects'},
+ {icon:'🏺',name:'Clay',props:['mouldable','natural'],uses:'pots and bowls, figures, tiny models, beads, map hills'},
+ {icon:'🪢',name:'String & Rope',props:['light','flexible'],uses:'pulleys, ties and joins, handles, weaving, hanging things'},
+ {icon:'💡',name:'LED Lights',props:['conductive','decorative'],uses:'torches and lamps, light-up displays, traffic light models'},
+ {icon:'⚙️',name:'Gears & Wheels',props:['strong'],uses:'vehicles, spinning machines, moving arms, wind-up toys'},
+ {icon:'🌿',name:'Natural Items',props:['natural','decorative'],uses:'nature art, animal homes, landscape models, mobiles'},
+ {icon:'🖊️',name:'Stationery',props:['light','decorative'],uses:'labels and signs, instruction booklets, templates and stencils'}
+];
+
+const CHOOSE = [
+ ['💪','Need it strong? Try wood or metal.','They hold heavy things without bending or breaking.'],
+ ['🪶','Need it light? Try cardboard, fabric or string.','Light things are easy to carry, hang, and move.'],
+ ['💧','Need it waterproof? Try plastic bottles or metal.','They do not soak up water or go soggy.'],
+ ['🤲','Need to shape it yourself? Try clay.','Clay can be almost any shape before it dries hard.'],
+ ['⚡','Need electricity to flow? Use metal.','Wires and foil carry electricity to lights and buzzers.'],
+ ['♻️','Check the recycling bin before you buy anything!','Boxes, bottles, and old fabric are free treasure.']
+];
+
+const IDEAS = [
+ {id:'bird',icon:'🐦',name:'Bottle bird feeder',level:'Easy',time:'About 1 hour',
+  solves:'Birds near you need food, and you want to watch them up close.',
+  need:['1 clean plastic bottle with its lid','2 wooden spoons or straight sticks','String','Bird seed'],
+  mats:['Plastic Bottles','Wood','String & Rope'],
+  steps:['Wash the bottle and let it dry.','Ask a grown-up to make 2 holes, one on each side of the bottle, a little way up from the bottom.','Push a spoon through both holes so it sticks out on each side. Birds stand on it.','Do the same higher up with the second spoon, turned the other way.','Fill the bottle with bird seed and put the lid on.','Tie string around the neck and hang it outside.'],
+  adult:'Making the holes in the bottle.',test:'Do birds come to it? Does the seed stay dry when it rains?'},
+ {id:'plant',icon:'🪴',name:'Self-watering plant pot',level:'Easy',time:'About 1 hour',
+  solves:'Plants die when people forget to water them.',
+  need:['1 clean plastic bottle with its lid','Thick cotton string or a strip of old cloth','Soil','Seeds or a small plant','Water'],
+  mats:['Plastic Bottles','String & Rope','Fabric'],
+  steps:['Ask a grown-up to cut the bottle in half and make a hole in the lid.','Push the string through the lid so half hangs out on each side.','Screw the lid back on. Turn the top half upside down and sit it inside the bottom half.','Fill the top half with soil. Make sure the string goes up into the soil.','Plant your seeds.','Pour water into the bottom half. The string carries water up to the soil.'],
+  adult:'Cutting the bottle and making the hole in the lid.',test:'Is the soil still damp after 2 days without watering?'},
+ {id:'car',icon:'🚗',name:'Balloon-powered car',level:'Medium',time:'1 to 2 hours',
+  solves:'You want a car that moves by itself with no batteries.',
+  need:['Thick cardboard','4 bottle tops','2 wooden skewers','3 straws','1 balloon','Sticky tape'],
+  mats:['Cardboard','Gears & Wheels','Stationery'],
+  steps:['Cut a cardboard rectangle about as big as your hand. This is the car body.','Tape 2 straws across the bottom, one near the front and one near the back.','Push a skewer through each straw. Push a bottle top onto each end to make 4 wheels.','Tape the neck of the balloon around the end of the third straw so no air leaks out.','Tape that straw on top of the car with the open end pointing off the back.','Blow up the balloon through the straw, pinch it, put the car down, and let go!'],
+  adult:'Making a hole in each bottle top and trimming the sharp skewer ends.',test:'How far does it go? Does it go straight?'},
+ {id:'marble',icon:'🎢',name:'Marble run',level:'Medium',time:'1 to 2 hours',
+  solves:'You want a game where you can change the track again and again.',
+  need:['A big flat piece of cardboard or a box lid','Cardboard tubes','Sticky tape','1 marble','A small cup'],
+  mats:['Cardboard','Stationery'],
+  steps:['Stand the big cardboard up against a wall or a chair.','Cut the tubes in half the long way to make open tracks.','Tape the first track near the top so it slopes down.','Tape the next track under its end, sloping the other way.','Keep adding tracks until you reach the bottom. Put the cup there to catch the marble.','Drop the marble in at the top and fix any place where it falls off.'],
+  adult:'Cutting thick tubes. Keep marbles away from very young children.',test:'Does the marble reach the cup every time? How long does it take?'},
+ {id:'tidy',icon:'✏️',name:'Desk tidy',level:'Easy',time:'About 1 hour, plus drying time',
+  solves:'Pens and pencils get lost all over the desk.',
+  need:['3 or 4 cardboard tubes or clean tins','A piece of thick cardboard for the base','Glue','Paint or coloured paper'],
+  mats:['Cardboard','Paint','Stationery'],
+  steps:['Cut the tubes so they are different heights.','Paint them or cover them in coloured paper.','Cut a base big enough for all the tubes to stand on.','Glue the tubes onto the base, close together.','Let it dry, then add labels like "pens" and "rulers".'],
+  adult:'Cutting thick tubes. Checking tins have no sharp edges.',test:'Does it stay standing when it is full of pens?'},
+ {id:'game',icon:'🎲',name:'My own board game',level:'Easy',time:'2 hours or more',
+  solves:'You want a brand new game to play with friends and family.',
+  need:['A big piece of card or cardboard','Pens or pencils','A ruler','Bottle tops for counters','A dice'],
+  mats:['Cardboard','Stationery','Paint'],
+  steps:['Pick a theme, like space, jungle, or the sea. Decide how a player wins.','Draw a path of about 30 squares from Start to Finish.','Add special squares, like "Go forward 2" or "Miss a turn".','Decorate the board and make a counter for each player.','Write the rules on a card.','Play it with a friend and change any rule that is not fun.'],
+  adult:'Nothing tricky here. Ask if you want help cutting thick card.',test:'Can a friend play it just by reading your rules?'},
+ {id:'bridge',icon:'🌉',name:'Stick bridge',level:'Medium',time:'2 hours, plus drying overnight',
+  solves:'You need to cross a gap and hold up something heavy.',
+  need:['About 50 lolly sticks','White glue','Clothes pegs to hold sticks while they dry','Coins or small toys for testing'],
+  mats:['Wood'],
+  steps:['Make a gap of 20 cm between two piles of books.','Glue sticks into triangles. Triangles are a very strong shape.','Join the triangles in a row to make one side of the bridge. Make a second side the same.','Glue sticks across the bottom to join the two sides and make a road.','Leave it to dry overnight.','Put it across the gap and add coins one at a time.'],
+  adult:'Nothing sharp. Ask before you use a hot glue gun.',test:'How many coins can it hold before it bends?'},
+ {id:'catapult',icon:'🎯',name:'Pom-pom catapult',level:'Easy',time:'About 30 minutes',
+  solves:'You want to find out how levers throw things.',
+  need:['7 lolly sticks','About 5 rubber bands','1 bottle top','Glue or strong tape','Pom-poms or scrunched paper balls'],
+  mats:['Wood','Stationery'],
+  steps:['Stack 5 sticks and wrap a rubber band around each end.','Stack the other 2 sticks and wrap a rubber band around one end only.','Open the 2 sticks like a mouth and slide the stack of 5 in between them.','Wrap a rubber band where the stacks cross to hold them together.','Stick the bottle top onto the end of the top stick.','Put a pom-pom in the bottle top, press down, and let go!'],
+  adult:'Using a hot glue gun, if you choose one. Only launch soft things, and never aim at faces.',test:'How far does the pom-pom fly? What happens if you move the stack of 5?'}
+];
+
+const FORMATS = [
+ ['🖼️','Poster','Draw and write about your project on a big sheet of paper or card.',['🖊️ Use big, clear headings','📸 Add drawings or photos','🌈 Use colour to sort the sections','📋 Put a clear title at the top']],
+ ['💻','Slideshow','Make slides on a computer or tablet to show your journey.',['📄 One idea on each slide','🖼️ More pictures, fewer words','🔢 8 to 12 slides is plenty','🔠 Use big letters, size 24 or more']],
+ ['🏆','Live demo','Bring what you made and show how it works.',['🗣️ Practise out loud first','👀 Show it, then explain it','❓ Ask for questions at the end','⏱️ Aim for 3 to 5 minutes']],
+ ['🎥','Video','Film yourself showing and explaining your project.',['📝 Write notes first','💡 Film near a window for good light','🎬 Keep it under 3 minutes','🔊 Speak slowly and clearly']]
+];
+
+const TIPS = [
+ ['💡','Start with a problem','Look around you. What is annoying, hard, or missing? That is your starting point!'],
+ ['✏️','Draw before you build','A quick sketch saves time and materials. Even a rough drawing helps you think.'],
+ ['🔁','It is OK to start again','Every great inventor gets it wrong many times. Starting over is learning, not giving up.'],
+ ['🤝','Ask for help','Stuck? Ask a teacher, parent, or friend. Saying your idea out loud often helps you find the answer.'],
+ ['♻️','Reuse and recycle','Look at what you have at home first. Boxes, bottle tops, and old fabric are treasure!'],
+ ['📸','Take photos as you go','Take a photo of each building step. They are perfect for your presentation.'],
+ ['🧪','Test small first','Try your trickiest idea with a tiny version before you build the whole thing.'],
+ ['🎉','Celebrate your effort','How you got there matters as much as what you made. Be proud of every step!']
+];
+
+const WORDS = [
+ ['🌱','Concept','Your main idea. The thing you want to make or fix.'],
+ ['📐','Blueprint','A careful drawing of your project that shows its shape, size, and parts.'],
+ ['🏗️','Structure','The frame or body that holds your project together.'],
+ ['⚡','Function','What your project does. Its job.'],
+ ['🔬','Property','What a material is like: strong, light, bendy, or waterproof.'],
+ ['🔁','Iteration','Making a new, better version after you test the first one.'],
+ ['🔍','Reflection','Thinking carefully about what went well and what could be better.'],
+ ['🎤','Presentation','How you share your finished project with other people.'],
+ ['🏋️','Stability','How well your project stays up without wobbling or falling over.'],
+ ['🚀','Enhancement','An extra feature that makes your project even better.'],
+ ['🛡️','Safety','Making sure your project cannot hurt anyone.'],
+ ['👥','Audience','The people who will use or see your project.']
+];
+
+const BONUS = [['b1','🛡️','My project is safe for others to use or touch.'],['b2','🤝','Someone else has tried my project and told me what they think.'],['b3','🗣️','I can explain my project without reading my notes.'],['b4','🏷️','All my drawings are labelled.'],['b5','🌟','I am proud of what I have made!']];
+
+const HELPERS = [['ideas','🧠','Project Ideas','Pick one and get notes'],['materials','🧰','Materials Guide','What to build with'],['presenting','🎤','Presenting','Ways to share'],['tips','💡','Inventor Tips','Do your best work'],['words','📖','Word List','What words mean'],['checklist','✅','Checklist','Tick things off']];
+
+/* ═════════════ STATE ═════════════ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='project-maker-notes-v2';
+const blank=()=>({name:'',project:'',ideaId:'',answers:{},mats:[],drawing:'',drawn:false,checks:{},size:1});
+let state=blank(), storageOK=true;
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s&&typeof s==='object') state=Object.assign(blank(),s); localStorage.setItem(KEY+'-t','1'); localStorage.removeItem(KEY+'-t');}catch(e){storageOK=false;}
+let saveT, savedT;
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{
+    try{localStorage.setItem(KEY,JSON.stringify(state)); const el=$('#saved'); el.classList.add('on'); clearTimeout(savedT); savedT=setTimeout(()=>el.classList.remove('on'),1500);}
+    catch(e){ if(storageOK){storageOK=false; renderWarn();} }
+  },250);
+}
+const ans=id=>(state.answers[id]||'').trim();
+const qDone=q=>q.type==='ticks'?true:q.type==='draw'?(state.drawn||!!ans(q.id)):!!ans(q.id);
+const stepDone=s=>!!state.checks['step'+s.n]||s.qs.every(qDone);
+const PAGES=['home','ideas',...STEPS.map(s=>'step-'+s.n),'materials','presenting','tips','words','checklist'];
+
+/* ═════════════ BUILD THE PAGE ═════════════ */
+function buildSide(){
+  const item=(id,ic,label)=>`<button class="nav" data-go="${id}"><span class="ic">${ic}</span>${label}</button>`;
+  $('#side').innerHTML=`
+   <div class="logo"><span class="owl">🦉</span><div><h1>My Project Maker</h1><p>Ages 7 to 10</p></div></div>
+   <div class="sec">Start here</div>
+   ${item('home','🏠','Home')}${item('ideas','🧠','Project Ideas')}
+   <div class="sec">My 8 steps</div>
+   ${STEPS.map(s=>`<button class="nav c-${s.color}" data-go="step-${s.n}" data-step="${s.n}"><span class="badge">${s.icon}</span>${s.n}. ${esc(s.short)}<span class="mark" aria-hidden="true">⭐</span></button>`).join('')}
+   <div class="sec">Helpers</div>
+   ${HELPERS.slice(1).map(h=>item(h[0],h[1],h[2])).join('')}`;
+}
+
+function qHTML(q,s){
+  let body='';
+  if(q.type==='ticks'){
+    body=`<div class="ticks">${q.ticks.map(t=>`<label class="tick"><input type="checkbox" id="c-${t[0]}" data-check="${t[0]}">${esc(t[1])}</label>`).join('')}</div>`;
+  }else{
+    const pad=q.type==='draw'?`
+      <div class="padtools" role="group" aria-label="Drawing tools">
+        ${[['#2B1F0E','Black'],['#E03131','Red'],['#1C7ED6','Blue'],['#2F9E5B','Green'],['#F08C00','Orange'],['#9C36B5','Purple']].map((c,i)=>`<button class="sw" style="background:${c[0]}" data-color="${c[0]}" aria-label="${c[1]} pen" aria-pressed="${i===0}"></button>`).join('')}
+        <button class="btn small" data-color="erase" aria-pressed="false">🧽 Rubber</button>
+        <button class="btn small" id="padUndo">↩️ Undo</button>
+        <button class="btn small" id="padClear">🗑️ Clear</button>
+      </div>
+      <div class="padwrap"><canvas id="pad" width="900" height="540" aria-label="Drawing area for your blueprint"></canvas></div>
+      <label class="qhint" for="a-${q.id}" style="display:block">Labels and sizes (you can also write these on paper):</label>`:'';
+    const sofar=q.id==='s8q1'?`<div class="sofar" id="sofar"></div>`:'';
+    body=`${sofar}${pad}<textarea id="a-${q.id}" data-q="${q.id}" rows="${q.rows||3}" placeholder="Type your answer here…"></textarea>
+      <div class="qtools"><button class="btn small" data-starter="${q.id}">✏️ Help me start</button></div>`;
+  }
+  return `<div class="q" id="q-${q.id}">
+    <div class="qhead"><span class="qicon">${q.icon}</span>${q.type==='ticks'?`<span class="qtext">${esc(q.text)}</span>`:`<label class="qtext" for="a-${q.id}">${esc(q.text)}</label>`}<span class="qok" aria-hidden="true">✓</span></div>
+    <p class="qhint">${esc(q.hint)}</p>
+    ${q.ex?`<div class="qex">📝 Example: ${esc(q.ex)}</div>`:''}
+    ${body}</div>`;
+}
+
+function stepHTML(s){
+  const prev=s.n===1?['home','🏠 Home']:['step-'+(s.n-1),'← Back'];
+  const nx=STEPS[s.n];
+  const next=nx?`<button class="btn primary big" data-go="step-${nx.n}">Next: ${esc(nx.short)} ${nx.icon} →</button>`:`<button class="btn primary big" data-go="checklist">Go to my checklist ✅ →</button>`;
+  const matPick=s.n===2?`<div class="q"><div class="qhead"><span class="qicon">👆</span><span class="qtext">Tap the materials you will use.</span></div>
+     <p class="qhint">They go onto your notes. Add anything else in the box below.</p>
+     <div class="chips">${MATERIALS.map(m=>`<button class="chip" data-mat="${esc(m.name)}" aria-pressed="false">${m.icon} ${esc(m.name)}</button>`).join('')}</div>
+     <div class="qtools"><button class="btn small" data-go="materials">🧰 Open the Materials Guide</button></div></div>`:'';
+  const party=s.n===8?`<div class="party"><div class="em">🎉</div><h3>You did it, Inventor!</h3><p>You have a project plan, a build guide, a reflection, and a final statement. Save them all in one PDF.</p><button class="btn primary big" data-pdf="mine">📄 Download my notes (PDF)</button></div>`:'';
+  return `<section class="panel" id="p-step-${s.n}" aria-labelledby="h-step-${s.n}">
+    <div class="dots" role="group" aria-label="Steps">${STEPS.map(d=>`<button class="dot" data-go="step-${d.n}" data-dot="${d.n}" aria-label="Step ${d.n}: ${esc(d.short)}" ${d.n===s.n?'aria-current="step"':''}>${d.n}</button>`).join('')}</div>
+    <div class="shero c-${s.color}"><div class="bubble">${s.icon}<span>STEP ${s.n}</span></div>
+      <div><h2 id="h-step-${s.n}">${esc(s.title)}</h2><p>${esc(s.intro)}</p>
+      <button class="btn small" data-read="${s.n}" hidden>🔊 Read to me</button></div></div>
+    <div class="owltip"><span>🦉</span><div>${esc(s.tip)}</div></div>
+    <div class="qlist">${matPick}${s.qs.map(q=>qHTML(q,s)).join('')}</div>
+    <span class="out c-${s.color}">📋 You will make: ${esc(s.out)}</span>
+    ${party}
+    <div class="navrow"><button class="btn" data-go="${prev[0]}">${prev[1]}</button>${next}</div>
+  </section>`;
+}
+
+function buildPanels(){
+  const home=`<section class="panel" id="p-home">
+    <div id="warn"></div>
+    <div class="hero"><span class="owl">🦉</span><div><h2 id="hello">Welcome, Young Inventor!</h2>
+      <p>I am Ollie the Owl. I will help you plan, build, and share your own project, one step at a time.</p></div></div>
+    <div class="box" style="margin-bottom:22px">
+      <div class="mine">
+        <div class="field"><label for="f-name">Your first name</label><input id="f-name" data-field="name" maxlength="30" autocomplete="off" placeholder="Type your first name"></div>
+        <div class="field"><label for="f-project">My project is called</label><input id="f-project" data-field="project" maxlength="60" autocomplete="off" placeholder="You can fill this in later"></div>
+      </div>
+      <div class="row">
+        <button class="btn primary big" id="goNext" data-go="step-1">▶ Start Step 1</button>
+        <button class="btn big" data-go="ideas">🧠 I need an idea</button>
+      </div>
+    </div>
+    <div class="how">
+      <div><span class="n">1</span><b>Answer the questions</b>Type in the boxes. Your notes save by themselves on this device.</div>
+      <div><span class="n">2</span><b>Collect 8 stars</b>You get a star each time you finish a step.</div>
+      <div><span class="n">3</span><b>Download your notes</b>Get everything in one PDF to print or show your teacher.</div>
+    </div>
+    <h3 class="sub">My 8 steps</h3>
+    <div class="path">${STEPS.map(s=>`<button class="tile c-${s.color}" data-go="step-${s.n}" data-tile="${s.n}"><span class="star" aria-hidden="true">⭐</span><span class="em">${s.icon}</span><small>STEP ${s.n}</small>${esc(s.short)}</button>`).join('')}</div>
+    <h3 class="sub">Helpers</h3>
+    <div class="quick">${HELPERS.map(h=>`<button class="qcard" data-go="${h[0]}"><span>${h[1]}</span><div>${h[2]}<small>${h[3]}</small></div></button>`).join('')}</div>
+    <div class="row" style="margin-top:28px"><button class="btn primary" data-pdf="mine">📄 Download my notes (PDF)</button><button class="linkish" id="resetBtn">Start a new project</button></div>
+  </section>`;
+
+  const ideas=`<section class="panel" id="p-ideas">
+    <p class="eyebrow">Not sure what to build?</p><h2 class="ptitle">🧠 Project Ideas</h2>
+    <p class="lead">Pick a project you want to build. Tap <b>Download notes</b> to get a PDF with what you need, how to build it, and space for your own answers.</p>
+    <div class="ideas">${IDEAS.map(i=>`<article class="idea" data-idea-card="${i.id}">
+      <span class="em">${i.icon}</span><h3>${esc(i.name)}</h3>
+      <div class="tags"><span class="tag">${i.level==='Easy'?'🟢':'🟠'} ${i.level}</span><span class="tag">⏰ ${esc(i.time)}</span></div>
+      <p>${esc(i.solves)}</p>
+      <ul>${i.need.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>
+      <div class="row"><button class="btn primary small" data-idea-pick="${i.id}">I will build this!</button><button class="btn small" data-idea-pdf="${i.id}">📄 Download notes</button></div>
+    </article>`).join('')}
+    <article class="idea"><span class="em">✨</span><h3>My own idea</h3><p>Got your own idea? Brilliant! Start at Step 1 and tell Ollie all about it.</p><div class="row"><button class="btn primary small" data-go="step-1">Start Step 1</button><button class="btn small" data-idea-pdf="">📄 Download blank notes</button></div></article>
+    </div></section>`;
+
+  const materials=`<section class="panel" id="p-materials">
+    <p class="eyebrow">Helper for Step 2</p><h2 class="ptitle">🧰 Materials Guide</h2>
+    <div class="owltip"><span>🦉</span><div>What does your project need to be? Tap a word to see the materials that match. Tap <b>Add to my list</b> to put a material in your notes.</div></div>
+    <div class="chips" style="margin-bottom:18px" role="group" aria-label="Show materials that are">
+      <button class="chip" data-filter="" aria-pressed="true">Show all</button>
+      ${Object.entries(PROPS).map(([k,v])=>`<button class="p p-${k}" data-filter="${k}" aria-pressed="false">${v[0]} ${v[1]}</button>`).join('')}
+    </div>
+    <div class="mats">${MATERIALS.map(m=>`<div class="mat" data-props="${m.props.join(' ')}" data-matcard="${esc(m.name)}">
+      <div class="mathead"><span class="em">${m.icon}</span><h3>${esc(m.name)}</h3></div>
+      <div class="tags">${m.props.map(p=>`<span class="p p-${p}">${PROPS[p][0]} ${PROPS[p][1]}</span>`).join('')}</div>
+      <p class="uses"><b>You can make:</b> ${esc(m.uses)}</p>
+      <div><button class="chip" data-mat="${esc(m.name)}" aria-pressed="false">Add to my list</button></div>
+    </div>`).join('')}</div>
+    <h3 class="sub">How to choose</h3>
+    <div class="rows">${CHOOSE.map(c=>`<div class="rowc"><span class="em">${c[0]}</span><div>${esc(c[1])}<small>${esc(c[2])}</small></div></div>`).join('')}</div>
+    <div class="navrow"><button class="btn primary" data-go="step-2">Go to Step 2: Materials 🛠️ →</button></div>
+  </section>`;
+
+  const presenting=`<section class="panel" id="p-presenting">
+    <p class="eyebrow">Helper for Step 5</p><h2 class="ptitle">🎤 Ways to Present Your Project</h2>
+    <div class="owltip"><span>🦉</span><div>A great presentation says three things: what your project is, how it works, and why you made it.</div></div>
+    <div class="grid">${FORMATS.map(f=>`<div class="card"><span class="em">${f[0]}</span><h3>${f[1]}</h3><p>${esc(f[2])}</p><ul>${f[3].map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`).join('')}</div>
+    <div class="navrow"><button class="btn primary" data-go="step-5">Go to Step 5: Present It 🎤 →</button></div>
+  </section>`;
+
+  const tips=`<section class="panel" id="p-tips">
+    <p class="eyebrow">From Ollie the Owl</p><h2 class="ptitle">💡 Top Tips for Young Inventors</h2>
+    <div class="grid">${TIPS.map(t=>`<div class="card"><span class="em">${t[0]}</span><h3>${esc(t[1])}</h3><p>${esc(t[2])}</p></div>`).join('')}</div>
+  </section>`;
+
+  const words=`<section class="panel" id="p-words">
+    <p class="eyebrow">Word list</p><h2 class="ptitle">📖 Words to Know</h2>
+    <div class="owltip"><span>🦉</span><div>These are the special words in this guide. Come back here any time a word is new to you.</div></div>
+    <div class="grid">${WORDS.map(w=>`<div class="card"><h3>${w[0]} ${esc(w[1])}</h3><p>${esc(w[2])}</p></div>`).join('')}</div>
+  </section>`;
+
+  const checklist=`<section class="panel" id="p-checklist">
+    <p class="eyebrow">Tick things off</p><h2 class="ptitle">✅ Project Checklist</h2>
+    <div class="owltip"><span>🦉</span><div>A step ticks itself when you answer all its questions. Did a step on paper? Tick it yourself. Your checklist is in your PDF too.</div></div>
+    <h3 class="sub" style="margin-top:0">All 8 steps</h3>
+    <div class="rows">${STEPS.map(s=>`<label class="rowc"><input type="checkbox" id="c-step${s.n}" data-check="step${s.n}"><span class="em">${s.icon}</span><div>Step ${s.n}: ${esc(s.short)}<small>I have made ${esc(s.out.replace(/^A /,'a ').replace(/^Upgrade/,'my upgrade'))}.</small></div></label>`).join('')}</div>
+    <h3 class="sub">Bonus checks</h3>
+    <div class="rows">${BONUS.map(b=>`<label class="rowc"><input type="checkbox" id="c-${b[0]}" data-check="${b[0]}"><span class="em">${b[1]}</span><div>${esc(b[2])}</div></label>`).join('')}</div>
+    <div class="navrow"><button class="btn primary big" data-pdf="mine">📄 Download my notes (PDF)</button></div>
+  </section>`;
+
+  $('#panels').innerHTML=home+ideas+STEPS.map(stepHTML).join('')+materials+presenting+tips+words+checklist;
+}
+
+function renderWarn(){
+  $('#warn').innerHTML=storageOK?'':`<div class="warn">⚠️ Your notes cannot be saved on this device. Download your PDF before you close this page.</div>`;
+}
+
+/* ═════════════ SHOW + REFRESH ═════════════ */
+let current='home';
+function show(id,fromHash){
+  if(!PAGES.includes(id)) id='home';
+  current=id;
+  $$('.panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+id));
+  $$('#side .nav').forEach(b=>{ if(b.dataset.go===id) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  closeSide(); stopReading();
+  if(id==='step-8') renderSoFar();
+  window.scrollTo(0,0);
+  if(!fromHash){ try{ if(location.hash!=='#'+id) history.replaceState(null,'','#'+id); }catch(e){} }
+}
+function openSide(){ $('#side').classList.add('open'); $('#overlay').classList.add('open'); $('#menuBtn').setAttribute('aria-expanded','true'); }
+function closeSide(){ $('#side').classList.remove('open'); $('#overlay').classList.remove('open'); $('#menuBtn').setAttribute('aria-expanded','false'); }
+
+let doneBefore=null;
+function refresh(){
+  const done=STEPS.filter(stepDone).map(s=>s.n);
+  $('#progText').textContent=`⭐ ${done.length} of 8 steps done`;
+  $('#progBar').style.width=(done.length/8*100)+'%';
+  STEPS.forEach(s=>{
+    const d=done.includes(s.n);
+    $(`#side [data-step="${s.n}"]`).classList.toggle('done',d);
+    $(`[data-tile="${s.n}"]`).classList.toggle('done',d);
+    $$(`[data-dot="${s.n}"]`).forEach(e=>e.classList.toggle('done',d));
+    $(`#c-step${s.n}`).checked=d;
+    s.qs.forEach(q=>{ if(q.type!=='ticks') $('#q-'+q.id).classList.toggle('ok',qDone(q)); });
   });
-  document.querySelectorAll('.nav-btn, .step-nav-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + id + "'")) {
-      btn.classList.add('active');
+  if(doneBefore){ const fresh=done.find(n=>!doneBefore.includes(n)); if(fresh) toast(done.length===8?'🏆 All 8 steps done! Amazing work!':`⭐ Step ${fresh} done! Great work.`); }
+  doneBefore=done;
+  const next=STEPS.find(s=>!done.includes(s.n));
+  const go=$('#goNext');
+  if(!next){ go.textContent='🏆 See my checklist'; go.dataset.go='checklist'; }
+  else{ go.textContent=(done.length||Object.keys(state.answers).length?'▶ Keep going: Step ':'▶ Start Step ')+next.n; go.dataset.go='step-'+next.n; }
+  $('#hello').textContent=state.name.trim()?`Welcome, ${state.name.trim()}!`:'Welcome, Young Inventor!';
+  $$('[data-mat]').forEach(b=>b.setAttribute('aria-pressed',state.mats.includes(b.dataset.mat)));
+  $$('[data-matcard]').forEach(c=>c.classList.toggle('on',state.mats.includes(c.dataset.matcard)));
+  $$('[data-idea-card]').forEach(c=>c.classList.toggle('picked',c.dataset.ideaCard===state.ideaId));
+  $$('[data-idea-pick]').forEach(b=>b.textContent=b.dataset.ideaPick===state.ideaId?'✓ This is my project':'I will build this!');
+}
+function fillInputs(){
+  $$('[data-q]').forEach(t=>t.value=state.answers[t.dataset.q]||'');
+  $$('[data-field]').forEach(i=>i.value=state[i.dataset.field]||'');
+  $$('[data-check]').forEach(c=>c.checked=!!state.checks[c.dataset.check]);
+}
+function renderSoFar(){
+  const rows=[['My idea',ans('s1q4')||ans('s1q1')],['Who it is for',ans('s1q3')],['Materials',[...state.mats,ans('s2q1')].filter(Boolean).join(', ')],['What I would change',ans('s6q3')],['Most proud of',ans('s6q4')]].filter(r=>r[1]);
+  $('#sofar').innerHTML=rows.length?`<b>📒 My notes so far</b><ul>${rows.map(r=>`<li><b>${r[0]}:</b> ${esc(r[1])}</li>`).join('')}</ul>`:`<b>📒 My notes so far</b><p>Your answers from Steps 1 to 7 will show here to help you write.</p>`;
+}
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),3800); }
+
+const SIZES=[90,100,112,125,140];
+function applySize(){ document.documentElement.style.fontSize=SIZES[state.size]+'%'; }
+
+/* ═════════════ DRAWING PAD ═════════════ */
+let padApi=null;
+function initPad(){
+  const cv=$('#pad'), c=cv.getContext('2d'); let on=false,last=null,color='#2B1F0E',undo=[];
+  const wipe=()=>{c.fillStyle='#fff';c.fillRect(0,0,cv.width,cv.height);};
+  const load=()=>{ wipe(); undo=[]; if(state.drawn&&state.drawing){const im=new Image(); im.onload=()=>c.drawImage(im,0,0,cv.width,cv.height); im.src=state.drawing;} };
+  const pos=e=>{const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height];};
+  const snap=()=>{ try{undo.push(c.getImageData(0,0,cv.width,cv.height)); if(undo.length>12) undo.shift();}catch(e){} };
+  const commit=()=>{ try{state.drawing=cv.toDataURL('image/jpeg',0.85); state.drawn=true;}catch(e){} save(); refresh(); };
+  const seg=(a,b)=>{ c.strokeStyle=color==='erase'?'#fff':color; c.lineWidth=color==='erase'?30:6; c.lineCap='round'; c.lineJoin='round'; c.beginPath(); c.moveTo(a[0],a[1]); c.lineTo(b[0],b[1]); c.stroke(); };
+  cv.addEventListener('pointerdown',e=>{ e.preventDefault(); try{cv.setPointerCapture(e.pointerId);}catch(x){} snap(); on=true; last=pos(e); seg(last,[last[0]+.1,last[1]+.1]); });
+  cv.addEventListener('pointermove',e=>{ if(!on) return; const p=pos(e); seg(last,p); last=p; });
+  const end=()=>{ if(on){on=false; commit();} };
+  cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end);
+  $$('[data-color]').forEach(b=>b.addEventListener('click',()=>{ color=b.dataset.color; $$('[data-color]').forEach(x=>x.setAttribute('aria-pressed',x===b)); }));
+  $('#padUndo').addEventListener('click',()=>{ const im=undo.pop(); if(im){ c.putImageData(im,0,0); if(undo.length) commit(); else {state.drawing='';state.drawn=false;save();refresh();} } });
+  $('#padClear').addEventListener('click',()=>{ snap(); wipe(); state.drawing=''; state.drawn=false; save(); refresh(); });
+  load(); padApi={load};
+}
+
+/* ═════════════ READ ALOUD ═════════════ */
+let tts=null, reading=false;
+function setReadLabels(){ $$('[data-read]').forEach(b=>b.textContent=reading?'⏹ Stop reading':'🔊 Read to me'); }
+function stopReading(){
+  if(!reading) return; reading=false; setReadLabels();
+  try{ if(tts) tts.stop(); else if(window.speechSynthesis) speechSynthesis.cancel(); }catch(e){}
+}
+async function readStep(n){
+  if(reading){ stopReading(); return; }
+  const s=STEPS[n-1];
+  const text=`Step ${s.n}. ${s.title}. ${s.intro} `+s.qs.map((q,i)=>`Question ${i+1}. ${q.text} ${q.hint}`).join(' ');
+  reading=true; setReadLabels();
+  try{
+    if(tts) await tts.speak(text.slice(0,1900),{voice:'rounded',rate:0.9,language:'en'});
+    else await new Promise(res=>{ const u=new SpeechSynthesisUtterance(text); u.rate=0.9; u.lang='en'; u.onend=u.onerror=res; speechSynthesis.cancel(); speechSynthesis.speak(u); });
+  }catch(e){}
+  reading=false; setReadLabels();
+}
+function initReading(){
+  const reveal=()=>$$('[data-read]').forEach(b=>b.hidden=false);
+  if(window.claude&&typeof window.claude.use==='function'){
+    window.claude.use('tts').then(t=>{ if(t){tts=t; reveal();} }).catch(()=>{});
+  }else if('speechSynthesis' in window&&'SpeechSynthesisUtterance' in window){ reveal(); }
+}
+
+/* ═════════════ PDF ═════════════ */
+const PW=1654, PH=2339, MG=120;             // A4 at 200 dpi
+const STEP_COL={sun:'#FFD479',leaf:'#9FE0B8',sky:'#A5E0F9',clay:'#FFBFA3',berry:'#FFB5CE',plum:'#CBBCF7',teal:'#9BE5EE',gold:'#F9D684'};
+const PFONT='"Nunito","Hiragino Maru Gothic ProN","Yu Gothic UI","Noto Sans JP",system-ui,sans-serif';
+const loadImg=src=>new Promise((res,rej)=>{const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src;});
+
+async function makePdf(ideaId,mine){
+  try{ await Promise.all([document.fonts.load('700 30px Nunito'),document.fonts.load('900 30px Nunito')]); }catch(e){}
+  const idea=IDEAS.find(i=>i.id===ideaId)||null;
+  const A=id=>mine?ans(id):'';
+  const project=(mine&&state.project.trim())||(idea?idea.name:'');
+  const who=mine?state.name.trim():'';
+  let img=null; if(mine&&state.drawn&&state.drawing){ try{img=await loadImg(state.drawing);}catch(e){} }
+
+  const cv=document.createElement('canvas'); cv.width=PW; cv.height=PH;
+  const c=cv.getContext('2d'); c.textBaseline='top';
+  const jpegs=[]; let y=0, page=0;
+  const W=PW-2*MG, BOTTOM=PH-MG-30;
+  const F=(w,s)=>`${w} ${s}px ${PFONT}`;
+  const rr=(x,yy,w,h,r)=>{ c.beginPath(); c.moveTo(x+r,yy); c.arcTo(x+w,yy,x+w,yy+h,r); c.arcTo(x+w,yy+h,x,yy+h,r); c.arcTo(x,yy+h,x,yy,r); c.arcTo(x,yy,x+w,yy,r); c.closePath(); };
+  function finish(){
+    c.font=F(700,24); c.fillStyle='#8A7763'; c.textAlign='center';
+    c.fillText(`${project?project+'  ·  ':''}My Project Notes  ·  Page ${page}`,PW/2,PH-90); c.textAlign='left';
+    const b=atob(cv.toDataURL('image/jpeg',0.88).split(',')[1]); const u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); jpegs.push(u);
+  }
+  function newPage(){ if(page) finish(); page++; c.fillStyle='#fff'; c.fillRect(0,0,PW,PH); y=MG; }
+  const need=h=>{ if(y+h>BOTTOM) newPage(); };
+  const CJK='\\u3000-\\u30ff\\u3400-\\u9fff\\uff00-\\uffef';
+  const TOK=new RegExp(`\\s+|[${CJK}]|[^\\s${CJK}]+`,'g');
+  function wrap(str,font,maxW){
+    c.font=font; const out=[];
+    for(const para of String(str).split('\n')){
+      let line='';
+      for(const t of (para.match(TOK)||[''])){
+        if(c.measureText(line+t).width<=maxW){ line+=t; continue; }
+        if(line.trim()) out.push(line.trimEnd());
+        line=t.trimStart();
+        while(c.measureText(line).width>maxW){ let i=line.length-1; while(i>1&&c.measureText(line.slice(0,i)).width>maxW) i--; out.push(line.slice(0,i)); line=line.slice(i); }
+      }
+      out.push(line.trimEnd());
     }
+    return out;
+  }
+  function text(str,o={}){
+    const size=o.size||30, font=F(o.weight||700,size), x=o.x||MG, w=o.w||(W-(x-MG)), lh=size*(o.lh||1.42);
+    for(const l of wrap(str,font,w)){ need(lh); c.font=font; c.fillStyle=o.color||'#2B1F0E'; c.fillText(l,x,y); if(o.bar){c.fillStyle=o.bar; c.fillRect(MG,y-4,10,lh);} y+=lh; }
+    y+=(o.gap===undefined?12:o.gap);
+  }
+  function lines(n){ for(let i=0;i<n;i++){ need(72); y+=72; c.strokeStyle='#CDBBA5'; c.lineWidth=2; c.beginPath(); c.moveTo(MG,y-8); c.lineTo(PW-MG,y-8); c.stroke(); } y+=22; }
+  function answer(val,col,n){ if(val){ y+=4; text(val,{size:31,weight:700,x:MG+34,bar:col,gap:26}); } else lines(n||3); }
+  function tickRow(label,on){
+    need(64); c.strokeStyle='#2B1F0E'; c.lineWidth=4; rr(MG,y+2,40,40,8); c.stroke();
+    if(on){ c.strokeStyle='#2F9E5B'; c.lineWidth=7; c.lineCap='round'; c.beginPath(); c.moveTo(MG+8,y+24); c.lineTo(MG+17,y+34); c.lineTo(MG+33,y+10); c.stroke(); }
+    const yy=y; text(label,{size:30,x:MG+62,gap:0}); y=Math.max(y,yy+46)+14;
+  }
+  function heading(label,col){ need(330); y+=14; c.fillStyle=col; rr(MG,y,W,86,22); c.fill(); c.font=F(900,40); c.fillStyle='#2B1F0E'; c.fillText(label,MG+28,y+20); y+=86+26; }
+  function field(label,val){
+    c.font=F(900,30); c.fillStyle='#6B5744'; c.fillText(label,MG,y+10); const x=MG+250;
+    if(val){ const ls=wrap(val,F(900,40),W-250); c.font=F(900,40); c.fillStyle='#2B1F0E'; ls.slice(0,2).forEach((l,i)=>c.fillText(l,x,y+i*54)); y+=Math.min(ls.length,2)*54+16; }
+    else{ c.strokeStyle='#CDBBA5'; c.lineWidth=2; c.beginPath(); c.moveTo(x,y+50); c.lineTo(PW-MG,y+50); c.stroke(); y+=76; }
+  }
+
+  /* cover */
+  newPage();
+  const g=c.createLinearGradient(0,0,PW,0); g.addColorStop(0,'#E8590C'); g.addColorStop(.55,'#D6336C'); g.addColorStop(1,'#6741D9');
+  c.fillStyle=g; c.fillRect(0,0,PW,300);
+  c.fillStyle='#fff'; c.font=F(900,92); c.fillText('🦉 My Project Notes',MG,78);
+  c.font=F(700,34); c.fillText('My Project Maker  ·  plan it, build it, share it',MG,202);
+  y=360;
+  field('Project',project); field('Inventor',who);
+  field('Date',mine?new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}):'');
+  y+=10;
+
+  /* starter notes for a chosen idea */
+  if(idea){
+    heading(`${idea.icon}  Starter notes: ${idea.name}`,'#FFE9A8');
+    text(`${idea.level}  ·  ${idea.time}`,{size:28,color:'#6B5744'});
+    text('The problem it fixes',{size:32,weight:900,gap:2}); text(idea.solves);
+    text('You will need',{size:32,weight:900,gap:2}); idea.need.forEach(n=>text('•  '+n,{gap:2})); y+=12;
+    text('How to build it',{size:32,weight:900,gap:2}); idea.steps.forEach((s,i)=>text(`${i+1}.  ${s}`,{gap:6})); y+=8;
+    text('🤝 Ask a grown-up to help with',{size:32,weight:900,gap:2}); text(idea.adult);
+    text('🧪 Test it',{size:32,weight:900,gap:2}); text(idea.test);
+    text('These steps are a starting point. Change them to make the project your own!',{size:27,color:'#6B5744',gap:20});
+  }else{
+    text('Answer each question. If a space is empty, write on the lines with a pencil.',{size:28,color:'#6B5744',gap:16});
+  }
+
+  /* the 8 steps */
+  for(const s of STEPS){
+    const col=STEP_COL[s.color];
+    heading(`${s.icon}  Step ${s.n}: ${s.title}`,col);
+    if(s.n===2){
+      const m=mine?state.mats:[];
+      text('👆 My materials',{size:32,weight:900,gap:4});
+      if(m.length) answer(m.join(', '),col);
+      else text('Circle the ones you will use:  '+MATERIALS.map(x=>x.name).join('   ·   '),{size:28,color:'#6B5744',gap:24,lh:1.7});
+    }
+    for(const q of s.qs){
+      need(210);
+      text(`${q.icon}  ${q.text}`,{size:32,weight:900,gap:4});
+      if(q.type==='ticks'){ y+=8; q.ticks.forEach(t=>tickRow(t[1],mine&&!!state.checks[t[0]])); y+=14; continue; }
+      const val=A(q.id);
+      if(!val) text(q.hint,{size:26,color:'#6B5744',gap:0});
+      if(q.type==='draw'){
+        const h=img?Math.round(W*img.height/img.width):760;
+        need(h+30); y+=10;
+        if(img) c.drawImage(img,MG,y,W,h);
+        c.strokeStyle='#CDBBA5'; c.lineWidth=3; rr(MG,y,W,h,18); c.stroke(); y+=h+26;
+        if(val) answer(val,col); else lines(2);
+        continue;
+      }
+      answer(val,col,q.rows>=5?6:3);
+    }
+  }
+
+  /* checklist */
+  heading('✅  My checklist','#C9F0D8');
+  STEPS.forEach(s=>tickRow(`Step ${s.n}: ${s.short}`,mine&&stepDone(s)));
+  y+=18; text('Bonus checks',{size:32,weight:900,gap:10});
+  BONUS.forEach(b=>tickRow(b[2],mine&&!!state.checks[b[0]]));
+  y+=24; need(80); text('🎉 Well done, Inventor! Keep these notes with your project.',{size:32,weight:900,color:'#96204F'});
+  finish();
+  return pdfFromJpegs(jpegs);
+}
+
+function pdfFromJpegs(jpegs){
+  const enc=new TextEncoder(), parts=[], xref=[]; let off=0;
+  const push=d=>{ const u=typeof d==='string'?enc.encode(d):d; parts.push(u); off+=u.length; };
+  const obj=(n,body)=>{ xref[n]=off; push(`${n} 0 obj\n${body}\nendobj\n`); };
+  push('%PDF-1.4\n');
+  const N=jpegs.length;
+  obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
+  obj(2,`<< /Type /Pages /Count ${N} /Kids [${jpegs.map((_,i)=>`${3+i*3} 0 R`).join(' ')}] >>`);
+  jpegs.forEach((jpg,i)=>{
+    const p=3+i*3, content='q 595.28 0 0 841.89 0 0 cm /Im0 Do Q';
+    obj(p,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 ${p+2} 0 R >> >> /Contents ${p+1} 0 R >>`);
+    obj(p+1,`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+    xref[p+2]=off;
+    push(`${p+2} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${PW} /Height ${PH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpg.length} >>\nstream\n`);
+    push(jpg); push('\nendstream\nendobj\n');
   });
-  document.querySelector('.main').scrollTo ? document.querySelector('.main').scrollTo(0,0) : window.scrollTo(0,0);
-  if (window.innerWidth <= 640) closeSidebar();
+  const total=2+N*3, start=off;
+  push(`xref\n0 ${total+1}\n0000000000 65535 f \n`+Array.from({length:total},(_,i)=>String(xref[i+1]).padStart(10,'0')+' 00000 n \n').join(''));
+  push(`trailer\n<< /Size ${total+1} /Root 1 0 R >>\nstartxref\n${start}\n%%EOF\n`);
+  return new Blob(parts,{type:'application/pdf'});
 }
 
-function toggleSidebar() {
-  const sb = document.getElementById('sidebar');
-  const ov = document.getElementById('overlay');
-  sb.classList.toggle('open');
-  ov.classList.toggle('open');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('open');
+let pdfBusy=false;
+async function downloadPdf(ideaId,mine,btn){
+  if(pdfBusy) return; pdfBusy=true;
+  const old=btn?btn.innerHTML:''; if(btn){btn.disabled=true; btn.textContent='⏳ Making your PDF…';}
+  try{
+    const blob=await makePdf(ideaId,mine);
+    const idea=IDEAS.find(i=>i.id===ideaId);
+    const base=((mine&&state.project.trim())||(idea&&idea.name)||'my-project').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-+|-+$/g,'')||'my-project';
+    const filename=base.slice(0,60)+'-notes.pdf';
+    if(window.claude&&typeof window.claude.use==='function'){
+      let dl=null; try{dl=await window.claude.use('downloads');}catch(e){}
+      if(!dl){ toast('Sorry, PDF downloads do not work in this view. Ask a grown-up for help.'); }
+      else{
+        try{ await dl.save({filename,data:blob}); toast('📄 Your PDF is saved!'); }
+        catch(e){ toast(e&&e.code==='declined'?'OK! Tap the button again when you want your PDF.':e&&e.code==='rate_limited'?'Please wait a moment, then try again.':'Sorry, the PDF could not be saved here.'); }
+      }
+    }else{
+      const url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),30000); toast('📄 Your PDF is downloading!');
+    }
+  }catch(e){ toast('Sorry, something went wrong making the PDF. Please try again.'); }
+  if(btn){btn.disabled=false; btn.innerHTML=old;} pdfBusy=false;
 }
 
-// ── FONT SIZE ──
-const SIZES = [14, 16, 18, 20, 22, 24];
-let sizeIdx = 1; // default: 16px
+/* ═════════════ EVENTS ═════════════ */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button'); if(!t) return;
+  if(t.dataset.pdf){ downloadPdf(state.ideaId,true,t); return; }
+  if('ideaPdf' in t.dataset){ const id=t.dataset.ideaPdf; downloadPdf(id,!!id&&id===state.ideaId,t); return; }
+  if(t.dataset.ideaPick){
+    const idea=IDEAS.find(i=>i.id===t.dataset.ideaPick); state.ideaId=idea.id;
+    if(!state.project.trim()||IDEAS.some(i=>i.name===state.project.trim())){ state.project=idea.name; $('#f-project').value=idea.name; }
+    idea.mats.forEach(m=>{ if(!state.mats.includes(m)) state.mats.push(m); });
+    save(); refresh(); toast(`${idea.icon} Great choice! Its notes are now in your PDF.`); return;
+  }
+  if(t.dataset.mat){ const m=t.dataset.mat, i=state.mats.indexOf(m); if(i<0) state.mats.push(m); else state.mats.splice(i,1); save(); refresh(); return; }
+  if('filter' in t.dataset){ const f=t.dataset.filter; $$('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',b===t)); $$('.mat').forEach(m=>m.hidden=!!f&&!m.dataset.props.split(' ').includes(f)); return; }
+  if(t.dataset.starter){ const q=STEPS.flatMap(s=>s.qs).find(q=>q.id===t.dataset.starter), ta=$('#a-'+q.id); if(!ta.value.trim()){ ta.value=q.starter; state.answers[q.id]=q.starter; save(); } ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); return; }
+  if(t.dataset.read){ readStep(+t.dataset.read); return; }
+  if(t.dataset.go){ show(t.dataset.go); return; }
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.q){ state.answers[t.dataset.q]=t.value; save(); refresh(); }
+  else if(t.dataset.field){ state[t.dataset.field]=t.value; save(); refresh(); }
+});
+document.addEventListener('change',e=>{
+  const t=e.target; if(!t.dataset.check) return;
+  state.checks[t.dataset.check]=t.checked; save(); refresh();
+});
+$('#menuBtn').addEventListener('click',()=>$('#side').classList.contains('open')?closeSide():openSide());
+$('#overlay').addEventListener('click',closeSide);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSide(); });
+$('#sizeUp').addEventListener('click',()=>{ state.size=Math.min(SIZES.length-1,state.size+1); applySize(); save(); });
+$('#sizeDown').addEventListener('click',()=>{ state.size=Math.max(0,state.size-1); applySize(); save(); });
+window.addEventListener('hashchange',()=>show(location.hash.slice(1),true));
 
-function applySize() {
-  // Apply to main content area so sidebar/structural chrome stays stable
-  document.querySelector('.main').style.fontSize = SIZES[sizeIdx] + 'px';
-}
-applySize();
-
-function changeSize(dir) {
-  sizeIdx = Math.max(0, Math.min(SIZES.length - 1, sizeIdx + dir));
-  applySize();
-  const btn = dir > 0 ? document.querySelector('.size-plus') : document.querySelector('.size-minus');
-  btn.style.background = '#FFF0F5';
-  btn.style.color = '#FF6B9D';
-  setTimeout(() => { btn.style.background = ''; btn.style.color = ''; }, 200);
-}
+/* ═════════════ START ═════════════ */
+buildSide(); buildPanels(); renderWarn(); fillInputs(); applySize(); initPad(); refresh(); initReading();
+$('#resetBtn').addEventListener('click',()=>{ const d=$('#resetDlg'); if(d.showModal) d.showModal(); else d.setAttribute('open',''); });
+$('#resetNo').addEventListener('click',()=>$('#resetDlg').close());
+$('#resetYes').addEventListener('click',()=>{ const size=state.size; state=blank(); state.size=size; doneBefore=[]; save(); fillInputs(); padApi.load(); refresh(); $('#resetDlg').close(); show('home'); toast('Fresh start! What will you build?'); });
+show(location.hash.slice(1)||'home',true);
 </script>
 </body>
 </html>
