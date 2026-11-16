@@ -10,12 +10,14 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
-    --ink: #2d2150; --p1: #6c5ce7; --p3: #ff7675;
-    --p2d: #0a7a63; --p3d: #d6403e; --p4: #fdcb6e;
+    --ink: #2d2150; --p1: #6c5ce7; --p1d: #4b3bc4; --p3: #ff7675;
+    --p2d: #0a7a63; --p3d: #c7302e; --p4: #fdcb6e;
+    --shadow: rgba(45,33,80,.18);
+    --display: 'Baloo 2', 'Trebuchet MS', system-ui, sans-serif;
   }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    font-family: 'Nunito', sans-serif; color: var(--ink);
+    font-family: 'Nunito', system-ui, sans-serif; color: var(--ink);
     background:
       radial-gradient(circle at 10% 12%, #ffe9a8 0 18px, transparent 19px),
       radial-gradient(circle at 88% 9%, #b6e3ff 0 16px, transparent 17px),
@@ -23,178 +25,583 @@
       radial-gradient(circle at 5% 86%, #c5f3e0 0 16px, transparent 17px),
       linear-gradient(160deg, #fff7ec 0%, #ffeede 100%);
     background-attachment: fixed;
-    min-height: 100vh;
-    min-height: 100dvh;
+    min-height: 100vh; min-height: 100dvh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: clamp(12px, 2vw, 28px);
     padding-top: max(clamp(12px, 2vw, 28px), env(safe-area-inset-top));
     padding-bottom: max(clamp(12px, 2vw, 28px), env(safe-area-inset-bottom));
+    padding-left: max(clamp(12px, 2vw, 28px), env(safe-area-inset-left));
+    padding-right: max(clamp(12px, 2vw, 28px), env(safe-area-inset-right));
   }
-  .stage {
-    width: 100%; max-width: 1500px;
-    display: flex; flex-direction: column; gap: clamp(12px, 1.8vmin, 22px);
-  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; touch-action: manipulation; }
+  :focus-visible { outline: 4px solid var(--p1); outline-offset: 3px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .stage { width: 100%; max-width: 1500px; display: flex; flex-direction: column; gap: clamp(10px, 1.6vmin, 20px); }
+
   .title {
-    font-family: 'Baloo 2', cursive; font-weight: 800; text-align: center; line-height: 1;
-    font-size: clamp(30px, 6vw, 56px); letter-spacing: -1px;
+    font-family: var(--display); font-weight: 800; text-align: center; line-height: 1;
+    font-size: clamp(30px, 5.4vw, 54px); letter-spacing: -1px;
     color: var(--p1); text-shadow: 2px 2px 0 #fff, 4px 4px 0 rgba(108,92,231,.22);
   }
-  .title .q { color: var(--p3); display: inline-block; transform: rotate(8deg); }
+  .title .q { color: var(--p3); display: inline-block; transform: rotate(8deg); animation: wiggle 2.6s ease-in-out infinite; }
+  @keyframes wiggle { 0%,100% { transform: rotate(8deg); } 50% { transform: rotate(-6deg) translateY(-3px); } }
+
+  /* Topic chips */
+  .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .chip {
+    font-family: var(--display); font-weight: 700; font-size: clamp(14px, 1.5vw, 18px);
+    background: #fff; border: 3px solid var(--ink); border-radius: 50px;
+    padding: 4px 14px; min-height: 40px; box-shadow: 3px 3px 0 var(--shadow);
+    transition: transform .12s;
+  }
+  .chip:hover { transform: translateY(-2px); }
+  .chip[aria-pressed="true"] { background: var(--p1); color: #fff; }
+
   .card {
+    position: relative; overflow: hidden;
     background: #fff; border: 4px solid var(--ink); border-radius: 22px;
-    padding: clamp(14px, 2.4vw, 26px); box-shadow: 5px 5px 0 rgba(45,33,80,.18);
+    padding: clamp(14px, 2.2vw, 26px); box-shadow: 5px 5px 0 var(--shadow);
     text-align: center;
   }
+  .counter {
+    font-family: var(--display); font-weight: 700; font-size: clamp(13px, 1.4vw, 17px);
+    color: #6b6190; margin-bottom: 2px;
+  }
   #question {
-    font-family: 'Baloo 2', cursive; font-weight: 700; line-height: 1.25;
-    font-size: clamp(20px, 3.6vw, 40px);
+    font-family: var(--display); font-weight: 700; line-height: 1.25;
+    font-size: clamp(20px, 3.4vw, 40px); text-wrap: balance;
   }
-  #question b { color: var(--p1); }
-  .cols {
-    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.6vw, 22px);
-    align-items: stretch;
-  }
+  #question .a { color: var(--p1d); }
+  #question .b { color: var(--p3d); }
+  .timebar { position: absolute; left: 0; bottom: 0; height: 8px; width: 0; background: var(--p2d); transition: width .25s linear, background .3s; }
+  .timebar.low { background: var(--p3d); }
+  .card.done { animation: flash .5s 3; }
+  @keyframes flash { 50% { background: #fff1c9; } }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.6vw, 22px); align-items: stretch; }
   .opt {
     border: 4px solid var(--ink); border-radius: 22px;
-    padding: clamp(14px, 2vw, 24px); background: #fffdf6;
-    box-shadow: 5px 5px 0 rgba(45,33,80,.18);
+    padding: clamp(12px, 1.8vw, 22px); background: #fffdf6;
+    box-shadow: 5px 5px 0 var(--shadow);
     display: flex; flex-direction: column;
+    border-top-width: 12px;
   }
+  #optA { border-top-color: var(--p1); }
+  #optB { border-top-color: var(--p3); }
+  .pop { animation: pop .35s cubic-bezier(.3,1.5,.5,1) both; }
+  #optB.pop { animation-delay: .07s; }
+  @keyframes pop { from { transform: scale(.94) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+
   .opt-name {
-    font-family: 'Baloo 2', cursive; font-weight: 700; text-align: center;
-    font-size: clamp(19px, 2.8vw, 34px); margin-bottom: clamp(10px, 1.4vw, 16px);
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--display); font-weight: 700; text-align: center; line-height: 1.15;
+    font-size: clamp(19px, 2.6vw, 32px); margin-bottom: clamp(6px, 1vw, 12px);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-  .opt-name .badge { font-size: 1.1em; }
-  .col-label {
-    font-family: 'Baloo 2', cursive; font-weight: 700;
-    font-size: clamp(15px, 1.9vw, 22px); margin: 6px 0 8px;
-  }
+  .opt-name .emoji { font-size: 1.5em; line-height: 1; }
+  .col-label { font-family: var(--display); font-weight: 700; font-size: clamp(15px, 1.7vw, 21px); margin: 4px 0 6px; }
   .for .col-label { color: var(--p2d); }
   .against .col-label { color: var(--p3d); }
   ul { list-style: none; }
-  li {
-    font-weight: 600; font-style: italic; line-height: 1.35;
-    font-size: clamp(14px, 1.8vw, 22px);
-    padding: clamp(8px, 1vw, 13px) clamp(11px, 1.2vw, 16px);
-    margin-bottom: clamp(7px, 0.9vw, 10px); border-radius: 12px;
+  .opt li {
+    font-weight: 700; font-style: italic; line-height: 1.3;
+    font-size: clamp(14px, 1.65vw, 21px);
+    padding: clamp(7px, .9vw, 12px) clamp(11px, 1.2vw, 16px);
+    margin-bottom: clamp(6px, .8vw, 9px); border-radius: 12px;
   }
   .for li { background: #d6f7ec; }
   .against li { background: #ffe3e2; }
-  .spin-wrap { text-align: center; margin-top: clamp(4px, 0.6vw, 8px); }
+
+  /* Voting */
+  .vote-row { margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .vote {
+    font-family: var(--display); font-weight: 800; font-size: clamp(16px, 1.9vw, 23px);
+    color: #fff; border: 4px solid var(--ink); border-radius: 50px;
+    padding: 6px 22px; min-height: 48px; box-shadow: 4px 4px 0 var(--shadow);
+    transition: transform .1s, box-shadow .1s;
+  }
+  #optA .vote { background: var(--p1d); }
+  #optB .vote { background: var(--p3d); }
+  .vote:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--shadow); }
+  .minus {
+    width: 44px; height: 44px; border-radius: 50%; background: #fff;
+    border: 3px solid var(--ink); font-weight: 800; font-size: 22px; line-height: 1;
+  }
+  .minus:disabled { opacity: .35; cursor: default; }
+  .count { font-family: var(--display); font-weight: 800; font-size: clamp(24px, 3vw, 38px); min-width: 1.6em; text-align: center; font-variant-numeric: tabular-nums; }
+  .count.bump { animation: bump .25s; }
+  @keyframes bump { 50% { transform: scale(1.35); } }
+
+  .split {
+    display: flex; height: clamp(30px, 3.4vw, 42px); border: 4px solid var(--ink); border-radius: 50px; overflow: hidden;
+    font-family: var(--display); font-weight: 800; color: #fff; font-size: clamp(14px, 1.6vw, 20px);
+    box-shadow: 4px 4px 0 var(--shadow); background: #fff;
+  }
+  .split[hidden] { display: none; }
+  .split span { display: flex; align-items: center; justify-content: center; overflow: hidden; white-space: nowrap; transition: flex-grow .35s ease; min-width: 0; }
+  .split .sa { background: var(--p1d); }
+  .split .sb { background: var(--p3d); }
+
+  /* Controls */
+  .controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: clamp(8px, 1.2vw, 14px); }
+  .btn {
+    font-family: var(--display); font-weight: 700; font-size: clamp(15px, 1.7vw, 21px);
+    background: #fff; border: 4px solid var(--ink); border-radius: 50px;
+    padding: 6px 18px; min-height: 50px; box-shadow: 4px 4px 0 var(--shadow);
+    transition: transform .12s, box-shadow .12s; font-variant-numeric: tabular-nums;
+  }
+  .btn:hover { transform: translate(-1px,-1px); }
+  .btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--shadow); }
+  .btn:disabled { opacity: .4; cursor: default; transform: none; }
+  .btn.on { background: #d6f7ec; }
   .spin {
-    font-family: 'Baloo 2', cursive; font-weight: 800;
-    font-size: clamp(18px, 2.4vw, 28px);
-    background: var(--p4); color: #5a3d00; border: 4px solid var(--ink);
-    border-radius: 50px; cursor: pointer; box-shadow: 5px 5px 0 rgba(45,33,80,.3);
-    padding: clamp(12px, 1.6vw, 17px) clamp(28px, 4vw, 46px);
-    transition: transform .12s, box-shadow .12s; touch-action: manipulation;
+    font-weight: 800; font-size: clamp(18px, 2.4vw, 28px);
+    background: var(--p4); color: #5a3d00; box-shadow: 5px 5px 0 rgba(45,33,80,.3);
+    padding: clamp(10px, 1.4vw, 15px) clamp(26px, 4vw, 44px);
   }
   .spin:hover { transform: translate(-2px,-2px) rotate(-1deg); box-shadow: 7px 7px 0 rgba(45,33,80,.35); }
-  .spin:active { transform: translate(4px,4px); box-shadow: 1px 1px 0 rgba(45,33,80,.3); }
+  .timer-group { display: flex; }
+  .timer-group .btn:first-child { border-radius: 50px 0 0 50px; border-right-width: 2px; }
+  .timer-group .btn:last-child { border-radius: 0 50px 50px 0; border-left-width: 2px; padding: 6px 14px; }
 
-  /* Phone / narrow screens: stack the two choices, allow scroll */
+  /* Add your own */
+  details.own { background: #fff; border: 3px solid var(--ink); border-radius: 18px; padding: 8px 16px; box-shadow: 3px 3px 0 var(--shadow); max-width: 820px; width: 100%; margin: 0 auto; }
+  details.own summary { font-family: var(--display); font-weight: 700; font-size: clamp(15px, 1.6vw, 19px); cursor: pointer; text-align: center; }
+  .own form { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; font-weight: 700; }
+  .own input { flex: 1 1 160px; min-width: 0; border: 3px solid var(--ink); border-radius: 12px; padding: 8px 12px; font-size: 16px; background: #fffdf6; }
+  .own .btn { min-height: 44px; font-size: 16px; }
+  .own ul { margin-top: 8px; }
+  .own li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 0; border-top: 2px dashed #e3dcf5; font-weight: 600; }
+  .own li button { border: 2px solid var(--ink); background: #ffe3e2; border-radius: 50px; padding: 2px 12px; min-height: 36px; font-weight: 700; flex-shrink: 0; }
+  .hint { text-align: center; font-size: 14px; font-weight: 600; color: #6b6190; }
+
   @media (max-width: 720px) {
-    html, body { min-height: 100dvh; }
     body { justify-content: flex-start; }
     .cols { grid-template-columns: 1fr; }
-    .spin {
-      position: sticky; bottom: max(10px, env(safe-area-inset-bottom)); z-index: 5;
-      width: 100%; max-width: 420px; margin: 4px auto 0;
-    }
+    .chips { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; padding: 2px 2px 8px; scrollbar-width: none; }
+    .chip { flex-shrink: 0; }
+    .controls { position: sticky; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 5; }
+    .spin { order: -1; width: 100%; max-width: 420px; }
+    .hint, #fsBtn { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 </style>
 </head>
 <body>
 
-  <div class="stage">
+  <main class="stage">
     <h1 class="title">Would You Rather<span class="q">?</span></h1>
-    <div class="card"><div id="question"></div></div>
+
+    <div class="chips" id="chips" role="group" aria-label="Choose a topic"></div>
+
+    <div class="card" id="card">
+      <div class="counter" id="counter"></div>
+      <div id="question" aria-live="polite"></div>
+      <div class="timebar" id="timebar"></div>
+    </div>
+
     <div class="cols">
-      <div class="opt" id="optA"></div>
-      <div class="opt" id="optB"></div>
+      <section class="opt" id="optA" aria-label="Choice A"></section>
+      <section class="opt" id="optB" aria-label="Choice B"></section>
     </div>
-    <div class="spin-wrap">
-      <button class="spin" id="spin">&#127922; New question!</button>
+
+    <div class="split" id="split" hidden aria-hidden="true"><span class="sa" id="splitA"></span><span class="sb" id="splitB"></span></div>
+    <div class="sr" id="status" aria-live="polite"></div>
+
+    <div class="controls">
+      <button class="btn" id="back" aria-label="Previous question">&#9664; Back</button>
+      <button class="btn spin" id="spin">&#127922; New question!</button>
+      <button class="btn" id="speak">&#128266; Read it</button>
+      <div class="timer-group">
+        <button class="btn" id="timer">&#9201; Start 0:30</button>
+        <button class="btn" id="dur" aria-label="Change timer length">30s</button>
+      </div>
+      <button class="btn" id="fsBtn" aria-label="Full screen">&#9974;</button>
     </div>
-  </div>
+
+    <details class="own">
+      <summary>&#9999;&#65039; Add your own question</summary>
+      <form id="ownForm">
+        <span>Would you rather</span>
+        <input id="ownA" maxlength="60" placeholder="ride a rocket" aria-label="First choice" required>
+        <span>or</span>
+        <input id="ownB" maxlength="60" placeholder="ride a submarine" aria-label="Second choice" required>
+        <button class="btn" type="submit">Add</button>
+      </form>
+      <ul id="ownList"></ul>
+    </details>
+
+    <p class="hint">Keys: Space or &rarr; next &middot; &larr; back &middot; A / B vote &middot; T timer &middot; R read aloud</p>
+  </main>
 
 <script>
-const QS = [
-  {a:"have a pet dinosaur", b:"have a pet dragon"},
-  {a:"talk to animals", b:"fly like a bird"},
-  {a:"be invisible", b:"be super fast"},
-  {a:"eat pizza every day", b:"eat ice cream forever"},
-  {a:"have magic powers", b:"be able to time travel"},
-  {a:"swim with dolphins", b:"ride on a giant turtle"},
-  {a:"have a monkey tail", b:"have elephant ears"},
-  {a:"live in a treehouse", b:"live in an underwater house"},
-  {a:"have laser eyes", b:"have stretchy arms"},
-  {a:"be a superhero", b:"be a wizard"},
-  {a:"explore space", b:"dive deep in the ocean"},
-  {a:"be a pirate", b:"be an astronaut"},
-  {a:"have no homework", b:"have no tests"},
-  {a:"have chocolate rain", b:"have popcorn snow"},
-  {a:"be super smart", b:"be super silly"},
-  {a:"have a robot dog", b:"have a robot cat"},
-  {a:"ride a unicorn", b:"ride a dinosaur"},
-  {a:"have wings", b:"have fins"},
-  {a:"control fire", b:"control water"},
-  {a:"jump super high", b:"run super fast"},
-  {a:"be as tiny as an ant", b:"be as big as an elephant"},
-  {a:"have candy for breakfast", b:"have cookies for dinner"},
-  {a:"visit the past", b:"visit the future"},
-  {a:"have rainbow hair", b:"have glowing skin"},
-  {a:"live in a candy land", b:"live in a LEGO world"},
-  {a:"sneeze glitter", b:"burp bubbles"},
-  {a:"have a flying car", b:"have a swimming car"},
-  {a:"play tag forever", b:"play hide-and-seek forever"},
-  {a:"be friends with aliens", b:"be friends with robots"},
-  {a:"breathe underwater", b:"breathe in space"}
+var CATS = [
+  {id:"all", label:"🌈 All"},
+  {id:"animals", label:"🐾 Animals"},
+  {id:"powers", label:"⚡ Powers"},
+  {id:"food", label:"🍕 Food"},
+  {id:"adventure", label:"🚀 Adventure"},
+  {id:"silly", label:"🤪 Silly"},
+  {id:"school", label:"🎒 School"},
+  {id:"mine", label:"✏️ Ours"}
 ];
 
+var QS = [
+  // animals
+  {c:"animals", a:"have a pet dinosaur", ea:"🦖", b:"have a pet dragon", eb:"🐉"},
+  {c:"animals", a:"talk to animals", ea:"🐶", b:"fly like a bird", eb:"🐦"},
+  {c:"animals", a:"swim with dolphins", ea:"🐬", b:"ride on a giant turtle", eb:"🐢"},
+  {c:"animals", a:"have a monkey tail", ea:"🐒", b:"have elephant ears", eb:"🐘"},
+  {c:"animals", a:"ride a unicorn", ea:"🦄", b:"ride a dinosaur", eb:"🦕"},
+  {c:"animals", a:"have wings", ea:"🦋", b:"have fins", eb:"🐠"},
+  {c:"animals", a:"have a robot dog", ea:"🐕", b:"have a robot cat", eb:"🐈"},
+  {c:"animals", a:"be as tiny as an ant", ea:"🐜", b:"be as big as an elephant", eb:"🐘"},
+  {c:"animals", a:"hop like a kangaroo", ea:"🦘", b:"climb like a gecko", eb:"🦎"},
+  {c:"animals", a:"have a pet penguin", ea:"🐧", b:"have a pet panda", eb:"🐼"},
+  {c:"animals", a:"sleep all winter like a bear", ea:"🐻", b:"stay up all night like an owl", eb:"🦉"},
+  // powers
+  {c:"powers", a:"be invisible", ea:"👻", b:"be super fast", eb:"💨"},
+  {c:"powers", a:"have magic powers", ea:"🪄", b:"be able to time travel", eb:"⏰"},
+  {c:"powers", a:"have laser eyes", ea:"👀", b:"have stretchy arms", eb:"💪"},
+  {c:"powers", a:"be a superhero", ea:"🦸", b:"be a wizard", eb:"🧙"},
+  {c:"powers", a:"control fire", ea:"🔥", b:"control water", eb:"🌊"},
+  {c:"powers", a:"jump super high", ea:"🦘", b:"run super fast", eb:"🏃"},
+  {c:"powers", a:"breathe underwater", ea:"🫧", b:"breathe in space", eb:"🪐"},
+  {c:"powers", a:"read minds", ea:"🧠", b:"see through walls", eb:"🧱"},
+  {c:"powers", a:"control the weather", ea:"⛈️", b:"make plants grow instantly", eb:"🌻"},
+  {c:"powers", a:"never need to sleep", ea:"😴", b:"never need to eat", eb:"🍽️"},
+  {c:"powers", a:"shrink to any size", ea:"🔍", b:"grow as tall as a tower", eb:"🗼"},
+  // food
+  {c:"food", a:"eat pizza every day", ea:"🍕", b:"eat ice cream forever", eb:"🍦"},
+  {c:"food", a:"have chocolate rain", ea:"🍫", b:"have popcorn snow", eb:"🍿"},
+  {c:"food", a:"have candy for breakfast", ea:"🍬", b:"have cookies for dinner", eb:"🍪"},
+  {c:"food", a:"live in a candy land", ea:"🍭", b:"live in a LEGO world", eb:"🧱"},
+  {c:"food", a:"only eat crunchy food", ea:"🥕", b:"only eat squishy food", eb:"🍮"},
+  {c:"food", a:"have a juice fountain at home", ea:"🧃", b:"have a pancake machine at home", eb:"🥞"},
+  {c:"food", a:"eat a giant strawberry", ea:"🍓", b:"eat a hundred tiny watermelons", eb:"🍉"},
+  {c:"food", a:"have spaghetti hair", ea:"🍝", b:"have marshmallow shoes", eb:"☁️"},
+  // adventure
+  {c:"adventure", a:"live in a treehouse", ea:"🌳", b:"live in an underwater house", eb:"🐙"},
+  {c:"adventure", a:"explore space", ea:"🚀", b:"dive deep in the ocean", eb:"🤿"},
+  {c:"adventure", a:"be a pirate", ea:"🏴‍☠️", b:"be an astronaut", eb:"🧑‍🚀"},
+  {c:"adventure", a:"visit the past", ea:"🏰", b:"visit the future", eb:"🤖"},
+  {c:"adventure", a:"have a flying car", ea:"🚗", b:"have a swimming car", eb:"🚤"},
+  {c:"adventure", a:"be friends with aliens", ea:"👽", b:"be friends with robots", eb:"🤖"},
+  {c:"adventure", a:"find a treasure map", ea:"🗺️", b:"find a secret door", eb:"🚪"},
+  {c:"adventure", a:"climb the tallest mountain", ea:"🏔️", b:"explore the deepest cave", eb:"🔦"},
+  {c:"adventure", a:"live in a castle", ea:"🏰", b:"live on a spaceship", eb:"🛸"},
+  {c:"adventure", a:"sail around the world", ea:"⛵", b:"take a train across the world", eb:"🚂"},
+  // silly
+  {c:"silly", a:"be super smart", ea:"🤓", b:"be super silly", eb:"🤪"},
+  {c:"silly", a:"have rainbow hair", ea:"🌈", b:"have glowing skin", eb:"✨"},
+  {c:"silly", a:"sneeze glitter", ea:"✨", b:"burp bubbles", eb:"🫧"},
+  {c:"silly", a:"play tag forever", ea:"🏃", b:"play hide-and-seek forever", eb:"🙈"},
+  {c:"silly", a:"walk backwards everywhere", ea:"🔙", b:"hop on one foot everywhere", eb:"🦶"},
+  {c:"silly", a:"have a nose that honks", ea:"📯", b:"have shoes that squeak", eb:"👟"},
+  {c:"silly", a:"sing everything you say", ea:"🎤", b:"dance everywhere you go", eb:"💃"},
+  {c:"silly", a:"wear pajamas all day", ea:"🩳", b:"wear a costume all day", eb:"🎭"},
+  {c:"silly", a:"have a trampoline floor", ea:"🤸", b:"have a slide instead of stairs", eb:"🛝"},
+  // school
+  {c:"school", a:"have no homework", ea:"📚", b:"have no tests", eb:"📝"},
+  {c:"school", a:"have recess all morning", ea:"⚽", b:"have art all afternoon", eb:"🎨"},
+  {c:"school", a:"have class outside", ea:"🌤️", b:"have class in a blanket fort", eb:"⛺"},
+  {c:"school", a:"be the teacher for a day", ea:"🧑‍🏫", b:"be the principal for a day", eb:"🏫"},
+  {c:"school", a:"ride a pony to school", ea:"🐴", b:"ride a hot-air balloon to school", eb:"🎈"},
+  {c:"school", a:"have a class pet hamster", ea:"🐹", b:"have a class pet parrot", eb:"🦜"},
+  {c:"school", a:"read a book about dragons", ea:"🐲", b:"write a story about robots", eb:"🤖"},
+  {c:"school", a:"have a field trip to the zoo", ea:"🦁", b:"have a field trip to a museum", eb:"🏛️"}
+];
+var BUILT_IN = QS.length;
+
+var GOOD = [
+  function(m){ return "I would rather " + m + " because..."; },
+  function(m){ return "I think it would be better to " + m + " because..."; },
+  function(){ return "The best part would be..."; },
+  function(){ return "It would be awesome since..."; },
+  function(){ return "One reason I like this choice is..."; },
+  function(){ return "This would help me when..."; },
+  function(){ return "First I would..., and then I would..."; }
+];
+var BAD = [
+  function(o){ return "I wouldn't want to " + o + " because..."; },
+  function(){ return "That choice would be tricky since..."; },
+  function(){ return "The worst part of it would be..."; },
+  function(){ return "A problem with the other choice is..."; },
+  function(){ return "I might get tired of it when..."; }
+];
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+function shuffle(arr){
+  for (var i = arr.length - 1; i > 0; i--) { var j = Math.floor(Math.random()*(i+1)); var t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+  return arr;
+}
+function pick(pool, n, firstFixed){
+  var rest = shuffle(pool.slice(1)).slice(0, n - 1);
+  return (firstFixed ? [pool[0]] : []).concat(rest);
+}
+function store(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+function load(key, fallback){ try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? fallback : v; } catch (e) { return fallback; } }
 
-function starters(myChoice, otherChoice){
-  return {
-    good: [
-      "I would rather " + myChoice + " because...",
-      "The best part would be...",
-      "It would be awesome since..."
-    ],
-    bad: [
-      "I wouldn't want to " + otherChoice + " because...",
-      "That choice would be tricky since...",
-      "The worst part of it would be..."
-    ]
-  };
+/* ---------- state ---------- */
+var cat = "all", deck = [], pos = 0;
+var votes = {};      // question -> [a, b]
+var startersFor = {}; // question -> cached starters
+var custom = load("wyr-custom", []);
+if (!Array.isArray(custom)) custom = [];
+custom = custom.filter(function(q){ return q && typeof q.a === "string" && typeof q.b === "string"; });
+custom.forEach(function(q){ QS.push({c:"mine", a:q.a, ea:"⭐", b:q.b, eb:"🌟"}); });
+
+function pool(){ return QS.filter(function(q){ return cat === "all" || q.c === cat; }); }
+
+function buildDeck(avoid){
+  deck = shuffle(pool());
+  if (avoid && deck.length > 1 && deck[0] === avoid) { deck.push(deck.shift()); }
+  pos = 0;
 }
 
-function optionBlock(name, otherName, emoji){
-  var s = starters(name, otherName);
-  return '<div class="opt-name"><span class="badge">'+emoji+'</span>'+cap(name)+'</div>'
+/* ---------- rendering ---------- */
+function optionHTML(q, side){
+  var name = side === 0 ? q.a : q.b, other = side === 0 ? q.b : q.a, emoji = side === 0 ? q.ea : q.eb;
+  var s = startersFor[q.a + "|" + q.b][side];
+  var letter = side === 0 ? "A" : "B";
+  return '<h2 class="opt-name"><span class="emoji" aria-hidden="true">' + emoji + '</span><span>' + esc(cap(name)) + '</span></h2>'
     + '<div class="for"><div class="col-label">&#128077; Why I\'d pick it</div><ul>'
-    + s.good.map(function(r){return '<li>'+r+'</li>';}).join('') + '</ul></div>'
+    + s.good.map(function(f){ return '<li>' + esc(f(name)) + '</li>'; }).join('') + '</ul></div>'
     + '<div class="against"><div class="col-label">&#128078; Why not the other</div><ul>'
-    + s.bad.map(function(r){return '<li>'+r+'</li>';}).join('') + '</ul></div>';
+    + s.bad.map(function(f){ return '<li>' + esc(f(other)) + '</li>'; }).join('') + '</ul></div>'
+    + '<div class="vote-row">'
+    + '<button class="minus" data-side="' + side + '" data-d="-1" aria-label="Remove a vote from ' + letter + '">&minus;</button>'
+    + '<span class="count" id="count' + side + '">0</span>'
+    + '<button class="vote" data-side="' + side + '" data-d="1">&#9995; Vote ' + letter + '</button>'
+    + '</div>';
 }
 
-var last = -1;
+function current(){ return deck[pos]; }
+function keyOf(q){ return q.a + "|" + q.b; }
+
 function show(){
-  var i = Math.floor(Math.random()*QS.length);
-  if (QS.length > 1) { while (i === last) i = Math.floor(Math.random()*QS.length); }
-  last = i;
-  var q = QS[i];
-  document.getElementById("question").innerHTML = "Would you rather <b>"+q.a+"</b> or <b>"+q.b+"</b>?";
-  document.getElementById("optA").innerHTML = optionBlock(q.a, q.b, "\uD83C\uDD70\uFE0F");
-  document.getElementById("optB").innerHTML = optionBlock(q.b, q.a, "\uD83C\uDD71\uFE0F");
+  var q = current();
+  resetTimer();
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  if (!q) {
+    $("counter").textContent = "";
+    $("question").textContent = "No questions here yet. Add your own below!";
+    $("optA").innerHTML = ""; $("optB").innerHTML = "";
+    $("split").hidden = true;
+    return;
+  }
+  var k = keyOf(q);
+  if (!startersFor[k]) {
+    startersFor[k] = [0,1].map(function(){ return { good: pick(GOOD, 3, true), bad: pick(BAD, 2, true) }; });
+  }
+  if (!votes[k]) votes[k] = [0,0];
+  $("counter").textContent = "Question " + (pos + 1) + " of " + deck.length;
+  $("question").innerHTML = 'Would you rather <span class="a">' + esc(q.a) + '</span> or <span class="b">' + esc(q.b) + '</span>?';
+  ["optA","optB"].forEach(function(id, side){
+    var el = $(id);
+    el.innerHTML = optionHTML(q, side);
+    el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+  });
+  $("back").disabled = pos === 0;
+  renderVotes(-1);
 }
 
-document.getElementById("spin").onclick = show;
-document.addEventListener("keydown", function(e){
-  if (e.code === "Space" || e.code === "Enter" || e.code === "ArrowRight") { e.preventDefault(); show(); }
+function renderVotes(bumped){
+  var q = current(); if (!q) return;
+  var v = votes[keyOf(q)], total = v[0] + v[1];
+  [0,1].forEach(function(side){
+    var el = $("count" + side);
+    el.textContent = v[side];
+    if (side === bumped) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+    el.previousElementSibling.disabled = v[side] === 0;
+  });
+  $("split").hidden = total === 0;
+  if (total) {
+    var pa = Math.round(v[0] / total * 100), pb = 100 - pa;
+    var crownA = v[0] > v[1] ? "👑 " : "", crownB = v[1] > v[0] ? " 👑" : "";
+    $("splitA").style.flexGrow = v[0]; $("splitB").style.flexGrow = v[1];
+    $("splitA").textContent = v[0] ? crownA + "A " + pa + "%" : "";
+    $("splitB").textContent = v[1] ? "B " + pb + "%" + crownB : "";
+    $("status").textContent = "A has " + v[0] + " votes, B has " + v[1] + " votes.";
+  }
+}
+
+function vote(side, d){
+  var q = current(); if (!q) return;
+  var v = votes[keyOf(q)];
+  v[side] = Math.max(0, v[side] + d);
+  renderVotes(side);
+}
+
+function next(){
+  if (!deck.length) return;
+  if (pos < deck.length - 1) pos++;
+  else buildDeck(current());
+  show();
+}
+function back(){ if (pos > 0) { pos--; show(); } }
+
+/* ---------- topics ---------- */
+function renderChips(){
+  $("chips").innerHTML = CATS.filter(function(c){ return c.id !== "mine" || custom.length; }).map(function(c){
+    return '<button class="chip" data-cat="' + c.id + '" aria-pressed="' + (c.id === cat) + '">' + c.label + '</button>';
+  }).join('');
+}
+$("chips").addEventListener("click", function(e){
+  var b = e.target.closest(".chip"); if (!b) return;
+  cat = b.dataset.cat; store("wyr-cat", cat);
+  renderChips(); buildDeck(); show();
 });
-show();
+
+/* ---------- timer ---------- */
+var DURS = [30, 60, 90, 120], durIdx = 0;
+var tState = "idle", tEnd = 0, tLeft = 0, tick = null, audio = null;
+function fmt(sec){ sec = Math.ceil(sec); return Math.floor(sec/60) + ":" + ("0" + sec % 60).slice(-2); }
+function paintTimer(){
+  var total = DURS[durIdx];
+  var left = tState === "running" ? Math.max(0, (tEnd - Date.now()) / 1000) : tState === "paused" ? tLeft : total;
+  var label = tState === "running" ? "⏸ " + fmt(left) : tState === "paused" ? "▶ " + fmt(left) : tState === "done" ? "⏰ Time's up!" : "⏱ Start " + fmt(total);
+  $("timer").textContent = label;
+  $("timer").classList.toggle("on", tState === "running");
+  var bar = $("timebar");
+  bar.style.width = (tState === "idle" ? 0 : tState === "done" ? 100 : (1 - left / total) * 100) + "%";
+  bar.classList.toggle("low", tState === "done" || (tState !== "idle" && left <= 5));
+  $("dur").textContent = total + "s";
+}
+function resetTimer(){
+  clearInterval(tick); tState = "idle"; $("card").classList.remove("done"); paintTimer();
+}
+function beep(){
+  if (!audio) return;
+  try {
+    [0, .25, .5].forEach(function(t, i){
+      var o = audio.createOscillator(), g = audio.createGain();
+      o.type = "sine"; o.frequency.value = i === 2 ? 880 : 660;
+      g.gain.setValueAtTime(.0001, audio.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.25, audio.currentTime + t + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + t + .22);
+      o.connect(g); g.connect(audio.destination);
+      o.start(audio.currentTime + t); o.stop(audio.currentTime + t + .25);
+    });
+  } catch (e) {}
+}
+function run(){
+  tState = "running";
+  clearInterval(tick);
+  tick = setInterval(function(){
+    if (Date.now() >= tEnd) {
+      clearInterval(tick); tState = "done"; $("card").classList.add("done"); beep();
+      $("status").textContent = "Time's up!";
+    }
+    paintTimer();
+  }, 200);
+  paintTimer();
+}
+function toggleTimer(){
+  try {
+    if (!audio) { var AC = window.AudioContext || window.webkitAudioContext; if (AC) audio = new AC(); }
+    if (audio && audio.state === "suspended") audio.resume();
+  } catch (e) {}
+  if (tState === "idle") { tEnd = Date.now() + DURS[durIdx] * 1000; run(); }
+  else if (tState === "running") { tLeft = Math.max(0, (tEnd - Date.now()) / 1000); clearInterval(tick); tState = "paused"; paintTimer(); }
+  else if (tState === "paused") { tEnd = Date.now() + tLeft * 1000; run(); }
+  else resetTimer();
+}
+$("timer").onclick = toggleTimer;
+$("dur").onclick = function(){ durIdx = (durIdx + 1) % DURS.length; store("wyr-dur", durIdx); resetTimer(); };
+
+/* ---------- read aloud ---------- */
+function speak(){
+  var q = current(); if (!q || !window.speechSynthesis) return;
+  try {
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance("Would you rather " + q.a + ", or " + q.b + "?");
+    u.lang = "en-US"; u.rate = 0.9; u.pitch = 1.1;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) $("speak").hidden = true;
+$("speak").onclick = speak;
+
+/* ---------- full screen ---------- */
+var root = document.documentElement;
+if (!root.requestFullscreen) $("fsBtn").hidden = true;
+$("fsBtn").onclick = function(){
+  try {
+    var p = document.fullscreenElement ? document.exitFullscreen() : root.requestFullscreen();
+    if (p && p.catch) p.catch(function(){ $("fsBtn").hidden = true; });
+  } catch (e) { $("fsBtn").hidden = true; }
+};
+
+/* ---------- add your own ---------- */
+function tidy(s){
+  s = s.trim().replace(/\s+/g, " ").replace(/[?.!]+$/, "");
+  return s.charAt(0).toLowerCase() + s.slice(1);
+}
+function renderOwn(){
+  $("ownList").innerHTML = custom.map(function(q, i){
+    return '<li><span>' + esc(cap(q.a)) + ' <b>or</b> ' + esc(q.b) + '</span><button data-i="' + i + '" aria-label="Remove this question">Remove</button></li>';
+  }).join('');
+}
+$("ownForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  var a = tidy($("ownA").value), b = tidy($("ownB").value);
+  if (!a || !b) return;
+  custom.push({a:a, b:b}); store("wyr-custom", custom);
+  var q = {c:"mine", a:a, ea:"⭐", b:b, eb:"🌟"};
+  QS.push(q);
+  $("ownA").value = ""; $("ownB").value = "";
+  renderOwn(); renderChips();
+  if (cat === "all" || cat === "mine") { deck.splice(pos + (deck.length ? 1 : 0), 0, q); if (deck.length > 1) pos++; show(); }
+  $("ownA").focus();
+});
+$("ownList").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if (!b) return;
+  var gone = custom.splice(+b.dataset.i, 1)[0]; store("wyr-custom", custom);
+  var cur = current();
+  QS = QS.filter(function(q){ return !(q.c === "mine" && q.a === gone.a && q.b === gone.b); });
+  if (cat === "mine" && !custom.length) cat = "all";
+  renderOwn(); renderChips();
+  deck = deck.filter(function(q){ return QS.indexOf(q) !== -1; });
+  pos = Math.max(0, deck.indexOf(cur));
+  if (deck.indexOf(cur) === -1 && cat === "all" && !deck.length) buildDeck();
+  show();
+});
+
+/* ---------- wiring ---------- */
+$("spin").onclick = next;
+$("back").onclick = back;
+document.querySelector(".cols").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-side]"); if (!b) return;
+  vote(+b.dataset.side, +b.dataset.d);
+});
+document.addEventListener("keydown", function(e){
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  var t = e.target, tag = t.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA") return;
+  var onControl = tag === "BUTTON" || tag === "SUMMARY" || tag === "A";
+  if ((e.code === "Space" || e.code === "Enter") && onControl) return; // let the focused control work
+  switch (e.code) {
+    case "Space": case "Enter": case "ArrowRight": e.preventDefault(); next(); break;
+    case "ArrowLeft": e.preventDefault(); back(); break;
+    case "KeyA": vote(0, e.shiftKey ? -1 : 1); break;
+    case "KeyB": vote(1, e.shiftKey ? -1 : 1); break;
+    case "KeyT": toggleTimer(); break;
+    case "KeyR": speak(); break;
+  }
+});
+
+/* ---------- start ---------- */
+var savedCat = load("wyr-cat", "all");
+if (CATS.some(function(c){ return c.id === savedCat; }) && (savedCat !== "mine" || custom.length)) cat = savedCat;
+var savedDur = load("wyr-dur", 0);
+if (DURS[savedDur]) durIdx = savedDur;
+renderChips(); renderOwn(); buildDeck(); show();
 </script>
 </body>
 </html>
