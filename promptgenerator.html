@@ -126,12 +126,99 @@
     .card{padding:22px 18px; box-shadow:0 8px 0 var(--shadow);}
     .btn-main{font-size:18px;}
   }
+
+  /* ---------- Plan it & write it panel ---------- */
+  .paper{margin-top:26px; min-height:0;}
+  .paper-title{font-family:'Baloo 2',cursive; font-weight:800; font-size:clamp(22px,4.4vw,27px); line-height:1.15; color:var(--ink);}
+  .paper-sub{font-size:14px; font-weight:700; color:var(--ink-soft); margin-top:4px;}
+  .parts{list-style:none; margin-top:14px; display:flex; flex-direction:column; gap:10px;}
+  .part{display:flex; gap:11px; align-items:flex-start; background:var(--panel); border:3px solid var(--ink); border-radius:16px; padding:10px 12px;}
+  .part .num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--accent); color:#fff; border:2.5px solid var(--ink);
+    font-family:'Baloo 2',cursive; font-weight:800; font-size:16px; display:flex; align-items:center; justify-content:center; line-height:1;}
+  .part .pbody{flex:1; min-width:0;}
+  .part .pname{font-family:'Baloo 2',cursive; font-weight:800; font-size:17px; line-height:1.2;}
+  .part .phint{font-size:13px; font-weight:700; color:var(--ink-soft);}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:7px;}
+  .chip{font-family:'Nunito'; font-weight:800; font-size:13px; color:var(--ink); background:#fff; cursor:pointer;
+    border:2.5px solid var(--ink); border-radius:999px; padding:3px 12px; box-shadow:0 2px 0 var(--ink); transition:transform .1s, box-shadow .1s, background .2s;}
+  .chip:hover{transform:translateY(-1px); box-shadow:0 3px 0 var(--ink);}
+  .chip:active{transform:translateY(2px); box-shadow:0 0 0 var(--ink);}
+  .chip.done{background:#5fd38a;}
+  .try{margin-top:12px; font-size:13px; font-weight:800; color:var(--ink-soft);}
+  .try b{color:var(--ink);}
+  .sheets-label{font-family:'Baloo 2',cursive; font-weight:800; font-size:17px; margin-top:18px; padding-top:14px; border-top:3px dotted #e7ddf0;}
+  .sheets{--s:.185; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px;}
+  .sheet{font-family:'Baloo 2',cursive; font-weight:800; font-size:14px; color:var(--ink); cursor:pointer; background:#fff;
+    border:3px solid var(--ink); border-radius:16px; box-shadow:0 4px 0 var(--ink); padding:9px 6px 6px;
+    display:flex; flex-direction:column; align-items:center; gap:5px; transition:transform .1s, box-shadow .1s;}
+  .sheet:hover{transform:translateY(-2px); box-shadow:0 6px 0 var(--ink);}
+  .sheet:active{transform:translateY(3px); box-shadow:0 1px 0 var(--ink);}
+  .sheet small{font-family:'Nunito'; font-size:11px; font-weight:800; color:var(--ink-soft);}
+  .thumb{width:calc(793.7px * var(--s)); height:calc(1122.5px * var(--s)); overflow:hidden; border:2px solid var(--ink); border-radius:5px; background:#fff; pointer-events:none;}
+  .thumb .pp{transform:scale(var(--s)); transform-origin:top left;}
+  .paper-note{text-align:center; font-size:12px; font-weight:800; color:var(--ink-soft); margin-top:14px; min-height:1.3em;}
+  .btn[disabled]{opacity:.6; cursor:wait;}
+  @media(max-width:560px){ .sheets{--s:.15;} }
+  @media(max-width:430px){ .sheets{--s:.112; gap:7px;} .sheet{font-size:12px;} }
+
+  /* ---------- Printable A4 pages ---------- */
+  #printRoot{position:fixed; left:-10000px; top:0;}
+  .pp{width:210mm; height:297mm; background:#fff; color:#2d2150; padding:10mm 14mm 9mm; display:flex; flex-direction:column;
+    font-family:'Nunito',sans-serif; line-height:1.25; overflow:hidden; text-align:left;}
+  .pp-head{display:flex; justify-content:space-between; align-items:flex-end; gap:6mm; padding-bottom:2mm; border-bottom:1mm solid #2d2150;}
+  .pp-brand{font-family:'Baloo 2',cursive; font-weight:800; font-size:15pt; line-height:1.1;}
+  .pp-brand span{font-family:'Nunito'; font-weight:800; font-size:9pt; letter-spacing:.05em; text-transform:uppercase; color:#6b5e8c; display:block;}
+  .pp-name{font-size:10pt; font-weight:800; color:#6b5e8c; white-space:nowrap; display:flex; align-items:flex-end; gap:1.5mm;}
+  .pp-name i{display:inline-block; width:40mm; border-bottom:.35mm solid #6b5e8c; margin-right:3mm;}
+  .pp-name i.s{width:24mm; margin-right:0;}
+  .pp-prompt{margin-top:3.5mm; border:.8mm solid #2d2150; border-radius:4mm; padding:2.2mm 4mm 2.6mm;}
+  .pp-lab{font-size:8.5pt; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#6b5e8c;}
+  .pp-ptext{font-family:'Baloo 2',cursive; font-weight:700; line-height:1.2; margin-top:1mm;}
+  .pp-tip{font-size:10pt; font-weight:700; color:#6b5e8c; margin-top:.8mm;}
+  .pp-body{flex:1; min-height:0; margin-top:3.5mm; display:flex; flex-direction:column;}
+  .pp-draw{flex:0 0 auto; border:.6mm dashed #6b5e8c; border-radius:4mm; margin-bottom:3mm; padding:2mm 3.5mm;
+    font-size:9pt; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#8f86a8;}
+  .pp-lines{flex:1; display:flex; flex-direction:column; min-height:0; min-width:0;}
+  .ln{flex:1; min-height:0; border-bottom:.35mm solid #6b5e8c; position:relative; display:flex; align-items:flex-end; padding:0 0 .8mm 2.5mm;}
+  .ln.mid::before{content:""; position:absolute; left:0; right:0; top:50%; border-top:.3mm dashed #c9c1dd;}
+  .ln.in{padding-left:10mm;}
+  .ln .st{font-weight:700; color:#8f86a8; white-space:nowrap; line-height:1; position:relative;}
+  .pp-parts{flex:1; display:flex; flex-direction:column; min-height:0;}
+  .pp-part{display:flex; min-height:0; border-top:.35mm solid #c9c1dd;}
+  .pp-part:first-child{border-top:none;}
+  .pp-plab{flex:0 0 auto; padding:2.5mm 2.5mm 0 0; border-right:.8mm solid #2d2150;}
+  .pp-pn{display:flex; align-items:center; gap:1.5mm; font-family:'Baloo 2',cursive; font-weight:800; line-height:1.1;}
+  .pp-num{flex:0 0 auto; width:6mm; height:6mm; border-radius:50%; color:#fff; font-family:'Baloo 2',cursive; font-weight:800; font-size:10pt;
+    display:inline-flex; align-items:center; justify-content:center; line-height:1;}
+  .pp-ph{font-weight:700; color:#6b5e8c; margin-top:1mm; line-height:1.25;}
+  .pp-foot{margin-top:3mm; display:flex; flex-wrap:wrap; gap:1.5mm 7mm; font-size:10pt; font-weight:800; color:#2d2150; align-items:center;}
+  .pp-foot .bx{display:inline-block; width:4.2mm; height:4.2mm; border:.5mm solid #2d2150; border-radius:1mm; margin-right:1.6mm; vertical-align:-.7mm;}
+  .pp-foot .ft{color:#6b5e8c;}
+  .pp-boxes{flex:1; display:flex; flex-direction:column; gap:3mm; min-height:0;}
+  .pp-box{border:.8mm solid #2d2150; border-radius:4mm; padding:2mm 4mm 0; display:flex; flex-direction:column; min-height:0;}
+  .pp-bh{display:flex; align-items:center; gap:2mm; font-family:'Baloo 2',cursive; font-weight:800; line-height:1.15;}
+  .pp-bh em{font-family:'Nunito'; font-style:normal; font-weight:700; color:#6b5e8c;}
+  .pp-bq{font-weight:700; color:#6b5e8c; margin-top:.5mm;}
+  .pp-wl{flex:1; display:flex; flex-direction:column; min-height:0; padding-bottom:3mm;}
+  .pp-wl i{flex:1; border-bottom:.3mm solid #b3aac9;}
+  .pp-try{margin-top:3mm; font-size:10pt; font-weight:700; color:#6b5e8c;}
+  .pp-try b{color:#2d2150; font-weight:800;}
+
+  @page{size:A4 portrait; margin:0;}
+  @media print{
+    html,body{background:#fff !important; padding:0 !important; margin:0 !important; display:block !important; min-height:0 !important;}
+    .wrap,.confetti{display:none !important;}
+    #printRoot{position:static;}
+    .pp{break-after:page; page-break-after:always;}
+    .pp:last-child{break-after:auto; page-break-after:auto;}
+    *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">Years 1 – 6</span>
+    <span class="eyebrow" id="eyebrow">Years 1 – 6</span>
     <h1>Prompt-O-Matic</h1>
     <p class="sub">🎲 Pick a year, spin the machine, and grab a writing mission!</p>
   </header>
@@ -159,8 +246,34 @@
     </div>
   </div>
 
+
+  <div class="card paper" id="paper" style="display:none;">
+    <div class="tags">
+      <span class="genre" id="pk-genre"></span>
+      <span class="meta" id="pk-meta"></span>
+    </div>
+    <p class="paper-title">📝 Plan it &amp; write it</p>
+    <p class="paper-sub" id="pk-sub"></p>
+    <ol class="parts" id="pk-parts"></ol>
+    <p class="try" id="pk-try"></p>
+
+    <p class="sheets-label">🖨️ Your writing paper <span class="meta" id="pk-level"></span></p>
+    <div class="sheets" id="pk-sheets">
+      <button class="sheet" data-kind="planner"><span class="thumb"></span>Planner<small>⬇️ PDF</small></button>
+      <button class="sheet" data-kind="guide"><span class="thumb"></span>Guide paper<small>⬇️ PDF</small></button>
+      <button class="sheet" data-kind="writing"><span class="thumb"></span>Writing paper<small>⬇️ PDF</small></button>
+    </div>
+    <div class="actions">
+      <button class="btn btn-main" id="pdf-all"><span>⬇️</span> Download all 3 as PDF</button>
+      <button class="btn btn-icon" id="print-all" aria-label="Print all three pages" title="Print">🖨️</button>
+    </div>
+    <p class="paper-note" id="pk-note">Your prompt is printed at the top of every page.</p>
+  </div>
+
   <p class="hint">⌨️ <kbd>space</kbd> to spin · <kbd>1</kbd>–<kbd>6</kbd> to pick a year</p>
 </div>
+
+<div id="printRoot" aria-hidden="true"></div>
 
 <script>
 const ACCENTS = {
@@ -463,10 +576,11 @@ function updateCount(){
   $('count').textContent='🎟️ '+n;
 }
 
-function setYear(y){
+function setYear(y, quiet){
   current=y; lastKey=null;
   buildYears(); applyAccent(); buildGenres(); updateCount();
   $('eyebrow').textContent='Year '+y+' · '+DATA[y].age;
+  if(quiet){ if(lastItem){ lastItem=null; $('paper').style.display='none'; } return; }
   generate();
 }
 
@@ -502,6 +616,7 @@ function generate(){
   card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
   btn.classList.add('rolling'); setTimeout(()=>btn.classList.remove('rolling'),500);
   confettiBurst();
+  lastItem=item; renderPaper();
 }
 
 $('gen').addEventListener('click',generate);
@@ -516,11 +631,329 @@ $('copy').addEventListener('click',async()=>{
 
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='SELECT')return;
+  if(e.code==='Space'&&e.target.tagName==='BUTTON'&&e.target.id!=='gen')return;
   if(e.code==='Space'){e.preventDefault();generate();}
   else if(e.key>='1'&&e.key<='6')setYear(+e.key);
 });
 
-setYear(1);
+
+/* =====================================================================
+   Plan it & write it: guides, starters and printable paper
+   ===================================================================== */
+
+/* Each part: [name, what goes here, planning question, easier starters, harder starters, weight] */
+const GUIDES = {
+  story:{title:"a story", short:[0,2,3], shortNames:["Beginning","Middle","End"],
+    parts:[
+      ["Beginning","Who, where and when","Who is in your story? Where does it start?",["One day, …","There was once a … who …"],["It was an ordinary … until …","Nobody noticed … except …"],1],
+      ["Build-up","Something starts to happen","What happens first? What clue or problem appears?",["Then …","Suddenly, …"],["At first, …","Little by little, …"],1],
+      ["Problem","The most exciting part","What goes wrong? What is the big moment?",["Oh no! …","But then …"],["Without warning, …","There was only one thing left to do: …"],1.4],
+      ["Ending","How it all works out","How is the problem solved? How do the characters feel?",["In the end, …","After that, …"],["At last, …","From that day on, …"],1]
+    ],
+    lo:"describing words · first, then, suddenly · speech marks",
+    hi:"show, don't tell · short sentences for tension · dialogue · a simile or metaphor"},
+  describe:{title:"a description", short:[0,1,3], shortNames:["Start","Details","Ending"],
+    parts:[
+      ["Opening","Say what you are describing","What is it? Where are you?",["This is …","I can see …"],["At first glance, …","In the middle of … stood …"],1],
+      ["Look closer","Shapes, sizes and colours","What can you see when you look closely?",["It looks like …","It is … and …"],["All around, …","… stretched as far as …"],1.2],
+      ["More senses","Sounds, smells and touch","What can you hear, smell or feel?",["I can hear …","It feels …"],["The air was thick with …","Somewhere nearby, …"],1.2],
+      ["Ending","A feeling or a last picture","How does it make you feel?",["It makes me feel …","I like it because …"],["It was the kind of place that …","Even now, …"],1]
+    ],
+    lo:"describing words · colour and size words · a simile (like a …) · because",
+    hi:"all five senses · personification · metaphor · long and short sentences"},
+  recount:{title:"a recount", short:[1,2,3], shortNames:["First","Then","Finally"],
+    parts:[
+      ["Opening","When, where and who","When was it? Where were you? Who was there?",["Last … I went to …","At the weekend, I …"],["It all happened on …","I will never forget the day …"],1],
+      ["First","What happened first","What happened first?",["First, …","To begin with, …"],["As soon as we arrived, …","At the start, …"],1],
+      ["Next","What happened after that","What happened next? What was the best bit?",["Next, …","After that, …"],["Moments later, …","The most … part was when …"],1.2],
+      ["Ending","How it ended and how you felt","How did it end? How did you feel?",["Finally, …","I felt … because …"],["By the end, …","Looking back, …"],1]
+    ],
+    lo:"first, next, after that, finally · past tense · feeling words",
+    hi:"time connectives · first person, past tense · vivid detail · how your feelings changed"},
+  list:{title:"a list", y1:["1.","2.","3."], short:[0], shortNames:["My list"],
+    parts:[["My list","One thing on each line","Which three things will you choose?",["1. …","2. …","3. …"],["1. …","2. …","3. …"],1]],
+    lo:"one thing on each line · and", hi:"one thing on each line · and"},
+  instructions:{title:"instructions", short:[1,2,3], shortNames:["You need","Steps","Last step"],
+    parts:[
+      ["Title and goal","Say what the instructions are for","What will the reader make or do?",["How to …","You will learn how to …"],["How to …","Follow these steps to …"],.8],
+      ["What you need","List the things","What does the reader need?",["You will need …","• …"],["You will need:","• …"],1],
+      ["Steps","Numbered steps, in order","What do you do, in order?",["1. First, …","2. Next, …","3. Then, …"],["1. First, …","2. Carefully …","3. Once you have …, …"],2],
+      ["Ending","A top tip or a warning","What tip or warning will help?",["Finally, …","Top tip: …"],["Warning: never …","Top tip: …"],1]
+    ],
+    lo:"numbers · bossy verbs (cut, mix, put) · first, next, then",
+    hi:"bossy verbs · adverbs (carefully, slowly) · exact details · a warning"},
+  letter:{title:"a letter", short:[0,2,3], shortNames:["Greeting","My message","Goodbye"],
+    parts:[
+      ["Greeting","Say hello","Who are you writing to?",["Dear …,"],["Dear …,"],.6],
+      ["Opening","Say why you are writing","Why are you writing?",["I am writing to …","Thank you for …"],["I am writing to …","I hope this letter finds you …"],1],
+      ["Main part","Your news, details and questions","What do you want to tell them or ask them?",["Guess what? …","Did you know …?"],["You may be surprised to hear that …","What I really want to know is …"],1.8],
+      ["Closing","Say goodbye","How will you end your letter?",["I hope …","From …"],["I look forward to …","Yours sincerely, …"],1]
+    ],
+    lo:"Dear … · capital letters for names · a question · From …",
+    hi:"formal or friendly tone · paragraphs · a question for the reader · a proper sign-off"},
+  persuade:{title:"persuasive writing", short:[0,1,3], shortNames:["My idea","My reasons","Ending"],
+    parts:[
+      ["Opening","Say what you want","What do you want people to do or think?",["I think that …","We should …"],["Have you ever wondered …?","Imagine a … where …"],1],
+      ["Reason 1","Your strongest reason","What is your best reason? What proves it?",["The first reason is …","This is important because …"],["Firstly, …","It is clear that …"],1.2],
+      ["Reason 2","Another reason, and answer a worry","What else? What might someone say back?",["Another reason is …","Also, …"],["Furthermore, …","Some people may say …, but …"],1.2],
+      ["Ending","Ask your reader to act","What should your reader do now?",["So please …","That is why …"],["Now is the time to …","Surely you agree that …"],1]
+    ],
+    lo:"because · two good reasons · a slogan · please",
+    hi:"rhetorical question · facts and feelings · answer the other side · a call to action"},
+  diary:{title:"a diary entry", short:[0,1,2], shortNames:["Today","What happened","Feelings"],
+    parts:[
+      ["Opening","The day and the mood","What day is it? What kind of day has it been?",["Dear Diary,","Today was …"],["Dear Diary,","You will never believe what happened today."],.8],
+      ["What happened","The events, in order","What happened, in order?",["This morning, I …","Then …"],["It started when …","Before I knew it, …"],1.8],
+      ["Feelings","Thoughts and feelings","How did you feel? Why?",["I felt … because …","The best part was …"],["My heart … when …","I still cannot decide whether …"],1.2],
+      ["Sign-off","Hopes for tomorrow","What do you hope will happen next?",["Tomorrow I will …","I hope …"],["Tomorrow, I hope …","Until then, …"],.8]
+    ],
+    lo:"I, me, my · past tense · feeling words · then, after that",
+    hi:"first person · inner thoughts · time connectives · how the mood changes"},
+  explain:{title:"an explanation", short:[0,2,3], shortNames:["Start","How or why","Ending"],
+    parts:[
+      ["Opening","Say what you will explain","What are you explaining?",["This is about …","Do you know how …?"],["Have you ever wondered how …?","This explanation will show …"],1],
+      ["First point","How it starts","What happens first, and why?",["First, …","To start with, …"],["To begin with, …","This happens because …"],1.2],
+      ["Next points","What happens next, and why","What happens next? What does that cause?",["Next, …","This is because …"],["As a result, …","This means that …"],1.5],
+      ["Ending","Sum up, or a fun fact","What should the reader remember?",["Finally, …","Did you know …?"],["In summary, …","Without …, …"],1]
+    ],
+    lo:"first, next, finally · because · a fun fact",
+    hi:"so, therefore, as a result · technical words · present tense"},
+  news:{title:"a news report", short:[0,1,2], shortNames:["Headline","Opening","Details"],
+    parts:[
+      ["Headline","Short and catchy","What headline will grab the reader?",["… FOUND IN …!"],["MYSTERY AS …"],.6],
+      ["Opening","Who, what, where and when","Who? What? Where? When?",["Yesterday, in …, …","A … was found …"],["Late last night, …","Residents of … were shocked when …"],1],
+      ["Details","What happened, in order","What happened, in order? Why?",["It began when …","People saw …"],["It is believed that …","According to …"],1.6],
+      ["Quote and ending","A witness, and what happens next","What did a witness say? What happens next?",["“…,” said …","Now, …"],["“…,” said …, who saw it happen.","The investigation continues …"],1.2]
+    ],
+    lo:"who, what, where, when · past tense · a quote from a witness",
+    hi:"who, what, where, when · third person, past tense · a witness quote · formal tone"},
+  discuss:{title:"a balanced argument", short:[0,1,3], shortNames:["Question","Both sides","My view"],
+    parts:[
+      ["Introduction","Introduce the question","What is the question? Why does it matter?",["Some people think …"],["Many people disagree about whether …","This report looks at both sides of …"],1],
+      ["Arguments for","Points on one side","What are two points for? What is the evidence?",["One reason is …"],["On one hand, …","Furthermore, …"],1.3],
+      ["Arguments against","Points on the other side","What are two points against? What is the evidence?",["But others say …"],["On the other hand, …","However, …"],1.3],
+      ["Conclusion","Your view, with a reason","After weighing both sides, what do you think?",["I think … because …"],["Having considered both sides, I believe …","Overall, …"],1]
+    ],
+    lo:"however · because · I think",
+    hi:"however, although, furthermore · formal language · evidence · save your view for the end"}
+};
+const FAMILY_OF = {"Describe":"describe","Description":"describe","Setting":"describe","Recount":"recount","Narrative":"story","Imagine":"story",
+  "List":"list","Instructions":"instructions","Letter":"letter","Persuasion":"persuade","Speech":"persuade","Diary":"diary",
+  "Explanation":"explain","Newspaper":"news","Discussion":"discuss","Balanced argument":"discuss"};
+
+/* Paper suited to each year: line height (mm), starter size (pt), drawing box (mm), handwriting mid-line */
+const LEVELS = {
+  1:{line:19,  pt:22,  draw:92, mid:true,  tier:3, label:"Extra-wide handwriting lines and a picture box",
+     check:["Capital letter","Finger spaces","Full stop"]},
+  2:{line:15,  pt:18,  draw:50, mid:true,  tier:3, label:"Wide handwriting lines and a small picture box",
+     check:["Capital letters and full stops","A joining word: and, but, because","I read it back"]},
+  3:{line:12,  pt:14,  draw:0,  mid:false, tier:3, label:"Wide lines for one paragraph",
+     check:["Capital letters and . ? !","Interesting words","Ideas in order","I read it back"]},
+  4:{line:10.5,pt:13,  draw:0,  mid:false, tier:4, label:"Medium lines for two paragraphs",
+     check:["Paragraphs","Punctuation checked","Powerful words","I read it back"]},
+  5:{line:9.5, pt:12,  draw:0,  mid:false, tier:4, label:"Narrower lines for two or three paragraphs",
+     check:["Paragraphs","Different sentence openers","Ambitious vocabulary","Edited and improved"]},
+  6:{line:8.5, pt:11.5,draw:0,  mid:false, tier:4, label:"Narrow lines for three or more paragraphs",
+     check:["Linked paragraphs","Varied sentence lengths","Precise vocabulary","Edited and improved"]}
+};
+const Y1_STEPS = [["Draw","Draw your idea in the picture box."],["Say","Say your sentence out loud."],["Write","Write it on the lines."],["Check","Capital letter, finger spaces, full stop."]];
+const PXMM = 96/25.4;
+let lastItem = null;
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const family = item => GUIDES[FAMILY_OF[item.g] || 'story'];
+
+function partsFor(item, year){
+  const f = family(item), L = LEVELS[year];
+  const pick = year === 2 ? f.short : f.parts.map((_, i) => i);
+  return pick.map((idx, k) => {
+    const p = f.parts[idx];
+    return {n: year === 2 ? f.shortNames[k] : p[0], h:p[1], q:p[2], st:p[L.tier], w:p[5]};
+  });
+}
+/* Year 1 writes one or two sentences: use the prompt's own "Start:" line when it has one */
+function y1Starters(item){
+  const f = family(item);
+  if (f.y1) return f.y1;
+  return /^Start:/i.test(item.s) ? [item.s.replace(/^Start:\s*/i,'')] : [f.parts[0][3][0]];
+}
+
+/* ---------- On-screen guide ---------- */
+function renderPaper(){
+  if (!lastItem) return;
+  const item = lastItem, f = family(item), L = LEVELS[current];
+  $('paper').style.display = 'flex';
+  $('pk-genre').textContent = item.g;
+  $('pk-meta').textContent = 'Year ' + current + ' · aim for ' + DATA[current].time;
+  let rows;
+  if (current === 1){
+    $('pk-sub').textContent = 'Four small steps to write your sentence.';
+    const st = y1Starters(item);
+    rows = Y1_STEPS.map((s, i) => ({n:s[0], h:s[1], st: i === 2 ? st.filter(x => x.length > 2) : []}));
+    $('pk-try').innerHTML = '';
+  } else {
+    $('pk-sub').textContent = 'How to organise ' + f.title + '. Tap a starter to copy it.';
+    rows = partsFor(item, current);
+    $('pk-try').innerHTML = '<b>Try to use:</b> ' + esc(L.tier === 3 ? f.lo : f.hi);
+  }
+  $('pk-parts').innerHTML = rows.map((r, i) => `<li class="part"><span class="num">${i+1}</span><div class="pbody">
+      <div class="pname">${esc(r.n)}</div><div class="phint">${esc(r.h)}</div>
+      ${r.st.length ? `<div class="chips">${r.st.map(t => `<button class="chip" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : ''}
+    </div></li>`).join('');
+  $('pk-level').textContent = '· Year ' + current + ': ' + L.label.toLowerCase();
+  buildPages();
+}
+$('pk-parts').addEventListener('click', async e => {
+  const c = e.target.closest('.chip'); if (!c) return;
+  try { await navigator.clipboard.writeText(c.dataset.t); } catch(err) {}
+  c.classList.add('done'); setTimeout(() => c.classList.remove('done'), 900);
+});
+
+/* ---------- A4 pages ---------- */
+function pageShell(kind, item){
+  const names = {planner:'Planner', guide:'Guide paper', writing:'Writing paper'};
+  const size = {1:17, 2:16, 3:14.5, 4:13.5, 5:13, 6:12.5}[current];
+  const acc = ACCENTS[current].a;
+  const d = document.createElement('div');
+  d.className = 'pp'; d.dataset.kind = kind;
+  d.innerHTML = `
+    <div class="pp-head" style="border-color:${acc}">
+      <div class="pp-brand"><span>Year ${current} · ${esc(item.g)} · ${names[kind]}</span>Prompt-O-Matic</div>
+      <div class="pp-name">Name<i></i>Date<i class="s"></i></div>
+    </div>
+    <div class="pp-prompt">
+      <div class="pp-lab">My writing mission · aim for ${DATA[current].time}</div>
+      <div class="pp-ptext" style="font-size:${size}pt">${esc(item.p)}</div>
+      ${kind !== 'writing' ? `<div class="pp-tip">💡 ${esc(item.s)}</div>` : ''}
+    </div>
+    <div class="pp-body"></div>
+    ${kind === 'guide' ? `<div class="pp-foot"><span class="ft">My checklist:</span>${LEVELS[current].check.map(c => `<span><span class="bx"></span>${esc(c)}</span>`).join('')}</div>` : ''}`;
+  return d;
+}
+function lineHTML(L, text, indent){
+  return `<div class="ln${L.mid ? ' mid' : ''}${indent ? ' in' : ''}">${text ? `<span class="st" style="font-size:${L.pt}pt">${esc(text)}</span>` : ''}</div>`;
+}
+function share(N, ws){
+  const sum = ws.reduce((a, b) => a + b, 0);
+  const out = ws.map(w => Math.max(2, Math.round(N * w / sum)));
+  out[out.indexOf(Math.max(...out))] += N - out.reduce((a, b) => a + b, 0);
+  return out;
+}
+function drawBox(L){ return L.draw ? `<div class="pp-draw" style="height:${L.draw}mm">Draw your idea</div>` : ''; }
+function lineCount(body, L){
+  const avail = body.clientHeight / PXMM - (L.draw ? L.draw + 3 : 0);
+  return Math.max(3, Math.floor(avail / L.line));
+}
+
+function fillGuide(body, item){
+  const L = LEVELS[current], N = lineCount(body, L);
+  if (current === 1){
+    const st = y1Starters(item);
+    body.innerHTML = drawBox(L) + `<div class="pp-lines">${Array.from({length:N}, (_, r) => lineHTML(L, st[r] || '', false)).join('')}</div>`;
+    return;
+  }
+  const parts = partsFor(item, current), counts = share(N, parts.map(p => p.w));
+  const col = current === 2 ? 36 : 31, nameSize = current === 2 ? 13 : 11.5, hintSize = current === 2 ? 10 : 8.5;
+  const acc = ACCENTS[current].a;
+  body.innerHTML = drawBox(L) + `<div class="pp-parts">${parts.map((p, i) => {
+    const rows = Array.from({length:counts[i]}, (_, r) => {
+      const k = r / 2, text = (r % 2 === 0 && k < p.st.length) ? p.st[k] : '';
+      return lineHTML(L, text, r === 0);
+    }).join('');
+    return `<div class="pp-part" style="flex:${counts[i]}">
+      <div class="pp-plab" style="width:${col}mm">
+        <div class="pp-pn" style="font-size:${nameSize}pt"><span class="pp-num" style="background:${acc}">${i+1}</span>${esc(p.n)}</div>
+        <div class="pp-ph" style="font-size:${hintSize}pt">${esc(p.h)}</div>
+      </div>
+      <div class="pp-lines">${rows}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+function fillWriting(body){
+  const L = LEVELS[current], N = lineCount(body, L);
+  body.innerHTML = drawBox(L) + `<div class="pp-lines">${Array.from({length:N}, () => lineHTML(L, '', false)).join('')}</div>`;
+}
+function fillPlanner(body, item){
+  const f = family(item), L = LEVELS[current], acc = ACCENTS[current].a;
+  const wl = n => `<div class="pp-wl">${Array(n).fill('<i></i>').join('')}</div>`;
+  if (current === 1){
+    body.innerHTML = `<div class="pp-boxes">
+      <div class="pp-box" style="flex:3"><div class="pp-bh" style="font-size:15pt"><span class="pp-num" style="background:${acc}">1</span>Draw your idea</div></div>
+      <div class="pp-box" style="flex:1.6"><div class="pp-bh" style="font-size:15pt"><span class="pp-num" style="background:${acc}">2</span>Words I will use</div>${wl(2)}</div>
+      <div class="pp-box" style="flex:.55;justify-content:center;padding-bottom:2mm"><div class="pp-bh" style="font-size:15pt"><span class="pp-num" style="background:${acc}">3</span>Say your sentence out loud. Now you are ready to write!</div></div>
+    </div>`;
+    return;
+  }
+  const parts = partsFor(item, current);
+  const hs = current === 2 ? 15 : 12.5, qs = current === 2 ? 12 : 10.5;
+  body.innerHTML = `<div class="pp-boxes">${parts.map((p, i) => `
+      <div class="pp-box" style="flex:${p.w}">
+        <div class="pp-bh" style="font-size:${hs}pt"><span class="pp-num" style="background:${acc}">${i+1}</span><span>${esc(p.n)} <em style="font-size:${qs}pt">· ${esc(p.h)}</em></span></div>
+        <div class="pp-bq" style="font-size:${qs}pt">${esc(p.q)}</div>
+        ${wl(p.w < 1 ? 1 : (current === 2 ? 2 : 3))}
+      </div>`).join('')}</div>
+    <div class="pp-try"><b>Try to use:</b> ${esc(L.tier === 3 ? f.lo : f.hi)}</div>`;
+}
+function buildPages(){
+  if (!lastItem) return;
+  const root = $('printRoot'); root.innerHTML = '';
+  ['planner','guide','writing'].forEach(kind => {
+    const page = pageShell(kind, lastItem);
+    root.appendChild(page);                         // must be in the page before we can measure it
+    const body = page.querySelector('.pp-body');
+    if (kind === 'planner') fillPlanner(body, lastItem);
+    else if (kind === 'guide') fillGuide(body, lastItem);
+    else fillWriting(body);
+  });
+  document.querySelectorAll('#pk-sheets .sheet').forEach(b => {
+    const t = b.querySelector('.thumb'); t.innerHTML = '';
+    t.appendChild(root.querySelector(`.pp[data-kind="${b.dataset.kind}"]`).cloneNode(true));
+  });
+}
+
+/* ---------- PDF download (falls back to the print window) ---------- */
+const PDF_LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+                  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];
+let libsReady = null;
+function loadLibs(){
+  if (!libsReady) libsReady = Promise.all(PDF_LIBS.map(src => new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  }))).catch(e => { libsReady = null; throw e; });
+  return libsReady;
+}
+function note(t){ $('pk-note').textContent = t; }
+function printPages(){ buildPages(); window.print(); }
+async function downloadPDF(kinds, btn){
+  if (!lastItem) return;
+  const all = [...document.querySelectorAll('#paper button')];
+  all.forEach(b => b.disabled = true);
+  note('⏳ Making your PDF…');
+  try {
+    await loadLibs();
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    buildPages();
+    const pdf = new window.jspdf.jsPDF({unit:'mm', format:'a4', orientation:'portrait', compress:true});
+    for (let i = 0; i < kinds.length; i++){
+      const page = $('printRoot').querySelector(`.pp[data-kind="${kinds[i]}"]`);
+      const canvas = await html2canvas(page, {scale:2.5, backgroundColor:'#ffffff', logging:false});
+      if (i) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg', .92), 'JPEG', 0, 0, 210, 297);
+    }
+    const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    pdf.save(`prompt-o-matic-year${current}-${slug(lastItem.g)}-${kinds.length === 3 ? 'pack' : kinds[0]}.pdf`);
+    note('✅ PDF downloaded. Your prompt is printed at the top of every page.');
+  } catch (err) {
+    note('The PDF maker could not load, so the print window opened instead. Choose “Save as PDF” there.');
+    window.print();
+  } finally {
+    all.forEach(b => b.disabled = false);
+  }
+}
+$('pk-sheets').addEventListener('click', e => { const b = e.target.closest('.sheet'); if (b) downloadPDF([b.dataset.kind], b); });
+$('pdf-all').addEventListener('click', e => downloadPDF(['planner','guide','writing'], e.currentTarget));
+$('print-all').addEventListener('click', printPages);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildPages);
+
+setYear(1, true);
 </script>
 </body>
 </html>
