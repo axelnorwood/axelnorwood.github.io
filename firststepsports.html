@@ -141,12 +141,68 @@
   .tab-in { animation: tabin .35s cubic-bezier(.2,.7,.3,1) both; }
   @keyframes tabin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes toastin { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+  /* print buttons */
+  .print-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1px solid rgba(0,0,0,0.14); border-radius: 99px; padding: 9px 16px; font-size: 13.5px; font-weight: 700; color: var(--ink); transition: border-color .2s, transform .2s; white-space: nowrap; }
+  .print-btn:hover { border-color: var(--ink); transform: translateY(-1px); }
+  .sport-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .head-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+  /* ---------- printable guides (hidden on screen) ---------- */
+  #print-root { display: none; }
+  .pg { color: #1a1a17; font-size: 10pt; line-height: 1.4; break-after: page; page-break-after: always; }
+  .pg:last-child { break-after: auto; page-break-after: auto; }
+  .pg-head { display: flex; align-items: center; gap: 12pt; padding-bottom: 10pt; border-bottom: 2.5pt solid; }
+  .pg-icon { display: grid; place-items: center; width: 46pt; height: 46pt; border-radius: 11pt; flex-shrink: 0; line-height: 0; }
+  .pg-title { flex: 1; }
+  .pg-name { margin: 0; font-size: 24pt; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+  .pg-tag { margin: 3pt 0 0; font-size: 10.5pt; font-weight: 700; }
+  .pg-brand { text-align: right; font-size: 7.5pt; font-weight: 800; letter-spacing: 0.14em; line-height: 1.5; }
+  .pg-brand span { display: block; font-weight: 400; letter-spacing: 0.06em; opacity: 0.6; text-transform: uppercase; }
+  .pg-what { font-family: Georgia, 'Times New Roman', serif; font-size: 10.5pt; line-height: 1.5; margin: 10pt 0 0; }
+  .pg-h { display: flex; align-items: baseline; gap: 8pt; margin: 14pt 0 6pt; font-size: 12.5pt; font-weight: 800; break-after: avoid; page-break-after: avoid; }
+  .pg-h small { font-size: 8.5pt; font-weight: 400; opacity: 0.6; }
+  .pg-skills { display: grid; grid-template-columns: 1fr 1fr; gap: 7pt; }
+  .pg-skill { border: 1pt solid #d9d5cb; border-radius: 8pt; padding: 7pt 9pt; break-inside: avoid; page-break-inside: avoid; }
+  .pg-skill-head { display: flex; align-items: center; gap: 6pt; }
+  .pg-skill-head h3 { margin: 0; font-size: 10.5pt; font-weight: 800; flex: 1; }
+  .pg-skill ul { margin: 4pt 0 5pt; padding-left: 13pt; font-size: 9pt; line-height: 1.45; }
+  .pg-cue { display: inline-block; padding: 2.5pt 7pt; border-radius: 5pt; font-size: 9pt; font-weight: 700; font-style: italic; }
+  .pg-cue b { font-style: normal; font-size: 6.5pt; letter-spacing: 0.12em; margin-right: 4pt; }
+  .pg-box { display: inline-grid; place-items: center; width: 11pt; height: 11pt; border: 1.2pt solid #1a1a17; border-radius: 2.5pt; flex-shrink: 0; font-size: 8pt; font-weight: 800; line-height: 1; }
+  .pg-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  .pg-table td { padding: 3.5pt 6pt 3.5pt 0; border-bottom: 0.6pt solid #e2ded4; vertical-align: top; }
+  .pg-table tr { break-inside: avoid; page-break-inside: avoid; }
+  .pg-table td:first-child { width: 16pt; padding-top: 4pt; }
+  .pg-table td:nth-child(2) { width: 27%; font-weight: 800; }
+  .pg-table td:last-child { width: 25%; padding-right: 0; font-size: 8pt; font-weight: 700; }
+  .pg-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; break-inside: avoid; page-break-inside: avoid; }
+  .pg-cols .pg-h { margin-top: 14pt; }
+  .pg-list { margin: 0; padding-left: 14pt; font-size: 9pt; line-height: 1.55; }
+  .pg-chips { font-size: 9pt; line-height: 1.5; margin: 0; }
+  .pg-log { break-inside: avoid; page-break-inside: avoid; }
+  .pg-log table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+  .pg-log th { font-weight: 800; padding: 2pt 0; text-align: center; opacity: 0.7; }
+  .pg-log th:first-child, .pg-log td:first-child { text-align: left; width: 44pt; font-weight: 800; }
+  .pg-log td { border: 0.6pt solid #d9d5cb; height: 17pt; }
+  .pg-log td:first-child { border: none; }
+  .pg-log td:last-child { width: 38%; }
+  .pg-foot { margin-top: 10pt; font-family: Georgia, serif; font-style: italic; font-size: 9pt; opacity: 0.65; text-align: center; }
+
+  @page { margin: 13mm 14mm; }
+  @media print {
+    html, body { background: #fff !important; min-height: 0 !important; overflow: visible !important; }
+    .bg-glow, .shell, #toast-root { display: none !important; }
+    #print-root { display: block; }
+    #print-root, #print-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
 <div class="shell" id="app"></div>
 <div id="toast-root"></div>
+<div id="print-root"></div>
 
 <script>
 "use strict";
@@ -253,6 +309,7 @@ function glyph(name, size, color, stroke) {
     move: '<g ' + P + '><circle cx="13" cy="5" r="1.6" /><path d="M13 7v4l3 2M13 9l-4 1-2 4M9 14l1 5M9 14l-2 2" /></g>',
     clock: '<g ' + P + '><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></g>',
     strength: '<g ' + P + '><path d="M5 9v6M19 9v6M7 8v8M17 8v8M9 12h6" /><path d="M3 11v2M21 11v2" /></g>',
+    print: '<g ' + P + '><path d="M7 9V4h10v5" /><rect x="4" y="9" width="16" height="8" rx="2" /><path d="M7 14h10v6H7z" fill="#fff" /></g>',
     flame: '<g ' + P + '><path d="M12 21c3.3 0 5.5-2.2 5.5-5.2 0-3.2-2.5-5-3.5-8.3-1.8 1.3-2 3-2 3S10 8 9 6.5C7.8 8.4 6.5 10 6.5 13.3 6.5 17.4 9 21 12 21z" /></g>'
   };
   return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" style="display:block">' + (g[name] || g.steps) + '</svg>';
@@ -871,8 +928,91 @@ function goHome() { view = "home"; activeId = null; window.scrollTo(0, 0); rende
 function openSport(id) { activeId = id; view = "sport"; tab = "learn"; window.scrollTo(0, 0); render(); }
 function setTab(t) { tab = t; render(); }
 
+// ---------- PRINTABLE PDF GUIDES ----------
+function pgBox(done) { return '<span class="pg-box">' + (done ? "✓" : "") + '</span>'; }
+
+function pgTable(s, list, type) {
+  return '<table class="pg-table">' + list.map(function (d, i) {
+    var done = !!state.done[s.id + ":" + type + ":" + i];
+    return '<tr><td>' + pgBox(done) + '</td><td>' + esc(d[0]) + '</td><td>' + esc(d[1]) + '</td>' +
+      '<td style="color:' + s.accent + '">' + esc(d[2]) + '</td></tr>';
+  }).join("") + '</table>';
+}
+
+function guideHTML(s) {
+  var skills = s.skills.map(function (sk, i) {
+    var done = !!state.done[s.id + ":skill:" + i];
+    return '<div class="pg-skill">' +
+      '<div class="pg-skill-head">' + pgBox(done) + '<h3>' + (i + 1) + '. ' + esc(sk.name) + '</h3></div>' +
+      '<ul>' + sk.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join("") + '</ul>' +
+      '<span class="pg-cue" style="background:' + s.accentSoft + ';color:' + s.accent + '"><b>CUE</b>“' + esc(sk.cue) + '”</span>' +
+    '</div>';
+  }).join("");
+
+  var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  var logRows = [1, 2, 3, 4].map(function (w) {
+    return '<tr><td>Week ' + w + '</td>' + days.map(function () { return '<td></td>'; }).join("") + '<td></td></tr>';
+  }).join("");
+
+  return '<article class="pg">' +
+    '<header class="pg-head" style="border-color:' + s.accent + '">' +
+      '<span class="pg-icon" style="background:' + s.accentSoft + '">' + sportIcon(s.id, 30, s.accent, 1.9) + '</span>' +
+      '<div class="pg-title"><h1 class="pg-name">' + esc(s.name) + '</h1><p class="pg-tag" style="color:' + s.accent + '">' + esc(s.tag) + '</p></div>' +
+      '<div class="pg-brand">FIRST STEPS<span>Beginner guide</span></div>' +
+    '</header>' +
+    '<p class="pg-what">' + esc(s.what) + '</p>' +
+
+    '<h2 class="pg-h">Skills &amp; cues <small>Repeat each one until it feels natural, then move on.</small></h2>' +
+    '<div class="pg-skills">' + skills + '</div>' +
+
+    '<h2 class="pg-h">Solo drills <small>No partner needed.</small></h2>' + pgTable(s, s.solo, "solo") +
+    '<h2 class="pg-h">Partner drills <small>Add a partner once solo feels comfortable.</small></h2>' + pgTable(s, s.partner, "partner") +
+    '<h2 class="pg-h">Mini games <small>The big ideas, zero pressure.</small></h2>' + pgTable(s, s.games, "game") +
+
+    '<div class="pg-cols">' +
+      '<div><h2 class="pg-h">What you need</h2><ul class="pg-list">' +
+        s.equipment.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join("") + '</ul></div>' +
+      '<div><h2 class="pg-h">A 10–20 min session</h2><ol class="pg-list">' +
+        '<li>Warm up movement (skips, shuffles, light reps)</li>' +
+        '<li>One skill focus</li><li>One drill</li><li>One mini game</li>' +
+        '<li>Cool-down reflection: “What did I improve today?”</li></ol></div>' +
+    '</div>' +
+    '<div class="pg-cols">' +
+      '<div><h2 class="pg-h">Movement skills it builds</h2><p class="pg-chips">' + s.movement.map(esc).join(" · ") + '</p></div>' +
+      '<div><h2 class="pg-h">Strength that supports it</h2><p class="pg-chips">' + s.strength.map(esc).join(" · ") + '</p></div>' +
+    '</div>' +
+
+    '<div class="pg-log"><h2 class="pg-h">Practice log <small>Tick every day you show up. 10–20 minutes counts.</small></h2>' +
+      '<table><tr><th></th>' + days.map(function (d) { return '<th>' + d + '</th>'; }).join("") + '<th>What I improved</th></tr>' + logRows + '</table>' +
+    '</div>' +
+    '<p class="pg-foot">“Champions are just beginners who refused to quit.”</p>' +
+  '</article>';
+}
+
+// Fill the hidden print area with one guide (by sport id) or all of them ("all").
+function buildGuides(id) {
+  var list = id === "all" ? SPORTS : SPORTS.filter(function (x) { return x.id === id; });
+  document.getElementById("print-root").innerHTML = list.map(guideHTML).join("");
+  return list;
+}
+
+function printGuide(id) {
+  var list = buildGuides(id);
+  if (!list.length) return;
+  // The page title becomes the suggested PDF file name.
+  var oldTitle = document.title;
+  document.title = "First Steps — " + (id === "all" ? "All " + list.length + " Guides" : list[0].name + " Guide");
+  function cleanup() {
+    document.title = oldTitle;
+    document.getElementById("print-root").innerHTML = "";
+    window.removeEventListener("afterprint", cleanup);
+  }
+  window.addEventListener("afterprint", cleanup);
+  setTimeout(function () { window.print(); }, 60);
+}
+
 // expose for inline handlers
-window.FS = { toggle: toggle, resetAll: resetAll, goHome: goHome, openSport: openSport, setTab: setTab };
+window.FS = { toggle: toggle, resetAll: resetAll, goHome: goHome, openSport: openSport, setTab: setTab, printGuide: printGuide, buildGuides: buildGuides };
 
 // ---------- RENDER ----------
 function headerHTML() {
@@ -923,7 +1063,8 @@ function homeHTML() {
     '</section>' +
     '<section class="pillars">' + pillars + '</section>' +
     '<section>' +
-      '<div class="section-head"><h2 class="h2">Choose your sport</h2><span class="section-hint">' + SPORTS.length + ' guides \u00B7 tap any to begin</span></div>' +
+      '<div class="section-head"><h2 class="h2">Choose your sport</h2><div class="head-actions"><span class="section-hint">' + SPORTS.length + ' guides \u00B7 tap any to begin</span>' +
+        '<button class="print-btn" onclick="FS.printGuide(\'all\')">' + glyph("print", 17) + 'Print all guides (PDF)</button></div></div>' +
       '<div class="grid">' + cards + '</div>' +
     '</section>' +
     '<footer class="home-footer">' +
@@ -1015,7 +1156,10 @@ function sportHTML() {
         '<span class="sport-icon" style="color:' + s.accent + ';border-color:' + s.accent + '33">' + sportIcon(s.id, 40, s.accent, 1.9) + '</span>' +
         '<div><h1 class="sport-name">' + esc(s.name) + '</h1><p class="sport-tag" style="color:' + s.accent + '">' + esc(s.tag) + '</p></div>' +
       '</div>' +
-      '<div class="sport-ring">' + progressRing(sportPct(s), s.accent, 68) + '<span class="sport-ring-lbl">complete</span></div>' +
+      '<div class="sport-actions">' +
+        '<button class="print-btn" onclick="FS.printGuide(\'' + s.id + '\')">' + glyph("print", 17) + 'Print guide (PDF)</button>' +
+        '<div class="sport-ring">' + progressRing(sportPct(s), s.accent, 68) + '<span class="sport-ring-lbl">complete</span></div>' +
+      '</div>' +
     '</section>' +
     '<p class="what-text">' + esc(s.what) + '</p>' +
     '<nav class="tabs">' + tabs + '</nav>' +
