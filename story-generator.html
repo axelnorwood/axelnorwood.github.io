@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Story Spinner — Story ideas for young writers</title>
+<title>The Story Spinner — Story ideas, guides and writing paper for young writers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#FBF7EF; --ink:#2B2620; --ink-soft:#6B6358; --ink-faint:#A89E90;
+    --bg:#FBF7EF; --ink:#2B2620; --ink-soft:#6B6358; --ink-faint:#8F8577;
     --card:#FFFFFF; --line:#EBE3D6; --line-strong:#D9CFBE;
     --shadow:0 1px 2px rgba(43,38,32,.04), 0 8px 24px rgba(43,38,32,.06);
     --r:18px; --font-display:"Fraunces", Georgia, serif; --font-body:"Nunito", system-ui, sans-serif;
@@ -26,42 +26,65 @@
     color:var(--ink); min-height:100vh; display:flex; align-items:flex-start; justify-content:center;
     padding:clamp(16px,4vw,48px) 16px 64px; line-height:1.5;
   }
+  button{font-family:var(--font-body)}
+  button:focus-visible{outline:3px solid #C7791F;outline-offset:2px}
   .shell{width:100%;max-width:640px}
   header{text-align:center;margin-bottom:clamp(24px,5vw,40px)}
   .kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
   h1{font-family:var(--font-display);font-weight:500;font-size:clamp(34px,8vw,52px);line-height:1.02;letter-spacing:-.01em;margin-bottom:12px}
   h1 em{font-style:italic;color:#C7791F}
-  .sub{font-size:15px;color:var(--ink-soft);max-width:40ch;margin:0 auto;font-weight:600}
+  .sub{font-size:15px;color:var(--ink-soft);max-width:44ch;margin:0 auto;font-weight:600}
   .step-label{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:0 4px 12px;display:flex;align-items:center;gap:8px}
-  .step-num{width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+  .step-num{width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:0 0 auto}
+
+  /* Story type toggle */
   .toggle{display:flex;gap:8px;overflow-x:auto;padding:4px 4px 12px;margin-bottom:28px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
   .toggle::-webkit-scrollbar{height:6px}
   .toggle::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:100px}
-  .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:100px;padding:9px 15px;cursor:pointer;font-family:var(--font-body);font-weight:800;font-size:13px;color:var(--ink-soft);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;transition:transform .14s ease, border-color .14s ease, color .14s ease, box-shadow .14s ease}
+  .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:100px;padding:9px 15px;cursor:pointer;font-weight:800;font-size:13px;color:var(--ink-soft);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;transition:transform .14s ease, border-color .14s ease, color .14s ease, box-shadow .14s ease}
   .chip:hover{border-color:var(--line-strong);color:var(--ink)}
   .chip.on{border-color:var(--ink);color:var(--ink);box-shadow:var(--shadow);transform:translateY(-1px)}
   .chip .em{font-size:16px;line-height:1}
+
   .actions-row{display:flex;gap:10px;margin-bottom:8px}
-  .spin{flex:1;border:none;cursor:pointer;font-family:var(--font-body);background:var(--ink);color:var(--bg);font-weight:800;font-size:16px;padding:16px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease, opacity .16s ease;box-shadow:var(--shadow)}
+  .spin{flex:1;border:none;cursor:pointer;background:var(--ink);color:var(--bg);font-weight:800;font-size:16px;padding:16px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease, opacity .16s ease;box-shadow:var(--shadow)}
   .spin:hover{opacity:.92}
   .spin:active{transform:scale(.985)}
   .spin .dice{font-size:20px;transition:transform .5s cubic-bezier(.2,.9,.3,1.4)}
   .spin.rolling .dice{transform:rotate(360deg)}
-  .guide-btn{flex:0 0 auto;border:1.5px solid var(--line-strong);background:var(--card);cursor:pointer;font-family:var(--font-body);font-weight:800;font-size:14px;color:var(--ink-soft);padding:0 18px;border-radius:var(--r);display:inline-flex;align-items:center;gap:8px;transition:background .14s ease, color .14s ease, border-color .14s ease}
+  .guide-btn{flex:0 0 auto;border:1.5px solid var(--line-strong);background:var(--card);cursor:pointer;font-weight:800;font-size:14px;color:var(--ink-soft);padding:0 18px;border-radius:var(--r);display:inline-flex;align-items:center;gap:8px;transition:background .14s ease, color .14s ease, border-color .14s ease}
   .guide-btn:hover{background:var(--bg);color:var(--ink);border-color:var(--ink-faint)}
   .guide-btn .ic{font-size:17px}
+
   .card{margin-top:24px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:clamp(22px,5vw,32px);box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:opacity .35s ease, transform .35s ease}
   .card.show{opacity:1;transform:translateY(0)}
   .tag{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.04em;padding:6px 13px;border-radius:100px;margin-bottom:18px}
   .tag .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.55}
   .prompt{font-family:var(--font-display);font-weight:400;font-size:clamp(19px,4.6vw,23px);line-height:1.55;letter-spacing:-.005em;color:var(--ink)}
   .footer{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;padding-top:20px;border-top:1.5px solid var(--line)}
-  .act{font-family:var(--font-body);font-weight:800;font-size:14px;cursor:pointer;border:1.5px solid var(--line-strong);background:transparent;color:var(--ink-soft);padding:10px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;transition:background .14s ease, color .14s ease, border-color .14s ease}
+  .act{font-weight:800;font-size:14px;cursor:pointer;border:1.5px solid var(--line-strong);background:transparent;color:var(--ink-soft);padding:10px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;transition:background .14s ease, color .14s ease, border-color .14s ease}
   .act:hover{background:var(--bg);color:var(--ink);border-color:var(--ink-faint)}
   .act .ic{font-size:16px}
   .act.copied{color:#2C7A4B;border-color:#2C7A4B}
-  .overlay{position:fixed;inset:0;background:rgba(43,38,32,.42);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:0;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s ease}
-  .overlay.open{opacity:1;pointer-events:auto}
+
+  /* Step 3: plan and write */
+  .write-step{margin-top:32px}
+  .paper-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .paper-btn{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:3px;color:var(--ink);transition:border-color .14s ease, transform .14s ease, box-shadow .14s ease}
+  .paper-btn:hover{border-color:var(--ink-faint);transform:translateY(-1px);box-shadow:var(--shadow)}
+  .paper-btn .pb-ic{font-size:20px;line-height:1.2}
+  .paper-btn .pb-name{font-weight:800;font-size:14px}
+  .paper-btn .pb-desc{font-weight:600;font-size:12px;color:var(--ink-soft);line-height:1.35}
+  .write-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 4px 0;font-size:13px;font-weight:700}
+  .linkish{background:none;border:none;cursor:pointer;color:var(--ink-soft);font-weight:800;font-size:13px;text-decoration:underline;text-underline-offset:3px;padding:2px 0}
+  .linkish:hover{color:var(--ink)}
+  .pdf-status{font-size:13px;font-weight:700;color:var(--ink-soft);margin:8px 4px 0;min-height:1.4em}
+  button[disabled]{opacity:.6;cursor:wait}
+  @media (max-width:480px){.paper-row{grid-template-columns:1fr}.paper-btn{flex-direction:row;align-items:center;gap:10px}.paper-btn .pb-desc{display:none}}
+
+  /* Guide overlay */
+  .overlay{position:fixed;inset:0;background:rgba(43,38,32,.42);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:0;z-index:50;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .25s ease, visibility .25s}
+  .overlay.open{opacity:1;pointer-events:auto;visibility:visible}
   .sheet{background:var(--bg);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:clamp(22px,5vw,34px);transform:translateY(20px);transition:transform .3s cubic-bezier(.2,.8,.3,1);box-shadow:0 -10px 40px rgba(43,38,32,.18)}
   .overlay.open .sheet{transform:translateY(0)}
   @media (min-width:560px){.overlay{align-items:center;padding:24px}.sheet{border-radius:24px}}
@@ -72,21 +95,116 @@
   .closeb:hover{color:var(--ink)}
   .sheet h2{font-family:var(--font-display);font-weight:500;font-size:clamp(24px,6vw,32px);margin:14px 0 4px;letter-spacing:-.01em}
   .sheet .oneliner{font-style:italic;font-family:var(--font-display);color:var(--ink-soft);font-size:17px;margin-bottom:18px}
-  .quick{font-size:13px;font-weight:800;color:var(--ink-soft);background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:22px;line-height:1.7}
-  .quick b{color:var(--ink)}
-  .struct-title{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
-  .struct{display:flex;flex-direction:column;gap:0;margin-bottom:22px}
+
+  .tabs{display:flex;gap:4px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:4px;margin-bottom:22px}
+  .tab{flex:1;border:none;background:transparent;border-radius:10px;padding:9px 6px;font-weight:800;font-size:13px;color:var(--ink-soft);cursor:pointer;white-space:nowrap}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:var(--ink);color:var(--bg)}
+  .panel{display:none}
+  .panel.on{display:block}
+
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+  .meta{font-size:12px;font-weight:700;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:7px 12px;color:var(--ink-soft)}
+  .meta b{color:var(--ink);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;font-weight:800}
+  .mountain-title{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
+  .mountain{display:flex;flex-direction:column;gap:0;margin-bottom:22px}
   .stage{display:flex;gap:14px;position:relative;padding-bottom:18px}
   .stage:last-child{padding-bottom:0}
-  .stage::before{content:"";position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--line-strong)}
+  .stage::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line-strong)}
   .stage:last-child::before{display:none}
-  .stage-num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;background:var(--card);border:2px solid var(--line-strong);position:relative;z-index:1;color:var(--ink-soft)}
-  .stage-body{padding-top:3px}
+  .stage-dot{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--card);border:2px solid var(--line-strong);position:relative;z-index:1}
+  .stage-body{padding-top:2px;flex:1;min-width:0}
   .stage-body .s-name{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:2px}
-  .stage-body .s-text{font-size:15px;font-weight:600;color:var(--ink)}
+  .stage-body .s-text{font-size:15px;font-weight:700;color:var(--ink)}
+  .stage-body .s-ask{font-size:14px;font-weight:600;color:var(--ink-soft);margin-top:3px}
+  .starters{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .starter{text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-family:var(--font-display);font-size:15px;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .starter:hover{border-color:var(--ink-faint)}
+  .starter .cp{font-family:var(--font-body);font-size:11px;font-weight:800;color:var(--ink-faint);flex:0 0 auto}
+  .starter.copied{border-color:#2C7A4B}
+  .starter.copied .cp{color:#2C7A4B}
   .examples{font-size:14px;color:var(--ink-soft);font-weight:600;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
   .examples b{color:var(--ink);font-weight:800}
+  .examples + .examples{margin-top:10px}
+  .words{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .word{font-size:13px;font-weight:700;border-radius:100px;padding:4px 11px}
   .note{font-size:13px;color:var(--ink-faint);font-weight:600;margin-top:18px;text-align:center;line-height:1.6}
+  .hint{font-size:13px;color:var(--ink-soft);font-weight:600;margin-bottom:16px}
+
+  /* Paper tab */
+  .papers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  .paper-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .thumb{width:132px;height:187px;overflow:hidden;border:1px solid var(--line-strong);border-radius:4px;background:#fff;flex:0 0 auto}
+  .thumb .page{transform:scale(.1663);transform-origin:top left}
+  .paper-card .pc-name{font-weight:800;font-size:14px}
+  .paper-card .pc-desc{font-size:12px;font-weight:600;color:var(--ink-soft);line-height:1.4;flex:1}
+  .print-btn{border:1.5px solid var(--line-strong);background:transparent;border-radius:10px;padding:7px 14px;font-weight:800;font-size:13px;color:var(--ink);cursor:pointer}
+  .print-btn:hover{background:var(--bg);border-color:var(--ink-faint)}
+  .print-all{width:100%;border:none;background:var(--ink);color:var(--bg);border-radius:14px;padding:14px;font-weight:800;font-size:15px;cursor:pointer}
+  .print-all:hover{opacity:.92}
+  @media (max-width:520px){.papers{grid-template-columns:1fr}.paper-card{flex-direction:row;text-align:left;align-items:center}.thumb{width:80px;height:113px}.thumb .page{transform:scale(.1008)}.paper-card .pc-text{flex:1;display:flex;flex-direction:column;gap:6px;align-items:flex-start}}
+  @media (min-width:521px){.paper-card .pc-text{display:contents}}
+
+  /* ---------- Printable A4 pages ---------- */
+  #printRoot{position:fixed;left:-10000px;top:0}
+  .page{width:210mm;height:297mm;background:#fff;color:#2B2620;padding:12mm 15mm 11mm;display:flex;flex-direction:column;font-family:var(--font-body);overflow:hidden;line-height:1.3}
+  .pg-head{display:flex;justify-content:space-between;align-items:flex-end;gap:8mm;padding-bottom:3mm;border-bottom:.5mm solid currentColor}
+  .pg-kind{font-size:8.5pt;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6B6358}
+  .pg-type{font-family:var(--font-display);font-weight:600;font-size:19pt;line-height:1.1}
+  .pg-name{display:flex;gap:5mm;font-size:10pt;font-weight:700;color:#6B6358;white-space:nowrap}
+  .pg-name span{display:inline-block;border-bottom:.3mm solid #8F8577;width:42mm;margin-left:1.5mm}
+  .pg-name span.short{width:24mm}
+  .pg-title{display:flex;align-items:flex-end;gap:3mm;height:12mm;font-size:11pt;font-weight:800;color:#6B6358}
+  .pg-title i{flex:1;border-bottom:.3mm solid #8F8577}
+
+  /* Guide paper: margin labels + lines with starters */
+  .parts{flex:1;display:flex;flex-direction:column;margin-top:2mm;min-height:0}
+  .part{display:flex;min-height:0;border-top:.3mm solid #D9CFBE}
+  .part:first-child{border-top:none}
+  .p-label{width:31mm;flex:0 0 auto;padding:3mm 3mm 0 0;border-right:.5mm solid currentColor}
+  .p-num{display:inline-flex;width:5.5mm;height:5.5mm;border-radius:50%;border:.4mm solid currentColor;align-items:center;justify-content:center;font-size:8.5pt;font-weight:800;margin-right:1.5mm}
+  .p-name{font-size:10.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+  .p-hint{font-size:8.5pt;font-weight:700;color:#4A433A;margin-top:1.5mm;line-height:1.3}
+  .p-lines{flex:1;display:flex;flex-direction:column;min-width:0}
+  .ln{flex:1;border-bottom:.3mm solid #8F8577;display:flex;align-items:flex-end;padding:0 0 .9mm 3mm;min-height:0}
+  .ln .st{font-size:13pt;font-weight:600;color:#8F8577;white-space:nowrap}
+  .ln.indent{padding-left:11mm}
+  .pg-idea{margin-top:2.5mm;font-size:9pt;font-weight:600;color:#4A433A}
+  .pg-idea b{font-weight:800;color:#6B6358}
+  .pg-foot{margin-top:3mm;font-size:8.5pt;font-weight:700;color:#6B6358;display:flex;justify-content:space-between;gap:6mm}
+
+  /* Plain writing paper: lines only */
+  .page.plain{padding:16mm 15mm 16mm}
+  .page.plain .ln{padding:0}
+
+  /* Planner */
+  .pl-idea{margin-top:3mm;border:.3mm solid #D9CFBE;border-radius:2.5mm;padding:2.2mm 3.5mm;font-size:9.5pt;font-weight:600;color:#4A433A}
+  .pl-idea b{font-size:8pt;text-transform:uppercase;letter-spacing:.08em;color:#6B6358;display:block}
+  .pl-two{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:3mm}
+  .pl-box{border:.4mm solid currentColor;border-radius:2.5mm;padding:2mm 3.5mm 0;display:flex;flex-direction:column}
+  .pl-two .pl-box{height:27mm}
+  .pl-box-h{font-size:9.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+  .pl-box-q{font-size:9pt;font-weight:700;color:#4A433A}
+  .pl-wl{flex:1;display:flex;flex-direction:column;min-height:0;padding-bottom:2.5mm}
+  .pl-wl i{flex:1;border-bottom:.25mm solid #B9B0A2}
+  .pl-mtn{margin-top:2.5mm;height:21mm;flex:0 0 auto}
+  .pl-mtn svg{width:100%;height:100%;display:block}
+  .pl-stages{flex:1;display:flex;flex-direction:column;gap:2.5mm;min-height:0}
+  .pl-stages .pl-box{flex:1;min-height:0}
+  .pl-st-h{display:flex;align-items:baseline;gap:2mm;flex-wrap:wrap}
+  .pl-st-h .pl-box-q{flex:1}
+  .pl-bank{margin-top:3mm;font-size:9.5pt;font-weight:700;color:#4A433A}
+  .pl-bank b{color:#2B2620;font-weight:800}
+
+  @page{size:A4 portrait;margin:0}
+  @media print{
+    html,body{background:#fff !important;padding:0 !important;margin:0 !important;display:block !important;min-height:0 !important;overflow:visible !important}
+    .shell,.overlay{display:none !important}
+    #printRoot{position:static}
+    .page{break-after:page;page-break-after:always}
+    .page:last-child{break-after:auto;page-break-after:auto}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
   @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
@@ -95,46 +213,138 @@
   <header>
     <div class="kicker">For young writers · ages 7–10</div>
     <h1>The Story <em>Spinner</em></h1>
-    <p class="sub">Pick a kind of story, spin up an idea, and peek at the guide to see how that story is built.</p>
+    <p class="sub">Pick a kind of story, spin up an idea, then use the guide and writing paper to plan it and write it.</p>
   </header>
+
   <div class="step-label"><span class="step-num">1</span> Choose your kind of story</div>
-  <div class="toggle" id="toggle"></div>
+  <div class="toggle" id="toggle" role="group" aria-label="Kind of story"></div>
+
   <div class="step-label"><span class="step-num">2</span> Spin an idea — or open the guide</div>
   <div class="actions-row">
-    <button class="spin" id="spinBtn" onclick="spin()"><span class="dice">🎲</span> Spin a story idea</button>
-    <button class="guide-btn" onclick="openGuide()"><span class="ic">🧭</span> Guide</button>
+    <button class="spin" id="spinBtn" onclick="spin()"><span class="dice" aria-hidden="true">🎲</span> Spin a story idea</button>
+    <button class="guide-btn" onclick="openGuide('built')"><span class="ic" aria-hidden="true">🧭</span> Guide</button>
   </div>
-  <div class="card" id="card">
+
+  <div class="card" id="card" aria-live="polite">
     <span class="tag" id="cardTag"></span>
     <p class="prompt" id="cardPrompt"></p>
     <div class="footer">
-      <button class="act" id="copyBtn" onclick="copyPrompt()"><span class="ic">📋</span> Copy idea</button>
-      <button class="act" onclick="spin()"><span class="ic">🔄</span> Another idea</button>
-      <button class="act" onclick="openGuide()"><span class="ic">🧭</span> How is this story built?</button>
+      <button class="act" id="copyBtn" onclick="copyPrompt()"><span class="ic" aria-hidden="true">📋</span><span class="lbl"> Copy idea</span></button>
+      <button class="act" onclick="spin()"><span class="ic" aria-hidden="true">🔄</span> Another idea</button>
+      <button class="act" onclick="openGuide('built')"><span class="ic" aria-hidden="true">🧭</span> How is this story built?</button>
     </div>
   </div>
+
+  <div class="write-step">
+    <div class="step-label"><span class="step-num">3</span> <span>Plan it and write it — tap a page to download it for <span id="stepType"></span></span></div>
+    <div class="paper-row">
+      <button class="paper-btn" data-pdf onclick="downloadPDF(['planner'])">
+        <span class="pb-ic" aria-hidden="true">🗺️</span>
+        <span><span class="pb-name">Story planner</span><br><span class="pb-desc">Plan the four parts on a story mountain.</span></span>
+      </button>
+      <button class="paper-btn" data-pdf onclick="downloadPDF(['guide'])">
+        <span class="pb-ic" aria-hidden="true">✏️</span>
+        <span><span class="pb-name">Guide paper</span><br><span class="pb-desc">Lined paper with sentence starters to finish.</span></span>
+      </button>
+      <button class="paper-btn" data-pdf onclick="downloadPDF(['plain'])">
+        <span class="pb-ic" aria-hidden="true">📄</span>
+        <span><span class="pb-name">Writing paper</span><br><span class="pb-desc">Just lines, for writing it your own way.</span></span>
+      </button>
+    </div>
+    <div class="write-links">
+      <button class="linkish" data-pdf onclick="downloadPDF(['planner','guide','plain'])">⬇️ Download all three (PDF)</button>
+      <button class="linkish" onclick="printPages(['planner','guide','plain'])">🖨️ Print all three</button>
+      <button class="linkish" onclick="openGuide('starters')">See the sentence starters</button>
+      <button class="linkish" onclick="openGuide('paper')">Preview the pages</button>
+    </div>
+    <p class="pdf-status" aria-live="polite"></p>
+  </div>
 </div>
+
+<!-- Guide overlay -->
 <div class="overlay" id="overlay" onclick="bgClose(event)">
-  <div class="sheet" id="sheet">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="gTitle">
     <div class="sheet-head">
       <span class="sheet-tag" id="gTag"></span>
-      <button class="closeb" onclick="closeGuide()">✕</button>
+      <button class="closeb" id="closeBtn" onclick="closeGuide()" aria-label="Close guide">✕</button>
     </div>
     <h2 id="gTitle"></h2>
     <p class="oneliner" id="gOneliner"></p>
-    <div class="quick" id="gQuick"></div>
-    <div class="struct-title">📖 The 5 Parts of the Story</div>
-    <div class="struct" id="gStruct"></div>
-    <div class="examples" id="gExamples"></div>
-    <p class="note">Most great stories mix a few of these together — they're patterns to build on, not boxes to stay inside.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="built" onclick="showTab('built')">⛰️ How it's built</button>
+      <button class="tab" role="tab" data-tab="starters" onclick="showTab('starters')">💬 Starters</button>
+      <button class="tab" role="tab" data-tab="paper" onclick="showTab('paper')">🖨️ Paper</button>
+    </div>
+
+    <div class="panel" id="panel-built">
+      <div class="meta-row">
+        <div class="meta"><b>What happens</b><span id="gWhat"></span></div>
+        <div class="meta"><b>Core theme</b><span id="gTheme"></span></div>
+      </div>
+      <div class="mountain-title">⛰️ The Story Mountain</div>
+      <div class="mountain" id="gMountain"></div>
+      <div class="examples" id="gExamples"></div>
+      <div class="examples" id="gTip"></div>
+      <p class="note">Most great stories mix a few of these together — they're patterns to build on, not boxes to stay inside.</p>
+    </div>
+
+    <div class="panel" id="panel-starters">
+      <p class="hint">Stuck on how to begin a part? Tap a starter to copy it, then finish the sentence in your own words.</p>
+      <div class="mountain" id="gStarters"></div>
+      <div class="examples"><b>Words you could use</b><div class="words" id="gWords"></div></div>
+    </div>
+
+    <div class="panel" id="panel-paper">
+      <p class="hint">Three A4 pages made for this kind of story. Plan first, then write.</p>
+      <div class="papers">
+        <div class="paper-card">
+          <div class="thumb" id="thumb-planner" aria-hidden="true"></div>
+          <div class="pc-text">
+            <div class="pc-name">1 · Story planner</div>
+            <div class="pc-desc">Characters, setting and the four parts of the story mountain.</div>
+            <button class="print-btn" data-pdf onclick="downloadPDF(['planner'])">⬇️ PDF</button>
+          </div>
+        </div>
+        <div class="paper-card">
+          <div class="thumb" id="thumb-guide" aria-hidden="true"></div>
+          <div class="pc-text">
+            <div class="pc-name">2 · Guide paper</div>
+            <div class="pc-desc">Lined paper with each part labelled and starters to finish.</div>
+            <button class="print-btn" data-pdf onclick="downloadPDF(['guide'])">⬇️ PDF</button>
+          </div>
+        </div>
+        <div class="paper-card">
+          <div class="thumb" id="thumb-plain" aria-hidden="true"></div>
+          <div class="pc-text">
+            <div class="pc-name">3 · Writing paper</div>
+            <div class="pc-desc">Just the lines. Use it for a final copy or extra pages.</div>
+            <button class="print-btn" data-pdf onclick="downloadPDF(['plain'])">⬇️ PDF</button>
+          </div>
+        </div>
+      </div>
+      <button class="print-all" data-pdf onclick="downloadPDF(['planner','guide','plain'])">⬇️ Download all three as a PDF</button>
+      <p class="note"><button class="linkish" onclick="printPages(['planner','guide','plain'])">🖨️ Or print them now</button></p>
+      <p class="note pdf-status" aria-live="polite" style="margin-top:6px"></p>
+      <p class="note" style="margin-top:6px">Your spun idea is printed on the planner and the guide paper. The writing paper is lines only.</p>
+    </div>
   </div>
 </div>
+
+<div id="printRoot"></div>
+
 <script>
-const PARTS = ["Beginning","Build Up","Problem","Solution","Ending"];
+/* Each stage: [name, what happens, planning question, [sentence starters]] */
 const PLOTS = {
-  monster:{name:"Overcoming the Monster",emoji:"👻",color:"#A32D2D",bg:"#FCEBEB",oneliner:"Fight the thing you fear",
-    quick:"Threat → Struggle → Big battle → Victory → Peace",
-    structure:["A dangerous threat appears","The hero prepares and faces challenges","The monster seems too powerful","The hero defeats the monster","Peace and safety return"],
+  monster:{name:"Overcoming the Monster",emoji:"👻",color:"#A32D2D",bg:"#FCEBEB",oneliner:"Fight the thing you fear",what:"A hero defeats a dangerous threat",theme:"Courage vs fear",
+    mountain:[
+      ["Beginning","A scary threat appears","Who is your hero? What is the monster or threat?",["It all began when …","Nobody believed that …"]],
+      ["Middle","The hero struggles and prepares","How does the hero get ready? What goes wrong first?",["At first, … tried to …","But that only made things worse because …","Then … had an idea: …"]],
+      ["Climax","The final showdown","Where does it happen? How does the hero win?",["At last, … came face to face with …","With shaking hands, …"]],
+      ["Ending","Safety is restored","How is life safer now? How has the hero changed?",["From that day on, …","… was never afraid of … again because …"]]
+    ],
+    words:["brave","trembling","lurking","enormous","growled","shadow","courage","defeated"],
+    tip:"Make the monster scarier by showing what it does, not just what it looks like.",
     examples:"Jaws · Star Wars · How to Train Your Dragon",
     prompts:[
       "Something has been eating the streetlights on Maple Lane — one by one, the bulbs go dark. By now the whole street is black at night, and Theo is the only one who has seen what's doing it.",
@@ -143,9 +353,15 @@ const PLOTS = {
       "The school pool has been 'closed for repairs' all term. But Jordan can hear splashing in there at night, and whatever's making it is definitely not a broken pipe.",
       "A shadow has started following Sam home — but only on days he tells a lie. Today he told a really big one, and the shadow is getting closer."
     ]},
-  rags:{name:"Rags to Riches",emoji:"⭐",color:"#8A5A0B",bg:"#FAEEDA",oneliner:"Rise upward",
-    quick:"Poor start → Growth → Big test → Success → New life",
-    structure:["A poor or unnoticed person struggles","They discover opportunities or talents","A major test blocks their success","They prove themselves","They gain success, respect, or happiness"],
+  rags:{name:"Rags to Riches",emoji:"⭐",color:"#8A5A0B",bg:"#FAEEDA",oneliner:"Rise upward",what:"An ordinary person rises to success",theme:"Hope, identity, potential",
+    mountain:[
+      ["Beginning","Weak, poor, or ignored","Who is your character? Why do people overlook them?",["Nobody ever noticed … because …","Every day, … had to …"]],
+      ["Middle","Growth and new chances","What chance comes along? What do they learn or practise?",["Then one day, …","Little by little, … got better at …","For the first time, someone …"]],
+      ["Climax","One big test","What is the big test? What nearly goes wrong?",["Everything depended on …","… took a deep breath and …"]],
+      ["Ending","Recognition and success","How do others see them now? What stays the same?",["At last, everyone could see that …","Even though life had changed, … still …"]]
+    ],
+    words:["ordinary","overlooked","chance","practised","determined","talent","proud","shine"],
+    tip:"Show how hard your character works. Success feels better when it has been earned.",
     examples:"Cinderella · Rocky · Matilda",
     prompts:[
       "Benny plays football in trainers two sizes too big, because he's never owned proper boots. Then the team captain twists his ankle the day before the biggest match of the year — and the coach turns and looks straight at Benny.",
@@ -154,9 +370,15 @@ const PLOTS = {
       "Ruby gets picked last for everything. So when chess club starts, she's sure she'll be last there too — until the first lesson, when something in her brain suddenly goes click.",
       "Finn has helped at his gran's food stall every weekend since he was tiny. The day a very important customer tastes one of his gran's dishes, Finn realises the secret recipe is one he made up himself."
     ]},
-  quest:{name:"The Quest",emoji:"🗺️",color:"#0F6E56",bg:"#E1F5EE",oneliner:"Journey outward",
-    quick:"Mission → Journey → Final obstacle → Goal reached → Return home",
-    structure:["A mission or goal is given","The journey becomes difficult","The final obstacle seems impossible","The hero completes the quest","The characters return changed"],
+  quest:{name:"The Quest",emoji:"🗺️",color:"#0F6E56",bg:"#E1F5EE",oneliner:"Journey outward",what:"A journey to reach an important goal",theme:"Purpose and perseverance",
+    mountain:[
+      ["Beginning","The mission begins","What must your hero find or do? Who goes with them?",["… had to find … before …","So … packed … and set off with …"]],
+      ["Middle","Obstacles and trials","What gets in the way? Try to think of three things.",["The first problem was …","Just when things looked easy, …","Luckily, … knew how to …"]],
+      ["Climax","The final challenge","What is the last and hardest challenge?",["Finally, only one thing stood in the way: …","It took all of their … to …"]],
+      ["Ending","The goal is reached","Do they reach the goal? What did the journey teach them?",["At long last, …","The journey had taught … that …"]]
+    ],
+    words:["journey","map","companion","obstacle","weary","determined","treasure","destination"],
+    tip:"Give your hero a friend or two. Each one should be good at something different.",
     examples:"The Lord of the Rings · Finding Nemo",
     prompts:[
       "Three best friends find a hand-drawn map tucked inside a hundred-year-old library book. The X is right in the middle of their own town — somewhere they walk past every single day and have never once looked twice at.",
@@ -165,9 +387,15 @@ const PLOTS = {
       "Jasper's dog bolts out of the gate and runs further than Jasper has ever been. Following him leads to a part of town Jasper never knew existed — full of people who seem to have been waiting for him to show up.",
       "Someone is leaving clues all over school: in lockers, under desks, on the back of the lunch menu. Each one points a little closer to whatever is hidden beneath the old sports hall."
     ]},
-  voyage:{name:"Voyage and Return",emoji:"🚪",color:"#3C3489",bg:"#EEEDFE",oneliner:"Leave and come back changed",
-    quick:"Leave home → Strange world → Danger → Escape → Return wiser",
-    structure:["Someone leaves normal life","They explore a strange new world","The world becomes dangerous or confusing","They escape or survive","They return home wiser"],
+  voyage:{name:"Voyage and Return",emoji:"🚪",color:"#3C3489",bg:"#EEEDFE",oneliner:"Leave and come back changed",what:"Someone enters a strange world and returns changed",theme:"Transformation through experience",
+    mountain:[
+      ["Beginning","Leave normal life behind","What is normal life like? How do they reach the strange world?",["It was an ordinary day until …","On the other side, …"]],
+      ["Middle","The strange world turns dangerous","What is wonderful there? What starts to feel wrong?",["At first, everything seemed …","Strangely, …","But soon … noticed that …"]],
+      ["Climax","Escape or survival","How do they escape or find the way home?",["There was only one way back: …","Just in time, …"]],
+      ["Ending","Return home, wiser","What is different now that they are home?",["Home looked the same, but …","… would never forget …"]]
+    ],
+    words:["ordinary","doorway","peculiar","glimmering","unfamiliar","homesick","escape","wiser"],
+    tip:"Use your five senses to describe the strange world. What can your character see, hear and smell?",
     examples:"The Wizard of Oz · Spirited Away · Alice in Wonderland",
     prompts:[
       "During a power cut, Nadia finds a door at the back of her wardrobe that wasn't there yesterday. Behind it is a world stuck forever in the golden minute before sunset — where the kids have never once seen the dark.",
@@ -176,10 +404,16 @@ const PLOTS = {
       "Ezra dozes off on the train home and wakes at a station that isn't on the line. Everyone there greets him by name and acts like he's been gone for years. He's never set foot here in his life.",
       "There's a snow globe in the attic that doesn't show a tiny snowy scene when you shake it. It shows a real place. And the harder Maya shakes it, the more she feels herself being pulled inside."
     ]},
-  comedy:{name:"Comedy",emoji:"😂",color:"#993556",bg:"#FBEAF0",oneliner:"Confusion becomes harmony",
-    quick:"Confusion → Problems grow → Chaos → Truth revealed → Happy ending",
-    structure:["Relationships or society are messy","Confusion and misunderstandings grow","Conflict reaches a breaking point","Truth is revealed and problems are solved","Harmony and happiness return"],
-    examples:"Shrek · Toy Story · Encanto",
+  comedy:{name:"Comedy",emoji:"😂",color:"#993556",bg:"#FBEAF0",oneliner:"Confusion becomes harmony",what:"Confusion and conflict are sorted into harmony",theme:"Belonging and harmony",
+    mountain:[
+      ["Beginning","A muddle or mix-up starts","What is the mix-up? Who gets the wrong idea?",["It was supposed to be simple: …","The trouble started when …"]],
+      ["Middle","Misunderstandings grow and grow","How does it get sillier? Who else gets pulled in?",["To make matters worse, …","Meanwhile, … thought that …","Nobody noticed that …"]],
+      ["Climax","The truth comes out","How does everyone find out the truth?",["Suddenly, everyone found out that …","There was a long silence, and then …"]],
+      ["Ending","Everyone is friends again","How do they make up? What is the last laugh?",["In the end, …","They still laugh about …"]]
+    ],
+    words:["mix-up","disaster","giggled","embarrassed","chaos","pretended","whoops","relieved"],
+    tip:"Let your reader know the truth before the characters do. That is what makes a mix-up funny.",
+    examples:"A Midsummer Night's Dream · Paddington",
     prompts:[
       "Two kids who absolutely cannot stand each other have both been cast as the best-friend leads in the school play. First rehearsal is Monday, and the whole town is coming to opening night.",
       "Jake meant to send a super-embarrassing voice note to one friend. He accidentally sent it to the entire class group chat. Now he has a whole school day to survive.",
@@ -187,10 +421,16 @@ const PLOTS = {
       "Priya's hamster escapes on the exact morning the school inspector arrives. The hamster finds the inspector before anyone else does.",
       "Three kids secretly enter the bake-off with the same exact recipe, each swearing it's their own grandmother's top-secret invention. Judging starts in ten minutes."
     ]},
-  tragedy:{name:"Tragedy",emoji:"😔",color:"#5F5E5A",bg:"#F1EFE8",oneliner:"Rise then fall",
-    quick:"Success → Bad choices → Fatal mistake → Collapse → Destruction",
-    structure:["A talented or powerful person rises","Their flaws and bad choices grow","They make a fatal mistake","Their downfall cannot be stopped","Loss, destruction, or a hard lesson follows"],
-    examples:"The Lion King · Bambi · Charlotte's Web",
+  tragedy:{name:"Tragedy",emoji:"😔",color:"#5F5E5A",bg:"#F1EFE8",oneliner:"Rise then fall",what:"A person falls because of flaws or bad choices",theme:"Pride and self-undoing",
+    mountain:[
+      ["Beginning","The character has power or potential","What is your character great at? What is their flaw?",["… was the best at …, and … knew it.","The only problem was …"]],
+      ["Middle","A flaw or bad choice grows","What bad choice do they make? What warnings do they ignore?",["… didn't listen when …","Each time, it got easier to …","Deep down, … knew …"]],
+      ["Climax","The big mistake","What is the mistake that cannot be undone?",["Then … did something that could not be undone: …","In that moment, … realised …"]],
+      ["Ending","Loss — and a lesson","What is lost? What lesson is learned?",["Nothing was the same after that because …","If only … had …"]]
+    ],
+    words:["proud","boasted","warning","ignored","mistake","regret","lost","lesson"],
+    tip:"Drop small warnings early on, so the ending feels like it was always coming.",
+    examples:"Macbeth · Icarus",
     prompts:[
       "Callum is the fastest runner in school and never lets anyone forget it. Then, in the big cross-country race, he stops to help a hurt runner, finishes dead last — and has to figure out what kind of person that makes him.",
       "Maya tells one tiny lie to dodge trouble. Then it grows. And grows. By the time it really matters, the truth will hurt someone she loves — but so will staying quiet.",
@@ -198,10 +438,16 @@ const PLOTS = {
       "Tom has copied spelling answers from the girl next to him all year. Now he's been chosen to represent the school in the big spelling bee — and she came second.",
       "Felix worked the whole year to be made team captain. The day it's finally announced, he realises the only reason he wanted it was to impress someone who never even noticed he was trying."
     ]},
-  rebirth:{name:"Rebirth",emoji:"🌱",color:"#3B6D11",bg:"#EAF3DE",oneliner:"Darkness becomes renewal",
-    quick:"Lost person → Crisis → Darkest moment → Change → Renewal",
-    structure:["A person is unhappy, selfish, or lost","A crisis forces them to reflect","They reach their darkest moment","They change or redeem themselves","A new and better life begins"],
-    examples:"A Christmas Carol · Despicable Me · Beauty and the Beast",
+  rebirth:{name:"Rebirth",emoji:"🌱",color:"#3B6D11",bg:"#EAF3DE",oneliner:"Darkness becomes renewal",what:"A stuck or damaged person changes and is renewed",theme:"Forgiveness and renewal",
+    mountain:[
+      ["Beginning","The character is trapped or lost","How is your character stuck, grumpy or sad? Why?",["For a long time, … had refused to …","Ever since …, …"]],
+      ["Middle","A crisis forces a change","Who or what pushes them to change?",["Everything changed when …","At first, … wanted nothing to do with …","But slowly, …"]],
+      ["Climax","A big realisation","What do they finally understand?",["That was when … finally understood …","For the first time in ages, …"]],
+      ["Ending","A new start","What do they do differently now?",["The next morning, …","Now, whenever …, …"]]
+    ],
+    words:["stubborn","lonely","frozen","thawed","forgave","realised","fresh","hopeful"],
+    tip:"Show the change with an action. What does your character do at the end that they would never have done at the start?",
+    examples:"A Christmas Carol · The Lion King · Beauty and the Beast",
     prompts:[
       "Since switching schools, Dylan refuses to join clubs, try new things, or talk to anyone first. Then a teacher pairs him up — for a whole term — with the single most cheerful, chatty kid in the year.",
       "Gracie used to love painting, until someone laughed at her best picture. She hasn't touched a brush in two years. Then a new art teacher finds that exact painting in the lost-property box and pins it on the wall.",
@@ -210,72 +456,256 @@ const PLOTS = {
       "Hana has let her big brother take the blame for her mistakes her whole life. Now he's gone up to secondary school, and for the first time ever, she's facing the music all by herself."
     ]}
 };
-let current = "monster", lastIndex = -1;
-const toggle = document.getElementById("toggle");
+
+const DOTS = ["🌱","⛰️","🔥","🏁"];
+let current = "monster", lastIndex = -1, currentIdea = "", lastFocus = null;
+const $ = id => document.getElementById(id);
+
+/* ---------- Story type toggle ---------- */
+const toggle = $("toggle");
 Object.entries(PLOTS).forEach(([key, p], i)=>{
   const b = document.createElement("button");
   b.className = "chip" + (i===0 ? " on" : "");
   b.dataset.key = key;
-  b.innerHTML = `<span class="em">${p.emoji}</span>${p.name}`;
+  b.setAttribute("aria-pressed", i===0 ? "true" : "false");
+  b.innerHTML = `<span class="em" aria-hidden="true">${p.emoji}</span>${p.name}`;
   b.onclick = ()=>selectPlot(key, b);
   toggle.appendChild(b);
 });
 function selectPlot(key, el){
   current = key; lastIndex = -1;
-  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
-  el.classList.add("on");
+  document.querySelectorAll(".chip").forEach(c=>{c.classList.remove("on");c.setAttribute("aria-pressed","false");});
+  el.classList.add("on"); el.setAttribute("aria-pressed","true");
   el.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+  spin(); // the idea on the card always matches the chosen story type
 }
+
+/* ---------- Spin ---------- */
 function spin(){
   const p = PLOTS[current];
   let i; do { i = Math.floor(Math.random()*p.prompts.length); } while (p.prompts.length>1 && i===lastIndex);
-  lastIndex = i;
-  const btn = document.getElementById("spinBtn");
+  lastIndex = i; currentIdea = p.prompts[i];
+  const btn = $("spinBtn");
   btn.classList.remove("rolling"); void btn.offsetWidth; btn.classList.add("rolling");
-  const tag = document.getElementById("cardTag");
+  const tag = $("cardTag");
   tag.innerHTML = `<span class="dot"></span>${p.name}`;
   tag.style.color = p.color; tag.style.background = p.bg;
-  document.getElementById("cardPrompt").textContent = p.prompts[i];
-  const card = document.getElementById("card");
+  $("cardPrompt").textContent = currentIdea;
+  $("stepType").textContent = p.name;
+  const card = $("card");
   card.classList.remove("show"); void card.offsetWidth; card.classList.add("show");
   resetCopy();
 }
-function resetCopy(){
-  const cp = document.getElementById("copyBtn");
-  cp.classList.remove("copied");
-  cp.querySelector(".ic").textContent = "📋";
-  cp.childNodes[1].textContent = " Copy idea";
-}
-function copyPrompt(){
-  const text = document.getElementById("cardPrompt").textContent;
-  navigator.clipboard.writeText(text).then(()=>{
-    const cp = document.getElementById("copyBtn");
-    cp.classList.add("copied");
-    cp.querySelector(".ic").textContent = "✓";
-    cp.childNodes[1].textContent = " Copied!";
-    setTimeout(resetCopy, 1800);
+
+/* ---------- Copy ---------- */
+function copyText(text){
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+  return new Promise((res, rej)=>{
+    const t = document.createElement("textarea");
+    t.value = text; t.style.position = "fixed"; t.style.opacity = "0";
+    document.body.appendChild(t); t.select();
+    try { document.execCommand("copy") ? res() : rej(); } catch(e){ rej(e); }
+    t.remove();
   });
 }
-function openGuide(){
+function resetCopy(){
+  const cp = $("copyBtn");
+  cp.classList.remove("copied");
+  cp.querySelector(".ic").textContent = "📋";
+  cp.querySelector(".lbl").textContent = " Copy idea";
+}
+function copyPrompt(){
+  copyText($("cardPrompt").textContent).then(()=>{
+    const cp = $("copyBtn");
+    cp.classList.add("copied");
+    cp.querySelector(".ic").textContent = "✓";
+    cp.querySelector(".lbl").textContent = " Copied!";
+    setTimeout(resetCopy, 1800);
+  }).catch(()=>{});
+}
+function copyStarter(btn){
+  copyText(btn.dataset.text).then(()=>{
+    btn.classList.add("copied");
+    btn.querySelector(".cp").textContent = "Copied!";
+    setTimeout(()=>{btn.classList.remove("copied");btn.querySelector(".cp").textContent = "Copy";}, 1500);
+  }).catch(()=>{});
+}
+
+/* ---------- Guide overlay ---------- */
+function showTab(name){
+  document.querySelectorAll(".tab").forEach(t=>{
+    const on = t.dataset.tab === name;
+    t.classList.toggle("on", on); t.setAttribute("aria-selected", on ? "true" : "false");
+  });
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on", p.id === "panel-" + name));
+  $("sheet").scrollTop = 0;
+}
+function openGuide(tab){
   const p = PLOTS[current];
-  const gt = document.getElementById("gTag");
-  gt.innerHTML = `<span class="em">${p.emoji}</span>${p.name}`;
+  lastFocus = document.activeElement;
+  const gt = $("gTag");
+  gt.innerHTML = `<span class="em" aria-hidden="true">${p.emoji}</span>${p.name}`;
   gt.style.color = p.color; gt.style.background = p.bg;
-  document.getElementById("gTitle").textContent = p.name;
-  document.getElementById("gOneliner").textContent = "\u201C" + p.oneliner + "\u201D";
-  document.getElementById("gQuick").innerHTML = `<b>In a nutshell:</b> ${p.quick}`;
-  const s = document.getElementById("gStruct");
-  s.innerHTML = p.structure.map((txt, idx)=>`<div class="stage"><div class="stage-num">${idx+1}</div><div class="stage-body"><div class="s-name">${PARTS[idx]}</div><div class="s-text">${txt}</div></div></div>`).join("");
-  document.getElementById("gExamples").innerHTML = `<b>You've seen this in:</b> ${p.examples}`;
-  document.getElementById("overlay").classList.add("open");
+  $("gTitle").textContent = p.name;
+  $("gOneliner").textContent = "“" + p.oneliner + "”";
+  $("gWhat").textContent = p.what;
+  $("gTheme").textContent = p.theme;
+
+  $("gMountain").innerHTML = p.mountain.map((s, i)=>`
+    <div class="stage"><div class="stage-dot" aria-hidden="true">${DOTS[i]}</div>
+      <div class="stage-body"><div class="s-name">${s[0]}</div><div class="s-text">${s[1]}</div><div class="s-ask">${s[2]}</div></div>
+    </div>`).join("");
+  $("gExamples").innerHTML = `<b>You've seen this in:</b> ${p.examples}`;
+  $("gTip").innerHTML = `<b>Writer's tip:</b> ${p.tip}`;
+
+  $("gStarters").innerHTML = p.mountain.map((s, i)=>`
+    <div class="stage"><div class="stage-dot" aria-hidden="true">${DOTS[i]}</div>
+      <div class="stage-body"><div class="s-name">${s[0]}</div><div class="s-text">${s[1]}</div>
+        <div class="starters">${s[3].map(t=>`<button class="starter" data-text="${t}" onclick="copyStarter(this)"><span>${t}</span><span class="cp">Copy</span></button>`).join("")}</div>
+      </div>
+    </div>`).join("");
+  $("gWords").innerHTML = p.words.map(w=>`<span class="word" style="color:${p.color};background:${p.bg}">${w}</span>`).join("");
+
+  $("thumb-planner").innerHTML = pagePlanner(current, currentIdea);
+  $("thumb-guide").innerHTML = pageGuide(current, currentIdea);
+  $("thumb-plain").innerHTML = pagePlain();
+
+  showTab(tab || "built");
+  $("overlay").classList.add("open");
   document.body.style.overflow = "hidden";
+  $("closeBtn").focus();
 }
 function closeGuide(){
-  document.getElementById("overlay").classList.remove("open");
+  $("overlay").classList.remove("open");
   document.body.style.overflow = "";
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
 }
 function bgClose(e){ if(e.target.id === "overlay") closeGuide(); }
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeGuide(); });
+
+/* ---------- Printable pages ---------- */
+function lines(n){ return Array(n).fill('<div class="ln"></div>').join(""); }
+function pageHead(p, kind){
+  return `<div class="pg-head" style="color:${p.color}">
+    <div><div class="pg-kind">${kind}</div><div class="pg-type">${p.emoji} ${p.name}</div></div>
+    <div class="pg-name">Name<span></span> Date<span class="short"></span></div>
+  </div>`;
+}
+
+/* Guide paper: each part labelled in the margin, starters sit on the lines */
+function pageGuide(key, idea){
+  const p = PLOTS[key];
+  const counts = [5, 7, 5, 5];                 // lines per part
+  const parts = p.mountain.map((s, i)=>{
+    const n = counts[i], st = s[3];
+    // spread the starters over the part: first line, then every other line
+    const rows = Array.from({length:n}, (_, r)=>{
+      const k = r / 2;
+      const text = (r % 2 === 0 && k < st.length) ? st[k] : "";
+      return `<div class="ln${r===0 ? " indent" : ""}">${text ? `<span class="st">${text}</span>` : ""}</div>`;
+    }).join("");
+    return `<div class="part" style="flex:${n}">
+      <div class="p-label" style="color:${p.color}">
+        <div><span class="p-num">${i+1}</span><span class="p-name">${s[0]}</span></div>
+        <div class="p-hint">${s[1]}</div>
+      </div>
+      <div class="p-lines">${rows}</div>
+    </div>`;
+  }).join("");
+  return `<div class="page" data-kind="guide">
+    ${pageHead(p, "Story guide paper")}
+    ${idea ? `<div class="pg-idea"><b>My story idea:</b> ${idea}</div>` : ""}
+    <div class="pg-title">Title <i></i></div>
+    <div class="parts">${parts}</div>
+    <div class="pg-foot"><span>Finish each grey starter in your own words, or cross it out and write your own.</span><span>Start each part on a new line and indent it.</span></div>
+  </div>`;
+}
+
+/* Plain writing paper: lines only */
+function pagePlain(){
+  return `<div class="page plain" data-kind="plain"><div class="p-lines">${lines(25)}</div></div>`;
+}
+
+/* Planner: characters, setting, and the four parts on a story mountain */
+function pagePlanner(key, idea){
+  const p = PLOTS[key];
+  const pts = [[22,17],[79,10],[118,4],[163,15]];
+  const lab = [[22,11,"middle"],[73,5,"end"],[124,5.5,"start"],[163,9,"middle"]];
+  const svg = `<svg viewBox="0 0 180 22" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <polyline points="4,18 40,16 118,4 150,14 176,16" fill="none" stroke="${p.color}" stroke-width=".7" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((d, i)=>`<circle cx="${d[0]}" cy="${d[1]}" r="2.6" fill="#fff" stroke="${p.color}" stroke-width=".6"/>
+      <text x="${d[0]}" y="${d[1]+1.15}" font-size="3.2" font-weight="800" text-anchor="middle" fill="${p.color}" font-family="Nunito, sans-serif">${i+1}</text>
+      <text x="${lab[i][0]}" y="${lab[i][1]}" font-size="3" font-weight="800" text-anchor="${lab[i][2]}" fill="#4A433A" font-family="Nunito, sans-serif" letter-spacing=".15">${p.mountain[i][0].toUpperCase()}</text>`).join("")}
+  </svg>`;
+  const wl = n => `<div class="pl-wl">${Array(n).fill("<i></i>").join("")}</div>`;
+  const stages = p.mountain.map((s, i)=>`
+    <div class="pl-box" style="color:${p.color}">
+      <div class="pl-st-h"><span class="p-num">${i+1}</span><span class="pl-box-h">${s[0]}: ${s[1]}</span></div>
+      <div class="pl-box-q">${s[2]}</div>
+      ${wl(3)}
+    </div>`).join("");
+  return `<div class="page" data-kind="planner">
+    ${pageHead(p, "Story planner")}
+    ${idea ? `<div class="pl-idea"><b>My story idea</b>${idea}</div>` : ""}
+    <div class="pl-two">
+      <div class="pl-box" style="color:${p.color}"><div class="pl-box-h">Who?</div><div class="pl-box-q">My characters</div>${wl(2)}</div>
+      <div class="pl-box" style="color:${p.color}"><div class="pl-box-h">Where and when?</div><div class="pl-box-q">My setting</div>${wl(2)}</div>
+    </div>
+    <div class="pl-mtn">${svg}</div>
+    <div class="pl-stages">${stages}</div>
+    <div class="pl-bank"><b>Words you could use:</b> ${p.words.join(" · ")}</div>
+    <div class="pl-bank"><b>Writer's tip:</b> ${p.tip}</div>
+  </div>`;
+}
+
+function fillPrintRoot(kinds){
+  const make = {planner:()=>pagePlanner(current, currentIdea), guide:()=>pageGuide(current, currentIdea), plain:pagePlain};
+  $("printRoot").innerHTML = kinds.map(k=>make[k]()).join("");
+}
+function printPages(kinds){
+  fillPrintRoot(kinds);
+  const go = ()=>window.print();
+  // wait for the web fonts so the printed pages match the preview
+  (document.fonts && document.fonts.ready ? document.fonts.ready.then(go) : go());
+}
+
+/* PDF download (falls back to the print window if the PDF maker cannot load) */
+const PDF_LIBS = ["https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+                  "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"];
+let libsReady = null;
+function loadLibs(){
+  if (!libsReady) libsReady = Promise.all(PDF_LIBS.map(src=>new Promise((res, rej)=>{
+    const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  }))).catch(e=>{ libsReady = null; throw e; });
+  return libsReady;
+}
+function status(t){ document.querySelectorAll(".pdf-status").forEach(n=>n.textContent = t); }
+async function downloadPDF(kinds){
+  const btns = [...document.querySelectorAll("[data-pdf]")];
+  btns.forEach(b=>b.disabled = true);
+  status("⏳ Making your PDF…");
+  try {
+    await loadLibs();
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    fillPrintRoot(kinds);
+    const pdf = new window.jspdf.jsPDF({unit:"mm", format:"a4", orientation:"portrait", compress:true});
+    const pages = $("printRoot").querySelectorAll(".page");
+    for (let i = 0; i < pages.length; i++){
+      const canvas = await html2canvas(pages[i], {scale:2.5, backgroundColor:"#ffffff", logging:false});
+      if (i) pdf.addPage();
+      pdf.addImage(canvas.toDataURL("image/jpeg", .92), "JPEG", 0, 0, 210, 297);
+    }
+    const slug = PLOTS[current].name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    pdf.save(`story-spinner-${slug}-${kinds.length === 3 ? "pack" : kinds[0]}.pdf`);
+    status("✅ PDF downloaded.");
+  } catch (err) {
+    status("The PDF maker could not load, so the print window opened instead. Choose “Save as PDF” there.");
+    printPages(kinds);
+  } finally {
+    btns.forEach(b=>b.disabled = false);
+  }
+}
+
 spin();
 </script>
 </body>
