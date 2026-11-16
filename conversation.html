@@ -3,489 +3,618 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conversation Buddy — Talking Guide</title>
+<title>Conversation Buddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+/* Layout idea: one screen, no scrolling. Topic rail on the left; on the right, one
+   question at a time above the three talk steps, with listener words and the word
+   bank along the bottom. Single light theme on purpose: it is a classroom display. */
+:root {
+  color-scheme: light;
+  --paper: #FAF9F4;
+  --card: #FFFFFF;
+  --ink: #1E2333;
+  --muted: #555B6E;
+  --line: #DCDAD0;
+  --s1: #5B3FA0;  --s1-tint: #F1ECFA;   /* step 1: answer */
+  --s2: #AD4318;  --s2-tint: #FCEEE6;   /* step 2: add more */
+  --s3: #15736A;  --s3-tint: #E5F4F1;   /* step 3: ask back */
+  --listen: #2B5C88; --listen-tint: #E8F0F8;
+  --accent: #C8323C;                    /* set per topic in script */
+  --font: "Lexend", "Atkinson Hyperlegible", Verdana, "Segoe UI", sans-serif;
+  --r: 0.9rem;
+}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --ink: #2b2b3a;
-  --muted: #6b6480;
-  --purple: #7B5EA7;
-}
-
+html, body { height: 100%; }
+html { font-size: clamp(15px, 0.95vw + 0.6vh, 30px); }
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: var(--font);
   color: var(--ink);
-  background:
-    radial-gradient(circle at 12% 18%, #fff1f2 0, transparent 40%),
-    radial-gradient(circle at 88% 12%, #e0f2fe 0, transparent 38%),
-    radial-gradient(circle at 50% 100%, #fef9c3 0, transparent 50%),
-    #fffdf8;
-  min-height: 100vh;
-  padding-bottom: 60px;
-}
-
-.wrap { max-width: 1000px; margin: 0 auto; padding: 0 18px; }
-
-/* ---------- HERO ---------- */
-.hero {
-  position: relative;
-  text-align: center;
-  margin: 26px auto 0;
-  max-width: 1000px;
-  background: linear-gradient(135deg, #fff1f2 0%, #fef9c3 50%, #e0f2fe 100%);
-  border: 3px solid #fff;
-  border-radius: 32px;
-  padding: 38px 24px 34px;
-  box-shadow: 0 18px 40px -18px rgba(123,94,167,.4);
+  background: var(--paper);
+  line-height: 1.35;
   overflow: hidden;
 }
-.hero .stars { position: absolute; inset: 0; pointer-events: none; }
-.hero .stars span {
-  position: absolute; color: #ffd166; font-size: 18px;
-  animation: tw 3s ease-in-out infinite;
-}
-@keyframes tw { 0%,100%{transform:scale(.6) rotate(0);opacity:.25} 50%{transform:scale(1.1) rotate(20deg);opacity:.85} }
-.badge {
-  display:inline-block; background:#fff; color:var(--purple);
-  font-weight:800; font-size:13px; letter-spacing:.04em; text-transform:uppercase;
-  padding:7px 16px; border-radius:999px; box-shadow:0 4px 12px -4px rgba(0,0,0,.15); margin-bottom:14px;
-}
-.hero h1 {
-  font-family:'Fredoka',sans-serif; font-weight:700;
-  font-size: clamp(38px,7vw,64px); line-height:.98; color:#3d2c5a;
-}
-.hero h1 span {
-  background: linear-gradient(90deg,#FF6B6B,#F4A261,#2A9D8F);
-  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-}
-.hero p { font-size: clamp(15px,2.2vw,18px); max-width:560px; margin:12px auto 0; color:#5b5470; font-weight:600; }
 
-/* ---------- THREE STEPS ---------- */
-.steps {
-  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-  margin: 28px auto 6px;
+button { font: inherit; color: inherit; cursor: pointer; border: none; background: none; }
+button:focus-visible, .chip:focus-visible { outline: 0.2rem solid var(--ink); outline-offset: 0.15rem; }
+
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(11.5rem, 15rem) 1fr;
 }
+
+/* ---------- topic rail ---------- */
+.rail {
+  display: flex; flex-direction: column; gap: 0.7rem;
+  padding: 1rem 0.8rem;
+  background: var(--card);
+  border-right: 0.12rem solid var(--line);
+  min-height: 0;
+}
+.brand { font-weight: 700; font-size: 1.15rem; line-height: 1.15; padding: 0 0.4rem; }
+.brand small { display: block; font-weight: 500; font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+.rail h2 { font-size: 0.72rem; font-weight: 600; color: var(--muted); padding: 0 0.4rem; }
+.topics { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-height: 0; overflow-y: auto; }
+.topic-btn {
+  display: flex; align-items: center; gap: 0.55rem;
+  text-align: left; width: 100%;
+  padding: 0.5rem 0.55rem;
+  border-radius: 0.7rem;
+  font-weight: 500; font-size: 0.86rem; line-height: 1.2;
+  border: 0.12rem solid transparent;
+}
+.topic-btn .e { font-size: 1.25rem; flex: none; }
+.topic-btn:hover { background: var(--paper); }
+.topic-btn[aria-pressed="true"] {
+  background: var(--t); color: #fff; font-weight: 600;
+}
+.rail-foot { display: flex; flex-direction: column; gap: 0.4rem; }
+.ghost {
+  padding: 0.5rem 0.6rem; border-radius: 0.7rem;
+  border: 0.12rem solid var(--line); background: var(--card);
+  font-weight: 600; font-size: 0.8rem; text-align: center;
+}
+.ghost:hover { border-color: var(--ink); }
+.keys { font-size: 0.66rem; color: var(--muted); padding: 0 0.3rem; line-height: 1.4; }
+
+/* ---------- main stage ---------- */
+.stage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  padding: 0.9rem 1.1rem 1rem;
+  min-height: 0; min-width: 0;
+  overflow-y: auto;
+}
+
+/* question */
+.question {
+  background: var(--accent); color: #fff;
+  border-radius: 1.2rem;
+  padding: 0.9rem 1.2rem 1rem;
+  display: grid; gap: 0.5rem;
+}
+.q-top { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+.q-label { font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+.q-label .e { font-size: 1.3rem; }
+.q-nav { display: flex; align-items: center; gap: 0.5rem; }
+.q-count { font-size: 0.8rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.round {
+  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  background: #fff; color: var(--ink);
+  font-size: 1.2rem; font-weight: 700; line-height: 1;
+  display: grid; place-items: center;
+}
+.round:hover { background: var(--paper); }
+.q-text {
+  font-size: clamp(1.5rem, 2.6rem, 2.6rem); font-weight: 700; line-height: 1.15;
+  text-wrap: balance; min-height: 2.3em;
+  display: flex; align-items: center;
+}
+.q-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.pill {
+  background: rgba(255,255,255,0.16); color: #fff;
+  border: 0.12rem solid rgba(255,255,255,0.75);
+  border-radius: 999px; padding: 0.35rem 0.9rem;
+  font-weight: 600; font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+.pill:hover, .pill.on { background: #fff; color: var(--ink); }
+.question button:focus-visible { outline-color: #fff; }
+
+/* steps */
+.steps-wrap { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 0.45rem; min-height: 0; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; min-height: 0; }
 .step {
-  flex:1 1 240px;
-  display:flex; align-items:center; gap:13px;
-  background:#fff; border:2px solid #f1e9ff; border-radius:18px;
-  padding:16px 18px; box-shadow:0 8px 20px -14px rgba(0,0,0,.25);
+  background: var(--tint); border: 0.14rem solid var(--c);
+  border-radius: var(--r); padding: 0.75rem 0.9rem;
+  display: flex; flex-direction: column; gap: 0.55rem; min-width: 0;
 }
-.step .num {
-  display:grid; place-items:center; width:38px; height:38px; flex:none;
-  border-radius:50%; color:#fff; font-family:'Fredoka',sans-serif; font-weight:700; font-size:20px;
+.step.s1 { --c: var(--s1); --tint: var(--s1-tint); }
+.step.s2 { --c: var(--s2); --tint: var(--s2-tint); }
+.step.s3 { --c: var(--s3); --tint: var(--s3-tint); }
+.step-head { display: flex; align-items: center; gap: 0.6rem; }
+.num {
+  flex: none; width: 2.1rem; height: 2.1rem; border-radius: 50%;
+  background: var(--c); color: #fff; font-weight: 700; font-size: 1.15rem;
+  display: grid; place-items: center;
 }
-.step:nth-child(1) .num{background:#7B5EA7}
-.step:nth-child(2) .num{background:#E76F51}
-.step:nth-child(3) .num{background:#2A9D8F}
-.step b { font-family:'Fredoka',sans-serif; font-weight:600; font-size:17px; display:block; }
-.step small { font-size:14px; color:var(--muted); font-weight:600; }
-
-/* ---------- TOOLBELT (listening + keep going) ---------- */
-.toolbelt { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:22px 0 10px; }
-.panel {
-  background:#fff; border-radius:22px; padding:18px 20px;
-  box-shadow:0 10px 26px -18px rgba(0,0,0,.3); border:2px solid #f3edff;
-}
-.panel h3 { font-family:'Fredoka',sans-serif; font-weight:600; font-size:18px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-.chips { display:flex; flex-wrap:wrap; gap:8px; }
+.step-head b { font-size: 1.15rem; font-weight: 700; color: var(--c); display: block; line-height: 1.1; }
+.step-head span { font-size: 0.78rem; color: var(--ink); }
+.say { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-start; }
 .chip {
-  background:#fbf6ff; border:2px solid #ece3ff; border-radius:999px;
-  padding:7px 14px; font-size:15px; font-weight:800; color:#5a4b7a;
+  display: inline-block; text-align: left;
+  background: var(--card); color: var(--ink);
+  border: 0.1rem solid var(--line); border-radius: 0.65rem;
+  padding: 0.38rem 0.7rem;
+  font-weight: 500; font-size: 0.95rem; line-height: 1.25;
 }
-.chip.listen { background:#fff4ec; border-color:#ffe0cc; color:#d2691e; }
-.chip.go { background:#ecfbf6; border-color:#cdeee9; color:#1f8a78; }
+button.chip:hover { border-color: var(--ink); }
+.step .chip { border-color: color-mix(in srgb, var(--c) 35%, white); }
+.step .chip.main { font-size: 1.2rem; font-weight: 600; padding: 0.5rem 0.8rem; }
+.swap { font-size: 0.82rem; color: var(--muted); font-weight: 500; text-align: center; }
+.swap b { color: var(--ink); font-weight: 600; }
 
-/* ---------- TOPIC TABS ---------- */
-.section-title {
-  text-align:center; font-family:'Fredoka',sans-serif; font-weight:600;
-  font-size:26px; color:#3d2c5a; margin:38px 0 16px;
+/* bottom: listener + word bank */
+.bottom { display: grid; grid-template-columns: 1.35fr 1fr; gap: 0.8rem; }
+.panel {
+  background: var(--card); border: 0.12rem solid var(--line);
+  border-radius: var(--r); padding: 0.65rem 0.85rem;
+  display: grid; gap: 0.45rem; align-content: start; min-width: 0;
 }
-.tabs { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:24px; }
-.tab {
-  cursor:pointer; border:none; background:#fff; font-family:'Nunito',sans-serif;
-  font-weight:800; font-size:15px; color:#5b5470;
-  padding:11px 16px; border-radius:16px; display:flex; align-items:center; gap:8px;
-  box-shadow:0 6px 16px -12px rgba(0,0,0,.35); border-bottom:4px solid transparent;
-  transition: transform .15s, border-color .15s, color .15s;
-}
-.tab:hover { transform: translateY(-3px); }
-.tab .e { font-size:20px; }
-.tab.active { color:#2b2b3a; border-bottom-color: var(--accent); transform: translateY(-3px); }
+.panel h3 { font-size: 0.86rem; font-weight: 600; }
+.panel h3 small { font-weight: 400; color: var(--muted); font-size: 0.76rem; margin-left: 0.3rem; }
+.row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.panel .chip { font-size: 0.84rem; padding: 0.28rem 0.6rem; border-radius: 999px; }
+.chip.listen { background: var(--listen-tint); border-color: color-mix(in srgb, var(--listen) 35%, white); color: var(--listen); font-weight: 600; }
+.chip.keep { background: var(--s3-tint); border-color: color-mix(in srgb, var(--s3) 35%, white); }
 
-/* ---------- TOPIC CARD ---------- */
-.topic {
-  --accent:#7B5EA7;
-  background:#fff; border-radius:28px; overflow:hidden;
-  box-shadow:0 20px 50px -28px rgba(0,0,0,.45); border:3px solid #fff;
-  animation: rise .35s cubic-bezier(.34,1.56,.64,1);
+/* example dialog */
+dialog {
+  margin: auto; border: none; border-radius: 1.2rem;
+  width: min(54rem, 92vw); max-height: 90%;
+  background: var(--card); color: var(--ink);
+  padding: 1.3rem 1.5rem 1.5rem;
+  box-shadow: 0 1.5rem 4rem rgba(30,35,51,0.35);
 }
-@keyframes rise { from{transform:translateY(14px);opacity:0} to{transform:none;opacity:1} }
-.topic-head {
-  background: var(--accent); color:#fff; padding:22px 26px;
-  display:flex; align-items:center; gap:16px;
+dialog::backdrop { background: rgba(30,35,51,0.55); }
+.dlg-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.7rem; }
+.dlg-top h2 { font-size: 1.3rem; font-weight: 700; }
+.dlg-top p { font-size: 0.82rem; color: var(--muted); }
+.close { border: 0.12rem solid var(--line); border-radius: 0.7rem; padding: 0.35rem 0.8rem; font-weight: 600; font-size: 0.85rem; flex: none; }
+.close:hover { border-color: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.9rem; }
+.legend span { display: flex; align-items: center; gap: 0.35rem; }
+.tag {
+  display: inline-grid; place-items: center; flex: none;
+  width: 1.25em; height: 1.25em; border-radius: 50%;
+  color: #fff; font-size: 0.72em; font-weight: 700; vertical-align: 0.12em; margin-right: 0.25em;
 }
-.topic-head .e { font-size:46px; line-height:1; }
-.topic-head h2 { font-family:'Fredoka',sans-serif; font-weight:600; font-size:30px; }
-.topic-head p { font-weight:700; opacity:.92; font-size:15px; margin-top:2px; }
-
-.topic-body { padding:24px 26px 28px; display:grid; gap:22px; }
-
-.block h4 {
-  font-family:'Fredoka',sans-serif; font-weight:600; font-size:18px;
-  margin-bottom:12px; color:#3d2c5a; display:flex; align-items:center; gap:8px;
-}
-
-/* questions list */
-.qlist { display:grid; gap:9px; }
-.q {
-  background:#fbf6ff; border-left:5px solid var(--accent); border-radius:12px;
-  padding:11px 16px; font-weight:700; font-size:16px; color:#3d3253;
-}
-
-/* sentence starters */
-.starters { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:9px; }
-.starter {
-  background:#fff; border:2px dashed #d9cdf2; border-radius:12px;
-  padding:10px 14px; font-weight:700; font-size:15px; color:#5a4b7a;
-}
-
-/* word bank */
-.wordbank { display:flex; flex-wrap:wrap; gap:8px; }
-.word {
-  background:#ecfbf6; border:2px solid #cdeee9; color:#1f8a78;
-  border-radius:999px; padding:6px 14px; font-weight:800; font-size:14.5px;
-}
-
-/* example conversation */
-.convo { display:grid; gap:10px; }
-.line { display:flex; gap:12px; align-items:flex-start; }
+.tag.t0 { background: var(--listen); } .tag.t1 { background: var(--s1); }
+.tag.t2 { background: var(--s2); }     .tag.t3 { background: var(--s3); }
+.convo { display: grid; gap: 0.7rem; }
+.line { display: flex; gap: 0.7rem; align-items: flex-start; }
+.line.b { flex-direction: row-reverse; }
 .who {
-  flex:none; width:34px; height:34px; border-radius:50%;
-  display:grid; place-items:center; font-family:'Fredoka',sans-serif; font-weight:700; color:#fff; font-size:15px;
+  flex: none; width: 2.2rem; height: 2.2rem; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 700; font-size: 0.95rem;
+  background: var(--ink); color: #fff;
 }
-.who.a { background:#E76F51; }
-.who.b { background:#457B9D; }
-.say {
-  background:#fff; border:2px solid #f0e7ff; border-radius:16px;
-  padding:10px 15px; font-weight:600; font-size:15.5px; line-height:1.45; color:#36304a;
+.line.b .who { background: var(--card); color: var(--ink); border: 0.14rem solid var(--ink); }
+.bubble {
+  border: 0.12rem solid var(--line); border-radius: 0.9rem;
+  padding: 0.55rem 0.8rem; font-size: 1.05rem; line-height: 1.75; max-width: 46rem;
+  background: var(--paper);
 }
-.line.b { flex-direction:row-reverse; }
-.line.b .say { background:#f6fbff; border-color:#dcebf5; }
+.seg { padding: 0.1em 0.3em; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.seg.g0 { background: var(--listen-tint); } .seg.g1 { background: var(--s1-tint); }
+.seg.g2 { background: var(--s2-tint); }     .seg.g3 { background: var(--s3-tint); }
 
-/* footer tips */
-.tips {
-  margin-top:30px; background:#fff; border-radius:24px; padding:24px 26px;
-  box-shadow:0 14px 36px -24px rgba(0,0,0,.4); border:2px solid #f3edff;
+.toast {
+  position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%);
+  background: var(--ink); color: #fff; padding: 0.6rem 1rem; border-radius: 0.7rem;
+  font-size: 0.85rem; font-weight: 500; max-width: 90vw; text-align: center;
 }
-.tips h3 { font-family:'Fredoka',sans-serif; font-weight:600; font-size:20px; margin-bottom:14px; text-align:center; color:#3d2c5a; }
-.tipgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
-.tip { display:flex; gap:11px; align-items:flex-start; font-weight:700; font-size:15px; color:#4a4360; }
-.tip .ic { font-size:22px; flex:none; }
+.toast:empty { display: none; }
 
-@media print {
-  body { background:#fff; }
-  .tabs { display:none; }
-  .topic { box-shadow:none; border:2px solid #ddd; page-break-inside:avoid; margin-bottom:24px; }
-  .all-print { display:block !important; }
+/* ---------- small screens: stack and scroll ---------- */
+@media (max-width: 860px) {
+  html, body { height: auto; }
+  html { font-size: 16px; }
+  body { overflow: auto; }
+  .app { display: block; height: auto; }
+  .rail { border-right: none; border-bottom: 0.12rem solid var(--line); padding: 0.8rem 1rem; }
+  .topics { flex-direction: row; overflow-x: auto; overflow-y: hidden; flex: none; padding-bottom: 0.3rem; }
+  .topic-btn { width: auto; flex: none; white-space: nowrap; border-color: var(--line); }
+  .rail-foot { flex-direction: row; }
+  .keys { display: none; }
+  .stage { overflow: visible; padding: 0.9rem 1rem 1.5rem; }
+  .steps, .bottom { grid-template-columns: 1fr; }
+  .q-text { font-size: 1.6rem; min-height: 0; }
 }
-
-@media (max-width:620px){
-  .toolbelt { grid-template-columns:1fr; }
-  .topic-head h2 { font-size:24px; }
+@media (prefers-reduced-motion: no-preference) {
+  .q-text.swap-in { animation: fade 0.2s ease-out; }
+  @keyframes fade { from { opacity: 0.4; } to { opacity: 1; } }
 }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="stars" id="stars"></div>
-  <div class="badge">Speaking &amp; Listening Helper</div>
-  <h1>Conversation <span>Buddy</span></h1>
-  <p>Use this guide while you talk with a partner. Pick a topic, then use the questions, sentence starters, and helper words to keep the conversation going!</p>
-</header>
+<div class="app" id="app">
 
-<div class="wrap">
-
-  <!-- THREE STEPS -->
-  <div class="steps">
-    <div class="step"><div class="num">1</div><div><b>Answer</b><small>Reply to the question</small></div></div>
-    <div class="step"><div class="num">2</div><div><b>Add more</b><small>Give a reason, example, or why</small></div></div>
-    <div class="step"><div class="num">3</div><div><b>Ask back</b><small>Ask your partner a question</small></div></div>
-  </div>
-
-  <!-- TOOLBELT -->
-  <div class="toolbelt">
-    <div class="panel">
-      <h3>👂 Listening Words <span style="font-size:13px;font-weight:700;color:var(--muted)">— say one first!</span></h3>
-      <div class="chips" id="listenChips"></div>
+  <nav class="rail" aria-label="Topics">
+    <div class="brand">Conversation Buddy<small>Talk with a partner</small></div>
+    <h2 id="topics-h">Pick a topic</h2>
+    <div class="topics" id="topics" role="group" aria-labelledby="topics-h"></div>
+    <div class="rail-foot">
+      <button class="ghost" id="fsBtn" type="button">Full screen</button>
+      <p class="keys">Keys: ← → change question · E example · F full screen</p>
     </div>
-    <div class="panel">
-      <h3>🔄 Keep It Going</h3>
-      <div class="chips" id="goChips"></div>
+  </nav>
+
+  <main class="stage">
+
+    <section class="question" aria-live="polite">
+      <div class="q-top">
+        <div class="q-label"><span class="e" id="qEmoji" aria-hidden="true"></span><span id="qTopic"></span></div>
+        <div class="q-nav">
+          <button class="round" id="prev" type="button" aria-label="Previous question">←</button>
+          <span class="q-count" id="qCount"></span>
+          <button class="round" id="next" type="button" aria-label="Next question">→</button>
+        </div>
+      </div>
+      <p class="q-text" id="qText"></p>
+      <div class="q-actions">
+        <button class="pill" id="hear" type="button">Hear the question</button>
+        <button class="pill" id="think" type="button">Think time</button>
+        <button class="pill" id="exBtn" type="button">See an example</button>
+      </div>
+    </section>
+
+    <div class="steps-wrap">
+      <section class="steps" aria-label="Three steps for the speaker">
+        <div class="step s1">
+          <div class="step-head"><div class="num">1</div><div><b>Answer</b><span>Reply to the question</span></div></div>
+          <div class="say" id="say1"></div>
+        </div>
+        <div class="step s2">
+          <div class="step-head"><div class="num">2</div><div><b>Add more</b><span>Give a reason or an example</span></div></div>
+          <div class="say" id="say2"></div>
+        </div>
+        <div class="step s3">
+          <div class="step-head"><div class="num">3</div><div><b>Ask back</b><span>Ask your partner a question</span></div></div>
+          <div class="say" id="say3"></div>
+        </div>
+      </section>
+      <p class="swap"><b>Then swap.</b> Your partner answers, adds more, and asks back.</p>
     </div>
-  </div>
 
-  <!-- TOPIC PICKER -->
-  <h2 class="section-title">Pick a topic to talk about</h2>
-  <div class="tabs" id="tabs"></div>
+    <section class="bottom">
+      <div class="panel">
+        <h3>While you listen <small>say one of these first</small></h3>
+        <div class="row" id="listenRow"></div>
+        <div class="row" id="keepRow"></div>
+      </div>
+      <div class="panel">
+        <h3>Words for this topic <small id="tapHint"></small></h3>
+        <div class="row" id="wordRow"></div>
+      </div>
+    </section>
 
-  <div id="topicArea"></div>
-  <div id="printArea" class="all-print" style="display:none"></div>
-
-  <!-- TIPS -->
-  <div class="tips">
-    <h3>🎯 Tips for a Great Talk</h3>
-    <div class="tipgrid">
-      <div class="tip"><span class="ic">🗣️</span><span>Say 2–3 sentences, not just one word.</span></div>
-      <div class="tip"><span class="ic">➕</span><span>Always add something extra — a why, how, or example.</span></div>
-      <div class="tip"><span class="ic">❓</span><span>Ask a question back to your partner.</span></div>
-      <div class="tip"><span class="ic">👂</span><span>Use a listening word to show you care.</span></div>
-      <div class="tip"><span class="ic">🤝</span><span>Take turns and be kind and respectful.</span></div>
-      <div class="tip"><span class="ic">🎯</span><span>Stay on the topic you chose.</span></div>
-    </div>
-  </div>
-
+  </main>
 </div>
+
+<dialog id="exDlg" aria-labelledby="exTitle">
+  <div class="dlg-top">
+    <div>
+      <h2 id="exTitle">Example conversation</h2>
+      <p>Each turn uses the steps. Find them by number.</p>
+    </div>
+    <button class="close" id="exClose" type="button">Close</button>
+  </div>
+  <div class="legend">
+    <span><i class="tag t0">♪</i>Listening word</span>
+    <span><i class="tag t1">1</i>Answer</span>
+    <span><i class="tag t2">2</i>Add more</span>
+    <span><i class="tag t3">3</i>Ask back</span>
+  </div>
+  <div class="convo" id="convo"></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const LISTEN = ["Wow!","Oh, I see!","Uh huh!","That's cool!","Really?","Nice!"];
 const KEEP = ["I also think…","That reminds me of…","I agree because…","That's interesting because…","I like that idea!","Can you tell me more?"];
+const ADD = ["…because…","For example, …","One time, …"];
+const ASK = ["What about you?","What do you think?"];
 
+/* q: [question, answer starter].  convo: [speaker, listening word, answer, add more, ask back] */
 const TOPICS = [
-  {
-    id:"fun", emoji:"🌟", title:"Fun & Everyday", color:"#FF6B6B",
-    questions:[
-      "What games do you like to play?",
-      "What cartoon or movie do you like?",
-      "What foods or snacks do you like?",
-      "What do you do after school?",
-      "What is your favorite holiday? Why?",
-      "What is something funny that happened to you?"
+  { id:"fun", emoji:"🌟", title:"Fun & Everyday", color:"#C8323C",
+    q:[
+      ["What games do you like to play?","I like to play…"],
+      ["What cartoon or movie do you like?","A cartoon or movie I like is…"],
+      ["What foods or snacks do you like?","I really enjoy eating…"],
+      ["What do you do after school?","After school, I usually…"],
+      ["What is your favorite holiday? Why?","My favorite holiday is…"],
+      ["What is something funny that happened to you?","A funny thing that happened to me was…"]
     ],
-    starters:["My favorite thing to do is…","I really enjoy… because…","Have you ever tried…","The best part about ___ is…","After school, I usually…","A funny thing that happened to me was…"],
     words:["games","cartoon","movie","snack","favorite","holiday","play","laugh","friends","adventure","enjoy","memory"],
     convo:[
-      ["a","My favorite game to play is tag because it's really fast and fun. What games do you like?"],
-      ["b","I like board games! They're fun when I play with my family. What do you do after school?"],
-      ["a","After school, I usually watch cartoons or play outside. What's your favorite cartoon?"],
-      ["b","I like funny cartoons. They always make me laugh! What's your favorite snack when you watch TV?"]
-    ]
-  },
-  {
-    id:"imagine", emoji:"🧠", title:"Imagination & Creativity", color:"#7B5EA7",
-    questions:[
-      "What superpower would you want?",
-      "Where would you go if you could travel anywhere?",
-      "What would you build with lots of LEGO?",
-      "What would your dream room or treehouse look like?",
-      "What would animals say if they could talk?",
-      "Can you make up your own superhero or story?"
+      ["a","","My favorite game to play is tag","because it's really fast and fun.","What games do you like?"],
+      ["b","Nice!","I like board games!","They're fun when I play with my family.","What do you do after school?"],
+      ["a","Oh, I see!","After school, I usually watch cartoons or play outside.","It helps me relax.","What's your favorite cartoon?"],
+      ["b","That's cool!","I like funny cartoons.","They always make me laugh!","What's your favorite snack when you watch TV?"]
+    ]},
+  { id:"imagine", emoji:"🧠", title:"Imagination & Creativity", color:"#6B4A9E",
+    q:[
+      ["What superpower would you want?","If I could have a superpower, I would choose…"],
+      ["Where would you go if you could travel anywhere?","If I could travel anywhere, I would go to…"],
+      ["What would you build with lots of LEGO?","I would build…"],
+      ["What would your dream room or treehouse look like?","My dream room would have…"],
+      ["What would animals say if they could talk?","If animals could talk, they might say…"],
+      ["Can you make up your own superhero or story?","My superhero would be able to…"]
     ],
-    starters:["If I could…, I would…","I imagine that…","My dream ___ would have…","What if…","I would create…","My superhero would be able to…","If animals could talk, they might say…"],
     words:["superpower","travel","adventure","build","create","imagine","hero","magic","story","dream","explore","invent"],
     convo:[
-      ["a","If I could have any superpower, I would choose flying. It would be fun to travel anywhere! What superpower would you pick?"],
-      ["b","I would choose invisibility so I could sneak around and explore places. Where would you go if you could fly?"],
-      ["a","I would travel to different countries and see amazing places. What would you build if you had unlimited LEGO bricks?"],
-      ["b","I would build a giant castle with secret rooms! What would your dream room look like?"]
-    ]
-  },
-  {
-    id:"animals", emoji:"🐾", title:"Nature & Animals", color:"#2A9D8F",
-    questions:[
-      "What is your favorite animal? Why?",
-      "Do you have a pet, or do you want one?",
-      "What is something cool you know about animals?",
-      "What place in nature do you like best?",
-      "Why should we take care of the Earth?",
-      "What is your favorite season? Why?"
+      ["a","","If I could have any superpower, I would choose flying.","It would be fun to travel anywhere!","What superpower would you pick?"],
+      ["b","Wow!","I would choose invisibility","so I could sneak around and explore places.","Where would you go if you could fly?"],
+      ["a","That's cool!","I would travel to different countries","and see amazing places.","What would you build if you had unlimited LEGO bricks?"],
+      ["b","Nice!","I would build a giant castle","with secret rooms!","What would your dream room look like?"]
+    ]},
+  { id:"animals", emoji:"🐾", title:"Nature & Animals", color:"#1F7A6E",
+    q:[
+      ["What is your favorite animal? Why?","My favorite animal is…"],
+      ["Do you have a pet, or do you want one?","I have… / I want…"],
+      ["What is something cool you know about animals?","Did you know that…"],
+      ["What place in nature do you like best?","My favorite place in nature is…"],
+      ["Why should we take care of the Earth?","We should take care of the Earth because…"],
+      ["What is your favorite season? Why?","My favorite season is…"]
     ],
-    starters:["My favorite animal is… because…","I think ___ is interesting because…","I have a pet, and it…","Did you know that…","My favorite place in nature is…","My favorite season is… because…"],
     words:["animal","pet","habitat","nature","forest","ocean","park","season","protect","earth","wildlife","explore"],
     convo:[
-      ["a","My favorite animal is a dolphin because they are very smart. What's your favorite animal?"],
-      ["b","I like tigers because they are strong and fast. Do you have any pets?"],
-      ["a","Yes, I have a dog! He loves to play outside. What kind of pet would you like?"],
-      ["b","I would like a rabbit. I also like going to the park. What's your favorite place in nature?"]
-    ]
-  },
-  {
-    id:"friends", emoji:"👫", title:"Friends & Feelings", color:"#E76F51",
-    questions:[
-      "What makes a good friend?",
-      "How can you be kind to others?",
-      "What makes you feel happy?",
-      "How do you cheer someone up?",
-      "Why is sharing and teamwork important?",
-      "What is a fun memory with your friends?"
+      ["a","","My favorite animal is a dolphin","because they are very smart.","What's your favorite animal?"],
+      ["b","Oh, I see!","I like tigers","because they are strong and fast.","Do you have any pets?"],
+      ["a","Uh huh!","Yes, I have a dog!","He loves to play outside.","What kind of pet would you like?"],
+      ["b","That's cool!","I would like a rabbit.","I also like going to the park.","What's your favorite place in nature?"]
+    ]},
+  { id:"friends", emoji:"👫", title:"Friends & Feelings", color:"#C2502F",
+    q:[
+      ["What makes a good friend?","A good friend is someone who…"],
+      ["How can you be kind to others?","I try to be kind by…"],
+      ["What makes you feel happy?","Something that makes me happy is…"],
+      ["How do you cheer someone up?","When someone feels sad, I…"],
+      ["Why is sharing and teamwork important?","Teamwork is important because…"],
+      ["What is a fun memory with your friends?","One fun memory I have is…"]
     ],
-    starters:["A good friend is someone who…","I try to be kind by…","Something that makes me happy is…","When someone feels sad, I…","Teamwork is important because…","One fun memory I have is…"],
     words:["friend","kind","happy","share","teamwork","memory","smile","help","listen","care"],
     convo:[
-      ["a","A good friend is someone who listens and helps you. What do you think makes a good friend?"],
-      ["b","I think a good friend is kind and shares with others. How do you try to be kind?"],
-      ["a","I try to help my friends when they need it. What do you do if someone feels sad?"],
-      ["b","I talk to them and try to make them smile. What's a fun memory you have with your friends?"]
-    ]
-  },
-  {
-    id:"hobbies", emoji:"🎨", title:"Hobbies & Interests", color:"#F4A261",
-    questions:[
-      "What do you like to draw or make?",
-      "What sports do you like or want to try?",
-      "What music do you like?",
-      "What books or stories do you enjoy?",
-      "What do you like to collect?",
-      "What new thing do you want to learn?"
+      ["a","","A good friend is someone who listens and helps you.","For example, my friend helps me when I am stuck.","What do you think makes a good friend?"],
+      ["b","I agree!","I think a good friend is kind","and shares with others.","How do you try to be kind?"],
+      ["a","Nice!","I try to help my friends when they need it.","One time, I helped a friend carry her books.","What do you do if someone feels sad?"],
+      ["b","Oh, I see!","I talk to them","and try to make them smile.","What's a fun memory you have with your friends?"]
+    ]},
+  { id:"hobbies", emoji:"🎨", title:"Hobbies & Interests", color:"#9C5210",
+    q:[
+      ["What do you like to draw or make?","I like to create…"],
+      ["What sports do you like or want to try?","My favorite sport is… / I want to try…"],
+      ["What music do you like?","I enjoy music that…"],
+      ["What books or stories do you enjoy?","I enjoy stories about…"],
+      ["What do you like to collect?","I collect… / I would like to collect…"],
+      ["What new thing do you want to learn?","I want to learn how to…"]
     ],
-    starters:["I enjoy ___ because…","My favorite hobby is…","I like to create…","I want to try…","My favorite sport is…","I collect ___ because…","I am learning how to…"],
     words:["hobby","drawing","painting","sports","music","books","collect","practice","learn","create","skill"],
     convo:[
-      ["a","I enjoy drawing because it helps me be creative. What hobbies do you like?"],
-      ["b","I like playing soccer. It's really fun! Do you play any sports?"],
-      ["a","I like running and trying new games. What kind of music do you enjoy?"],
-      ["b","I like upbeat songs. They make me feel happy! Do you have a favorite book or story?"]
-    ]
-  },
-  {
-    id:"school", emoji:"🎉", title:"School & Learning", color:"#457B9D",
-    questions:[
-      "What is your favorite subject? Why?",
-      "What is something fun you do at school?",
-      "What do you want to be when you grow up?",
-      "What project did you really enjoy?",
-      "What is your favorite class moment?",
-      "What do you want to learn next?"
+      ["a","","I enjoy drawing","because it helps me be creative.","What hobbies do you like?"],
+      ["b","That's cool!","I like playing soccer.","It's really fun!","Do you play any sports?"],
+      ["a","Uh huh!","I like running","and trying new games.","What kind of music do you enjoy?"],
+      ["b","Nice!","I like upbeat songs.","They make me feel happy!","Do you have a favorite book or story?"]
+    ]},
+  { id:"school", emoji:"🎉", title:"School & Learning", color:"#2F6690",
+    q:[
+      ["What is your favorite subject? Why?","My favorite subject is…"],
+      ["What is something fun you do at school?","One fun activity we did was…"],
+      ["What do you want to be when you grow up?","When I grow up, I want to be…"],
+      ["What project did you really enjoy?","I really enjoyed the project about…"],
+      ["What is your favorite class moment?","My favorite class moment was…"],
+      ["What do you want to learn next?","I want to learn more about…"]
     ],
-    starters:["My favorite subject is… because…","I like learning about…","One fun activity we did was…","When I grow up, I want to be…","My favorite class moment was…","I want to learn more about…"],
     words:["school","subject","teacher","class","project","study","future","job","goal","learn","knowledge"],
     convo:[
-      ["a","My favorite subject is science because I like doing experiments. What's your favorite subject?"],
-      ["b","I like math because I enjoy solving problems. What's a fun activity you did at school?"],
-      ["a","We made a project about animals, and it was really interesting. What do you want to be when you grow up?"],
-      ["b","I want to be a doctor. I think it would be fun to help people. What do you want to learn next?"]
-    ]
-  },
-  {
-    id:"positive", emoji:"🌈", title:"Positive Thinking", color:"#E9C46A",
-    questions:[
-      "What are you thankful for?",
-      "What is something kind you did?",
-      "What is a big dream you have?",
-      "What makes you feel proud?",
-      "What do you do when you have a problem?",
-      "What helps you stay happy and calm?"
+      ["a","","My favorite subject is science","because I like doing experiments.","What's your favorite subject?"],
+      ["b","Oh, I see!","I like math","because I enjoy solving problems.","What's a fun activity you did at school?"],
+      ["a","Nice!","We made a project about animals,","and it was really interesting.","What do you want to be when you grow up?"],
+      ["b","That's cool!","I want to be a doctor.","I think it would be fun to help people.","What do you want to learn next?"]
+    ]},
+  { id:"positive", emoji:"🌈", title:"Positive Thinking", color:"#8A6A00",
+    q:[
+      ["What are you thankful for?","I am thankful for…"],
+      ["What is something kind you did?","One kind thing I did was…"],
+      ["What is a big dream you have?","My goal is to…"],
+      ["What makes you feel proud?","I feel proud when…"],
+      ["What do you do when you have a problem?","When I have a problem, I…"],
+      ["What helps you stay happy and calm?","I stay calm by…"]
     ],
-    starters:["I am thankful for…","One kind thing I did was…","I feel proud when…","My goal is to…","When I have a problem, I…","Something that makes me happy is…","I stay calm by…"],
     words:["thankful","kindness","proud","goal","dream","happy","calm","solution","smile","positive","believe"],
     convo:[
-      ["a","I am thankful for my family because they help me every day. What are you thankful for?"],
-      ["b","I'm thankful for my friends because they make me happy. What is something kind you've done?"],
-      ["a","I helped a friend with their homework. What makes you feel proud?"],
-      ["b","I feel proud when I try my best at school. What do you do when you have a problem?"]
-    ]
-  },
-  {
-    id:"science", emoji:"📚", title:"Science & Discovery", color:"#264653",
-    questions:[
-      "How do plants grow?",
-      "Why is the sky blue?",
-      "What makes the seasons change?",
-      "How do animals live in different places?",
-      "What is the solar system?",
-      "Why is water important?"
+      ["a","","I am thankful for my family","because they help me every day.","What are you thankful for?"],
+      ["b","Nice!","I'm thankful for my friends","because they make me happy.","What is something kind you've done?"],
+      ["a","Uh huh!","I helped a friend with their homework.","It felt good to help.","What makes you feel proud?"],
+      ["b","Wow!","I feel proud when I try my best at school.","For example, I worked hard on my reading.","What do you do when you have a problem?"]
+    ]},
+  { id:"science", emoji:"📚", title:"Science & Discovery", color:"#264653",
+    q:[
+      ["How do plants grow?","I learned that plants need…"],
+      ["Why is the sky blue?","I think the sky is blue because…"],
+      ["What makes the seasons change?","I think the seasons change because…"],
+      ["How do animals live in different places?","I learned that some animals…"],
+      ["What is the solar system?","The solar system is…"],
+      ["Why is water important?","Water is important because…"]
     ],
-    starters:["I wonder how…","Why does ___ happen?","How do ___ work?","I learned that…","Did you know that…","What would happen if…","One thing I discovered is…"],
     words:["plants","sunlight","water","sky","air","seasons","weather","animals","planets","earth","life"],
     convo:[
-      ["a","I wonder how plants grow. I learned that they need sunlight and water. Why do you think sunlight is important?"],
-      ["b","I think sunlight helps plants make their food. Why is the sky blue?"],
-      ["a","I've heard it has something to do with light in the air. What makes the seasons change?"],
-      ["b","Maybe it's because the Earth moves around the sun. How do animals survive in different places?"]
-    ]
-  }
+      ["a","","I wonder how plants grow.","I learned that they need sunlight and water.","Why do you think sunlight is important?"],
+      ["b","Oh, I see!","I think sunlight helps plants make their food.","Without it, they cannot grow.","Why is the sky blue?"],
+      ["a","Really?","I've heard it has something to do with light in the air.","Blue light spreads out the most.","What makes the seasons change?"],
+      ["b","That's interesting!","Maybe it's because the Earth is tilted","as it moves around the sun.","How do animals survive in different places?"]
+    ]}
 ];
 
-// stars in hero
-const starWrap = document.getElementById("stars");
-for(let i=0;i<14;i++){
-  const s=document.createElement("span");
-  s.textContent="✦";
-  s.style.top=(8+i*6.4)+"%";
-  s.style.left=((i*7.1)+2)+"%";
-  s.style.animationDelay=(i*0.18)+"s";
-  starWrap.appendChild(s);
+const $ = id => document.getElementById(id);
+let ti = 0, qi = 0, timer = null;
+
+/* ---- read aloud (optional: hidden when the browser cannot speak) ---- */
+const canSpeak = (() => { try { return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window; } catch (e) { return false; } })();
+function speak(text) {
+  if (!canSpeak) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/_+/g, "blank").replace(/…/g, " ").replace(/\s\/\s/g, ", or, "));
+    u.lang = "en-US"; u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* stay silent */ }
+}
+function chip(text, cls) {
+  const el = document.createElement(canSpeak ? "button" : "span");
+  el.className = "chip" + (cls ? " " + cls : "");
+  el.textContent = text;
+  if (canSpeak) { el.type = "button"; el.onclick = () => speak(text); }
+  return el;
+}
+function fill(id, items, cls, firstCls) {
+  const box = $(id); box.textContent = "";
+  items.forEach((t, i) => box.appendChild(chip(t, i === 0 && firstCls ? firstCls : cls)));
 }
 
-// listening + keep-going chips
-const lc=document.getElementById("listenChips");
-LISTEN.forEach(w=>{const c=document.createElement("span");c.className="chip listen";c.textContent=w;lc.appendChild(c);});
-const gc=document.getElementById("goChips");
-KEEP.forEach(w=>{const c=document.createElement("span");c.className="chip go";c.textContent=w;gc.appendChild(c);});
-
-// build a topic card (returns element)
-function topicCard(t){
-  const card=document.createElement("div");
-  card.className="topic";
-  card.style.setProperty("--accent",t.color);
-  card.innerHTML = `
-    <div class="topic-head">
-      <span class="e">${t.emoji}</span>
-      <div><h2>${t.title}</h2><p>Use these to talk with your partner</p></div>
-    </div>
-    <div class="topic-body">
-      <div class="block">
-        <h4>❓ Questions to Ask</h4>
-        <div class="qlist">${t.questions.map(q=>`<div class="q">${q}</div>`).join("")}</div>
-      </div>
-      <div class="block">
-        <h4>🟢 Sentence Starters</h4>
-        <div class="starters">${t.starters.map(s=>`<div class="starter">${s}</div>`).join("")}</div>
-      </div>
-      <div class="block">
-        <h4>🟡 Word Bank</h4>
-        <div class="wordbank">${t.words.map(w=>`<span class="word">${w}</span>`).join("")}</div>
-      </div>
-      <div class="block">
-        <h4>🗣️ Example Conversation</h4>
-        <div class="convo">${t.convo.map(([who,say])=>`
-          <div class="line ${who}">
-            <span class="who ${who}">${who==="a"?"A":"B"}</span>
-            <span class="say">${say}</span>
-          </div>`).join("")}</div>
-      </div>
-    </div>`;
-  return card;
-}
-
-// tabs
-const tabsEl=document.getElementById("tabs");
-const area=document.getElementById("topicArea");
-let active=TOPICS[0].id;
-
-function render(){
-  tabsEl.innerHTML="";
-  TOPICS.forEach(t=>{
-    const b=document.createElement("button");
-    b.className="tab"+(t.id===active?" active":"");
-    b.style.setProperty("--accent",t.color);
-    b.innerHTML=`<span class="e">${t.emoji}</span>${t.title}`;
-    b.onclick=()=>{active=t.id;render();};
-    tabsEl.appendChild(b);
+/* ---- render ---- */
+function renderTopics() {
+  const box = $("topics"); box.textContent = "";
+  TOPICS.forEach((t, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "topic-btn";
+    b.style.setProperty("--t", t.color);
+    b.setAttribute("aria-pressed", i === ti ? "true" : "false");
+    const e = document.createElement("span"); e.className = "e"; e.setAttribute("aria-hidden", "true"); e.textContent = t.emoji;
+    b.append(e, document.createTextNode(t.title));
+    b.onclick = () => { ti = i; qi = 0; render(); };
+    box.appendChild(b);
   });
-  area.innerHTML="";
-  area.appendChild(topicCard(TOPICS.find(t=>t.id===active)));
 }
+function render() {
+  const t = TOPICS[ti], [question, starter] = t.q[qi];
+  document.documentElement.style.setProperty("--accent", t.color);
+  renderTopics();
+  $("qEmoji").textContent = t.emoji;
+  $("qTopic").textContent = t.title;
+  $("qCount").textContent = "Question " + (qi + 1) + " of " + t.q.length;
+  const qt = $("qText");
+  qt.textContent = question;
+  qt.classList.remove("swap-in"); void qt.offsetWidth; qt.classList.add("swap-in");
+  fill("say1", [starter], "main");
+  fill("say2", ADD);
+  fill("say3", ASK);
+  fill("wordRow", t.words);
+  resetThink();
+}
+function move(d) {
+  const n = TOPICS[ti].q.length;
+  qi = (qi + d + n) % n;
+  render();
+}
+
+/* ---- think time: 10 quiet seconds before anyone talks ---- */
+function resetThink() {
+  clearInterval(timer); timer = null;
+  const b = $("think"); b.textContent = "Think time"; b.classList.remove("on");
+}
+$("think").onclick = () => {
+  if (timer) { resetThink(); return; }
+  let n = 10; const b = $("think");
+  b.classList.add("on"); b.textContent = "Think… " + n;
+  timer = setInterval(() => {
+    n--;
+    if (n > 0) { b.textContent = "Think… " + n; }
+    else if (n === 0) { b.textContent = "Now talk!"; }
+    else { resetThink(); }
+  }, 1000);
+};
+
+/* ---- example conversation ---- */
+function seg(n, text) {
+  const s = document.createElement("span"); s.className = "seg g" + n;
+  const tag = document.createElement("i"); tag.className = "tag t" + n; tag.textContent = n === 0 ? "♪" : n;
+  s.append(tag, document.createTextNode(text));
+  return s;
+}
+function openExample() {
+  const t = TOPICS[ti], box = $("convo");
+  $("exTitle").textContent = "Example: " + t.title;
+  box.textContent = "";
+  t.convo.forEach(([who, listen, a, add, ask]) => {
+    const line = document.createElement("div"); line.className = "line " + who;
+    const w = document.createElement("span"); w.className = "who"; w.textContent = who.toUpperCase();
+    const bub = document.createElement("div"); bub.className = "bubble";
+    [[0, listen], [1, a], [2, add], [3, ask]].forEach(([n, text]) => {
+      if (text) bub.append(seg(n, text), document.createTextNode(" "));
+    });
+    line.append(w, bub); box.appendChild(line);
+  });
+  const d = $("exDlg");
+  if (typeof d.showModal === "function") { if (!d.open) d.showModal(); } else { d.setAttribute("open", ""); }
+}
+$("exBtn").onclick = openExample;
+$("exClose").onclick = () => $("exDlg").close();
+$("exDlg").addEventListener("click", e => { if (e.target === $("exDlg")) $("exDlg").close(); });
+
+/* ---- full screen ---- */
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg;
+  clearTimeout(toast.t); toast.t = setTimeout(() => { t.textContent = ""; }, 5000);
+}
+function toggleFull() {
+  try {
+    const el = document.documentElement;
+    if (document.fullscreenElement) { document.exitFullscreen(); return; }
+    const req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (!req) throw new Error("unsupported");
+    const p = req.call(el);
+    if (p && p.catch) p.catch(() => toast("Full screen is blocked here. Open this page in its own tab, then try again or press F11."));
+  } catch (e) {
+    toast("Full screen is blocked here. Open this page in its own tab, then try again or press F11.");
+  }
+}
+$("fsBtn").onclick = toggleFull;
+document.addEventListener("fullscreenchange", () => {
+  $("fsBtn").textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
+});
+
+/* ---- wiring ---- */
+$("prev").onclick = () => move(-1);
+$("next").onclick = () => move(1);
+if (canSpeak) {
+  $("hear").onclick = () => speak(TOPICS[ti].q[qi][0]);
+  $("tapHint").textContent = "tap any word to hear it";
+} else {
+  $("hear").hidden = true;
+}
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if ($("exDlg").open) return;
+  if (e.key === "ArrowRight") { move(1); }
+  else if (e.key === "ArrowLeft") { move(-1); }
+  else if (e.key === "f" || e.key === "F") { toggleFull(); }
+  else if (e.key === "e" || e.key === "E") { openExample(); }
+});
+
+fill("listenRow", LISTEN, "listen");
+fill("keepRow", KEEP, "keep");
 render();
-
-// build hidden print area (all topics) so printing gives the full booklet
-const printArea=document.getElementById("printArea");
-TOPICS.forEach(t=>printArea.appendChild(topicCard(t)));
 </script>
-
 </body>
 </html>
