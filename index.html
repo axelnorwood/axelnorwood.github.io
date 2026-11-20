@@ -497,13 +497,14 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
     <div class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <label class="sr-only" for="search">Search tools</label>
-      <input id="search" type="search" placeholder="Search tools — try “books”, “story” or “friends”" autocomplete="off"/>
+      <input id="search" type="search" placeholder="Search tools — try “maths”, “story” or “friends”" autocomplete="off"/>
     </div>
     <div class="filter-row">
       <nav class="filter-nav" aria-label="Filter tools by category">
         <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">All<span class="count"></span></button>
         <button type="button" class="filter-btn" data-filter="reading" aria-pressed="false">Reading<span class="count"></span></button>
         <button type="button" class="filter-btn" data-filter="writing" aria-pressed="false">Writing<span class="count"></span></button>
+        <button type="button" class="filter-btn" data-filter="practice" aria-pressed="false">Practice<span class="count"></span></button>
         <button type="button" class="filter-btn" data-filter="skills" aria-pressed="false">Skills<span class="count"></span></button>
         <button type="button" class="filter-btn" data-filter="social" aria-pressed="false">Social<span class="count"></span></button>
       </nav>
@@ -536,17 +537,6 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
       <p>Find the next book and build a steady reading routine at home.</p>
     </div>
     <div class="grid">
-
-      <a href="bookfinder.html" class="card" data-cat="reading">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H11v10.5"/><path d="M3 5.5v11A2.5 2.5 0 0 0 5.5 19H11"/><circle cx="16" cy="13" r="4"/><path d="m19 16 2 2"/></svg>
-        </div>
-        <div class="card-body">
-          <div class="card-title">The Book Finder</div>
-          <div class="card-desc">Search the whole library by title or author, then filter by reading level and interest — and see exactly where each book sits on the shelf.</div>
-        </div>
-        <span class="card-arrow" aria-hidden="true">→</span>
-      </a>
 
       <a href="reading-atlas.html" class="card" data-cat="reading">
         <div class="card-icon">
@@ -632,6 +622,28 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
         <div class="card-body">
           <div class="card-title">Writing Guides</div>
           <div class="card-desc">Mentor examples, trait-by-trait tips, formatting references, and grammar points — everything a writer needs in one place.</div>
+        </div>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Practice -->
+  <section class="group" aria-labelledby="g-practice">
+    <div class="group-head">
+      <h2 id="g-practice">Practice</h2>
+      <p>Printable sheets to finish with a pencil, at the kitchen table or in class.</p>
+    </div>
+    <div class="grid">
+
+      <a href="worksheets.html" class="card" data-cat="practice">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2M9 12v2M14 13h2M8 17.5h8"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Maths &amp; Grammar Worksheets</div>
+          <div class="card-desc">Printable maths and grammar practice from Reception to Year 6 — pick a topic, get fresh questions every time, and download answer keys to mark by hand.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
