@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Hanami Education — Where Learning Blooms</title>
 <link rel="icon" href="data:,"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;500&family=Noto+Sans+Devanagari:wght@300;400;500&family=Noto+Serif+Devanagari:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -447,6 +447,29 @@ a.book-cta:hover{background:var(--accent)}
   letter-spacing:.02em;
 }
 
+
+/* ── Language switcher (top right) ── */
+.head-right{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:flex-end}
+.langs{display:inline-flex;gap:2px;padding:2px;border:1px solid var(--border);border-radius:3px;background:var(--surface)}
+.langs button{font-family:var(--sans);font-size:.76rem;letter-spacing:.06em;color:var(--text-secondary);background:transparent;border:0;border-radius:2px;padding:.4rem .6rem;min-height:34px;min-width:40px;cursor:pointer;transition:background .2s ease,color .2s ease}
+.langs button:hover{color:var(--accent-strong);background:var(--accent-soft)}
+.langs button[aria-pressed="true"]{color:#fff;background:var(--accent-strong)}
+@media(max-width:640px){.header-row{flex-wrap:wrap}.head-right{width:100%;justify-content:space-between}}
+@media(max-width:400px){.langs button{padding:.4rem .45rem;min-width:0}}
+/* ── Scripts other than Latin ── */
+html:lang(zh){--serif:'Cormorant Garamond','Noto Serif SC',serif;--sans:'Zen Kaku Gothic New','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif}
+html:lang(hi){--serif:'Cormorant Garamond','Noto Serif Devanagari',serif;--sans:'Zen Kaku Gothic New','Noto Sans Devanagari',sans-serif}
+html:lang(ja){--serif:'Cormorant Garamond','Zen Kaku Gothic New',serif}
+html:lang(zh) .filter-btn,html:lang(hi) .filter-btn,html:lang(ja) .filter-btn,
+html:lang(zh) .header-link,html:lang(hi) .header-link,html:lang(ja) .header-link,
+html:lang(zh) .eyebrow,html:lang(hi) .eyebrow,html:lang(ja) .eyebrow,
+html:lang(zh) .book-cta,html:lang(hi) .book-cta,html:lang(ja) .book-cta,
+html:lang(zh) .philosophy-label,html:lang(hi) .philosophy-label,html:lang(ja) .philosophy-label,
+html:lang(zh) .empty button,html:lang(hi) .empty button,html:lang(ja) .empty button{letter-spacing:.04em}
+html:lang(hi) .card-desc,html:lang(hi) .tagline,html:lang(hi) .philosophy-text{line-height:1.8}
+html:lang(zh) .slogan-word,html:lang(ja) .slogan-word{letter-spacing:.15em}
+html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
+
 /* ── Responsive ── */
 @media(max-width:760px){
   :root{--toolbar-h:150px}
@@ -472,7 +495,7 @@ a.book-cta:hover{background:var(--accent)}
 </head>
 <body>
 
-<a class="skip-link" href="#tools">Skip to tools</a>
+<a class="skip-link" href="#tools" data-i18n="skip">Skip to tools</a>
 
 <div class="petals" aria-hidden="true">
   <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
@@ -486,20 +509,23 @@ a.book-cta:hover{background:var(--accent)}
         <div class="logo-mark">花見</div>
         <div class="logo-text">Hanami Education</div>
       </a>
-      <a class="header-link" href="#approach">Our approach</a>
+      <div class="head-right"><a class="header-link" href="#approach" data-i18n="approach">Our approach</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="en" lang="en" title="English">EN</button><button type="button" data-lang="zh" lang="zh-Hans" title="简体中文">中文</button><button type="button" data-lang="hi" lang="hi" title="हिन्दी">हिन्दी</button><button type="button" data-lang="es" lang="es" title="Español">ES</button><button type="button" data-lang="ja" lang="ja" title="日本語">日本語</button>
+      </div></div>
     </div>
   </header>
 
   <section class="hero">
     <div class="hero-kanji" aria-hidden="true">花 見 教 育</div>
-    <h1>Where learning <em>blooms</em></h1>
-    <p class="tagline">Practical tools and guides for educators and parents — supporting the reading habits and independent learning that happen at home.</p>
+    <h1 data-i18n="h1">Where learning <em>blooms</em></h1>
+    <p class="tagline" data-i18n="tagline">Practical tools and guides for educators and parents — supporting the reading habits and independent learning that happen at home.</p>
     <div class="slogan" aria-hidden="true">
-      <span class="slogan-word">Learn</span>
+      <span class="slogan-word" data-i18n="sl-learn">Learn</span>
       <span class="slogan-dot"></span>
-      <span class="slogan-word">Grow</span>
+      <span class="slogan-word" data-i18n="sl-grow">Grow</span>
       <span class="slogan-dot"></span>
-      <span class="slogan-word">Bloom</span>
+      <span class="slogan-word" data-i18n="sl-bloom">Bloom</span>
     </div>
   </section>
 </div>
@@ -509,17 +535,17 @@ a.book-cta:hover{background:var(--accent)}
   <div class="container toolbar-inner">
     <div class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <label class="sr-only" for="search">Search tools</label>
-      <input id="search" type="search" placeholder="Search tools — try “maths”, “story” or “friends”" autocomplete="off"/>
+      <label class="sr-only" for="search" data-i18n="searchLabel">Search tools</label>
+      <input id="search" type="search" data-i18n-ph="searchPh" placeholder="Search tools — try “maths”, “story” or “friends”" autocomplete="off"/>
     </div>
     <div class="filter-row">
-      <nav class="filter-nav" aria-label="Filter tools by category">
-        <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">All<span class="count"></span></button>
-        <button type="button" class="filter-btn" data-filter="reading" aria-pressed="false">Reading<span class="count"></span></button>
-        <button type="button" class="filter-btn" data-filter="writing" aria-pressed="false">Writing<span class="count"></span></button>
-        <button type="button" class="filter-btn" data-filter="practice" aria-pressed="false">Practice<span class="count"></span></button>
-        <button type="button" class="filter-btn" data-filter="skills" aria-pressed="false">Skills<span class="count"></span></button>
-        <button type="button" class="filter-btn" data-filter="social" aria-pressed="false">Social<span class="count"></span></button>
+      <nav class="filter-nav" aria-label="Filter tools by category" data-i18n-aria="filterAria">
+        <button type="button" class="filter-btn" data-filter="all" aria-pressed="true"><span data-i18n="f-all">All</span><span class="count"></span></button>
+        <button type="button" class="filter-btn" data-filter="reading" aria-pressed="false"><span data-i18n="f-reading">Reading</span><span class="count"></span></button>
+        <button type="button" class="filter-btn" data-filter="writing" aria-pressed="false"><span data-i18n="f-writing">Writing</span><span class="count"></span></button>
+        <button type="button" class="filter-btn" data-filter="practice" aria-pressed="false"><span data-i18n="f-practice">Practice</span><span class="count"></span></button>
+        <button type="button" class="filter-btn" data-filter="skills" aria-pressed="false"><span data-i18n="f-skills">Skills</span><span class="count"></span></button>
+        <button type="button" class="filter-btn" data-filter="social" aria-pressed="false"><span data-i18n="f-social">Social</span><span class="count"></span></button>
       </nav>
       <div class="result-status" id="status" role="status" aria-live="polite"></div>
     </div>
@@ -529,7 +555,7 @@ a.book-cta:hover{background:var(--accent)}
 <main class="container" id="tools">
 
   <!-- Featured: Bloom, one card with a tab for each language -->
-  <section class="group books" aria-label="Featured book">
+  <section class="group books" aria-label="Featured book" data-i18n-aria="featAria">
     <div class="card is-book book-tabs" data-cat="reading">
       <div class="card-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.3" cy="10.3" r="2.3"/><circle cx="15.3" cy="16.5" r="2.3"/><circle cx="8.7" cy="16.5" r="2.3"/><circle cx="6.7" cy="10.3" r="2.3"/><circle cx="12" cy="12" r="2.2"/></svg>
@@ -540,9 +566,9 @@ a.book-cta:hover{background:var(--accent)}
           <button type="button" role="tab" id="bt-ja" aria-controls="bp-ja" aria-selected="false" data-bl="ja" lang="ja" tabindex="-1">日本語</button>
         </div>
         <div role="tabpanel" id="bp-en" aria-labelledby="bt-en">
-          <div class="eyebrow">Start here · Read-along book</div>
+          <div class="eyebrow" data-i18n="bookEyebrow">Start here · Read-along book</div>
           <div class="card-title">Bloom</div>
-          <div class="card-desc">A read-along book for children on how to fall in love with learning — growing, like a cherry blossom, one small step at a time.</div>
+          <div class="card-desc" data-i18n="bookDesc">A read-along book for children on how to fall in love with learning — growing, like a cherry blossom, one small step at a time.</div>
         </div>
         <div role="tabpanel" id="bp-ja" aria-labelledby="bt-ja" lang="ja" hidden>
           <div class="eyebrow">ここから · 読み聞かせの本</div>
@@ -557,8 +583,8 @@ a.book-cta:hover{background:var(--accent)}
   <!-- Reading -->
   <section class="group" aria-labelledby="g-reading">
     <div class="group-head">
-      <h2 id="g-reading">Reading</h2>
-      <p>Find the next book and build a steady reading routine at home.</p>
+      <h2 id="g-reading" data-i18n="h-reading">Reading</h2>
+      <p data-i18n="p-reading">Find the next book and build a steady reading routine at home.</p>
     </div>
     <div class="grid">
 
@@ -568,7 +594,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">The Reading Atlas</div>
-          <div class="card-desc">A curated collection of 200 fiction and non-fiction series for grades 1–5, browsable by grade level, genre, and category.</div>
+          <div class="card-desc" data-i18n="c-reading-atlas">A curated collection of 200 fiction and non-fiction series for grades 1–5, browsable by grade level, genre, and category.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -579,7 +605,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Reading Checklist Guide</div>
-          <div class="card-desc">A step-by-step guide for supporting your reader before, during, and after reading — with concrete strategies for every stage.</div>
+          <div class="card-desc" data-i18n="c-reading-checklist">A step-by-step guide for supporting your reader before, during, and after reading — with concrete strategies for every stage.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -590,7 +616,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Reading Checklist Aid</div>
-          <div class="card-desc">An interactive reading companion for home — with guided tips, built-in timers, and quicklists to build consistent reading routines and strong strategies.</div>
+          <div class="card-desc" data-i18n="c-checklisttool">An interactive reading companion for home — with guided tips, built-in timers, and quicklists to build consistent reading routines and strong strategies.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -601,8 +627,8 @@ a.book-cta:hover{background:var(--accent)}
   <!-- Writing -->
   <section class="group" aria-labelledby="g-writing">
     <div class="group-head">
-      <h2 id="g-writing">Writing</h2>
-      <p>Ideas to start with and guides to write well.</p>
+      <h2 id="g-writing" data-i18n="h-writing">Writing</h2>
+      <p data-i18n="p-writing">Ideas to start with and guides to write well.</p>
     </div>
     <div class="grid">
 
@@ -612,7 +638,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">The Story Spinner</div>
-          <div class="card-desc">A kid-friendly app that lets young writers pick one of seven story types and spin up a random, ready-to-write story idea at the tap of a button.</div>
+          <div class="card-desc" data-i18n="c-story-generator">A kid-friendly app that lets young writers pick one of seven story types and spin up a random, ready-to-write story idea at the tap of a button.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -623,7 +649,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Prompt-o-Matic</div>
-          <div class="card-desc">Spins up a short writing mission for any year from 1 to 6 — pick a year, choose a genre, and get a fresh prompt with a sentence-starter to begin.</div>
+          <div class="card-desc" data-i18n="c-promptgenerator">Spins up a short writing mission for any year from 1 to 6 — pick a year, choose a genre, and get a fresh prompt with a sentence-starter to begin.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -634,7 +660,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">The Story of Me</div>
-          <div class="card-desc">A journaling activity that helps kids reflect on who they are, where they come from, and what matters to them — one prompt at a time.</div>
+          <div class="card-desc" data-i18n="c-mylife">A journaling activity that helps kids reflect on who they are, where they come from, and what matters to them — one prompt at a time.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -645,7 +671,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Writing Guides</div>
-          <div class="card-desc">Mentor examples, trait-by-trait tips, formatting references, and grammar points — everything a writer needs in one place.</div>
+          <div class="card-desc" data-i18n="c-Writing-Guides">Mentor examples, trait-by-trait tips, formatting references, and grammar points — everything a writer needs in one place.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -656,8 +682,8 @@ a.book-cta:hover{background:var(--accent)}
   <!-- Practice -->
   <section class="group" aria-labelledby="g-practice">
     <div class="group-head">
-      <h2 id="g-practice">Practice</h2>
-      <p>Printable sheets to finish with a pencil, at the kitchen table or in class.</p>
+      <h2 id="g-practice" data-i18n="h-practice">Practice</h2>
+      <p data-i18n="p-practice">Printable sheets to finish with a pencil, at the kitchen table or in class.</p>
     </div>
     <div class="grid">
 
@@ -667,7 +693,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Maths &amp; Grammar Worksheets</div>
-          <div class="card-desc">Printable maths and grammar practice from Reception to Year 6 — pick a topic, get fresh questions every time, and download answer keys to mark by hand.</div>
+          <div class="card-desc" data-i18n="c-worksheets">Printable maths and grammar practice from Reception to Year 6 — pick a topic, get fresh questions every time, and download answer keys to mark by hand.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -678,8 +704,8 @@ a.book-cta:hover{background:var(--accent)}
   <!-- Skills -->
   <section class="group" aria-labelledby="g-skills">
     <div class="group-head">
-      <h2 id="g-skills">Skills &amp; Projects</h2>
-      <p>Hands-on projects, goals, and trying something new.</p>
+      <h2 id="g-skills" data-i18n="h-skills">Skills &amp; Projects</h2>
+      <p data-i18n="p-skills">Hands-on projects, goals, and trying something new.</p>
     </div>
     <div class="grid">
 
@@ -689,7 +715,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">The Project Picker</div>
-          <div class="card-desc">Helps kids find a new project by tapping an interest — or "Surprise me!" — to get simple step-by-step instructions for any idea they choose.</div>
+          <div class="card-desc" data-i18n="c-project-guide">Helps kids find a new project by tapping an interest — or "Surprise me!" — to get simple step-by-step instructions for any idea they choose.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -700,7 +726,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">The Project Maker</div>
-          <div class="card-desc">Turns a child's own idea into a buildable plan — guiding them from concept to materials to finished project, one step at a time.</div>
+          <div class="card-desc" data-i18n="c-projectmaker">Turns a child's own idea into a buildable plan — guiding them from concept to materials to finished project, one step at a time.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -711,7 +737,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Chore Quest</div>
-          <div class="card-desc">A family quest board where kids earn stars for real jobs around the house — with chores that grow from age 2 to 12, streaks, badges and a reward shop.</div>
+          <div class="card-desc" data-i18n="c-chorequest">A family quest board where kids earn stars for real jobs around the house — with chores that grow from age 2 to 12, streaks, badges and a reward shop.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -722,7 +748,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Goal Setter</div>
-          <div class="card-desc">Isolating the skills that need improvement and finding the true value of improving on them — so effort goes where it matters most.</div>
+          <div class="card-desc" data-i18n="c-goalsetter">Isolating the skills that need improvement and finding the true value of improving on them — so effort goes where it matters most.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -733,7 +759,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">First Step Sports</div>
-          <div class="card-desc">Exploring new sports in a straightforward, tear-free way — helping kids try something new without the fear of getting it wrong.</div>
+          <div class="card-desc" data-i18n="c-firststepsports">Exploring new sports in a straightforward, tear-free way — helping kids try something new without the fear of getting it wrong.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -744,8 +770,8 @@ a.book-cta:hover{background:var(--accent)}
   <!-- Social -->
   <section class="group" aria-labelledby="g-social">
     <div class="group-head">
-      <h2 id="g-social">Social</h2>
-      <p>Talking, debating, and getting along with others.</p>
+      <h2 id="g-social" data-i18n="h-social">Social</h2>
+      <p data-i18n="p-social">Talking, debating, and getting along with others.</p>
     </div>
     <div class="grid">
 
@@ -755,7 +781,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Conversation Starters</div>
-          <div class="card-desc">Thoughtful prompts for the dinner table or the car ride — sparking real conversation and connection away from screens.</div>
+          <div class="card-desc" data-i18n="c-conversation">Thoughtful prompts for the dinner table or the car ride — sparking real conversation and connection away from screens.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -766,7 +792,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Would You Rather</div>
-          <div class="card-desc">A playful game of impossible choices that gets kids reasoning, debating, and explaining their thinking out loud.</div>
+          <div class="card-desc" data-i18n="c-wouldyourather">A playful game of impossible choices that gets kids reasoning, debating, and explaining their thinking out loud.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -777,7 +803,7 @@ a.book-cta:hover{background:var(--accent)}
         </div>
         <div class="card-body">
           <div class="card-title">Making Friends and Resolving Conflict 101</div>
-          <div class="card-desc">Making and keeping friends with simple strategies — plus calm, clear ways to work through the conflicts that come up along the way.</div>
+          <div class="card-desc" data-i18n="c-friendship">Making and keeping friends with simple strategies — plus calm, clear ways to work through the conflicts that come up along the way.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -786,8 +812,8 @@ a.book-cta:hover{background:var(--accent)}
   </section>
 
   <div class="empty" id="empty" hidden>
-    <p>No tools match that search.</p>
-    <button type="button" id="reset">Show all tools</button>
+    <p data-i18n="emptyP">No tools match that search.</p>
+    <button type="button" id="reset" data-i18n="emptyBtn">Show all tools</button>
   </div>
 
 </main>
@@ -797,8 +823,8 @@ a.book-cta:hover{background:var(--accent)}
     <div class="philosophy-inner">
       <div class="philosophy-rule"></div>
       <div class="philosophy-body">
-        <h2 class="philosophy-label">Our approach</h2>
-        <p class="philosophy-text">We believe the strongest learners are built through <strong>real books, pencils, and paper</strong> — not screens. Every tool here is designed to send children back to physical media: holding a book, writing by hand, building habits that endure because they are grounded in the real world.</p>
+        <h2 class="philosophy-label" data-i18n="approach">Our approach</h2>
+        <p class="philosophy-text" data-i18n="philo">We believe the strongest learners are built through <strong>real books, pencils, and paper</strong> — not screens. Every tool here is designed to send children back to physical media: holding a book, writing by hand, building habits that endure because they are grounded in the real world.</p>
       </div>
     </div>
     <div class="branch-decoration" aria-hidden="true">
@@ -815,7 +841,7 @@ a.book-cta:hover{background:var(--accent)}
 
   <footer class="site-footer">
     © 2026 Hanami Education
-    <div class="footer-note">All tools are designed to complement classroom learning — not replace it.</div>
+    <div class="footer-note" data-i18n="footNote">All tools are designed to complement classroom learning — not replace it.</div>
   </footer>
 </div>
 
@@ -854,9 +880,7 @@ a.book-cta:hover{background:var(--accent)}
       b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === filter));
     });
     empty.hidden = shown !== 0;
-    status.textContent = shown === cards.length
-      ? cards.length + ' tools'
-      : shown + ' of ' + cards.length + ' tools';
+    status.textContent = window.HanamiI18n ? window.HanamiI18n.status(shown, cards.length) : (shown === cards.length ? cards.length + ' tools' : shown + ' of ' + cards.length + ' tools');
   }
 
   function setFilter(f, scroll){
@@ -880,6 +904,7 @@ a.book-cta:hover{background:var(--accent)}
   // Shareable links such as index.html#reading
   var initial = location.hash.replace('#', '');
   if (valid.indexOf(initial) !== -1) filter = initial;
+  window.__hanamiApply = apply;
   apply();
 })();
 
@@ -900,6 +925,7 @@ a.book-cta:hover{background:var(--accent)}
     cta.href=TEXT[l][0]; cta.textContent=TEXT[l][1]; cta.lang=l;
     try{localStorage.setItem('bloom-lang',l)}catch(e){}
   }
+  window.__bloomPick = pick;
   tabs.forEach(function(t,i){
     t.addEventListener('click',function(){pick(t.getAttribute('data-bl'))});
     t.addEventListener('keydown',function(e){
@@ -909,6 +935,166 @@ a.book-cta:hover{background:var(--accent)}
   var start='en';
   try{start=localStorage.getItem('bloom-lang')||((navigator.language||'').indexOf('ja')===0?'ja':'en')}catch(e){}
   pick(start==='ja'?'ja':'en');
+})();
+</script>
+<script>
+/* Index translations. English is read from the page itself, so editing the HTML keeps English current.
+   zh = Simplified Chinese (Mandarin), hi = Hindi, es = Latin American Spanish, ja = Japanese. */
+(function(){
+var T={
+zh:{_title:"花见教育 — 让学习绽放",skip:"跳到工具",approach:"我们的理念",h1:"让学习<em>绽放</em>",
+tagline:"为老师和家长准备的实用工具与指南——帮助孩子在家养成阅读习惯，学会自主学习。",
+"sl-learn":"学习","sl-grow":"成长","sl-bloom":"绽放",searchLabel:"搜索工具",searchPh:"搜索工具——试试“数学”“故事”或“朋友”",
+filterAria:"按类别筛选工具",featAria:"精选图书","f-all":"全部","f-reading":"阅读","f-writing":"写作","f-practice":"练习","f-skills":"技能","f-social":"社交",
+st:function(s,n){return s===n?"共 "+n+" 个工具":"显示 "+s+" 个，共 "+n+" 个工具"},
+bookEyebrow:"从这里开始 · 亲子共读书",bookDesc:"一本陪孩子一起读的书，讲述如何爱上学习——像樱花一样，一小步一小步地成长。",bookCta:"阅读本书 →",
+"h-reading":"阅读","p-reading":"找到下一本好书，在家养成稳定的阅读习惯。",
+"h-writing":"写作","p-writing":"从灵感出发，跟着指南把文章写好。",
+"h-practice":"练习","p-practice":"可打印的练习纸，在餐桌上或教室里用铅笔完成。",
+"h-skills":"技能与项目","p-skills":"动手做项目、设定目标、勇于尝试新事物。",
+"h-social":"社交","p-social":"交流、辩论，学会与他人相处。",
+"c-reading-atlas":"精选 200 套适合 1–5 年级的小说与非虚构系列图书，可按年级、体裁和类别浏览。",
+"c-reading-checklist":"分步骤指南，帮助你在孩子阅读前、阅读中和阅读后给予支持——每个阶段都有具体可行的方法。",
+"c-checklisttool":"居家阅读的互动小助手——提供引导提示、内置计时器和快捷清单，帮助孩子养成稳定的阅读习惯和有效的阅读策略。",
+"c-story-generator":"一款适合孩子的应用：小作者从七种故事类型中选一种，点一下按钮，就能得到一个随机的故事灵感，马上动笔。",
+"c-promptgenerator":"为 1 到 6 年级生成简短的写作任务——选好年级和体裁，就能得到全新的写作题目和一句开头。",
+"c-mylife":"一项写日记活动，引导孩子思考自己是谁、来自哪里、什么对自己最重要——一次一个问题。",
+"c-Writing-Guides":"范文、写作要素逐项技巧、格式参考和语法要点——写作所需，一应俱全。",
+"c-worksheets":"从学前班到六年级的可打印数学与英语语法练习——选一个主题，每次都有新题目，还能下载答案，方便手工批改。",
+"c-project-guide":"点一个兴趣，或点“给我惊喜！”，孩子就能找到新项目，并获得简单的分步说明。",
+"c-projectmaker":"把孩子自己的点子变成能动手完成的计划——从构思到材料，再到完成作品，一步一步来。",
+"c-chorequest":"家庭任务板：孩子做真实的家务就能赚星星——家务随 2 到 12 岁的成长而升级，还有连续打卡、徽章和奖励商店。",
+"c-goalsetter":"找出需要提高的技能，看清提高它们的真正价值——让努力用在最重要的地方。",
+"c-firststepsports":"用简单、不流泪的方式探索新运动——帮助孩子不怕出错，大胆尝试新事物。",
+"c-conversation":"适合餐桌上或车上的用心话题——远离屏幕，激发真正的交流与亲近。",
+"c-wouldyourather":"一个充满两难选择的趣味游戏，让孩子推理、辩论，并大声说出自己的想法。",
+"c-friendship":"用简单的方法交朋友、维持友谊——以及在冲突出现时，冷静、清楚地化解。",
+emptyP:"没有找到符合搜索的工具。",emptyBtn:"显示全部工具",
+philo:"我们相信，最强的学习者是靠<strong>真实的书本、铅笔和纸张</strong>培养出来的，而不是屏幕。这里的每一个工具，都是为了把孩子带回真实的世界：捧起一本书、亲手写字，养成扎根于现实生活、因而能长久坚持的习惯。",
+footNote:"所有工具都旨在配合课堂学习，而不是取而代之。"},
+
+hi:{_title:"हानामी एजुकेशन — जहाँ सीखना खिलता है",skip:"टूल पर जाएँ",approach:"हमारा दृष्टिकोण",h1:"जहाँ सीखना <em>खिलता है</em>",
+tagline:"शिक्षकों और माता-पिता के लिए व्यावहारिक टूल और गाइड — घर पर पढ़ने की आदत और खुद से सीखने की क्षमता बढ़ाने के लिए।",
+"sl-learn":"सीखो","sl-grow":"बढ़ो","sl-bloom":"खिलो",searchLabel:"टूल खोजें",searchPh:"टूल खोजें — “गणित”, “कहानी” या “दोस्त” आज़माएँ",
+filterAria:"श्रेणी के अनुसार टूल चुनें",featAria:"चुनी हुई किताब","f-all":"सभी","f-reading":"पढ़ना","f-writing":"लेखन","f-practice":"अभ्यास","f-skills":"कौशल","f-social":"सामाजिक",
+st:function(s,n){return s===n?n+" टूल":n+" में से "+s+" टूल"},
+bookEyebrow:"यहाँ से शुरू करें · साथ पढ़ने वाली किताब",bookDesc:"बच्चों के साथ पढ़ने के लिए एक किताब, जो सिखाती है कि सीखने से प्यार कैसे करें — चेरी के फूल की तरह, एक-एक छोटा कदम बढ़ाते हुए।",bookCta:"किताब पढ़ें →",
+"h-reading":"पढ़ना","p-reading":"अगली किताब ढूँढें और घर पर पढ़ने की नियमित आदत बनाएँ।",
+"h-writing":"लेखन","p-writing":"शुरुआत के लिए विचार और अच्छा लिखने के लिए गाइड।",
+"h-practice":"अभ्यास","p-practice":"पेंसिल से हल करने वाली प्रिंट करने योग्य शीट — रसोई की मेज़ पर या कक्षा में।",
+"h-skills":"कौशल और प्रोजेक्ट","p-skills":"हाथ से बनाए जाने वाले प्रोजेक्ट, लक्ष्य, और कुछ नया आज़माना।",
+"h-social":"सामाजिक","p-social":"बातचीत, बहस, और दूसरों के साथ मिल-जुलकर रहना।",
+"c-reading-atlas":"कक्षा 1–5 के लिए 200 कथा और गैर-कथा सीरीज़ का चुना हुआ संग्रह, जिसे कक्षा, विधा और श्रेणी के अनुसार देखा जा सकता है।",
+"c-reading-checklist":"पढ़ने से पहले, पढ़ते समय और पढ़ने के बाद अपने बच्चे की मदद के लिए चरण-दर-चरण गाइड — हर चरण के लिए ठोस तरीकों के साथ।",
+"c-checklisttool":"घर पर पढ़ने का एक इंटरैक्टिव साथी — सुझावों, टाइमर और झटपट सूचियों के साथ, ताकि पढ़ने की नियमित आदत और अच्छी रणनीतियाँ बनें।",
+"c-story-generator":"बच्चों के लिए एक आसान ऐप: नन्हे लेखक सात तरह की कहानियों में से एक चुनते हैं और एक बटन दबाते ही लिखने के लिए कहानी का नया विचार पाते हैं।",
+"c-promptgenerator":"कक्षा 1 से 6 तक के लिए छोटा लेखन मिशन — कक्षा और विधा चुनें, और शुरुआती वाक्य के साथ नया विषय पाएँ।",
+"c-mylife":"डायरी लिखने की एक गतिविधि, जो बच्चों को सोचने में मदद करती है कि वे कौन हैं, कहाँ से आए हैं और उनके लिए क्या मायने रखता है — एक-एक सवाल करके।",
+"c-Writing-Guides":"आदर्श उदाहरण, लेखन के हर गुण के सुझाव, फ़ॉर्मैटिंग संदर्भ और व्याकरण के बिंदु — लेखक को जो चाहिए, सब एक ही जगह।",
+"c-worksheets":"नर्सरी से कक्षा 6 तक गणित और अंग्रेज़ी व्याकरण की प्रिंट करने योग्य शीट — विषय चुनें, हर बार नए सवाल पाएँ, और हाथ से जाँचने के लिए उत्तर-कुंजी डाउनलोड करें।",
+"c-project-guide":"बच्चे कोई रुचि चुनें — या “सरप्राइज़ करो!” दबाएँ — और अपने पसंद के किसी भी विचार के लिए आसान चरण-दर-चरण निर्देश पाएँ।",
+"c-projectmaker":"बच्चे के अपने विचार को बनाने लायक योजना में बदलता है — विचार से सामग्री तक और फिर तैयार प्रोजेक्ट तक, एक-एक कदम।",
+"c-chorequest":"परिवार का क्वेस्ट बोर्ड, जहाँ बच्चे घर के असली कामों के लिए सितारे कमाते हैं — 2 से 12 साल की उम्र के साथ बढ़ते काम, लगातार दिनों का रिकॉर्ड, बैज और इनाम की दुकान।",
+"c-goalsetter":"जिन कौशलों में सुधार चाहिए उन्हें पहचानना और उन्हें सुधारने का असली महत्व समझना — ताकि मेहनत वहीं लगे जहाँ सबसे ज़रूरी है।",
+"c-firststepsports":"नए खेलों को आसान और बिना आँसुओं के आज़माना — ताकि बच्चे गलती के डर के बिना कुछ नया कर सकें।",
+"c-conversation":"खाने की मेज़ या कार की सवारी के लिए सोच-समझकर चुने गए सवाल — स्क्रीन से दूर, असली बातचीत और जुड़ाव के लिए।",
+"c-wouldyourather":"मुश्किल चुनावों का एक मज़ेदार खेल, जिसमें बच्चे तर्क करते हैं, बहस करते हैं और अपनी सोच ज़ोर से समझाते हैं।",
+"c-friendship":"आसान तरीकों से दोस्त बनाना और दोस्ती निभाना — साथ ही रास्ते में आने वाले झगड़ों को शांति और साफ़ तरीके से सुलझाना।",
+emptyP:"इस खोज से कोई टूल नहीं मिला।",emptyBtn:"सभी टूल दिखाएँ",
+philo:"हमारा मानना है कि सबसे मज़बूत सीखने वाले स्क्रीन से नहीं, बल्कि <strong>असली किताबों, पेंसिल और कागज़</strong> से बनते हैं। यहाँ का हर टूल बच्चों को वापस असली दुनिया की ओर ले जाने के लिए बनाया गया है: हाथ में किताब पकड़ना, हाथ से लिखना, और ऐसी आदतें बनाना जो टिकती हैं क्योंकि उनकी जड़ें असल ज़िंदगी में होती हैं।",
+footNote:"सभी टूल कक्षा की पढ़ाई का साथ देने के लिए बनाए गए हैं — उसकी जगह लेने के लिए नहीं।"},
+
+es:{_title:"Hanami Education — Donde el aprendizaje florece",skip:"Ir a las herramientas",approach:"Nuestra filosofía",h1:"Donde el aprendizaje <em>florece</em>",
+tagline:"Herramientas y guías prácticas para docentes y familias, que apoyan los hábitos de lectura y el aprendizaje autónomo en casa.",
+"sl-learn":"Aprende","sl-grow":"Crece","sl-bloom":"Florece",searchLabel:"Buscar herramientas",searchPh:"Busca herramientas: prueba “matemáticas”, “cuento” o “amigos”",
+filterAria:"Filtrar herramientas por categoría",featAria:"Libro destacado","f-all":"Todo","f-reading":"Lectura","f-writing":"Escritura","f-practice":"Práctica","f-skills":"Habilidades","f-social":"Social",
+st:function(s,n){return s===n?n+" herramientas":s+" de "+n+" herramientas"},
+bookEyebrow:"Empieza aquí · Libro para leer juntos",bookDesc:"Un libro para leer en compañía que enseña a los niños a enamorarse del aprendizaje: a crecer como un cerezo en flor, un pequeño paso a la vez.",bookCta:"Leer el libro →",
+"h-reading":"Lectura","p-reading":"Encuentra el próximo libro y crea una rutina de lectura constante en casa.",
+"h-writing":"Escritura","p-writing":"Ideas para empezar y guías para escribir bien.",
+"h-practice":"Práctica","p-practice":"Hojas imprimibles para resolver con lápiz, en la mesa de la cocina o en clase.",
+"h-skills":"Habilidades y proyectos","p-skills":"Proyectos prácticos, metas y animarse a probar algo nuevo.",
+"h-social":"Social","p-social":"Conversar, debatir y llevarse bien con los demás.",
+"c-reading-atlas":"Una colección de 200 series de ficción y no ficción para 1.º a 5.º grado, que puedes explorar por grado, género y categoría.",
+"c-reading-checklist":"Una guía paso a paso para acompañar a tu lector antes, durante y después de leer, con estrategias concretas para cada etapa.",
+"c-checklisttool":"Un compañero de lectura interactivo para casa, con consejos guiados, temporizadores y listas rápidas para crear rutinas de lectura constantes y buenas estrategias.",
+"c-story-generator":"Una app pensada para niños: los pequeños escritores eligen uno de siete tipos de historia y, con solo tocar un botón, reciben una idea al azar lista para escribir.",
+"c-promptgenerator":"Crea una breve misión de escritura para cualquier grado de 1.º a 6.º: elige el grado y el género, y recibe una consigna nueva con una frase para empezar.",
+"c-mylife":"Una actividad de diario que ayuda a los niños a pensar en quiénes son, de dónde vienen y qué es importante para ellos, una pregunta a la vez.",
+"c-Writing-Guides":"Textos modelo, consejos rasgo por rasgo, referencias de formato y puntos de gramática: todo lo que un escritor necesita en un solo lugar.",
+"c-worksheets":"Práctica imprimible de matemáticas y gramática inglesa desde preescolar hasta 6.º grado: elige un tema, recibe preguntas nuevas cada vez y descarga las respuestas para corregir a mano.",
+"c-project-guide":"Ayuda a los niños a encontrar un nuevo proyecto tocando un interés —o “¡Sorpréndeme!”— y les da instrucciones sencillas paso a paso para la idea que elijan.",
+"c-projectmaker":"Convierte la idea de un niño en un plan que puede construir: de la idea a los materiales y al proyecto terminado, paso a paso.",
+"c-chorequest":"Un tablero de misiones familiar donde los niños ganan estrellas por tareas reales de la casa, con tareas que crecen de los 2 a los 12 años, rachas, insignias y una tienda de premios.",
+"c-goalsetter":"Identifica las habilidades que hay que mejorar y el verdadero valor de mejorarlas, para que el esfuerzo vaya donde más importa.",
+"c-firststepsports":"Explora deportes nuevos de forma sencilla y sin lágrimas, para que los niños se animen a probar algo nuevo sin miedo a equivocarse.",
+"c-conversation":"Preguntas pensadas para la mesa o los viajes en carro, que despiertan conversaciones reales y conexión lejos de las pantallas.",
+"c-wouldyourather":"Un juego divertido de elecciones imposibles que pone a los niños a razonar, debatir y explicar en voz alta lo que piensan.",
+"c-friendship":"Cómo hacer y conservar amigos con estrategias sencillas, y formas tranquilas y claras de resolver los conflictos que surgen en el camino.",
+emptyP:"Ninguna herramienta coincide con tu búsqueda.",emptyBtn:"Mostrar todas las herramientas",
+philo:"Creemos que los mejores aprendices se forman con <strong>libros de verdad, lápiz y papel</strong>, no con pantallas. Cada herramienta aquí está pensada para llevar a los niños de vuelta al mundo real: sostener un libro, escribir a mano y crear hábitos que duran porque tienen raíces en la vida diaria.",
+footNote:"Todas las herramientas están pensadas para complementar el aprendizaje en el aula, no para reemplazarlo."},
+
+ja:{_title:"花見エデュケーション — 学びが花開く場所",skip:"ツールへ移動",approach:"わたしたちの考え方",h1:"学びが<em>花開く</em>場所",
+tagline:"先生と保護者のための、実用的なツールとガイド。おうちでの読書習慣と、自分で学ぶ力を育てます。",
+"sl-learn":"学ぶ","sl-grow":"育つ","sl-bloom":"咲く",searchLabel:"ツールを検索",searchPh:"ツールを検索 —「算数」「物語」「友だち」などで探せます",
+filterAria:"カテゴリーでツールを絞り込む",featAria:"注目の本","f-all":"すべて","f-reading":"読む","f-writing":"書く","f-practice":"練習","f-skills":"スキル","f-social":"人とのかかわり",
+st:function(s,n){return s===n?n+"件のツール":n+"件中 "+s+"件"},
+bookEyebrow:"ここから · 読み聞かせの本",bookDesc:"子どもたちが学ぶことを好きになるための読み聞かせの本。桜の木のように、一歩ずつ育っていこう。",bookCta:"本を読む →",
+"h-reading":"読む","p-reading":"次の一冊を見つけて、おうちで読書の習慣を育てましょう。",
+"h-writing":"書く","p-writing":"書きはじめるためのアイデアと、上手に書くためのガイド。",
+"h-practice":"練習","p-practice":"えんぴつで取り組む、印刷できるプリント。キッチンのテーブルでも、教室でも。",
+"h-skills":"スキルとプロジェクト","p-skills":"手を動かすプロジェクト、目標づくり、新しいことへの挑戦。",
+"h-social":"人とのかかわり","p-social":"話す、話し合う、そして人となかよくすること。",
+"c-reading-atlas":"1〜5年生向けの物語・ノンフィクションのシリーズ200を厳選。学年、ジャンル、カテゴリーで探せます。",
+"c-reading-checklist":"読む前・読んでいるとき・読んだあと、それぞれの段階で子どもを支えるためのステップごとのガイド。具体的な方法つき。",
+"c-checklisttool":"おうちでの読書をサポートするインタラクティブなツール。ヒント、タイマー、チェックリストで、読書の習慣と力を育てます。",
+"c-story-generator":"子ども向けのアプリ。7種類の物語から1つ選んでボタンを押すと、すぐに書きはじめられる物語のアイデアがランダムに出てきます。",
+"c-promptgenerator":"1〜6年生向けの短い作文ミッションを作ります。学年とジャンルを選ぶと、書き出しの一文つきの新しいお題が出てきます。",
+"c-mylife":"自分はだれか、どこから来たのか、何を大切にしているのかを、一つずつの問いに答えながら見つめる日記の活動。",
+"c-Writing-Guides":"お手本の文章、観点ごとのコツ、書式の参考、文法のポイント。書くために必要なことが一か所に。",
+"c-worksheets":"年長〜6年生向けの、印刷できる算数と英文法の練習プリント。テーマを選ぶと毎回新しい問題が出て、答えをダウンロードして手で丸つけできます。",
+"c-project-guide":"興味のあることをタップ（または「おまかせ！」）すると、新しいプロジェクトとかんたんな手順が見つかります。",
+"c-projectmaker":"子ども自身のアイデアを、実際に作れる計画に。思いつきから材料、そして完成まで、一歩ずつ案内します。",
+"c-chorequest":"おうちのお手伝いで星を集める家族のクエストボード。2〜12歳の成長にあわせてお手伝いがレベルアップし、連続記録、バッジ、ごほうびショップもあります。",
+"c-goalsetter":"伸ばしたいスキルを見きわめ、それを伸ばす本当の価値を知る。努力をいちばん大事なところに向けるために。",
+"c-firststepsports":"新しいスポーツに、わかりやすく、なみだなしで挑戦。まちがいをこわがらずに、新しいことを始められます。",
+"c-conversation":"食卓や車の中で使える問いかけ。画面からはなれて、本当の会話とつながりを生みます。",
+"c-wouldyourather":"究極の選択で遊ぶ楽しいゲーム。理由を考え、話し合い、自分の考えを声に出して説明する力が育ちます。",
+"c-friendship":"かんたんな方法で友だちを作り、なかよくつづけるコツ。そして、ぶつかったときに落ち着いて、はっきり解決する方法。",
+emptyP:"一致するツールがありません。",emptyBtn:"すべてのツールを表示",
+philo:"わたしたちは、いちばん強い学び手は画面ではなく、<strong>本物の本、えんぴつ、そして紙</strong>によって育つと信じています。ここにあるツールはどれも、子どもたちを実際の世界へと送りかえすために作られています。本を手に取り、手で書き、毎日の暮らしに根ざしているからこそ長くつづく習慣を育てるために。",
+footNote:"すべてのツールは、学校での学びを補うためのもので、置きかえるものではありません。"}
+};
+var HTMLLANG={en:"en",zh:"zh-Hans",hi:"hi",es:"es-419",ja:"ja"};
+var EN={_title:document.title};
+var nodes=[].slice.call(document.querySelectorAll("[data-i18n]"));
+nodes.forEach(function(el){var k=el.getAttribute("data-i18n");if(!(k in EN))EN[k]=el.innerHTML});
+var ph=[].slice.call(document.querySelectorAll("[data-i18n-ph]")),ar=[].slice.call(document.querySelectorAll("[data-i18n-aria]"));
+ph.forEach(function(el){EN[el.getAttribute("data-i18n-ph")]=el.getAttribute("placeholder")});
+ar.forEach(function(el){EN[el.getAttribute("data-i18n-aria")]=el.getAttribute("aria-label")});
+EN.st=function(s,n){return s===n?n+" tools":s+" of "+n+" tools"};
+EN.bookCta="Read the book →";
+var cur="en";
+function d(){return cur==="en"?EN:T[cur]}
+function set(lang){
+  if(lang!=="en"&&!T[lang])lang="en";cur=lang;var D=d();
+  document.documentElement.lang=HTMLLANG[lang];document.title=D._title||EN._title;
+  nodes.forEach(function(el){var k=el.getAttribute("data-i18n");var v=D[k]!=null?D[k]:EN[k];if(v!=null)el.innerHTML=v});
+  ph.forEach(function(el){var k=el.getAttribute("data-i18n-ph");el.setAttribute("placeholder",D[k]||EN[k])});
+  ar.forEach(function(el){var k=el.getAttribute("data-i18n-aria");el.setAttribute("aria-label",D[k]||EN[k])});
+  [].forEach.call(document.querySelectorAll(".langs [data-lang]"),function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-lang")===lang))});
+  if(window.__hanamiApply)window.__hanamiApply();
+  if(window.__bloomPick)window.__bloomPick(lang==="ja"?"ja":"en");
+  var cta=document.getElementById("bookCta");
+  if(cta&&cta.getAttribute("href")==="bloom.html")cta.textContent=D.bookCta||EN.bookCta;
+  try{localStorage.setItem("hanami-lang",lang)}catch(e){}
+}
+window.HanamiI18n={status:function(s,n){return d().st(s,n)},set:set,get:function(){return cur}};
+document.addEventListener("click",function(e){var b=e.target.closest(".langs [data-lang]");if(b)set(b.getAttribute("data-lang"))});
+var start=null;try{start=localStorage.getItem("hanami-lang")}catch(e){}
+if(!start){var nl=(navigator.language||"en").toLowerCase();start=nl.indexOf("zh")===0?"zh":nl.indexOf("hi")===0?"hi":nl.indexOf("es")===0?"es":nl.indexOf("ja")===0?"ja":"en"}
+set(start);
 })();
 </script>
 </body>
