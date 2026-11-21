@@ -6,7 +6,7 @@
 <title>Bloom — A Hanami Education Book</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Zen+Old+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --rose:#c0497a; --rose-deep:#9c3a63; --pink:#d97a9e; --blush:#f6dde7;
@@ -123,27 +123,27 @@ tbody tr:nth-child(even){background:var(--petal)}
 .pager .next:hover:not(:disabled){background:var(--rose-deep)}
 
 /* cover */
-#cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
   min-height:100vh;padding:24px;position:relative;overflow:hidden}
-#cover .kanji-big{font-family:var(--display);color:var(--rose);font-size:1.4rem;letter-spacing:.5em;margin-bottom:8px;padding-left:.5em}
-#cover .florets{color:var(--pink);letter-spacing:.5em;font-size:1.1rem;margin-bottom:18px}
-#cover h1{font-family:var(--display);font-weight:700;color:var(--rose-deep);
+.cover .kanji-big{font-family:var(--display);color:var(--rose);font-size:1.4rem;letter-spacing:.5em;margin-bottom:8px;padding-left:.5em}
+.cover .florets{color:var(--pink);letter-spacing:.5em;font-size:1.1rem;margin-bottom:18px}
+.cover h1{font-family:var(--display);font-weight:700;color:var(--rose-deep);
   font-size:clamp(4rem,18vw,8.5rem);line-height:.9;margin:0;letter-spacing:-.02em}
-#cover .subtitle{font-family:var(--display);font-size:clamp(1.05rem,3.6vw,1.45rem);color:var(--ink);margin:18px 0 6px;max-width:24ch}
-#cover .tagline{color:var(--soft);font-style:italic;margin:4px 0 22px}
-#cover .cover-links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px}
-#cover .begin{appearance:none;cursor:pointer;border:none;background:var(--rose);color:#fff;
+.cover .subtitle{font-family:var(--display);font-size:clamp(1.05rem,3.6vw,1.45rem);color:var(--ink);margin:18px 0 6px;max-width:24ch}
+.cover .tagline{color:var(--soft);font-style:italic;margin:4px 0 22px}
+.cover .cover-links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px}
+.cover .begin{appearance:none;cursor:pointer;border:none;background:var(--rose);color:#fff;
   font-family:var(--display);font-size:1.05rem;font-weight:600;padding:15px 38px;border-radius:40px;
   box-shadow:var(--shadow);transition:.22s;letter-spacing:.01em}
-#cover .begin:hover{background:var(--rose-deep);transform:translateY(-2px)}
-#cover .clink{font-family:var(--display);font-weight:600;font-size:.95rem;text-decoration:none;
+.cover .begin:hover{background:var(--rose-deep);transform:translateY(-2px)}
+.cover .clink{font-family:var(--display);font-weight:600;font-size:.95rem;text-decoration:none;
   color:var(--rose-deep);border:1px solid var(--pink);background:var(--paper);
   padding:13px 24px;border-radius:40px;transition:.22s}
-#cover .clink:hover{background:var(--blush);transform:translateY(-2px)}
-#cover .credit{position:absolute;bottom:22px;left:0;right:0;color:var(--soft);font-size:.8rem;letter-spacing:.08em}
-#cover .credit a{color:var(--rose);text-decoration:none;border-bottom:1px solid rgba(192,73,122,.4)}
-#cover .credit a:hover{color:var(--rose-deep)}
-#cover.active{display:flex}
+.cover .clink:hover{background:var(--blush);transform:translateY(-2px)}
+.cover .credit{position:absolute;bottom:22px;left:0;right:0;color:var(--soft);font-size:.8rem;letter-spacing:.08em}
+.cover .credit a{color:var(--rose);text-decoration:none;border-bottom:1px solid rgba(192,73,122,.4)}
+.cover .credit a:hover{color:var(--rose-deep)}
+.cover.active{display:flex}
 
 /* falling petals */
 .petals{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
@@ -153,7 +153,7 @@ tbody tr:nth-child(even){background:var(--petal)}
   0%{transform:translateY(-10vh) rotate(0);opacity:0}
   12%{opacity:.6}
   100%{transform:translateY(112vh) translateX(40px) rotate(420deg);opacity:.15}}
-#cover>*{position:relative;z-index:1}
+.cover>*{position:relative;z-index:1}
 
 @media (prefers-reduced-motion:reduce){
   .petal{display:none}.page{animation:none}html{scroll-behavior:auto}
@@ -165,6 +165,17 @@ tbody tr:nth-child(even){background:var(--petal)}
   .barlink.kids{display:none}
   .counter{display:none}
 }
+
+/* Japanese edition */
+:lang(ja) .page p,:lang(ja) .page li,.page:lang(ja){font-family:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",var(--serif)}
+.page:lang(ja) h1,.page:lang(ja) h3,.page:lang(ja) blockquote,.cover:lang(ja) .subtitle{font-family:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",var(--display);letter-spacing:.02em}
+.page:lang(ja) p,.page:lang(ja) li{line-height:1.95;letter-spacing:.03em}
+.page:lang(ja) .kicker{letter-spacing:.3em}
+.cover:lang(ja) h1{font-family:var(--display)}
+[data-lang][hidden]{display:none!important}
+.cover:not(.active){display:none}
+.bar .brand .kanji{white-space:nowrap}
+@media (max-width:560px){.barlink.solid{display:none}header.bar{padding:0 12px}}
 </style>
 </head>
 <body>
@@ -176,89 +187,160 @@ tbody tr:nth-child(even){background:var(--petal)}
   </button>
   <div class="brand" role="button" id="brandHome" tabindex="0" title="Back to cover">
     <span class="kanji">花見</span>
-    <span><b>Bloom</b><small>Hanami Education</small></span>
+    <span><b>Bloom</b><small data-lang="en">Hanami Education</small><small data-lang="ja" hidden>花見エデュケーション</small></span>
   </div>
   <div class="bar-right">
     <span class="counter" id="counter"></span>
-    <a class="barlink kids" href="bloomkids.html">✿ Kids Book</a>
+    <a class="barlink lang" id="langBtn" href="#ja-cover">日本語</a>
+    <a class="barlink kids" href="bloomkids.html"><span data-lang="en">✿ Kids Book</span><span data-lang="ja" hidden>✿ キッズ絵本</span></a>
     <a class="barlink solid" href="index.html">hanamieducation.com</a>
   </div>
 </header>
 
 <div id="scrim"></div>
 <nav class="toc" id="toc" aria-label="Contents">
-  <div class="tochead">Contents</div>
-  <div class="tocsub">花見 · Where learning blooms</div>
-  <ol>
+  <div class="tochead"><span data-lang="en">Contents</span><span data-lang="ja" hidden>もくじ</span></div>
+  <div class="tocsub"><span data-lang="en">花見 · Where learning blooms</span><span data-lang="ja" hidden>花見 · 学びが花開く場所</span></div>
+  <ol data-lang="en">
     <li><a href="#cover" class="toc-link" data-idx="0">Cover</a></li>
     <li><a href="#a-note-to-you" data-idx="1" class="toc-link">A Note to You</a></li><li><a href="#chapter-1" data-idx="2" class="toc-link">1 &middot; Why Bloom?</a></li><li><a href="#chapter-2" data-idx="3" class="toc-link">2 &middot; How Your Brain Grows</a></li><li><a href="#chapter-3" data-idx="4" class="toc-link">3 &middot; Believe You Can Bloom</a></li><li><a href="#chapter-4" data-idx="5" class="toc-link">4 &middot; Strong Roots</a></li><li><a href="#chapter-5" data-idx="6" class="toc-link">5 &middot; Growing Every Day</a></li><li><a href="#chapter-6" data-idx="7" class="toc-link">6 &middot; A Garden You Can See</a></li><li><a href="#you-are-blooming" data-idx="8" class="toc-link">You Are Blooming</a></li><li><a href="#garden-tools" data-idx="9" class="toc-link">Garden Tools</a></li>
   </ol>
-  <div class="tocextra">
+  <ol data-lang="ja" lang="ja" hidden><li><a href="#ja-cover" class="toc-link">表紙</a></li><li><a href="#ja-a-note-to-you" class="toc-link">あなたへのメッセージ</a></li><li><a href="#ja-chapter-1" class="toc-link">1 · なぜ咲くの？</a></li><li><a href="#ja-chapter-2" class="toc-link">2 · 脳はどうやって育つの？</a></li><li><a href="#ja-chapter-3" class="toc-link">3 · 咲けると信じよう</a></li><li><a href="#ja-chapter-4" class="toc-link">4 · じょうぶな根っこ</a></li><li><a href="#ja-chapter-5" class="toc-link">5 · 毎日すこしずつ育つ</a></li><li><a href="#ja-chapter-6" class="toc-link">6 · 目に見えるお庭</a></li><li><a href="#ja-you-are-blooming" class="toc-link">あなたは咲いている</a></li><li><a href="#ja-garden-tools" class="toc-link">お庭の道具</a></li></ol>
+
+  <div class="tocextra" data-lang="en">
+    <a href="#ja-cover" lang="ja">🌐 日本語版 (Japanese)</a>
     <a href="bloomkids.html">✿ Kids Picture Book</a>
     <a href="index.html">← hanamieducation.com</a>
   </div>
-  <div class="tocfoot">A Hanami Education book · written for you.</div>
+  <div class="tocextra" data-lang="ja" lang="ja" hidden>
+    <a href="#cover" lang="en">🌐 English edition</a>
+    <a href="bloomkids.html">✿ キッズ絵本（英語）</a>
+    <a href="index.html">← hanamieducation.com</a>
+  </div>
+  <div class="tocfoot"><span data-lang="en">A Hanami Education book · written for you.</span><span data-lang="ja" hidden>花見エデュケーションの本 · あなたのために。</span></div>
 </nav>
 
 <main>
-  <section class="page" id="cover">
-    <div class="petals" id="petals"></div>
+  <section class="page cover" id="cover" lang="en">
+    <div class="petals"></div>
     <div class="kanji-big">花 見</div>
     <div class="florets">❀ ❀ ❀</div>
     <h1>Bloom</h1>
     <p class="subtitle">How to Grow Into a Learner Who Never Stops</p>
     <p class="tagline">A Hanami Education book — written for you.</p>
     <div class="cover-links">
-      <button class="begin" id="beginBtn">Begin reading →</button>
+      <button class="begin" data-go="a-note-to-you">Begin reading →</button>
+      <a class="clink" href="#ja-cover" lang="ja">🌐 日本語</a>
       <a class="clink" href="bloomkids.html">✿ Kids Picture Book</a>
     </div>
     <div class="credit">花見 · Where learning blooms · <a href="index.html">hanamieducation.com</a></div>
   </section>
 
-  <article class="page" id="a-note-to-you" data-idx="1">
+  <article class="page" lang="en" id="a-note-to-you" data-idx="1">
      <p class="kicker">Welcome</p>
      <h1>A Note to You<br><span class='sub'>The Tree and the Blossom</span></h1>
      <p>Have you ever seen a cherry tree in spring? Its branches fill up with soft pink flowers. People stop to look. They sit under the tree and smile. In Japan, this is called <em>hanami</em> — "flower viewing." It is one of the most beautiful sights in the world.</p><p>But here is something most people forget. <strong>A cherry tree does not bloom in one day.</strong></p><p>All winter, the tree looks bare and brown. You might think nothing is happening. But under the bark, deep in the roots, the tree is working. It is getting ready. Then, when spring comes, it bursts into bloom — all at once, like magic. It was not magic, though. It was time, and care, and slow growing that no one could see.</p><p><strong>You are like that tree.</strong></p><p>Right now, you are learning and growing, even on the days it feels like nothing is happening. Every new thing you learn is a tiny bud forming. And one day, you will bloom in ways that will surprise you.</p><p>This little book is about how to bloom. Not by accident — but on purpose. It will show you why learning is worth it, how your brain grows, and how to help yourself become someone who loves to learn for your whole life.</p><p>Let's begin.</p>
    </article>
-<article class="page" id="chapter-1" data-idx="2">
+<article class="page" lang="en" id="chapter-1" data-idx="2">
      <p class="kicker">Chapter 1</p>
      <h1>Chapter 1<br><span class='sub'>Why Bloom?</span></h1>
      <p>Let's start with a fair question. <strong>Why should you bother to learn at all?</strong></p><p>Lots of people give boring answers. "Because it's on the test." "Because you'll need it later." "Because I said so." None of those make you <em>want</em> to learn. They make learning feel like a chore.</p><p>Here is a better answer. <strong>Learning makes you free.</strong></p><h3>Every skill is a key</h3><p>Think about a baby. A baby can't walk. It can't talk. It can't even feed itself. It needs help with everything.</p><p>Now think about you. You can walk anywhere you like. You can talk to anyone. You can read, count, run, and do a hundred things a baby can't. What changed? <strong>You learned skills.</strong> And each skill set you free a little more.</p><ul><li>When you learned to read, you didn't need anyone to tell you what a sign said.</li><li>When you learn to cook, you can make your own food.</li><li>When you learn to ride a bike, you can go places on your own.</li></ul><p>Every skill is like a key. Each one opens a door. Behind every door is more freedom — more things you can do all by yourself. <strong>The more you learn, the freer you become.</strong></p><h3>One flower makes more flowers</h3><p>Here is something cool about learning. It builds on itself.</p><p>When you learn something new and get it right, you feel proud. That good feeling gives you the courage to try the next thing. And when you do <em>that</em>, you feel even braver. So you try something harder. Around and around it goes.</p><blockquote>learn something → feel proud → want to try more → learn even more</blockquote><p>This is why some people seem to "just love learning." They are not magic. They simply got one good start — one happy "I did it!" — and it grew from there, like one flower opening, then another, then a whole branch full.</p><p><strong>This means your first win matters most.</strong> If you have never felt that "I did it!" feeling, your job is to get just one. Pick something small. Try it. Get it. That little bloom will make you want the next one. And soon you won't be able to stop.</p><p><strong>Remember: every skill makes you more free — and the more you learn, the easier learning gets.</strong></p>
    </article>
-<article class="page" id="chapter-2" data-idx="3">
+<article class="page" lang="en" id="chapter-2" data-idx="3">
      <p class="kicker">Chapter 2</p>
      <h1>Chapter 2<br><span class='sub'>How Your Brain Grows</span></h1>
      <p>Learning is not just an idea. It is something real that happens inside your head. When you learn, your brain actually <em>changes</em>. Tiny paths grow between the cells in your brain — like little roots spreading through soil.</p><p>When you understand this, you can help your brain grow faster. Here's how.</p><h3>Use more than one sense</h3><p>The more parts of your brain you use at once, the stronger the path becomes. So don't just read about something. <strong>See it, say it, and do it.</strong></p><p>If you want to learn a new word, you could:</p><ul><li><strong>See</strong> it written down.</li><li><strong>Say</strong> it out loud.</li><li><strong>Do</strong> something with it — write it, draw it, or use it in a sentence.</li></ul><p>Now your brain has three paths to that word instead of one. It's much harder to forget.</p><h3>Come back to it again and again</h3><p>Have you ever learned something and then forgotten it a week later? That's normal. Your brain clears out things it thinks you don't need. The way to keep something is to <strong>use it again and again.</strong></p><p>This is like watering a plant. Water it once and walk away, and it dies. Water it a little bit, again and again, and it grows. So go back to what you learned — the next day, the next week, the next month. Each time, the path gets stronger.</p><p><strong>Plan to come back, or plan to forget.</strong></p><h3>Practice makes a path</h3><p>Imagine walking across a grassy field. The first time, you leave almost no mark. But walk the same way every day, and soon you wear a clear little trail. After that, your feet just follow it without thinking.</p><p>Your brain works the same way. When you practice something over and over, it becomes easy and automatic — like a trail your brain follows without trying. <strong>Whatever you practice, you become.</strong></p><h3>Start early</h3><p>Some things are easier to learn when you're young, like a new language. You don't have to be perfect right away. Just being around something — hearing it, seeing it, playing with it — plants seeds in your brain. Later, when you really learn it, those seeds are ready to grow.</p><p><strong>Remember: see it, say it, do it — then come back to it again and again until it becomes easy.</strong></p>
    </article>
-<article class="page" id="chapter-3" data-idx="4">
+<article class="page" lang="en" id="chapter-3" data-idx="4">
      <p class="kicker">Chapter 3</p>
      <h1>Chapter 3<br><span class='sub'>Believe You Can Bloom</span></h1>
      <p>Here is one of the most important secrets in this whole book. <strong>The story you tell yourself matters.</strong></p><p>Two students can sit in the same class and learn the same lesson. One walks out thinking, "I can do this." The other walks out thinking, "I'm just not good at this." Often, the difference is not how smart they are. It's the story in their head.</p><p>A flower that believes it can't bloom won't even try. Let's make sure your story helps you grow.</p><h3>Be kind to the voice in your head</h3><p>We all have a little voice inside. Sometimes it's mean. It says things like, "This is too hard," or "Everyone is better than me."</p><p>You don't have to believe that voice. You can talk back to it. Try saying: "This is hard <em>right now</em>, but I'm getting better." Writing down what you tried and what got easier can help you see how far you've come.</p><h3>Mistakes are not the end</h3><p>Most people think a mistake means they failed. <strong>That's not true. A mistake is just a clue.</strong> It tells you what to fix next time.</p><p>Every expert you've ever seen made tons of mistakes on the way. The mistakes were part of how they got good. So don't try to be perfect. Try to get a little better than yesterday.</p><h3>How growing really works</h3><p>Real growing is slow, and that's okay. Here are some things to remember:</p><ul><li><strong>Start small.</strong> Get the basics right first. Big things are just small things put together.</li><li><strong>Slow, then smooth, then fast.</strong> When you start, you'll be slow and clumsy. That's normal. With practice, it gets smooth. Then it gets fast. You can't rush this — slow comes first.</li><li><strong>Try, miss, try again.</strong> Growing isn't getting it right the first time. It's trying, missing, fixing, and trying again.</li><li><strong>Enjoy the journey.</strong> If you only care about the finish line, every step feels like pain. But if you find something fun in the practice itself, you'll want to keep going.</li><li><strong>A little every day beats a lot once in a while.</strong> Ten minutes a day is better than three hours one time. Small and steady wins.</li></ul><h3>See others bloom</h3><p>It helps to see someone else do the thing you want to do — especially someone a bit like you. It makes you think, "If they can, maybe I can too." Watch them. Ask them how they did it. A friend who learned it last month can be the best teacher of all.</p><h3>Skip the scary question</h3><p>There's one question that stops a lot of people: <em>"Can I, or can't I?"</em> The moment you stop to ask it, doubt creeps in.</p><p>The trick is to not even ask. And the way to do that is to <strong>win a few easy things first.</strong> When you've succeeded at lots of small stuff, you stop wondering if you can. You just go for it.</p><p><strong>Remember: be kind to yourself, treat mistakes as clues, grow a little every day, and start with easy wins.</strong></p>
    </article>
-<article class="page" id="chapter-4" data-idx="5">
+<article class="page" lang="en" id="chapter-4" data-idx="5">
      <p class="kicker">Chapter 4</p>
      <h1>Chapter 4<br><span class='sub'>Strong Roots</span></h1>
      <p>A tall tree needs deep roots. If the roots are weak, the tree falls over in the first storm. Learning is the same. Before you can grow tall, you need a strong base.</p><h3>Get the basics really solid</h3><p>When learning feels hard, it's often because something underneath is shaky. A kid who struggles with big math problems usually just needs to get the small ones rock-solid first.</p><p>So spend extra time on the basics. Make them so easy that you don't even have to think about them. Then, when you learn harder things, your brain has space to focus on what's new. <strong>Strong basics make everything else easier.</strong></p><h3>Plant seeds early</h3><p>You don't have to wait for a lesson to start learning something. You can sprinkle it into your day. Sing it in a song. Play with it. Notice it around you. By the time you "officially" learn it, it already feels familiar — like a seed that was planted long ago and is ready to grow.</p><h3>Take care of yourself first</h3><p>Here's something simple but true. <strong>You can't bloom if you're not okay.</strong></p><p>If you are hungry, tired, or scared, it's very hard to learn. If you feel left out or alone, your mind is busy with that instead of learning. So the first step to growing is making sure you feel safe, rested, and like you belong. Only then can your brain relax and grow.</p><p>If learning feels impossible some days, ask yourself: am I hungry? Tired? Upset? Sometimes you need to fix that first.</p><h3>Getting better gives you more freedom</h3><p>The best reason to get good at something is that it lets you do more. A stronger reader gets to read better books. A stronger swimmer gets to swim in deeper water. The skill is its own reward. <strong>Getting better means getting freer.</strong></p><p><strong>Remember: build strong basics, plant seeds early, take care of yourself first, and enjoy the freedom that growing brings.</strong></p>
    </article>
-<article class="page" id="chapter-5" data-idx="6">
+<article class="page" lang="en" id="chapter-5" data-idx="6">
      <p class="kicker">Chapter 5</p>
      <h1>Chapter 5<br><span class='sub'>Growing Every Day</span></h1>
      <p>Now let's talk about what to actually <em>do</em>, day by day, to keep growing.</p><h3>Play is the best learning</h3><p>Think about a musician. When they first start, they can only play simple notes. It's slow. But after lots of practice, something amazing happens — they can play freely, make up their own music, and have fun with it. The more they learn, the more fun they get to have.</p><p>Learning is just like that. <strong>The better you get, the more fun it becomes.</strong> Play is not a break from learning. Play <em>is</em> learning, at its very best. So the hard practice now is what unlocks the fun later.</p><h3>Focus, then play</h3><p>Good learning has a rhythm, like breathing in and out:</p><ul><li><strong>Focus.</strong> Pick one thing and practice it carefully until it gets smooth.</li><li><strong>Play.</strong> Then let go, mix things up, and have fun using what you learned.</li></ul><p>Focus to get good. Play to make it yours. Then pick the next thing and do it again.</p><h3>Do it with help, then do it alone</h3><p>When you learn something new, it usually goes in three steps:</p><ol><li>Someone shows you how.</li><li>You do it together with them.</li><li>You do it all by yourself.</li></ol><p>The goal is to need help less and less. But it's also fine to ask for help again if you get stuck. Going back for a little help is not failing — it's smart.</p><h3>Use helpers</h3><p>You don't have to keep everything in your head. Use:</p><ul><li><strong>Checklists</strong> that show the steps.</li><li><strong>Examples</strong> of good work to copy from.</li><li><strong>Guides</strong> that walk you through it.</li></ul><p>These let you work on your own without getting stuck. That's real independence.</p><h3>Mix it up</h3><p>Doing the same thing for too long makes your brain sleepy. Keep it fresh:</p><ul><li>Talk about it with a partner.</li><li>Work on a project with a group.</li><li>Keep a "wonder wall" — a place to write down questions you're curious about.</li></ul><h3>Teach a friend</h3><p>Here's a magic trick. <strong>The best way to learn something is to teach it.</strong> When you explain something to a friend, you understand it better yourself. And checking your own work, or a friend's work, helps you see what "good" looks like.</p><p><strong>Remember: practice with focus, then play; ask for help when you need it; mix things up; and teach others to learn even more.</strong></p>
    </article>
-<article class="page" id="chapter-6" data-idx="7">
+<article class="page" lang="en" id="chapter-6" data-idx="7">
      <p class="kicker">Chapter 6</p>
      <h1>Chapter 6<br><span class='sub'>A Garden You Can See</span></h1>
      <p>A good garden is easy to enjoy because you can <em>see</em> everything growing. Your learning space can work the same way. When the right things are around you, they help you grow without anyone having to remind you.</p><h3>Pictures help you remember</h3><p>Some skills have lots of steps, and steps are easy to forget. A simple row of little pictures — one for each step — can help you remember the order. After a while, you won't even need the pictures. The steps will just be in your head. <strong>A picture is easier to remember than a list of words.</strong></p><h3>A board for your day</h3><p>It helps to see your day laid out — what you're doing and when. A simple chart on the wall means you don't have to keep asking "What's next?" You can just look and know.</p><h3>Charts that show you grow</h3><p>It feels great to see how far you've come. So keep charts:</p><ul><li>Books you've read.</li><li>Skills you've mastered.</li><li>Questions you've wondered about.</li></ul><p>Watching the chart fill up is like watching a plant grow taller. It makes you want to keep going.</p><h3>Start with a question</h3><p>The best way to begin learning something new is to get curious first. A big interesting question — or a cool picture or object — makes you <em>want</em> to find out more. Then, as you learn, you can fill the space with your own work and watch your understanding bloom.</p><p><strong>Remember: use pictures for steps, charts to see your growth, and a curious question to begin.</strong></p>
    </article>
-<article class="page" id="you-are-blooming" data-idx="8">
+<article class="page" lang="en" id="you-are-blooming" data-idx="8">
      <p class="kicker">Closing</p>
      <h1>You Are Blooming<br><span class='sub'>The End (and the Beginning)</span></h1>
      <p>We started with a cherry tree in spring. Remember? It doesn't bloom in a day. It grows slowly, all through the cold winter, getting ready. Then, when the time is right, it bursts into flower.</p><p>You are doing the same thing right now.</p><p>Let's remember the most important ideas:</p><ul><li><strong>Learning makes you free.</strong> Every skill is a key that opens a new door.</li><li><strong>Your brain grows like a garden.</strong> Use many senses, come back often, and practice until it's easy.</li><li><strong>Believe you can bloom.</strong> Be kind to yourself, treat mistakes as clues, and grow a little every day.</li><li><strong>Build strong roots.</strong> Get the basics solid and take care of yourself first.</li><li><strong>Grow every day.</strong> Practice, play, ask for help, and teach others.</li><li><strong>Make your growth easy to see.</strong> Use pictures, charts, and big curious questions.</li></ul><p>Here is the biggest secret of all. The goal of this book is <em>not</em> to make you learn one thing. The goal is to help you <strong>love learning</strong> — so that for the rest of your life, you can teach yourself anything you want.</p><p>A student who loves to learn becomes a grown-up who never stops growing. That is the most wonderful thing you can give yourself.</p><p>So be patient. Keep going, even on the slow days. Water your roots a little every day. And one spring, when you least expect it, you will look back and see how far you've bloomed.</p><p>We can't wait to see it.</p><p class="epigraph"><em>— Your friends at Hanami Education</em></p>
    </article>
-<article class="page" id="garden-tools" data-idx="9">
+<article class="page" lang="en" id="garden-tools" data-idx="9">
      <p class="kicker">Resources</p>
      <h1>Garden Tools</h1>
-     <p class="brandline">花見 · Hanami Education · <em>Where learning blooms</em></p><p>A few Hanami Education tools to help you keep growing — and they always send you back to real books, paper, and life. (Some are great to explore with a grown-up.)</p><p><strong>Our Books</strong> — start here, and share them with someone you love.</p><ul><li><a href="https://hanamieducation.com/bloom.html" target="_blank" rel="noopener">Bloom</a> — this book: how to grow into a learner who never stops.</li><li><a href="https://hanamieducation.com/bloomkids.html" target="_blank" rel="noopener">Bloom Kids Picture Book</a> — the picture-book version for younger readers.</li></ul><p><strong>To Read</strong> — a little every day is sunlight for your brain.</p><ul><li><a href="https://hanamieducation.com/reading-atlas.html" target="_blank" rel="noopener">The Reading Atlas</a> — 200 great series for grades 1–5.</li><li><a href="https://hanamieducation.com/checklisttool.html" target="_blank" rel="noopener">Reading Checklist Aid</a> — tips and timers for a reading habit.</li><li><a href="https://hanamieducation.com/reading-checklist.html" target="_blank" rel="noopener">Reading Checklist Guide</a> — what to do before, during, and after reading.</li></ul><p><strong>To Write</strong> — the hardest part is starting, so begin with a spark.</p><ul><li><a href="https://hanamieducation.com/story-generator.html" target="_blank" rel="noopener">The Story Spinner</a> — spin up a story idea to write.</li><li><a href="https://hanamieducation.com/promptgenerator.html" target="_blank" rel="noopener">Prompt-o-Matic</a> — a fresh writing prompt for your year.</li><li><a href="https://hanamieducation.com/Writing-Guides.html" target="_blank" rel="noopener">Writing Guides</a> — examples, tips, and grammar in one place.</li><li><a href="https://hanamieducation.com/mylife.html" target="_blank" rel="noopener">The Story of Me</a> — a journal about you, one prompt at a time.</li></ul><p><strong>To Practice</strong> — a little pencil-and-paper practice keeps skills strong.</p><ul><li><a href="https://hanamieducation.com/worksheets.html" target="_blank" rel="noopener">Maths &amp; Grammar Worksheets</a> — printable practice for Reception to Year 6, with answer keys.</li></ul><p><strong>To Make and Build</strong> — pick an idea you love, then go one step at a time.</p><ul><li><a href="https://hanamieducation.com/project-guide.html" target="_blank" rel="noopener">The Project Picker</a> — tap an interest for a step-by-step project.</li><li><a href="https://hanamieducation.com/projectmaker.html" target="_blank" rel="noopener">The Project Maker</a> — turn your idea into a real plan.</li></ul><p><strong>To Grow Skills</strong> — choose one thing and practice without fear.</p><ul><li><a href="https://hanamieducation.com/goalsetter.html" target="_blank" rel="noopener">Goal Setter</a> — find the skill worth working on.</li><li><a href="https://hanamieducation.com/firststepsports.html" target="_blank" rel="noopener">First Step Sports</a> — try a new sport, tear-free.</li><li><a href="https://hanamieducation.com/chorequest.html" target="_blank" rel="noopener">Chore Quest</a> — earn stars for helping at home, with jobs that grow as you do.</li><li><a href="https://hanamieducation.com/wouldyourather.html" target="_blank" rel="noopener">Would You Rather</a> — a fun thinking-and-debating game.</li></ul><p><strong>To Make Friends and Talk</strong> — getting along is a skill too.</p><ul><li><a href="https://hanamieducation.com/friendship.html" target="_blank" rel="noopener">Making Friends and Resolving Conflict 101</a> — make friends and solve problems calmly.</li><li><a href="https://hanamieducation.com/conversation.html" target="_blank" rel="noopener">Conversation Starters</a> — questions that spark real talk.</li></ul><h3>A Day That Helps You Grow</h3><p>Here's an example of a balanced day, with time to focus and time to play.</p><div class="table-wrap"><table><thead><tr><th>Time</th><th>What You Do</th><th>How You Do It</th></tr></thead><tbody><tr><td>Morning</td><td>Morning Meeting</td><td>Talk together as a group</td></tr><tr><td>Mid-Morning</td><td>Skill Practice</td><td>Work with a partner</td></tr><tr><td>Late Morning</td><td>Group Project</td><td>Work as a team</td></tr><tr><td>Midday</td><td>Your Own Task</td><td>Your choice</td></tr><tr><td>Afternoon</td><td>Think and Plan</td><td>Write in a journal</td></tr><tr><td>End of Day</td><td>Share and Check</td><td>Help a friend</td></tr></tbody></table></div><h3>Quick Reminders</h3><p><strong>Chapter 1 — Why Bloom?</strong></p><p>Every skill is a key that makes you free. One win leads to the next. Get your first win!</p><p><strong>Chapter 2 — How Your Brain Grows</strong></p><p>See it, say it, do it. Come back to it often. Practice until it's easy.</p><p><strong>Chapter 3 — Believe You Can Bloom</strong></p><p>Be kind to yourself. Mistakes are clues. Grow a little every day. Start with easy wins.</p><p><strong>Chapter 4 — Strong Roots</strong></p><p>Get the basics solid. Plant seeds early. Take care of yourself first.</p><p><strong>Chapter 5 — Growing Every Day</strong></p><p>Focus, then play. Ask for help. Mix it up. Teach a friend.</p><p><strong>Chapter 6 — A Garden You Can See</strong></p><p>Use pictures for steps. Keep charts of your growth. Start with a curious question.</p><h3>Our Promise</h3><p>We believe the strongest learners grow with real books, pencils, and paper — not screens. Every tool here is built to send you back to the real world: holding a book, writing by hand, and building habits that last because they are grounded in real life.</p><p class="epigraph"><em>Bloom is a Hanami Education book.</em></p><p class="epigraph"><em>花見 · Where learning blooms · <a href="index.html">hanamieducation.com</a></em></p>
+     <p class="brandline">花見 · Hanami Education · <em>Where learning blooms</em></p><p>A few Hanami Education tools to help you keep growing — and they always send you back to real books, paper, and life. (Some are great to explore with a grown-up.)</p><p><strong>Our Books</strong> — start here, and share them with someone you love.</p><ul><li><a href="#cover">Bloom</a> — this book, in English: how to grow into a learner who never stops.</li><li><a href="#ja-cover" lang="ja">Bloom 日本語版</a> — this book in Japanese: 学びつづける人に育つために.</li></ul><p><strong>To Read</strong> — a little every day is sunlight for your brain.</p><ul><li><a href="https://hanamieducation.com/reading-atlas.html" target="_blank" rel="noopener">The Reading Atlas</a> — 200 great series for grades 1–5.</li><li><a href="https://hanamieducation.com/checklisttool.html" target="_blank" rel="noopener">Reading Checklist Aid</a> — tips and timers for a reading habit.</li><li><a href="https://hanamieducation.com/reading-checklist.html" target="_blank" rel="noopener">Reading Checklist Guide</a> — what to do before, during, and after reading.</li></ul><p><strong>To Write</strong> — the hardest part is starting, so begin with a spark.</p><ul><li><a href="https://hanamieducation.com/story-generator.html" target="_blank" rel="noopener">The Story Spinner</a> — spin up a story idea to write.</li><li><a href="https://hanamieducation.com/promptgenerator.html" target="_blank" rel="noopener">Prompt-o-Matic</a> — a fresh writing prompt for your year.</li><li><a href="https://hanamieducation.com/Writing-Guides.html" target="_blank" rel="noopener">Writing Guides</a> — examples, tips, and grammar in one place.</li><li><a href="https://hanamieducation.com/mylife.html" target="_blank" rel="noopener">The Story of Me</a> — a journal about you, one prompt at a time.</li></ul><p><strong>To Practice</strong> — a little pencil-and-paper practice keeps skills strong.</p><ul><li><a href="https://hanamieducation.com/worksheets.html" target="_blank" rel="noopener">Maths &amp; Grammar Worksheets</a> — printable practice for Reception to Year 6, with answer keys.</li></ul><p><strong>To Make and Build</strong> — pick an idea you love, then go one step at a time.</p><ul><li><a href="https://hanamieducation.com/project-guide.html" target="_blank" rel="noopener">The Project Picker</a> — tap an interest for a step-by-step project.</li><li><a href="https://hanamieducation.com/projectmaker.html" target="_blank" rel="noopener">The Project Maker</a> — turn your idea into a real plan.</li></ul><p><strong>To Grow Skills</strong> — choose one thing and practice without fear.</p><ul><li><a href="https://hanamieducation.com/goalsetter.html" target="_blank" rel="noopener">Goal Setter</a> — find the skill worth working on.</li><li><a href="https://hanamieducation.com/firststepsports.html" target="_blank" rel="noopener">First Step Sports</a> — try a new sport, tear-free.</li><li><a href="https://hanamieducation.com/chorequest.html" target="_blank" rel="noopener">Chore Quest</a> — earn stars for helping at home, with jobs that grow as you do.</li><li><a href="https://hanamieducation.com/wouldyourather.html" target="_blank" rel="noopener">Would You Rather</a> — a fun thinking-and-debating game.</li></ul><p><strong>To Make Friends and Talk</strong> — getting along is a skill too.</p><ul><li><a href="https://hanamieducation.com/friendship.html" target="_blank" rel="noopener">Making Friends and Resolving Conflict 101</a> — make friends and solve problems calmly.</li><li><a href="https://hanamieducation.com/conversation.html" target="_blank" rel="noopener">Conversation Starters</a> — questions that spark real talk.</li></ul><h3>A Day That Helps You Grow</h3><p>Here's an example of a balanced day, with time to focus and time to play.</p><div class="table-wrap"><table><thead><tr><th>Time</th><th>What You Do</th><th>How You Do It</th></tr></thead><tbody><tr><td>Morning</td><td>Morning Meeting</td><td>Talk together as a group</td></tr><tr><td>Mid-Morning</td><td>Skill Practice</td><td>Work with a partner</td></tr><tr><td>Late Morning</td><td>Group Project</td><td>Work as a team</td></tr><tr><td>Midday</td><td>Your Own Task</td><td>Your choice</td></tr><tr><td>Afternoon</td><td>Think and Plan</td><td>Write in a journal</td></tr><tr><td>End of Day</td><td>Share and Check</td><td>Help a friend</td></tr></tbody></table></div><h3>Quick Reminders</h3><p><strong>Chapter 1 — Why Bloom?</strong></p><p>Every skill is a key that makes you free. One win leads to the next. Get your first win!</p><p><strong>Chapter 2 — How Your Brain Grows</strong></p><p>See it, say it, do it. Come back to it often. Practice until it's easy.</p><p><strong>Chapter 3 — Believe You Can Bloom</strong></p><p>Be kind to yourself. Mistakes are clues. Grow a little every day. Start with easy wins.</p><p><strong>Chapter 4 — Strong Roots</strong></p><p>Get the basics solid. Plant seeds early. Take care of yourself first.</p><p><strong>Chapter 5 — Growing Every Day</strong></p><p>Focus, then play. Ask for help. Mix it up. Teach a friend.</p><p><strong>Chapter 6 — A Garden You Can See</strong></p><p>Use pictures for steps. Keep charts of your growth. Start with a curious question.</p><h3>Our Promise</h3><p>We believe the strongest learners grow with real books, pencils, and paper — not screens. Every tool here is built to send you back to the real world: holding a book, writing by hand, and building habits that last because they are grounded in real life.</p><p class="epigraph"><em>Bloom is a Hanami Education book.</em></p><p class="epigraph"><em>花見 · Where learning blooms · <a href="index.html">hanamieducation.com</a></em></p>
+   </article>
+
+  <section class="page cover" id="ja-cover" lang="ja">
+    <div class="petals"></div>
+    <div class="kanji-big">花 見</div>
+    <div class="florets">❀ ❀ ❀</div>
+    <h1>Bloom</h1>
+    <p class="subtitle">学びつづける人に育つために</p>
+    <p class="tagline">花見エデュケーションの本 — あなたのために書きました。</p>
+    <div class="cover-links">
+      <button class="begin" data-go="ja-a-note-to-you">読みはじめる →</button>
+      <a class="clink" href="#cover" lang="en">🌐 English</a>
+      <a class="clink" href="bloomkids.html">✿ キッズ絵本（英語）</a>
+    </div>
+    <div class="credit">花見 · 学びが花開く場所 · <a href="index.html">hanamieducation.com</a></div>
+  </section>
+
+  <article class="page" id="ja-a-note-to-you" lang="ja">
+     <p class="kicker">はじめに</p>
+     <h1>あなたへのメッセージ<br><span class='sub'>木と花</span></h1>
+     <p>春の桜の木を見たことがありますか？　枝いっぱいに、やわらかなピンクの花が咲きます。人々は足を止めて見上げ、木の下に座ってほほえみます。日本では、これを「<em>花見</em>」と呼びます。世界でいちばん美しいながめのひとつです。</p><p>でも、多くの人が忘れていることがあります。<strong>桜の木は、一日で咲くわけではありません。</strong></p><p>冬のあいだ、木は茶色くて、はだかのように見えます。何も起きていないように思えるかもしれません。でも、木の皮の下、根っこの奥深くで、木はずっと働いています。準備をしているのです。そして春が来ると、まるで魔法のように、いっせいに花を咲かせます。でも、それは魔法ではありません。時間と、手入れと、だれにも見えないゆっくりとした成長のおかげなのです。</p><p><strong>あなたは、その木と同じです。</strong></p><p>今、あなたは学び、育っています。何も変わっていないように感じる日でさえも。新しく覚えたことのひとつひとつが、小さなつぼみです。そしていつか、自分でもおどろくような花を咲かせるでしょう。</p><p>この小さな本は、花を咲かせる方法についての本です。たまたまではなく、自分の力で。学ぶことにはなぜ価値があるのか、脳はどうやって育つのか、そして一生学ぶことが好きな人になるにはどうすればいいのかを、いっしょに見ていきます。</p><p>さあ、はじめましょう。</p>
+   </article>
+<article class="page" id="ja-chapter-1" lang="ja">
+     <p class="kicker">第1章</p>
+     <h1>第1章<br><span class='sub'>なぜ咲くの？</span></h1>
+     <p>まず、もっともな質問から始めましょう。<strong>そもそも、どうして学ばなきゃいけないの？</strong></p><p>多くの人は、つまらない答えを言います。「テストに出るから」「あとで必要になるから」「いいからやりなさい」。どれも、学びたい気持ちにはなりません。学ぶことが、ただの「やらなきゃいけないこと」に感じてしまいます。</p><p>もっといい答えがあります。<strong>学ぶと、自由になれるのです。</strong></p><h3>スキルはひとつひとつがカギ</h3><p>赤ちゃんのことを考えてみてください。赤ちゃんは歩けません。話せません。自分でごはんを食べることもできません。何をするにも助けが必要です。</p><p>では、あなたはどうでしょう。好きなところへ歩いて行けます。だれとでも話せます。読んだり、数えたり、走ったり、赤ちゃんにはできないことを百個もできます。何が変わったのでしょう？　<strong>あなたはスキルを身につけたのです。</strong>そしてスキルをひとつ覚えるたびに、少しずつ自由になってきました。</p><ul><li>字が読めるようになって、看板に何が書いてあるか、人に聞かなくてもよくなりました。</li><li>料理ができるようになると、自分でごはんを作れます。</li><li>自転車に乗れるようになると、自分の力で出かけられます。</li></ul><p>スキルはひとつひとつがカギのようなものです。カギはそれぞれドアを開けます。ドアの向こうには、もっと大きな自由があります。自分ひとりでできることが増えていくのです。<strong>学べば学ぶほど、あなたは自由になります。</strong></p><h3>一輪の花が、次の花を咲かせる</h3><p>学ぶことには、すてきなひみつがあります。どんどん積み重なっていくのです。</p><p>新しいことを覚えてうまくできると、ほこらしい気持ちになります。そのうれしい気持ちが、次のことに挑戦する勇気をくれます。そしてそれもできると、もっと勇気がわきます。だから、もっとむずかしいことにも挑戦します。そうやって、ぐるぐるとつづいていくのです。</p><blockquote>学ぶ → ほこらしくなる → もっとやりたくなる → もっと学ぶ</blockquote><p>だから、「学ぶのが大好き」に見える人がいるのです。その人たちは魔法使いではありません。ただ、最初に「できた！」といううれしい経験をひとつしただけ。そこから、一輪の花が開き、また一輪、そして枝いっぱいに咲いていったのです。</p><p><strong>つまり、最初の「できた！」がいちばん大切です。</strong>もし「できた！」という気持ちをまだ味わったことがないなら、まずはひとつ手に入れましょう。小さなことを選んで、やってみて、できるようになる。その小さな花が、次の花を咲かせたい気持ちにしてくれます。そして気づけば、止まらなくなっているはずです。</p><p><strong>おぼえておこう：スキルはひとつ覚えるたびにあなたを自由にする。そして、学べば学ぶほど、学ぶことは楽になる。</strong></p>
+   </article>
+<article class="page" id="ja-chapter-2" lang="ja">
+     <p class="kicker">第2章</p>
+     <h1>第2章<br><span class='sub'>脳はどうやって育つの？</span></h1>
+     <p>学ぶことは、ただの考えではありません。頭の中で本当に起きていることです。何かを学ぶと、脳は実際に<em>変わります</em>。脳の細胞と細胞のあいだに、小さな道ができるのです。土の中に広がっていく小さな根っこのように。</p><p>このことがわかると、脳がもっと速く育つように手助けできます。その方法を紹介しましょう。</p><h3>いくつもの感覚を使おう</h3><p>脳のいろいろな部分を同時に使うほど、道は太く強くなります。だから、ただ読むだけでなく、<strong>見て、声に出して、やってみましょう。</strong></p><p>新しい言葉を覚えたいなら、こんなふうにできます：</p><ul><li><strong>見る</strong>：書いてある字を見る。</li><li><strong>言う</strong>：声に出して言ってみる。</li><li><strong>やる</strong>：書いたり、絵にしたり、文の中で使ったりする。</li></ul><p>これで、その言葉への道が一本ではなく三本になりました。ずっと忘れにくくなります。</p><h3>何度も何度も戻ってこよう</h3><p>何かを覚えたのに、一週間後には忘れていたことはありませんか？　それはふつうのことです。脳は、いらないと思ったことを片づけてしまうのです。覚えておくためには、<strong>何度もくり返し使うこと</strong>が大切です。</p><p>これは植物に水をやるのと同じです。一回だけ水をやってほうっておいたら、かれてしまいます。少しずつ、何度も水をやれば育ちます。だから、学んだことに戻ってきましょう。次の日、次の週、次の月に。そのたびに、道は強くなります。</p><p><strong>戻ってくる計画を立てよう。立てないなら、忘れる計画を立てているのと同じです。</strong></p><h3>練習が道をつくる</h3><p>草原を歩いて横切るところを想像してください。一回目は、ほとんど足あとが残りません。でも毎日同じところを歩けば、やがてはっきりとした小道ができます。そうなれば、足は考えなくても自然にその道をたどります。</p><p>脳も同じです。何かを何度も練習すると、それは楽にできるようになり、考えなくても自然にできるようになります。脳がすっとたどれる小道のように。<strong>くり返し練習したことが、あなたになっていくのです。</strong></p><h3>早く始めよう</h3><p>小さいうちのほうが覚えやすいこともあります。たとえば外国語です。最初から完ぺきでなくてかまいません。聞いたり、見たり、遊んだりして、ただそばにいるだけで、脳に種がまかれます。あとで本格的に学ぶとき、その種が芽を出す準備はもうできています。</p><p><strong>おぼえておこう：見て、言って、やってみる。そして楽にできるようになるまで、何度も戻ってこよう。</strong></p>
+   </article>
+<article class="page" id="ja-chapter-3" lang="ja">
+     <p class="kicker">第3章</p>
+     <h1>第3章<br><span class='sub'>咲けると信じよう</span></h1>
+     <p>この本の中でいちばん大切なひみつのひとつが、ここにあります。<strong>自分に語りかける物語が、大切なのです。</strong></p><p>同じクラスで同じ授業を受けた二人がいるとします。一人は「わたしにもできる」と思って教室を出ます。もう一人は「ぼくはこれが苦手なんだ」と思って出ていきます。多くの場合、そのちがいは頭のよさではありません。頭の中の物語のちがいなのです。</p><p>「どうせ咲けない」と思っている花は、咲こうとさえしません。あなたの物語が、あなたを育ててくれるものになるようにしましょう。</p><h3>頭の中の声にやさしくしよう</h3><p>だれの中にも、小さな声があります。ときどき、その声はいじわるです。「これはむずかしすぎる」とか「みんな自分よりできる」とか言ってきます。</p><p>その声を信じる必要はありません。言い返してもいいのです。「<em>今は</em>むずかしい。でも、だんだんうまくなっている」と言ってみましょう。何をやってみて、何が楽になったかを書きとめておくと、自分がどれだけ進んだかがわかります。</p><h3>まちがいは終わりじゃない</h3><p>多くの人は、まちがえたら失敗だと思っています。<strong>でも、それはちがいます。まちがいは、ただのヒントです。</strong>次にどこを直せばいいかを教えてくれるのです。</p><p>あなたが知っている名人はみんな、たくさんまちがえながら上手になりました。まちがいも、上手になるための一部だったのです。だから、完ぺきを目指さなくていい。きのうより少しだけよくなることを目指しましょう。</p><h3>育つって、本当はこういうこと</h3><p>本当の成長はゆっくりです。それでいいのです。おぼえておきたいことがあります：</p><ul><li><strong>小さく始めよう。</strong>まずは基本をしっかり。大きなことも、小さなことの組み合わせです。</li><li><strong>ゆっくり、なめらかに、そして速く。</strong>始めたばかりのときは、ゆっくりでぎこちないもの。それがふつうです。練習するとなめらかになり、やがて速くなります。急ぐことはできません。ゆっくりが先なのです。</li><li><strong>やって、はずして、またやる。</strong>成長とは、一回目でうまくいくことではありません。やってみて、うまくいかなくて、直して、またやってみることです。</li><li><strong>道のりを楽しもう。</strong>ゴールのことしか考えていないと、一歩一歩がつらくなります。でも練習そのものに楽しさを見つけられたら、つづけたくなります。</li><li><strong>たまにたくさんより、毎日少し。</strong>一回に三時間より、毎日十分のほうがいい。小さく、こつこつが勝ちます。</li></ul><h3>だれかが咲くのを見よう</h3><p>自分がやりたいことを、だれかがやっているのを見ると力がわきます。とくに、自分に少し似ている人なら。「あの子にできるなら、自分にもできるかも」と思えるのです。よく見て、どうやったのか聞いてみましょう。先月それを覚えたばかりの友だちが、いちばんの先生になることもあります。</p><h3>こわい質問はしないでおこう</h3><p>多くの人の足を止めてしまう質問がひとつあります。<em>「自分にできるかな、できないかな？」</em>　そう考えたとたん、不安がしのびよってきます。</p><p>コツは、その質問をしないこと。そのためには、<strong>まずかんたんなことでいくつか成功すること</strong>です。小さな成功をたくさん重ねると、「できるかな」と考えなくなります。ただ、やってみるようになるのです。</p><p><strong>おぼえておこう：自分にやさしく。まちがいはヒント。毎日少しずつ育とう。そして、かんたんな成功から始めよう。</strong></p>
+   </article>
+<article class="page" id="ja-chapter-4" lang="ja">
+     <p class="kicker">第4章</p>
+     <h1>第4章<br><span class='sub'>じょうぶな根っこ</span></h1>
+     <p>高い木には、深い根っこが必要です。根っこが弱いと、最初のあらしでたおれてしまいます。学ぶことも同じです。高く育つ前に、しっかりした土台が必要なのです。</p><h3>基本をしっかりかためよう</h3><p>学ぶことがむずかしく感じるときは、たいてい下のほうの何かがぐらぐらしています。大きな算数の問題が苦手な子は、多くの場合、小さな問題をしっかりできるようにすればいいだけなのです。</p><p>だから、基本に時間をかけましょう。考えなくてもできるくらい、楽にしてしまうのです。そうすれば、むずかしいことを学ぶとき、脳は新しいことに集中できます。<strong>基本が強いと、ほかのことが全部楽になります。</strong></p><h3>早めに種をまこう</h3><p>授業を待たなくても、学び始めることはできます。毎日の中に少しずつまぜてみましょう。歌にしたり、遊んだり、まわりで見つけたり。「ちゃんと」学ぶころには、もうなじみのあるものになっています。ずっと前にまいた種が、芽を出す準備をしていたように。</p><h3>まず、自分を大切にしよう</h3><p>かんたんだけど大事なことがあります。<strong>自分が元気でなければ、花は咲きません。</strong></p><p>おなかがすいていたり、つかれていたり、こわかったりすると、学ぶのはとてもむずかしくなります。仲間はずれでさびしいと感じていると、心はそのことでいっぱいになってしまいます。だから、育つための最初の一歩は、安心できて、よく休めていて、自分の居場所があると感じられることです。そうなってはじめて、脳はほっとして育つことができます。</p><p>学ぶのがどうしても無理だと感じる日は、自分に聞いてみましょう。おなかがすいてない？　つかれてない？　いやなことがあった？　まずそれを何とかすることが必要なときもあります。</p><h3>上手になると、もっと自由になれる</h3><p>何かが上手になるいちばんの理由は、できることが増えることです。読むのが上手になれば、もっとおもしろい本が読めます。泳ぐのが上手になれば、深いところでも泳げます。スキルそのものがごほうびなのです。<strong>上手になることは、自由になることです。</strong></p><p><strong>おぼえておこう：基本をしっかりかため、早めに種をまき、まず自分を大切にして、成長がくれる自由を楽しもう。</strong></p>
+   </article>
+<article class="page" id="ja-chapter-5" lang="ja">
+     <p class="kicker">第5章</p>
+     <h1>第5章<br><span class='sub'>毎日すこしずつ育つ</span></h1>
+     <p>では、毎日育ちつづけるために、実際に何を<em>する</em>のかを話しましょう。</p><h3>遊びは最高の学び</h3><p>音楽家のことを考えてみてください。始めたばかりのころは、かんたんな音しか出せません。ゆっくりです。でもたくさん練習すると、すごいことが起こります。自由にひけるようになり、自分の曲を作って、楽しめるようになるのです。学べば学ぶほど、楽しめることが増えていきます。</p><p>学ぶことも同じです。<strong>上手になるほど、楽しくなります。</strong>遊びは学びの休けいではありません。遊び<em>こそ</em>、いちばんすてきな学びなのです。今のがんばる練習が、あとの楽しさへのカギになります。</p><h3>集中して、それから遊ぶ</h3><p>よい学び方には、息をすったりはいたりするようなリズムがあります：</p><ul><li><strong>集中する。</strong>ひとつのことを選んで、なめらかにできるまでていねいに練習する。</li><li><strong>遊ぶ。</strong>それから肩の力をぬいて、いろいろためして、学んだことを楽しく使う。</li></ul><p>集中して上手になる。遊んで自分のものにする。そして次のことを選んで、またくり返しましょう。</p><h3>手伝ってもらって、それからひとりで</h3><p>新しいことを学ぶときは、たいてい三つのステップがあります：</p><ol><li>だれかがやり方を見せてくれる。</li><li>いっしょにやってみる。</li><li>自分ひとりでやる。</li></ol><p>目標は、だんだん助けがいらなくなることです。でも、こまったらもう一度助けてもらってもいいのです。少し助けてもらいに戻るのは失敗ではありません。かしこいやり方です。</p><h3>助っ人を使おう</h3><p>全部を頭の中に入れておく必要はありません。こんなものを使いましょう：</p><ul><li>手順がわかる<strong>チェックリスト</strong>。</li><li>まねできる、よいお手本の<strong>例</strong>。</li><li>一歩ずつ教えてくれる<strong>ガイド</strong>。</li></ul><p>これがあれば、つまずかずに自分の力で進められます。それが本当の自立です。</p><h3>変化をつけよう</h3><p>同じことを長くやりすぎると、脳がねむくなってしまいます。新鮮さをたもちましょう：</p><ul><li>パートナーと話し合う。</li><li>グループでプロジェクトに取り組む。</li><li>「ふしぎの壁」を作って、気になる質問を書いておく。</li></ul><h3>友だちに教えよう</h3><p>魔法のようなコツがあります。<strong>何かを学ぶいちばんの方法は、それを教えることです。</strong>友だちに説明すると、自分の理解も深まります。自分の作品や友だちの作品を見直すと、「よい」とはどういうことかがわかってきます。</p><p><strong>おぼえておこう：集中して練習し、それから遊ぶ。こまったら助けを求める。変化をつける。そして人に教えて、もっと学ぼう。</strong></p>
+   </article>
+<article class="page" id="ja-chapter-6" lang="ja">
+     <p class="kicker">第6章</p>
+     <h1>第6章<br><span class='sub'>目に見えるお庭</span></h1>
+     <p>よいお庭は、育っていくものが全部<em>目に見える</em>から楽しいのです。学ぶ場所も同じようにできます。まわりにちょうどいいものがあれば、だれかに言われなくても、それがあなたの成長を助けてくれます。</p><h3>絵は覚える助けになる</h3><p>ステップがたくさんあるスキルもあります。ステップは忘れやすいものです。ステップごとに小さな絵をならべておくと、順番を思い出しやすくなります。しばらくすると、絵がなくても大丈夫になります。ステップが頭の中に入ってしまうのです。<strong>絵は、言葉のリストより覚えやすいのです。</strong></p><h3>一日のボード</h3><p>一日の予定が見えると助かります。何を、いつやるのか。かべにかんたんな表があれば、「次は何？」と何度も聞かなくても、見ればわかります。</p><h3>成長が見える表</h3><p>どれだけ進んだかがわかると、とてもうれしいものです。だから、表をつけましょう：</p><ul><li>読んだ本。</li><li>できるようになったスキル。</li><li>ふしぎに思った質問。</li></ul><p>表がうまっていくのを見るのは、植物がのびていくのを見るようなもの。もっとつづけたくなります。</p><h3>質問から始めよう</h3><p>新しいことを学び始めるいちばんの方法は、まず「知りたい！」と思うことです。大きくておもしろい質問や、すてきな写真や物があると、もっと知りたくなります。そして学びながら、自分の作品でその場所をうめていき、理解が花開いていくのを見ましょう。</p><p><strong>おぼえておこう：ステップには絵を、成長には表を、そして始めるときはわくわくする質問を。</strong></p>
+   </article>
+<article class="page" id="ja-you-are-blooming" lang="ja">
+     <p class="kicker">おわりに</p>
+     <h1>あなたは咲いている<br><span class='sub'>おわり（そして、はじまり）</span></h1>
+     <p>最初に、春の桜の木の話をしましたね。おぼえていますか？　桜は一日では咲きません。寒い冬のあいだずっと、ゆっくり育って準備をしています。そしてそのときが来ると、いっせいに花を咲かせるのです。</p><p>あなたも今、同じことをしています。</p><p>いちばん大切なことをふり返りましょう：</p><ul><li><strong>学ぶと自由になれる。</strong>スキルはひとつひとつが、新しいドアを開けるカギ。</li><li><strong>脳はお庭のように育つ。</strong>いろいろな感覚を使い、何度も戻り、楽になるまで練習しよう。</li><li><strong>咲けると信じよう。</strong>自分にやさしく、まちがいはヒント、毎日少しずつ育とう。</li><li><strong>じょうぶな根っこを育てよう。</strong>基本をしっかりかため、まず自分を大切に。</li><li><strong>毎日育とう。</strong>練習して、遊んで、助けを求めて、人に教えよう。</li><li><strong>成長を目に見えるようにしよう。</strong>絵や表、大きな質問を使おう。</li></ul><p>そして、いちばん大きなひみつです。この本の目的は、何かひとつを覚えてもらうことでは<em>ありません</em>。あなたが<strong>学ぶことを好きになる</strong>こと。そうすれば一生、知りたいことを何でも自分で学べるようになります。</p><p>学ぶことが好きな子どもは、ずっと育ちつづける大人になります。それは、自分にあげられるいちばんすてきなおくりものです。</p><p>だから、あせらないで。ゆっくりな日も、つづけましょう。毎日少しずつ、根っこに水をやりましょう。そしてある春、思いがけないときにふり返ると、自分がどれだけ咲いたかに気づくはずです。</p><p>その日を、楽しみにしています。</p><p class="epigraph"><em>— 花見エデュケーションの仲間たちより</em></p>
+   </article>
+<article class="page" id="ja-garden-tools" lang="ja">
+     <p class="kicker">資料</p>
+     <h1>お庭の道具</h1>
+     <p class="brandline">花見 · Hanami Education · <em>学びが花開く場所</em></p><p>これからも育ちつづけるための、花見エデュケーションの道具です。どれも、本物の本や紙、そして毎日の生活へとあなたを送りかえしてくれます。（大人といっしょに使うと楽しいものもあります。道具の画面は英語です。）</p><p><strong>わたしたちの本</strong> — ここから始めて、大切な人にもすすめてね。</p><ul><li><a href="#cover" lang="en">Bloom (English)</a> — この本の英語版。</li><li><a href="#ja-cover">Bloom 日本語版</a> — この本です。</li></ul><p><strong>読む</strong> — 毎日少しの読書は、脳にとっての日の光。</p><ul><li><a href="https://hanamieducation.com/reading-atlas.html" target="_blank" rel="noopener">The Reading Atlas</a> — 1〜5年生向けのすぐれたシリーズ200（英語の本）。</li><li><a href="https://hanamieducation.com/checklisttool.html" target="_blank" rel="noopener">Reading Checklist Aid</a> — 読書習慣のためのヒントとタイマー。</li><li><a href="https://hanamieducation.com/reading-checklist.html" target="_blank" rel="noopener">Reading Checklist Guide</a> — 読む前・読んでいるとき・読んだあとにすること。</li></ul><p><strong>書く</strong> — いちばんむずかしいのは書き始め。だから、ひらめきから始めよう。</p><ul><li><a href="https://hanamieducation.com/story-generator.html" target="_blank" rel="noopener">The Story Spinner</a> — 書くための物語のアイデアを生み出す。</li><li><a href="https://hanamieducation.com/promptgenerator.html" target="_blank" rel="noopener">Prompt-o-Matic</a> — 学年にあわせた新しい作文のお題。</li><li><a href="https://hanamieducation.com/Writing-Guides.html" target="_blank" rel="noopener">Writing Guides</a> — お手本、コツ、文法がひとつの場所に。</li><li><a href="https://hanamieducation.com/mylife.html" target="_blank" rel="noopener">The Story of Me</a> — 自分についての日記。ひとつずつ質問に答えよう。</li></ul><p><strong>練習する</strong> — えんぴつと紙で少し練習すると、スキルが強くなる。</p><ul><li><a href="https://hanamieducation.com/worksheets.html" target="_blank" rel="noopener">Maths &amp; Grammar Worksheets</a> — 印刷できる算数と英文法の練習プリント（答えつき）。</li></ul><p><strong>つくる</strong> — 好きなアイデアを選んで、一歩ずつ進もう。</p><ul><li><a href="https://hanamieducation.com/project-guide.html" target="_blank" rel="noopener">The Project Picker</a> — 好きなことを選ぶと、ステップつきの工作が見つかる。</li><li><a href="https://hanamieducation.com/projectmaker.html" target="_blank" rel="noopener">The Project Maker</a> — 自分のアイデアを本物の計画にする。</li></ul><p><strong>スキルを育てる</strong> — ひとつ選んで、こわがらずに練習しよう。</p><ul><li><a href="https://hanamieducation.com/goalsetter.html" target="_blank" rel="noopener">Goal Setter</a> — 取り組む価値のあるスキルを見つける。</li><li><a href="https://hanamieducation.com/firststepsports.html" target="_blank" rel="noopener">First Step Sports</a> — 新しいスポーツに、なみだなしで挑戦。</li><li><a href="https://hanamieducation.com/chorequest.html" target="_blank" rel="noopener">Chore Quest</a> — おうちのお手伝いで星を集めよう。成長にあわせて仕事も変わる。</li><li><a href="https://hanamieducation.com/wouldyourather.html" target="_blank" rel="noopener">Would You Rather</a> — 考えて話し合う、楽しい「どっちがいい？」ゲーム。</li></ul><p><strong>友だちと話す</strong> — なかよくすることも、スキルのひとつ。</p><ul><li><a href="https://hanamieducation.com/friendship.html" target="_blank" rel="noopener">Making Friends and Resolving Conflict 101</a> — 友だちを作り、落ち着いて問題を解決する。</li><li><a href="https://hanamieducation.com/conversation.html" target="_blank" rel="noopener">Conversation Starters</a> — 本当の会話が始まる質問。</li></ul><h3>成長を助ける一日</h3><p>集中する時間と遊ぶ時間のバランスがとれた、一日の例です。</p><div class="table-wrap"><table><thead><tr><th>時間</th><th>すること</th><th>やり方</th></tr></thead><tbody><tr><td>朝</td><td>朝の会</td><td>みんなで話し合う</td></tr><tr><td>午前中</td><td>スキルの練習</td><td>パートナーといっしょに</td></tr><tr><td>お昼前</td><td>グループ・プロジェクト</td><td>チームで取り組む</td></tr><tr><td>お昼</td><td>自分の課題</td><td>自分で選ぶ</td></tr><tr><td>午後</td><td>考えて計画する</td><td>日記に書く</td></tr><tr><td>一日の終わり</td><td>発表とふり返り</td><td>友だちを手伝う</td></tr></tbody></table></div><h3>ひとことメモ</h3><p><strong>第1章 — なぜ咲くの？</strong></p><p>スキルはあなたを自由にするカギ。ひとつの成功が次につながる。最初の「できた！」を手に入れよう！</p><p><strong>第2章 — 脳はどうやって育つの？</strong></p><p>見て、言って、やってみる。何度も戻ってこよう。楽になるまで練習しよう。</p><p><strong>第3章 — 咲けると信じよう</strong></p><p>自分にやさしく。まちがいはヒント。毎日少しずつ育とう。かんたんな成功から始めよう。</p><p><strong>第4章 — じょうぶな根っこ</strong></p><p>基本をしっかり。早めに種をまこう。まず自分を大切に。</p><p><strong>第5章 — 毎日すこしずつ育つ</strong></p><p>集中して、それから遊ぶ。助けを求めよう。変化をつけよう。友だちに教えよう。</p><p><strong>第6章 — 目に見えるお庭</strong></p><p>ステップには絵を。成長の表をつけよう。わくわくする質問から始めよう。</p><h3>わたしたちの約束</h3><p>わたしたちは、いちばん強い学び手は、画面ではなく本物の本やえんぴつ、紙といっしょに育つと信じています。ここにある道具はどれも、あなたを本物の世界へ送りかえすために作られています。本を手に持ち、手で字を書き、毎日の生活に根ざしているからこそ長くつづく習慣を育てるために。</p><p class="epigraph"><em>Bloom は花見エデュケーションの本です。</em></p><p class="epigraph"><em>花見 · 学びが花開く場所 · <a href="index.html">hanamieducation.com</a></em></p>
    </article>
 
   <div class="pager" id="pager" hidden>
@@ -268,97 +350,71 @@ tbody tr:nth-child(even){background:var(--petal)}
 </main>
 
 <script>
-const order = ["cover", "a-note-to-you", "chapter-1", "chapter-2", "chapter-3", "chapter-4", "chapter-5", "chapter-6", "you-are-blooming", "garden-tools"];
-const pages = [...document.querySelectorAll(".page")];
-const tocLinks = [...document.querySelectorAll(".toc-link")];
-const counter = document.getElementById("counter");
-const progress = document.getElementById("progress");
-const pager = document.getElementById("pager");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const toc = document.getElementById("toc");
-const scrim = document.getElementById("scrim");
-let idx = 0;
-
-// Scroll the viewport so the start of the active reading page is clearly
-// brought into view, just below the fixed header. `smooth` gives a visible
-// downward motion (e.g. when leaving the cover) so it's obvious the book opened.
+{
+const BASE=["cover","a-note-to-you","chapter-1","chapter-2","chapter-3","chapter-4","chapter-5","chapter-6","you-are-blooming","garden-tools"];
+const ORDERS={en:BASE, ja:BASE.map(x=>"ja-"+x)};
+const UI={
+  en:{prev:"← Back",next:"Next →",end:"The End ❀",cover:"Cover",title:"Bloom — A Hanami Education Book",lang:"日本語",langLang:"ja",menu:"Open contents",home:"Back to cover"},
+  ja:{prev:"← もどる",next:"次へ →",end:"おわり ❀",cover:"表紙",title:"Bloom 日本語版 — 花見エデュケーションの本",lang:"English",langLang:"en",menu:"もくじを開く",home:"表紙にもどる"}};
+const $=id=>document.getElementById(id);
+const pages=[...document.querySelectorAll(".page")];
+const tocLinks=[...document.querySelectorAll(".toc-link")];
+const counter=$("counter"),progress=$("progress"),pager=$("pager"),prevBtn=$("prevBtn"),nextBtn=$("nextBtn"),toc=$("toc"),scrim=$("scrim"),langBtn=$("langBtn");
+let lang="en",idx=0;
+const reduce=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
 function scrollToReading(smooth){
-  const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
-  const behavior = (smooth && !reduce) ? "smooth" : "auto";
-  if (idx === 0){
-    window.scrollTo({ top: 0, behavior });
-    return;
-  }
-  const page = pages[idx];
-  const head = (page && page.querySelector("h1, .kicker")) || page;
-  if (!head){ window.scrollTo({ top: 0, behavior }); return; }
-  const headerH = (document.querySelector("header.bar")?.offsetHeight || 62) + 16;
-  const y = head.getBoundingClientRect().top + window.pageYOffset - headerH;
-  window.scrollTo({ top: Math.max(0, y), behavior });
+  const behavior=(smooth&&!reduce())?"smooth":"auto";
+  if(idx===0){window.scrollTo({top:0,behavior});return}
+  const page=$(ORDERS[lang][idx]);const head=(page&&page.querySelector("h1, .kicker"))||page;
+  if(!head){window.scrollTo({top:0,behavior});return}
+  const headerH=(document.querySelector("header.bar")?.offsetHeight||62)+16;
+  window.scrollTo({top:Math.max(0,head.getBoundingClientRect().top+window.pageYOffset-headerH),behavior});
 }
-
-function show(i, push, smooth){
-  idx = Math.max(0, Math.min(order.length - 1, i));
-  const id = order[idx];
-  pages.forEach(p => p.classList.toggle("active", p.id === id));
-  tocLinks.forEach(a => a.setAttribute("aria-current", a.getAttribute("href") === "#" + id ? "true" : "false"));
-  if (counter) counter.textContent = idx === 0 ? "Cover" : idx + " / " + (order.length - 1);
-  progress.style.width = (idx / (order.length - 1)) * 100 + "%";
-  pager.hidden = (idx === 0);
-  prevBtn.disabled = idx === 0;
-  nextBtn.disabled = idx === order.length - 1;
-  nextBtn.textContent = idx === order.length - 1 ? "The End ❀" : "Next →";
-  if (push && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
-  scrollToReading(smooth);
-  closeToc();
+function resolve(h){h=(h||"").replace(/^#/,"");if(h==="ja")return"ja-cover";if(h==="en"||!h)return"cover";return(ORDERS.en.includes(h)||ORDERS.ja.includes(h))?h:null}
+function showId(id,push,smooth){
+  lang=id.startsWith("ja-")?"ja":"en";
+  idx=Math.max(0,ORDERS[lang].indexOf(id));
+  const order=ORDERS[lang],u=UI[lang];
+  pages.forEach(p=>p.classList.toggle("active",p.id===id));
+  document.querySelectorAll("[data-lang]").forEach(e=>e.hidden=e.dataset.lang!==lang);
+  document.documentElement.lang=lang;document.title=u.title;
+  tocLinks.forEach(a=>a.setAttribute("aria-current",a.getAttribute("href")==="#"+id?"true":"false"));
+  if(counter)counter.textContent=idx===0?u.cover:idx+" / "+(order.length-1);
+  progress.style.width=(idx/(order.length-1))*100+"%";
+  pager.hidden=idx===0;prevBtn.disabled=idx===0;nextBtn.disabled=idx===order.length-1;
+  prevBtn.textContent=u.prev;nextBtn.textContent=idx===order.length-1?u.end:u.next;
+  // language switch keeps your place in the book
+  langBtn.textContent=u.lang;langBtn.lang=u.langLang;langBtn.href="#"+ORDERS[u.langLang][idx];
+  $("menuBtn").setAttribute("aria-label",u.menu);$("brandHome").title=u.home;
+  if(push&&location.hash!=="#"+id)history.pushState(null,"","#"+id);
+  scrollToReading(smooth);closeToc();
 }
-function go(i){ show(i, true, true); }
-function openToc(){ toc.classList.add("open"); scrim.classList.add("open"); }
-function closeToc(){ toc.classList.remove("open"); scrim.classList.remove("open"); }
-
-document.getElementById("menuBtn").onclick = () => toc.classList.contains("open") ? closeToc() : openToc();
-scrim.onclick = closeToc;
-document.getElementById("beginBtn").onclick = () => go(1);
-document.getElementById("brandHome").onclick = () => go(0);
-document.getElementById("brandHome").onkeydown = e => { if(e.key==="Enter") go(0); };
-prevBtn.onclick = () => go(idx - 1);
-nextBtn.onclick = () => go(idx + 1);
-tocLinks.forEach(a => a.onclick = e => { e.preventDefault(); go(order.indexOf(a.getAttribute("href").slice(1))); });
-
-document.addEventListener("keydown", e => {
-  if (e.target.matches("input,textarea")) return;
-  if (e.key === "ArrowRight") go(idx + 1);
-  if (e.key === "ArrowLeft") go(idx - 1);
-  if (e.key === "Escape") closeToc();
+function go(i){i=Math.max(0,Math.min(ORDERS[lang].length-1,i));showId(ORDERS[lang][i],true,true)}
+function openToc(){toc.classList.add("open");scrim.classList.add("open")}
+function closeToc(){toc.classList.remove("open");scrim.classList.remove("open")}
+$("menuBtn").onclick=()=>toc.classList.contains("open")?closeToc():openToc();
+scrim.onclick=closeToc;
+$("brandHome").onclick=()=>go(0);
+$("brandHome").onkeydown=e=>{if(e.key==="Enter")go(0)};
+prevBtn.onclick=()=>go(idx-1);nextBtn.onclick=()=>go(idx+1);
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-go]");if(b){showId(b.dataset.go,true,true);return}
+  const a=e.target.closest('a[href^="#"]');if(!a)return;
+  const id=resolve(a.getAttribute("href"));if(!id)return;
+  e.preventDefault();showId(id,true,true);
 });
-window.addEventListener("popstate", () => {
-  const h = location.hash.slice(1);
-  const i = order.indexOf(h);
-  show(i >= 0 ? i : 0, false, false);
+document.addEventListener("keydown",e=>{
+  if(e.target.matches("input,textarea"))return;
+  if(e.key==="ArrowRight")go(idx+1);if(e.key==="ArrowLeft")go(idx-1);if(e.key==="Escape")closeToc();
 });
-
-(function(){
-  if (matchMedia("(prefers-reduced-motion:reduce)").matches) return;
-  const wrap = document.getElementById("petals"); if(!wrap) return;
-  for (let k=0;k<14;k++){
-    const p=document.createElement("div"); p.className="petal";
-    const s=8+Math.random()*12;
-    p.style.left=Math.random()*100+"%";
-    p.style.width=p.style.height=s+"px";
-    p.style.opacity=.3+Math.random()*.4;
-    p.style.animationDuration=(7+Math.random()*8)+"s";
-    p.style.animationDelay=(-Math.random()*10)+"s";
-    p.style.background=Math.random()>.5?"var(--pink)":"var(--blush)";
-    wrap.appendChild(p);
-  }
-})();
-
-(function(){
-  const h = location.hash.slice(1);
-  const i = order.indexOf(h);
-  show(i >= 0 ? i : 0, false, false);
-})();
+window.addEventListener("popstate",()=>showId(resolve(location.hash)||"cover",false,false));
+if(!reduce())document.querySelectorAll(".petals").forEach(wrap=>{
+  for(let k=0;k<14;k++){const p=document.createElement("div");p.className="petal";const sz=8+Math.random()*12;
+    p.style.left=Math.random()*100+"%";p.style.width=p.style.height=sz+"px";p.style.opacity=.3+Math.random()*.4;
+    p.style.animationDuration=(7+Math.random()*8)+"s";p.style.animationDelay=(-Math.random()*10)+"s";
+    p.style.background=Math.random()>.5?"var(--pink)":"var(--blush)";wrap.appendChild(p)}});
+showId(resolve(location.hash)||"cover",false,false);
+}
 </script>
 </body>
 </html>
