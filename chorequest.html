@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chore Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: cheerful, chunky, a family's fridge sticker chart that talks back
+   IDEA: a board-game quest card deck; each age stage is a coloured world on one trail
+   PICTURE: the quest board itself, big tappable cards, under a hero band in the stage's colour
+   COLOUR and TYPE: one flat stage colour field (yellow, coral, green, sky, violet) + deep ink; Baloo 2 + Nunito
+   LAYOUT: band with kid switcher and hero, quest grid, weekly grid, rewards + badges, stage trail */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#14162b);--ink:light-dark(#1f2340,#f3f4ff);--soft:light-dark(#f4f5fb,#1d2042);--line:light-dark(#e1e3f0,#2f3363);--mute:light-dark(#585e80,#a9aed6);--st:#ffc93c;--sk:#1f2340}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3,.brand{font-family:'Baloo 2',Nunito,sans-serif;line-height:1.05;margin:0;text-wrap:balance}
+h2{font-size:30px;font-weight:800}h3{font-size:20px;font-weight:800}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(24px,4vw,48px) max(5vw,16px)}
+.top{background:var(--st);color:var(--sk);padding:14px max(5vw,16px) 0;transition:background .4s}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.brand{font-size:28px;font-weight:800;display:flex;align-items:center;gap:8px;margin-right:auto}
+.brand svg{width:30px;height:30px}
+.kids{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:6px;min-height:44px;padding:3px 14px 3px 3px;border-radius:999px;border:2px solid transparent;background:rgb(255 255 255/.32);color:inherit;font:800 15px Nunito,sans-serif;cursor:pointer}
+.chip[aria-pressed=true]{background:#fff;color:#1f2340;border-color:#1f2340}
+.btn{min-height:44px;padding:0 18px;border-radius:14px;border:2px solid currentColor;background:transparent;color:inherit;font:800 15px Nunito,sans-serif;cursor:pointer;white-space:nowrap}
+.btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.sm{min-height:36px;padding:0 12px;font-size:14px;border-radius:10px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.top button:focus-visible{outline-color:var(--sk)}
+.hero{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 0 8px}
+.face{background:#fff;border-radius:50%;padding:6px;display:grid;box-shadow:0 6px 0 rgb(0 0 0/.12)}
+.hero h1{font-size:clamp(34px,5vw,52px);font-weight:800}
+.hero .sub{font-weight:800;opacity:.85}
+.lv{margin-top:10px;max-width:440px}
+.lv .t{display:flex;justify-content:space-between;font-weight:800;font-size:14px}
+.meter{height:16px;border-radius:999px;background:rgb(0 0 0/.14);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--sk);border-radius:999px;transition:width .5s}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:rgb(255 255 255/.32);border-radius:18px;padding:10px 16px;text-align:center;min-width:92px}
+.stat b{display:block;font:800 30px/1 'Baloo 2',sans-serif;white-space:nowrap}
+.stat span{font-size:13px;font-weight:800}
+.wave{display:block;width:100%;height:28px;color:var(--st);margin-top:-1px}
+.note{font-size:13px;font-weight:700;opacity:.8;margin:4px 0 0}
+.sec{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.sec p{margin:2px 0 0;color:var(--mute);font-weight:600}
+.prog{min-width:200px;flex:0 1 300px}
+.prog .meter{background:var(--soft)}.prog .meter i{background:var(--st)}
+.prog span{font-weight:800;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:14px}
+.q{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:center;text-align:left;padding:14px;border-radius:20px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;cursor:pointer;box-shadow:0 5px 0 var(--line);transition:transform .1s,box-shadow .1s}
+.q:active{transform:translateY(4px);box-shadow:0 1px 0 var(--line)}
+.ic{width:56px;height:56px;border-radius:16px;background:color-mix(in srgb,var(--st) 28%,var(--bg));display:grid;place-items:center}
+.ic svg{width:30px;height:30px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.q b{display:block;font-weight:800;line-height:1.25}
+.q small{color:var(--mute);font-weight:800;white-space:nowrap}
+.q.done{background:color-mix(in srgb,var(--st) 16%,var(--bg));border-color:var(--st);box-shadow:0 5px 0 var(--st)}
+.q.done .ic{background:var(--st)}.q.done .ic svg{stroke:var(--sk)}
+.q.pend{border-style:dashed}
+.stamp{position:absolute;top:-9px;right:-6px;background:var(--ink);color:var(--bg);font:800 12px Nunito,sans-serif;padding:3px 10px;border-radius:999px;transform:rotate(6deg)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px)}
+.rw{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:2px solid var(--line)}
+.rw .nm{flex:1;font-weight:800}
+.cost{font:800 18px 'Baloo 2',sans-serif;white-space:nowrap}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px}
+.bd{text-align:center;font-size:13px;font-weight:800;line-height:1.25}
+.bd svg{width:64px;height:64px;display:block;margin:0 auto 6px}
+.bd.off{color:var(--mute)}.bd.off svg{opacity:.35;filter:grayscale(1)}
+.trail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative;margin-top:8px}
+.trail::before{content:"";position:absolute;left:10%;right:10%;top:34px;border-top:6px dotted var(--line)}
+.stop{position:relative;background:none;border:0;color:var(--ink);font:inherit;cursor:pointer;text-align:center;padding:0 4px}
+.dot{width:68px;height:68px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;font:800 28px 'Baloo 2',sans-serif;border:4px solid var(--bg);box-shadow:0 0 0 2px var(--line)}
+.stop.cur .dot{box-shadow:0 0 0 4px var(--ink);transform:scale(1.1)}
+.stop b{display:block;font-weight:800;line-height:1.2}.stop span{font-size:13px;color:var(--mute);font-weight:700}
+.stop[aria-expanded=true] b{text-decoration:underline 3px}
+.q .hint{display:block;font-size:14px;font-weight:600;color:var(--mute);line-height:1.3;margin:2px 0 3px}
+.ladder{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px}
+.ladder th,.ladder td{text-align:left;vertical-align:top;padding:10px 8px;border-bottom:2px solid var(--line)}
+.ladder th{font:800 15px Nunito,sans-serif;white-space:nowrap}.pip{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.ladder td.here{background:color-mix(in srgb,var(--st) 22%,var(--bg));font-weight:800}
+.kid{border-bottom:2px solid var(--line);padding:6px 0}.kid .row{border:0}
+.look{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:0 0 10px}
+.look label{display:flex;align-items:center;gap:6px;font-weight:800;font-size:14px}
+.sw{display:flex;flex-wrap:wrap;gap:6px}.swb{width:40px;height:40px;border-radius:50%;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--line);cursor:pointer;padding:0}
+.swb.gap{margin-left:8px}.swb[aria-pressed=true]{box-shadow:0 0 0 3px var(--ink)}
+@media(max-width:600px){.ladder thead{display:none}.ladder tr{display:block;padding:8px 0;border-bottom:2px solid var(--line)}.ladder td{display:flex;gap:10px;border:0;padding:4px 8px;border-radius:8px}.ladder td::before{content:attr(data-l);flex:0 0 5.5em;font-weight:800;color:var(--mute)}.ladder td:first-child{font-size:18px}.ladder td:first-child::before{display:none}}
+.peek{margin-top:18px;background:var(--soft);border-radius:20px;padding:18px}
+.peek ul{columns:2 260px;margin:8px 0 0;padding-left:20px}.peek li{break-inside:avoid;margin-bottom:4px}
+.guide{padding-bottom:0}.guide[hidden]{display:none}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.steps li{position:relative;background:color-mix(in srgb,var(--st) 16%,var(--bg));border:2px solid var(--st);border-radius:20px;padding:18px 16px 16px}
+.steps svg{width:40px;height:40px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block;margin-bottom:8px}
+.steps b{display:block;font:800 20px/1.15 'Baloo 2',sans-serif;margin-bottom:4px}
+.steps li>span:last-child{font-weight:600}
+.sn{position:absolute;top:-12px;right:14px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font:800 16px 'Baloo 2',sans-serif}
+.adult{margin-top:16px;background:var(--soft);border-radius:20px;padding:16px 20px}
+.adult ul{margin:8px 0 0;padding-left:20px}.adult li{margin-bottom:4px}
+.helpbtn[hidden]{display:none}
+@media(max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.steps{grid-template-columns:minmax(0,1fr)}}
+footer{color:var(--mute);font-size:14px;text-align:center;padding:24px 16px 40px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,140%);background:var(--ink);color:var(--bg);border-radius:16px;padding:10px 12px 10px 18px;display:flex;gap:12px;align-items:center;font-weight:800;transition:transform .25s,visibility .25s;z-index:30;max-width:calc(100% - 24px);visibility:hidden}
+.toast.on{transform:translate(-50%,0);visibility:visible}.toast button{color:var(--bg)}
+.spark{position:fixed;pointer-events:none;color:var(--st);font-size:24px;z-index:40;text-shadow:0 0 2px #1f2340;animation:fly .8s ease-out forwards}
+@keyframes fly{from{transform:translate(-50%,-50%)}to{transform:translate(calc(var(--x) - 50%),calc(var(--y) - 50%)) scale(.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.ov{position:fixed;inset:0;background:rgb(10 12 30/.6);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;z-index:20}
+.ov.open{display:flex}
+.sheet{background:var(--bg);color:var(--ink);border-radius:24px;max-width:780px;width:100%;padding:clamp(18px,3vw,28px)}
+.sheet h3{margin:24px 0 8px}.sheet .head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sheet .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0;border-bottom:2px solid var(--line)}
+input,select{font:16px Nunito,sans-serif;min-height:44px;border:2px solid var(--line);border-radius:12px;padding:0 10px;background:var(--bg);color:var(--ink)}
+input[type=checkbox]{min-height:0;width:24px;height:24px;accent-color:var(--ink)}
+.grow{flex:1 1 160px}.num{width:80px}
+.muted{color:var(--mute);font-weight:600;margin:4px 0}
+.empty{background:var(--soft);border-radius:20px;padding:28px;text-align:center;font-weight:700}
+@media(max-width:760px){.hero{grid-template-columns:auto minmax(0,1fr)}.stats{grid-column:1/-1}.two{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.hero{grid-template-columns:minmax(0,1fr);text-align:center}.face{margin:0 auto}.lv{margin-inline:auto}.stats{justify-content:center}.stat{min-width:80px;padding:8px 12px}
+.trail{grid-template-columns:minmax(0,1fr);gap:12px}.trail::before{left:34px;right:auto;top:30px;bottom:30px;border-top:0;border-left:6px dotted var(--line)}
+.stop{display:grid;grid-template-columns:68px minmax(0,1fr);gap:14px;align-items:center;text-align:left}.dot{margin:0}}
+</style></head><body>
+<header class="top"><div class="wrap">
+  <div class="bar">
+    <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z" fill="currentColor"/></svg>Chore Quest</div>
+    <nav class="kids" id="kids" aria-label="Choose a player"></nav>
+    <button class="btn helpbtn" data-a="guide" id="helpbtn" hidden>How to play</button>
+    <button class="btn" data-a="gp">Grown-ups</button>
+  </div>
+  <div id="hero"></div>
+</div></header>
+<svg class="wave" viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h1200v8c-100 20-200 20-300 0s-200-20-300 0-200 20-300 0S100-12 0 8z" fill="currentColor"/></svg>
+<section class="band wrap guide" id="guide" aria-labelledby="h-guide">
+  <div class="sec"><div><h2 id="h-guide">How to play</h2><p>Kids earn stars for helping at home, then spend them on rewards.</p></div><button class="btn sm" data-a="guide">Hide guide</button></div>
+  <ol class="steps">
+    <li><span class="sn">1</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><b>Pick your name</b><span>Tap your name at the top. Your chores match your age.</span></li>
+    <li><span class="sn">2</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg><b>Do a chore, then tap it</b><span>Finish the job for real, then tap its card. It gets a <i>Done!</i> sticker. Tapped by mistake? Press <i>Undo</i>.</span></li>
+    <li><span class="sn">3</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg><b>Collect stars</b><span>Stars raise your level. Do at least one chore every day to grow your streak and win badges.</span></li>
+    <li><span class="sn">4</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-2-4-7-4-6-1s6 1 6 1 5 2 6-1-4-3-6 1"/></svg><b>Spend them</b><span>In the <i>Reward shop</i> below, press <i>Redeem</i> when you have enough stars.</span></li>
+  </ol>
+  <div class="adult"><h3>For grown-ups: set up in 2 minutes</h3>
+    <ul>
+      <li>Press <b>Grown-ups</b> (top right) and answer the quick times-table question.</li>
+      <li><b>Add each child</b> with their age. Remove the sample players Mia and Leo.</li>
+      <li><b>Set rewards</b> and their star prices to suit your family.</li>
+      <li>Optional: turn on <b>grown-up check</b> so stars only count after you approve a chore, or <b>add your own chores</b>.</li>
+      <li>Daily quests reset every night and weekly quests reset on Monday. <b>On a birthday, update the age</b> so your child moves up a stage.</li>
+    </ul>
+  </div>
+</section>
+<main id="main"></main>
+<footer id="foot">Saved in this browser.</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="tmsg"></span><span id="tact"></span></div>
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-label="Grown-ups"><div class="sheet" id="sheet"></div></div>
+<script>
+{
+const STAGES=[
+{n:'Little Helpers',a:'Ages 2–3',lo:2,c:'#ffc93c',k:'#1f2340',r:['Sprout','Helper','Busy Helper','Super Helper','Star Helper']},
+{n:'Busy Bees',a:'Ages 4–5',lo:4,c:'#ff9466',k:'#1f2340',r:['Bumble','Worker Bee','Honey Maker','Hive Hero','Bee Boss']},
+{n:'Task Rangers',a:'Ages 6–7',lo:6,c:'#3fcf8e',k:'#12261c',r:['Scout','Trailblazer','Ranger','Head Ranger','Legend Ranger']},
+{n:'Home Heroes',a:'Ages 8–9',lo:8,c:'#4aa8ff',k:'#0e1a33',r:['Rookie','Sidekick','Hero','Super Hero','Mega Hero']},
+{n:'House Captains',a:'Ages 10–12',lo:10,c:'#7b5cff',k:'#ffffff',r:['Cadet','Deckhand','First Mate','Captain','Admiral']}];
+const CH=[
+[['Put toys in the toy bin','toy',2,'d','A grown-up can help you start'],['Dirty clothes in the hamper','shirt',1,'d','Socks too!'],['Throw your trash in the bin','trash',1,'d','Wrappers, tissues, scraps'],['Carry your cup and napkin to the table','plate',1,'d','Walk slowly, use two hands'],['Put your pillow and teddy on the bed','bed',1,'d','Make it look cozy'],['Help pour the pet food','paw',2,'d','A grown-up holds the bag'],
+ ['Wipe up spills with a cloth','clean',2,'w','Pat, pat, pat until dry'],['Water a plant with a small can','plant',2,'w','Just a little splash'],['Put away unbreakable groceries','bag',2,'w','Boxes, bags and fruit'],['Wash fruit in a bowl of water','pot',2,'w','Rub, rinse, done'],['Put books back on the shelf','book',2,'w','Find each book its spot']],
+[['Pull up your covers, line up your pillow','bed',2,'d','Smooth out the lumps'],['Set the table: plates, cups, forks','plate',2,'d','One of each for every person'],['Carry your plate to the counter','plate',1,'d','Both hands, nice and slow'],['Get dressed, put pajamas away','shirt',2,'d','Pajamas folded under your pillow'],['Tidy toys away before bedtime','toy',2,'d','Every toy back in its home'],['Feed the pet and fill the water bowl','paw',2,'d','Use the scoop to measure'],
+ ['Match clean socks into pairs','shirt',2,'w','Roll each pair together'],['Dust low shelves with a sock on your hand','clean',3,'w','Move things, dust, put back'],['Sort the recycling: paper, plastic, cans','trash',2,'w','Each one in the right box'],['Help make a snack: spread, stir or pour','pot',3,'w','A grown-up handles knives and heat'],['Water the plants','plant',2,'w','Check if the soil feels dry'],['Unload cups and spoons from the dishwasher','plate',3,'w','Nothing sharp or breakable']],
+[['Make your bed: sheet, blanket, pillow','bed',2,'d','Pull everything flat and straight'],['Pack your school bag','bag',2,'d','Homework, water bottle, snack'],['Clear the table and wipe it down','plate',3,'d','Crumbs into your hand, not the floor'],['Tidy your whole bedroom','toy',3,'d','Floor clear, desk tidy'],['Feed and water the pet on your own','paw',2,'d','No reminders needed'],['Help pack your lunch','pot',3,'d','Pick a fruit and a vegetable'],
+ ['Put away your clean clothes','shirt',3,'w','Drawers shut, nothing on the floor'],['Fold towels and washcloths','shirt',3,'w','In half, then in half again'],['Sweep with a broom and dustpan','clean',4,'w','Get into the corners'],['Empty small trash cans into the big bin','trash',3,'w','Bathroom and bedroom bins'],['Rake leaves or pull weeds','sun',4,'w','Fill one bag or bucket'],['Find items at the grocery store','book',3,'w','Read the list, find it, tick it off']],
+[['Load the dishwasher','plate',3,'d','Scrape first, plates face the middle'],['Make a simple breakfast','pot',3,'d','Cereal, toast or yogurt and fruit'],['Walk or play with the pet for 15 minutes','paw',3,'d','A grown-up says which route'],['Pack your bag and lay out tomorrow’s clothes','bag',2,'d','Check the weather first'],['Wipe the kitchen counters after dinner','clean',2,'d','Move things, wipe, put back'],
+ ['Vacuum one room','clean',4,'w','Move small things, do the edges'],['Clean the bathroom sink and mirror','drop',4,'w','Spray, wipe, no streaks'],['Sort laundry into lights and darks','shirt',3,'w','Check pockets first'],['Fold and put away your own laundry','shirt',4,'w','Shirts, pants, socks: all away'],['Change your pillowcase','bed',3,'w','Old one into the hamper'],['Take trash and recycling to the curb','trash',4,'w','On collection day'],['Help write the grocery list','book',3,'w','Check the fridge and cupboards'],['Water the garden and pull weeds','plant',4,'w','Roots and all']],
+[['Wash dishes by hand and wipe the sink','drop',4,'d','Hot soapy water, rinse, dry'],['Pack your own lunch','pot',3,'d','Something from each food group'],['Full pet care: food, water, clean-up','paw',4,'d','Including the litter or yard'],['Help a younger sibling with a chore','heart',3,'d','Show them, don’t do it for them'],['Tidy the shared rooms for 10 minutes','toy',3,'d','Set a timer and go'],
+ ['Wash, dry and fold a load of laundry','shirt',7,'w','Check labels and machine settings'],['Strip and remake your bed with clean sheets','bed',5,'w','Fitted sheet corners first'],['Cook a simple meal with a grown-up nearby','pot',8,'w','Pasta, eggs or a stir-fry'],['Clean the whole bathroom: sink, toilet, tub','drop',7,'w','Gloves on, window open'],['Mop the kitchen floor','clean',5,'w','Sweep first, wring the mop well'],['Plan a dinner and write its shopping list','book',5,'w','Check what you already have'],['Yard work: rake, weed or wash the car','sun',6,'w','Put the tools away after'],['Declutter a drawer: keep, donate, toss','toy',4,'w','Ask before donating anything']]
+].map((s,si)=>s.map(([n,c,p,f,h],i)=>({id:'v'+si+'-'+i,n,c,p,f,h})));
+const LADDER=[['Bed',['Pillow and teddy on the bed','Pull up the covers','Make the bed with sheet and blanket','Change the pillowcase','Strip and remake with clean sheets']],
+['Dishes',['Carry cup and napkin','Set the table','Clear and wipe the table','Load the dishwasher','Wash by hand, wipe the sink']],
+['Laundry',['Clothes in the hamper','Match socks','Fold towels, put clothes away','Sort, fold and put away','Wash, dry and fold a whole load']],
+['Food',['Wash fruit','Help make a snack','Help pack lunch','Make breakfast','Cook a meal']],
+['Cleaning',['Wipe up spills','Dust low shelves','Sweep','Vacuum, clean the sink','Mop, clean the whole bathroom']],
+['Pets',['Help pour the food','Feed and fill the water','Feed on your own','Walk and play','Full pet care']]];
+const IC={toy:'<rect x="3" y="11" width="9" height="9" rx="2"/><circle cx="17" cy="15" r="4"/><path d="M8 3l4 6H4z"/>',shirt:'<path d="M8 3L3 6l2 5 3-1v11h8V10l3 1 2-5-5-3a4 4 0 0 1-8 0z"/>',plate:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/>',paw:'<circle cx="6.5" cy="9" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="17.5" cy="9" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5-2 3-4 3-4 0-4-3z"/>',plant:'<path d="M12 21V11M12 11c0-4-3-6-7-6 0 4 3 6 7 6zM12 13c0-4 3-6 7-6 0 4-3 6-7 6z"/>',clean:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path d="M19 3v4M17 5h4"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/>',bed:'<path d="M3 19V6M3 14h18v5M21 14v-2a3 3 0 0 0-3-3h-8v5"/><circle cx="6.5" cy="11" r="1.8"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',pot:'<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-1 1-2M14 6c0-1 1-1 1-2"/>',bag:'<path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0"/>',heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',drop:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>'};
+const CATS={toy:'Tidy-up',shirt:'Laundry',plate:'Table',paw:'Pets',plant:'Plants',clean:'Cleaning',trash:'Trash',bed:'Bedroom',book:'Books & lists',sun:'Outdoors',pot:'Kitchen',bag:'Getting ready',heart:'Helping',drop:'Washing'};
+const COLORS=[['#ff5a4e','Red (primary)'],['#ffd23f','Yellow (primary)'],['#3d8bff','Blue (primary)'],['#ff9a3c','Orange (secondary)'],['#4cc96b','Green (secondary)'],['#9b5de5','Purple (secondary)'],['#ff7aa8','Pink'],['#4cd3a5','Mint'],['#58b4ff','Sky']];
+const HOW=['with a grown-up beside you','with a little help','on your own, with reminders','on your own, bigger jobs','start to finish, like a pro'];
+const BADGES=[['first','First quest',k=>k.total>=1],['five','High five: 5 in a day',k=>k.bestDay>=5],['s3','3-day streak',k=>k.bestStreak>=3],['s7','7-day streak',k=>k.bestStreak>=7],['clear','Board cleared',k=>k.clears>=1],['st50','50 stars',k=>k.earned>=50],['big','50 quests done',k=>k.total>=50],['st150','150 stars',k=>k.earned>=150],['st300','300 stars',k=>k.earned>=300],['shop','First reward',k=>k.redeemed>=1]];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const dk=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const wk=()=>{const d=new Date();d.setDate(d.getDate()-(d.getDay()+6)%7);return 'W'+dk(d)};
+const stg=a=>a<=3?0:a<=5?1:a<=7?2:a<=9?3:4;
+const keyOf=c=>c.f==='d'?dk():wk();
+const lvl=e=>{let l=1,need=10;while(e>=need){e-=need;l++;need+=5}return{l,into:e,need}};
+const rank=(s,l)=>s.r[Math.min(l-1,4)]+(l>5?' '+'★'.repeat(Math.min(l-5,3)):'');
+const mk=(name,age,color,shape)=>({id:uid(),name,age,color,shape,log:{},earned:0,spent:0,total:0,bestDay:0,bestStreak:0,clears:0,lastClear:'',redeemed:0});
+let state;
+function chores(k,cust){cust=cust||(state&&state.custom)||[];const s=stg(k.age);return CH[s].concat(cust.filter(c=>c.stage===s))}
+function seed(){
+  const s={v:1,sample:true,approve:false,custom:[],rewards:[['Pick the bedtime story',10],['15 extra minutes of play',15],['Choose what’s for dinner',25],['Trip to the park',40],['Small toy or new book',80]].map(([n,c])=>({id:uid(),n,c})),kids:[Object.assign(mk('Mia',4,'#ff7aa8',4),{eyes:3,extra:3}),Object.assign(mk('Leo',9,'#4cc96b',6),{mouth:1,extra:1})]};
+  s.sel=s.kids[0].id;
+  for(const k of s.kids){const ds=chores(k,[]).filter(c=>c.f==='d');
+    for(let d=3;d>=0;d--){const x=new Date();x.setDate(x.getDate()-d);const key=dk(x);k.log[key]={};
+      ds.slice(0,d?4:2).forEach(c=>{k.log[key][c.id]='d';k.earned+=c.p;k.total++})}
+    k.bestDay=4;k.bestStreak=4}
+  Object.assign(s.kids[1],{earned:s.kids[1].earned+64,total:s.kids[1].total+20,spent:15,redeemed:1,bestStreak:6,bestDay:5});
+  return s}
+try{state=JSON.parse(localStorage.getItem('chorequest')||'null')}catch(e){state=null}
+if(!state||!state.kids)state=seed();
+const cur=()=>state.kids.find(k=>k.id===state.sel)||state.kids[0];
+function streak(k){const d=new Date();let n=0;const has=x=>Object.values(k.log[dk(x)]||{}).includes('d');if(!has(d))d.setDate(d.getDate()-1);while(has(d)){n++;d.setDate(d.getDate()-1)}return n}
+function award(k,c){k.earned+=c.p;k.total++;const t=k.log[dk()]||{};const n=Object.values(t).filter(v=>v==='d').length;k.bestDay=Math.max(k.bestDay,n);k.bestStreak=Math.max(k.bestStreak,streak(k));
+  const ds=chores(k).filter(x=>x.f==='d');if(k.lastClear!==dk()&&ds.length&&ds.every(x=>t[x.id]==='d')){k.clears++;k.lastClear=dk();return true}return false}
+let remote=null,rt=null;
+function save(){state.at=Date.now();try{localStorage.setItem('chorequest',JSON.stringify(state))}catch(e){}
+  if(remote){clearTimeout(rt);rt=setTimeout(()=>{remote.set({json:JSON.stringify(state),at:state.at}).catch(()=>{})},700)}}
+const icon=c=>`<svg viewBox="0 0 24 24" aria-hidden="true">${IC[c]||IC.clean}</svg>`;
+const INK='#1f2340';
+const TOPS=['None','Bear ears','Antenna','Cat ears','Bunny ears','Unicorn horn','Dino spikes','Crown','Party hat'];
+const EYES=['Round','Happy','Wink','Sparkly','Glasses','Sleepy'];
+const MOUTHS=['Smile','Big grin','Tongue out','Surprised','Toothy'];
+const EXTRAS=['None','Freckles','Bow','Flower','Star sticker'];
+function av(k,s){const c=k.color,t=k.shape|0,e=k.eyes|0,m=k.mouth|0,x=k.extra|0,L=`stroke="${INK}" stroke-width="2" stroke-linejoin="round"`,S=`stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"`;
+  const rnd=`<circle cx="37" cy="50" r="7.5" fill="#fff"/><circle cx="63" cy="50" r="7.5" fill="#fff"/><circle cx="38.5" cy="51" r="4" fill="${INK}"/><circle cx="64.5" cy="51" r="4" fill="${INK}"/>`;
+  const smile=`<path d="M41 65q9 8 18 0" ${S}/>`;
+  const back=['',`<circle cx="22" cy="26" r="11" fill="${c}"/><circle cx="78" cy="26" r="11" fill="${c}"/><circle cx="22" cy="26" r="5" fill="#fff" opacity=".4"/><circle cx="78" cy="26" r="5" fill="#fff" opacity=".4"/>`,
+    `<path d="M50 20V9" stroke="${c}" stroke-width="4"/><circle cx="50" cy="8" r="6" fill="${c}"/>`,
+    `<path d="M16 42L20 8l26 16zM84 42L80 8 54 24z" fill="${c}"/><path d="M23 30l1-14 11 8zM77 30l-1-14-11 8z" fill="#fff" opacity=".4"/>`,
+    `<ellipse cx="36" cy="19" rx="8" ry="18" fill="${c}"/><ellipse cx="64" cy="19" rx="8" ry="18" fill="${c}"/><ellipse cx="36" cy="19" rx="3.5" ry="12" fill="#ff9ab8"/><ellipse cx="64" cy="19" rx="3.5" ry="12" fill="#ff9ab8"/>`,
+    '',`<path d="M28 30l6-16 9 10zM43 22l7-18 7 18zM57 24l9-10 6 16z" fill="${c}" ${L}/>`,'',''][t]||'';
+  const front=['','','','','',`<path d="M43 22L50 1l7 21z" fill="#ffd23f" ${L}/><path d="M46 15l8-3M45 20l10-3" stroke="${INK}" stroke-width="1.5"/>`,'',
+    `<path d="M30 26l2-18 9 9 9-13 9 13 9-9 2 18z" fill="#ffd23f" ${L}/><circle cx="50" cy="17" r="2.5" fill="#ff5a4e"/>`,
+    `<path d="M37 24L50 3l13 21z" fill="#3d8bff" ${L}/><circle cx="46" cy="16" r="2" fill="#ffd23f"/><circle cx="53" cy="20" r="2" fill="#ff5a4e"/><circle cx="50" cy="4" r="4" fill="#ffd23f" ${L}/>`][t]||'';
+  const eyes=[rnd,`<path d="M30 52q7-9 14 0M56 52q7-9 14 0" ${S}/>`,
+    `<circle cx="37" cy="50" r="7.5" fill="#fff"/><circle cx="38.5" cy="51" r="4" fill="${INK}"/><path d="M56 51q7-7 14 0" ${S}/>`,
+    `<circle cx="37" cy="50" r="10" fill="#fff"/><circle cx="63" cy="50" r="10" fill="#fff"/><circle cx="38" cy="51" r="6.5" fill="${INK}"/><circle cx="64" cy="51" r="6.5" fill="${INK}"/><circle cx="40.5" cy="48" r="2.4" fill="#fff"/><circle cx="66.5" cy="48" r="2.4" fill="#fff"/>`,
+    rnd+`<circle cx="37" cy="50" r="12" fill="#fff" fill-opacity=".25" stroke="${INK}" stroke-width="3"/><circle cx="63" cy="50" r="12" fill="#fff" fill-opacity=".25" stroke="${INK}" stroke-width="3"/><path d="M49 49h2M25 48l-5-2M75 48l5-2" ${S}/>`,
+    `<path d="M30 50q7 6 14 0M56 50q7 6 14 0" ${S}/>`][e]||rnd;
+  const mouth=[smile,`<path d="M38 63h24q0 14-12 14t-12-14z" fill="${INK}"/><path d="M43 73q7-5 14 0q-7 5-14 0" fill="#ff7a8a"/>`,
+    `<path d="M45 68h10v4a5 5 0 0 1-10 0z" fill="#ff7a8a" stroke="${INK}" stroke-width="1.5"/>`+smile,
+    `<ellipse cx="50" cy="68" rx="5" ry="6" fill="${INK}"/>`,
+    `<rect x="46" y="67" width="8" height="7" rx="1.5" fill="#fff" stroke="${INK}" stroke-width="1.5"/>`+smile][m]||smile;
+  const extra=['',`<g fill="${INK}" opacity=".45"><circle cx="23" cy="57" r="1.4"/><circle cx="28" cy="60" r="1.4"/><circle cx="23" cy="63" r="1.4"/><circle cx="77" cy="57" r="1.4"/><circle cx="72" cy="60" r="1.4"/><circle cx="77" cy="63" r="1.4"/></g>`,
+    `<path d="M74 26l-12-8v16zM74 26l12-8v16z" fill="#ff4f8b" ${L}/><circle cx="74" cy="26" r="3.5" fill="#ff4f8b" ${L}/>`,
+    `<g transform="translate(25 31)" stroke="${INK}" stroke-opacity=".35"><circle cy="-6" r="5" fill="#fff"/><circle cx="6" cy="-2" r="5" fill="#fff"/><circle cx="4" cy="5" r="5" fill="#fff"/><circle cx="-4" cy="5" r="5" fill="#fff"/><circle cx="-6" cy="-2" r="5" fill="#fff"/><circle r="3.5" fill="#ffd23f"/></g>`,
+    `<path d="M75 55l2.4 5 5.4.6-4 3.7 1.1 5.3-4.9-2.7-4.9 2.7 1.1-5.3-4-3.7 5.4-.6z" fill="#ffd23f" stroke="${INK}" stroke-width="1.5" stroke-linejoin="round"/>`][x]||'';
+  return `<svg viewBox="0 0 100 100" width="${s}" height="${s}" aria-hidden="true">${back}<circle cx="50" cy="56" r="38" fill="${c}"/><ellipse cx="50" cy="73" rx="20" ry="11" fill="#fff" opacity=".28"/>${eyes}<circle cx="27" cy="62" r="4.5" fill="#ff4f7b" opacity=".35"/><circle cx="73" cy="62" r="4.5" fill="#ff4f7b" opacity=".35"/>${mouth}${extra}${front}</svg>`}
+const medal=(on,c)=>`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M20 4h10l6 18H26zM44 4H34l-6 18h10z" fill="${on?'#1f2340':'#999'}"/><circle cx="32" cy="40" r="20" fill="${c}"/><circle cx="32" cy="40" r="14" fill="#fff" opacity=".35"/><path d="M32 30l3 6.5 7 .8-5.2 4.7 1.4 7L32 45.6l-6.2 3.4 1.4-7-5.2-4.7 7-.8z" fill="#1f2340"/></svg>`;
+const card=(k,c)=>{const v=(k.log[keyOf(c)]||{})[c.id];return `<button class="q${v==='d'?' done':v==='p'?' pend':''}" data-a="do" data-id="${c.id}" aria-pressed="${!!v}"><span class="ic">${icon(c.c)}</span><span><b>${esc(c.n)}</b>${c.h?`<span class="hint">${esc(c.h)}</span>`:''}<small>+${c.p} ★${v==='p'?' · waiting for a grown-up':''}</small></span>${v==='d'?'<span class="stamp">Done!</span>':''}</button>`};
+let peek=-1;
+function render(){
+  const k=cur();const si=k?stg(k.age):0,s=STAGES[si];
+  document.body.style.setProperty('--st',s.c);document.body.style.setProperty('--sk',s.k);
+  $('#kids').innerHTML=state.kids.map(x=>`<button class="chip" data-a="sel" data-id="${x.id}" aria-pressed="${x.id===(k&&k.id)}">${av(x,36)}${esc(x.name)}</button>`).join('');
+  if(!k){$('#hero').innerHTML='<div class="hero"><div><h1>Who’s playing?</h1><p class="sub">Open Grown-ups to add your first player.</p></div></div>';$('#main').innerHTML='<section class="band wrap"><div class="empty">No players yet. Tap <b>Grown-ups</b> to add a child aged 2 to 12.</div></section>';return}
+  const L=lvl(k.earned),bal=k.earned-k.spent,st=streak(k);
+  $('#hero').innerHTML=`<div class="hero"><span class="face">${av(k,104)}</span><div><h1>${esc(k.name)}</h1><div class="sub">Stage ${si+1} · ${s.n} · ${s.a}</div>
+  <div class="lv"><div class="t"><span>Level ${L.l} · ${rank(s,L.l)}</span><span>${L.into}/${L.need} ★</span></div><div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="${L.need}" aria-valuenow="${L.into}" aria-label="Level progress"><i style="width:${L.into/L.need*100}%"></i></div></div>
+  ${state.sample?'<p class="note">Sample family to start: rename, add or remove players in Grown-ups.</p>':''}</div>
+  <div class="stats"><div class="stat"><b>${bal} ★</b><span>to spend</span></div><div class="stat"><b>${st}</b><span>day streak</span></div><div class="stat"><b>${k.total}</b><span>quests done</span></div></div></div>`;
+  const all=chores(k),ds=all.filter(c=>c.f==='d'),ws=all.filter(c=>c.f==='w');
+  const tl=k.log[dk()]||{},wl=k.log[wk()]||{};
+  const dn=ds.filter(c=>tl[c.id]==='d').length,wn=ws.filter(c=>wl[c.id]==='d').length;
+  $('#main').innerHTML=`<section class="band wrap" aria-labelledby="h-today"><div class="sec"><div><h2 id="h-today">Today’s quests</h2><p>At this stage: <b>${HOW[si]}</b>. Tap a card when the job is done.</p></div>
+  <div class="prog"><span>${dn} of ${ds.length} done${dn===ds.length&&ds.length?' · board cleared!':''}</span><div class="meter"><i style="width:${ds.length?dn/ds.length*100:0}%"></i></div></div></div>
+  <div class="grid">${ds.map(c=>card(k,c)).join('')}</div></section>
+  <section class="band wrap" aria-labelledby="h-week" style="padding-top:0"><div class="sec"><div><h2 id="h-week">This week’s big quests</h2><p>Bigger jobs, once a week, worth more stars. Resets on Monday.</p></div>
+  <div class="prog"><span>${wn} of ${ws.length} done</span><div class="meter"><i style="width:${ws.length?wn/ws.length*100:0}%"></i></div></div></div>
+  <div class="grid">${ws.map(c=>card(k,c)).join('')}</div></section>
+  <section class="band" style="background:var(--soft)"><div class="wrap two">
+   <div><div class="sec"><div><h2>Reward shop</h2><p>${esc(k.name)} has ${bal} ★ to spend.</p></div></div>
+   ${state.rewards.length?state.rewards.map(r=>`<div class="rw"><span class="nm">${esc(r.n)}</span><span class="cost">${r.c} ★</span><button class="btn sm solid" data-a="buy" data-id="${r.id}" ${bal<r.c?'disabled':''}>${bal<r.c?'Need '+(r.c-bal)+' more':'Redeem'}</button></div>`).join(''):'<p class="muted">No rewards yet. Add some in Grown-ups.</p>'}</div>
+   <div><div class="sec"><div><h2>Badges</h2><p>${BADGES.filter(b=>b[2](k)).length} of ${BADGES.length} earned</p></div></div>
+   <div class="badges">${BADGES.map(b=>{const on=b[2](k);return `<div class="bd${on?'':' off'}">${medal(on,s.c)}${b[1]}</div>`}).join('')}</div></div>
+  </div></section>
+  <section class="band wrap" aria-labelledby="h-trail"><div class="sec"><div><h2 id="h-trail">The chore trail</h2><p>Five stages from age 2 to 12. Chores grow as your child does. Tap a stage to see its quests.</p></div></div>
+  <div class="trail">${STAGES.map((x,i)=>`<button class="stop${i===si?' cur':''}" data-a="peek" data-i="${i}" aria-expanded="${peek===i}"><span class="dot" style="background:${x.c};color:${x.k}">${i+1}</span><span><b>${x.n}</b><span>${x.a}${i===si?' · '+esc(k.name)+' is here':''}</span></span></button>`).join('')}</div>
+  ${peek>=0?`<div class="peek"><h3>Stage ${peek+1}: ${STAGES[peek].n} (${STAGES[peek].a}), ${HOW[peek]}</h3><ul>${chores({age:STAGES[peek].lo}).map(c=>`<li><b>${esc(c.n)}</b>${c.h?': '+esc(c.h):''} · ${c.f==='d'?'daily':'weekly'} · ${c.p} ★</li>`).join('')}</ul></div>`:''}<h3 style="margin:28px 0 4px">How chores grow with your child</h3><p class="muted">The same everyday jobs get harder at each stage and are worth more stars.</p><table class="ladder stack"><thead><tr><th>Job</th>${STAGES.map((x,i)=>`<th><span class="pip" style="background:${x.c}"></span>${x.a.replace('Ages ','Age ')}</th>`).join('')}</tr></thead><tbody>${LADDER.map(([n,r])=>`<tr><td><b>${n}</b></td>${r.map((v,i)=>`<td data-l="${STAGES[i].a.replace('Ages ','Age ')}"${i===si?' class="here"':''}>${v}</td>`).join('')}</tr>`).join('')}<tr><td><b>Stars per chore</b></td>${CH.map((s,i)=>{const p=s.map(c=>c.p);return `<td data-l="${STAGES[i].a.replace('Ages ','Age ')}"${i===si?' class="here"':''}>${Math.min(...p)} to ${Math.max(...p)} ★</td>`}).join('')}</tr></tbody></table></section>`;
+}
+let tt;
+function toast(msg,undo){$('#tmsg').textContent=msg;$('#tact').innerHTML=undo?'<button class="btn sm" data-a="undo">Undo</button>':'';undoFn=undo||null;$('#toast').classList.add('on');clearTimeout(tt);tt=setTimeout(()=>{$('#toast').classList.remove('on');undoFn=null},5000)}
+let undoFn=null;
+function burst(el){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const r=el.getBoundingClientRect();
+  for(let i=0;i<12;i++){const p=document.createElement('span');p.className='spark';p.textContent='★';const a=i/12*Math.PI*2;p.style.left=r.left+r.width/2+'px';p.style.top=r.top+r.height/2+'px';p.style.setProperty('--x',Math.cos(a)*110+'px');p.style.setProperty('--y',Math.sin(a)*80+'px');document.body.appendChild(p);setTimeout(()=>p.remove(),850)}}
+const cheers=['Great job!','Amazing!','You did it!','Super star!','Way to go!','Awesome helping!'];
+function doChore(id,el){const k=cur(),c=chores(k).find(x=>x.id===id);if(!c)return;const key=keyOf(c);k.log[key]=k.log[key]||{};
+  const prev=k.log[key][c.id];
+  if(prev){toast(prev==='p'?'Waiting for a grown-up to check.':'Already done!',()=>{delete k.log[key][c.id];if(prev==='d'){k.earned=Math.max(0,k.earned-c.p);k.total=Math.max(0,k.total-1)}save();render();toast('Undone.')});return}
+  burst(el);
+  if(state.approve){k.log[key][c.id]='p';save();render();toast('Sent to a grown-up for a check.',()=>{delete k.log[key][c.id];save();render()});return}
+  k.log[key][c.id]='d';const before=lvl(k.earned).l,clr=award(k,c),after=lvl(k.earned).l;save();render();
+  toast(after>before?`Level up! You’re now level ${after}.`:clr?'Board cleared! Every daily quest done.':`${cheers[k.total%cheers.length]} +${c.p} ★`,()=>{delete k.log[key][c.id];k.earned=Math.max(0,k.earned-c.p);k.total=Math.max(0,k.total-1);save();render()})}
+let gate=false,ga=0,gb=0;
+function renderGP(){
+  if(!gate){ga=6+Math.floor(Math.random()*4);gb=6+Math.floor(Math.random()*4);
+    $('#sheet').innerHTML=`<div class="head"><h2>Grown-ups only</h2><button class="btn sm" data-a="close">Close</button></div><p class="muted">Quick check so little hands stay on the quest board.</p><form id="gf" class="row"><label for="ga">What is ${ga} × ${gb}?</label><input id="ga" inputmode="numeric" class="num" autocomplete="off"><button class="btn solid">Open</button><span id="gerr" class="muted"></span></form>`;
+    setTimeout(()=>$('#ga')&&$('#ga').focus(),50);return}
+  const pend=[];state.kids.forEach(k=>chores(k).forEach(c=>{if((k.log[keyOf(c)]||{})[c.id]==='p')pend.push([k,c])}));
+  const opt=(arr,v)=>arr.map(([val,l])=>`<option value="${val}"${String(val)===String(v)?' selected':''}>${l}</option>`).join('');
+  const ages=[];for(let a=2;a<=12;a++)ages.push([a,'Age '+a]);
+  $('#sheet').innerHTML=`<div class="head"><h2>Grown-ups</h2><button class="btn sm solid" data-a="close">Done</button></div>
+  <h3>Players</h3><p class="muted">Age sets the stage. Change it on their birthday and their quests level up with them. Let your child pick their colour and look.</p>
+  ${state.kids.map(k=>`<div class="kid" data-k="${k.id}"><div class="row">${av(k,56)}<input class="grow" data-f="name" value="${esc(k.name)}" aria-label="Name"><select data-f="age" aria-label="Age">${opt(ages,k.age)}</select><button class="btn sm" data-a="rmkid" data-id="${k.id}">Remove</button></div><div class="look"><div class="sw" role="group" aria-label="Colour">${COLORS.map(([v,l],i)=>`<button class="swb${i===3||i===6?' gap':''}" data-a="col" data-c="${v}" title="${l}" aria-label="${l}" aria-pressed="${v===k.color}" style="background:${v}"></button>`).join('')}</div><label>Top <select data-f="shape">${opt(TOPS.map((v,i)=>[i,v]),k.shape|0)}</select></label><label>Eyes <select data-f="eyes">${opt(EYES.map((v,i)=>[i,v]),k.eyes|0)}</select></label><label>Mouth <select data-f="mouth">${opt(MOUTHS.map((v,i)=>[i,v]),k.mouth|0)}</select></label><label>Extra <select data-f="extra">${opt(EXTRAS.map((v,i)=>[i,v]),k.extra|0)}</select></label><button class="btn sm" data-a="rand">Surprise me</button></div></div>`).join('')}
+  <form id="addkid" class="row"><input class="grow" id="nk" placeholder="New player’s name" aria-label="New player name" required><select id="na" aria-label="Age">${opt(ages,5)}</select><button class="btn sm solid">Add player</button></form>
+  <h3>Grown-up check</h3><label class="row"><input type="checkbox" data-f="approve" ${state.approve?'checked':''}> Stars only count after a grown-up approves the chore</label>
+  ${pend.length?pend.map(([k,c])=>`<div class="row"><span class="grow"><b>${esc(k.name)}</b>: ${esc(c.n)} (+${c.p} ★)</span><button class="btn sm solid" data-a="ok" data-k="${k.id}" data-id="${c.id}">Approve</button><button class="btn sm" data-a="no" data-k="${k.id}" data-id="${c.id}">Not yet</button></div>`).join(''):`<p class="muted">${state.approve?'Nothing waiting for a check.':'Turn this on to review chores before stars are given.'}</p>`}
+  <h3>Rewards</h3>
+  ${state.rewards.map(r=>`<div class="row" data-r="${r.id}"><input class="grow" data-f="rn" value="${esc(r.n)}" aria-label="Reward"><input class="num" type="number" min="1" data-f="rc" value="${r.c}" aria-label="Star cost"><span>★</span><button class="btn sm" data-a="rmr" data-id="${r.id}">Remove</button></div>`).join('')}
+  <form id="addr" class="row"><input class="grow" id="rn" placeholder="New reward" aria-label="New reward" required><input class="num" id="rc" type="number" min="1" value="20" aria-label="Star cost"><button class="btn sm solid">Add reward</button></form>
+  <h3>Your own chores</h3><p class="muted">Add family-specific quests to any stage.</p>
+  ${state.custom.map(c=>`<div class="row"><span class="grow">${esc(c.n)} · Stage ${c.stage+1} · ${c.f==='d'?'daily':'weekly'} · ${c.p} ★</span><button class="btn sm" data-a="rmc" data-id="${c.id}">Remove</button></div>`).join('')}
+  <form id="addc" class="row"><input class="grow" id="cn" placeholder="e.g. Feed the fish" aria-label="Chore name" required><select id="cs" aria-label="Stage">${opt(STAGES.map((s,i)=>[i,s.n+' ('+s.a.replace('Ages ','')+')']),cur()?stg(cur().age):0)}</select><select id="cc" aria-label="Type">${opt(Object.entries(CATS),'clean')}</select><select id="cf" aria-label="How often">${opt([['d','Daily'],['w','Weekly']],'d')}</select><input class="num" id="cp" type="number" min="1" max="20" value="2" aria-label="Stars"><button class="btn sm solid">Add chore</button></form>
+  <h3>Start over</h3><div class="row"><span class="grow muted">Remove every player and their progress. Rewards and your chores stay.</span><button class="btn sm" data-a="fresh">Clear players</button></div>`}
+function openGP(){$('#ov').classList.add('open');renderGP()}
+function closeGP(){$('#ov').classList.remove('open');render()}
+const arm=(t,f)=>{if(t.dataset.arm){f()}else{t.dataset.arm=1;t.textContent='Tap again to confirm'}};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,id=t.dataset.id;
+  if(a==='sel'){state.sel=id;peek=-1;save();render()}
+  else if(a==='do')doChore(id,t);
+  else if(a==='undo'){const f=undoFn;undoFn=null;$('#toast').classList.remove('on');f&&f()}
+  else if(a==='peek'){const i=+t.dataset.i;peek=peek===i?-1:i;render()}
+  else if(a==='buy'){const k=cur(),r=state.rewards.find(x=>x.id===id);if(!r||k.earned-k.spent<r.c)return;k.spent+=r.c;k.redeemed++;save();render();burst($('#main'));toast(`Enjoy: ${r.n}!`,()=>{k.spent-=r.c;k.redeemed--;save();render()})}
+  else if(a==='guide'){setGuide(!$('#guide').hidden);if(!$('#guide').hidden)$('#guide').scrollIntoView({behavior:'smooth'})}
+  else if(a==='col'||a==='rand'){const k=state.kids.find(x=>x.id===t.closest('[data-k]').dataset.k);if(!k)return;const r=n=>Math.floor(Math.random()*n);
+    if(a==='col')k.color=t.dataset.c;else Object.assign(k,{color:COLORS[r(COLORS.length)][0],shape:r(TOPS.length),eyes:r(EYES.length),mouth:r(MOUTHS.length),extra:r(EXTRAS.length)});state.sample=false;save();renderGP()}
+  else if(a==='gp')openGP();
+  else if(a==='close')closeGP();
+  else if(a==='rmkid')arm(t,()=>{state.kids=state.kids.filter(k=>k.id!==id);if(state.sel===id)state.sel=state.kids[0]&&state.kids[0].id;save();renderGP()});
+  else if(a==='rmr'){state.rewards=state.rewards.filter(r=>r.id!==id);save();renderGP()}
+  else if(a==='rmc'){state.custom=state.custom.filter(c=>c.id!==id);save();renderGP()}
+  else if(a==='ok'||a==='no'){const k=state.kids.find(x=>x.id===t.dataset.k),c=k&&chores(k).find(x=>x.id===id);if(!c)return;const key=keyOf(c);if(a==='ok'){k.log[key][c.id]='d';award(k,c)}else delete k.log[key][c.id];save();renderGP()}
+  else if(a==='fresh')arm(t,()=>{state.kids=[];state.sel=null;state.sample=false;save();renderGP()});
+});
+$('#ov').addEventListener('click',e=>{if(e.target.id==='ov')closeGP()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#ov').classList.contains('open'))closeGP()});
+document.addEventListener('change',e=>{const t=e.target,f=t.dataset.f;if(!f)return;
+  if(f==='approve'){state.approve=t.checked;save();renderGP();return}
+  const kr=t.closest('[data-k]'),rr=t.closest('[data-r]');
+  if(kr){const k=state.kids.find(x=>x.id===kr.dataset.k);if(!k)return;if(f==='name')k.name=t.value.trim()||k.name;else if(f==='age')k.age=+t.value;else if(['shape','eyes','mouth','extra'].includes(f))k[f]=+t.value;state.sample=false;save();renderGP()}
+  if(rr){const r=state.rewards.find(x=>x.id===rr.dataset.r);if(!r)return;if(f==='rn')r.n=t.value.trim()||r.n;else r.c=Math.max(1,+t.value||1);save()}});
+document.addEventListener('submit',e=>{e.preventDefault();const id=e.target.id;
+  if(id==='gf'){if(+$('#ga').value===ga*gb){gate=true;renderGP()}else{$('#gerr').textContent='Not quite, try again.'}}
+  else if(id==='addkid'){const k=mk($('#nk').value.trim().slice(0,24),+$('#na').value,COLORS[state.kids.length%COLORS.length][0],state.kids.length%TOPS.length);state.kids.push(k);state.sel=k.id;state.sample=false;save();renderGP()}
+  else if(id==='addr'){state.rewards.push({id:uid(),n:$('#rn').value.trim().slice(0,60),c:Math.max(1,+$('#rc').value||1)});save();renderGP()}
+  else if(id==='addc'){state.custom.push({id:'c'+uid(),n:$('#cn').value.trim().slice(0,60),stage:+$('#cs').value,c:$('#cc').value,f:$('#cf').value,p:Math.min(20,Math.max(1,+$('#cp').value||1))});save();renderGP()}});
+function setGuide(hide){$('#guide').hidden=hide;$('#helpbtn').hidden=!hide;try{localStorage.setItem('cq-guide',hide?'0':'1')}catch(e){}}
+{let g=null;try{g=localStorage.getItem('cq-guide')}catch(e){}if(g==='0')setGuide(true)}
+render();
+(async()=>{try{if(!window.claude||!window.claude.use)return;
+  const to=new Promise(r=>setTimeout(()=>r(null),10000));
+  const [db,user]=await Promise.race([Promise.all([claude.use('db'),claude.use('user')]),to.then(()=>[null,null])]);
+  if(!db||!user)return;const me=await user.id();if(!me)return;
+  const ref=db.collection('data/users/'+me).doc('chorequest');
+  const snap=await Promise.race([ref.get(),to]);
+  const d=snap&&(snap.json?snap:typeof snap.data==='function'?snap.data():snap.data);
+  if(d&&d.json){const r=JSON.parse(d.json);if(r&&r.kids&&((r.at||0)>(state.at||0)||state.sample)){state=r;try{localStorage.setItem('chorequest',d.json)}catch(e){}render()}}
+  remote=ref;if(!(d&&d.json))save();
+  $('#foot').textContent='Progress is saved to your Claude account, so it follows you to any device.';
+}catch(e){}})();
+}
+</script>
+</body></html>
