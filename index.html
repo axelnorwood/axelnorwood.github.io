@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Hanami Education — Where Learning Blooms</title>
 <link rel="icon" href="data:,"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;500&family=Noto+Sans+Devanagari:wght@300;400;500&family=Noto+Serif+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;500&family=Noto+Sans+Devanagari:wght@300;400;500&family=Noto+Serif+Devanagari:wght@400;500&family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -466,6 +466,11 @@ html:lang(zh) .eyebrow,html:lang(hi) .eyebrow,html:lang(ja) .eyebrow,
 html:lang(zh) .book-cta,html:lang(hi) .book-cta,html:lang(ja) .book-cta,
 html:lang(zh) .philosophy-label,html:lang(hi) .philosophy-label,html:lang(ja) .philosophy-label,
 html:lang(zh) .empty button,html:lang(hi) .empty button,html:lang(ja) .empty button{letter-spacing:.04em}
+html:lang(ko){--serif:'Cormorant Garamond','Noto Serif KR',serif;--sans:'Zen Kaku Gothic New','Noto Sans KR','Apple SD Gothic Neo',sans-serif}
+html:lang(ko) .filter-btn,html:lang(ko) .header-link,html:lang(ko) .eyebrow,html:lang(ko) .book-cta,html:lang(ko) .philosophy-label,html:lang(ko) .empty button{letter-spacing:.04em}
+html:lang(ko) .card-desc,html:lang(ko) .tagline,html:lang(ko) .philosophy-text{word-break:keep-all}
+.booktabs{flex-wrap:wrap}
+.booktabs button[lang="zh-Hans"],.booktabs button[lang="hi"],.booktabs button[lang="ko"]{letter-spacing:.03em;text-transform:none}
 html:lang(hi) .card-desc,html:lang(hi) .tagline,html:lang(hi) .philosophy-text{line-height:1.8}
 html:lang(zh) .slogan-word,html:lang(ja) .slogan-word{letter-spacing:.15em}
 html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
@@ -511,7 +516,7 @@ html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
       </a>
       <div class="head-right"><a class="header-link" href="#approach" data-i18n="approach">Our approach</a>
       <div class="langs" role="group" aria-label="Language">
-        <button type="button" data-lang="en" lang="en" title="English">EN</button><button type="button" data-lang="zh" lang="zh-Hans" title="简体中文">中文</button><button type="button" data-lang="hi" lang="hi" title="हिन्दी">हिन्दी</button><button type="button" data-lang="es" lang="es" title="Español">ES</button><button type="button" data-lang="ja" lang="ja" title="日本語">日本語</button>
+        <button type="button" data-lang="en" lang="en" title="English">EN</button><button type="button" data-lang="zh" lang="zh-Hans" title="简体中文">中文</button><button type="button" data-lang="hi" lang="hi" title="हिन्दी">हिन्दी</button><button type="button" data-lang="es" lang="es" title="Español">ES</button><button type="button" data-lang="ja" lang="ja" title="日本語">日本語</button><button type="button" data-lang="ko" lang="ko" title="한국어">한국어</button>
       </div></div>
     </div>
   </header>
@@ -562,21 +567,44 @@ html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
       </div>
       <div class="card-body">
         <div class="booktabs" role="tablist" aria-label="Book language">
-          <button type="button" role="tab" id="bt-en" aria-controls="bp-en" aria-selected="true" data-bl="en">English</button>
-          <button type="button" role="tab" id="bt-ja" aria-controls="bp-ja" aria-selected="false" data-bl="ja" lang="ja" tabindex="-1">日本語</button>
+          <button type="button" role="tab" id="bt-en" aria-controls="bp-en" aria-selected="true" data-bl="en" data-cta="Read the book →" lang="en">English</button>
+          <button type="button" role="tab" id="bt-zh" aria-controls="bp-zh" aria-selected="false" data-bl="zh" data-cta="阅读本书 →" lang="zh-Hans" tabindex="-1">中文</button>
+          <button type="button" role="tab" id="bt-hi" aria-controls="bp-hi" aria-selected="false" data-bl="hi" data-cta="किताब पढ़ें →" lang="hi" tabindex="-1">हिन्दी</button>
+          <button type="button" role="tab" id="bt-es" aria-controls="bp-es" aria-selected="false" data-bl="es" data-cta="Leer el libro →" lang="es-419" tabindex="-1">Español</button>
+          <button type="button" role="tab" id="bt-ja" aria-controls="bp-ja" aria-selected="false" data-bl="ja" data-cta="本を読む →" lang="ja" tabindex="-1">日本語</button>
+          <button type="button" role="tab" id="bt-ko" aria-controls="bp-ko" aria-selected="false" data-bl="ko" data-cta="책 읽기 →" lang="ko" tabindex="-1">한국어</button>
         </div>
-        <div role="tabpanel" id="bp-en" aria-labelledby="bt-en">
-          <div class="eyebrow" data-i18n="bookEyebrow">Start here · Read-along book</div>
+        <div role="tabpanel" id="bp-en" aria-labelledby="bt-en" lang="en">
+          <div class="eyebrow">Start here · Read-along book</div>
           <div class="card-title">Bloom</div>
-          <div class="card-desc" data-i18n="bookDesc">A read-along book for children on how to fall in love with learning — growing, like a cherry blossom, one small step at a time.</div>
+          <div class="card-desc">A read-along book for children on how to fall in love with learning — growing, like a cherry blossom, one small step at a time.</div>
+        </div>
+        <div role="tabpanel" id="bp-zh" aria-labelledby="bt-zh" lang="zh-Hans" hidden>
+          <div class="eyebrow">从这里开始 · 亲子共读书</div>
+          <div class="card-title">Bloom 中文版</div>
+          <div class="card-desc">一本陪孩子一起读的书，讲述如何爱上学习——像樱花一样，一小步一小步地成长。</div>
+        </div>
+        <div role="tabpanel" id="bp-hi" aria-labelledby="bt-hi" lang="hi" hidden>
+          <div class="eyebrow">यहाँ से शुरू करें · साथ पढ़ने वाली किताब</div>
+          <div class="card-title">Bloom हिन्दी</div>
+          <div class="card-desc">बच्चों के साथ पढ़ने के लिए एक किताब, जो सिखाती है कि सीखने से प्यार कैसे करें — चेरी के फूल की तरह, एक-एक छोटा कदम बढ़ाते हुए।</div>
+        </div>
+        <div role="tabpanel" id="bp-es" aria-labelledby="bt-es" lang="es-419" hidden>
+          <div class="eyebrow">Empieza aquí · Libro para leer juntos</div>
+          <div class="card-title">Bloom en español</div>
+          <div class="card-desc">Un libro para leer en compañía que enseña a los niños a enamorarse del aprendizaje: a crecer como un cerezo en flor, un pequeño paso a la vez.</div>
         </div>
         <div role="tabpanel" id="bp-ja" aria-labelledby="bt-ja" lang="ja" hidden>
           <div class="eyebrow">ここから · 読み聞かせの本</div>
           <div class="card-title">Bloom 日本語版</div>
           <div class="card-desc">学ぶことを好きになるための本。桜の木のように、少しずつ育っていこう。</div>
         </div>
-      </div>
-      <a class="book-cta" id="bookCta" href="bloom.html">Read the book →</a>
+        <div role="tabpanel" id="bp-ko" aria-labelledby="bt-ko" lang="ko" hidden>
+          <div class="eyebrow">여기서 시작해요 · 함께 읽는 책</div>
+          <div class="card-title">Bloom 한국어판</div>
+          <div class="card-desc">아이들이 배움을 사랑하게 되도록 돕는 함께 읽는 책. 벚꽃처럼, 한 걸음씩 자라요.</div>
+        </div>
+      <a class="book-cta" id="bookCta" href="bloom.html#en">Read the book →</a>
     </div>
   </section>
 
@@ -913,16 +941,16 @@ html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
   var tabs=[].slice.call(document.querySelectorAll('.booktabs [role=tab]'));
   var cta=document.getElementById('bookCta');
   if(!tabs.length||!cta) return;
-  var TEXT={en:['bloom.html','Read the book →'],ja:['bloom.html#ja','読む →']};
   function pick(l,focus){
+    if(!tabs.some(function(t){return t.getAttribute('data-bl')===l})) l='en';
     tabs.forEach(function(t){
       var on=t.getAttribute('data-bl')===l;
       t.setAttribute('aria-selected',String(on));
       t.tabIndex=on?0:-1;
       document.getElementById(t.getAttribute('aria-controls')).hidden=!on;
-      if(on&&focus) t.focus();
+      if(on){cta.textContent=t.getAttribute('data-cta');cta.lang=t.lang;if(focus)t.focus()}
     });
-    cta.href=TEXT[l][0]; cta.textContent=TEXT[l][1]; cta.lang=l;
+    cta.href='bloom.html#'+l;
     try{localStorage.setItem('bloom-lang',l)}catch(e){}
   }
   window.__bloomPick = pick;
@@ -933,8 +961,8 @@ html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
     });
   });
   var start='en';
-  try{start=localStorage.getItem('bloom-lang')||((navigator.language||'').indexOf('ja')===0?'ja':'en')}catch(e){}
-  pick(start==='ja'?'ja':'en');
+  try{start=localStorage.getItem('bloom-lang')||'en'}catch(e){}
+  pick(start);
 })();
 </script>
 <script>
@@ -1035,6 +1063,36 @@ emptyP:"Ninguna herramienta coincide con tu búsqueda.",emptyBtn:"Mostrar todas 
 philo:"Creemos que los mejores aprendices se forman con <strong>libros de verdad, lápiz y papel</strong>, no con pantallas. Cada herramienta aquí está pensada para llevar a los niños de vuelta al mundo real: sostener un libro, escribir a mano y crear hábitos que duran porque tienen raíces en la vida diaria.",
 footNote:"Todas las herramientas están pensadas para complementar el aprendizaje en el aula, no para reemplazarlo."},
 
+ko:{_title:"하나미 에듀케이션 — 배움이 꽃피는 곳",skip:"도구로 건너뛰기",approach:"우리의 생각",h1:"배움이 <em>꽃피는</em> 곳",
+tagline:"선생님과 부모님을 위한 실용적인 도구와 가이드 — 집에서 이루어지는 독서 습관과 스스로 배우는 힘을 키워 줍니다.",
+"sl-learn":"배우고","sl-grow":"자라고","sl-bloom":"피어나요",searchLabel:"도구 검색",searchPh:"도구 검색 — ‘수학’, ‘이야기’, ‘친구’로 찾아보세요",
+filterAria:"분류별로 도구 보기",featAria:"추천 도서","f-all":"전체","f-reading":"읽기","f-writing":"쓰기","f-practice":"연습","f-skills":"기술","f-social":"관계",
+st:function(s,n){return s===n?"도구 "+n+"개":"도구 "+n+"개 중 "+s+"개"},
+"h-reading":"읽기","p-reading":"다음에 읽을 책을 찾고, 집에서 꾸준한 독서 습관을 길러요.",
+"h-writing":"쓰기","p-writing":"시작을 돕는 아이디어와 잘 쓰기 위한 가이드.",
+"h-practice":"연습","p-practice":"식탁에서도 교실에서도 연필로 푸는, 인쇄용 학습지.",
+"h-skills":"기술과 프로젝트","p-skills":"직접 만드는 프로젝트, 목표 세우기, 새로운 것에 도전하기.",
+"h-social":"관계","p-social":"대화하고, 토론하고, 다른 사람과 사이좋게 지내기.",
+"c-reading-atlas":"1~5학년을 위한 픽션·논픽션 시리즈 200개를 엄선했어요. 학년, 장르, 분류별로 둘러볼 수 있어요.",
+"c-reading-checklist":"읽기 전, 읽는 중, 읽은 후에 아이를 도와주는 단계별 가이드 — 단계마다 구체적인 방법이 담겨 있어요.",
+"c-checklisttool":"집에서 쓰는 대화형 독서 도우미 — 안내 팁, 타이머, 빠른 목록으로 꾸준한 독서 습관과 좋은 읽기 전략을 길러요.",
+"c-story-generator":"아이를 위한 앱: 어린 작가가 일곱 가지 이야기 유형 중 하나를 고르고 버튼만 누르면, 바로 쓸 수 있는 이야기 아이디어가 무작위로 나와요.",
+"c-promptgenerator":"1~6학년을 위한 짧은 글쓰기 미션 — 학년과 장르를 고르면 첫 문장과 함께 새로운 글감이 나와요.",
+"c-mylife":"내가 누구인지, 어디에서 왔는지, 무엇이 소중한지 한 번에 질문 하나씩 돌아보는 일기 활동.",
+"c-Writing-Guides":"모범 글, 요소별 팁, 형식 참고 자료, 문법 포인트 — 글쓰기에 필요한 모든 것을 한곳에.",
+"c-worksheets":"유치원부터 6학년까지 인쇄해서 쓰는 수학·영어 문법 학습지 — 주제를 고르면 매번 새 문제가 나오고, 정답을 내려받아 직접 채점할 수 있어요.",
+"c-project-guide":"관심사를 누르거나 ‘깜짝 추천!’을 누르면, 새 프로젝트와 쉬운 단계별 안내를 찾을 수 있어요.",
+"c-projectmaker":"아이 스스로 떠올린 아이디어를 실제로 만들 수 있는 계획으로 — 구상부터 재료, 완성까지 한 걸음씩 안내해요.",
+"c-chorequest":"집안일로 별을 모으는 가족 퀘스트 보드 — 2~12살 성장에 맞춰 집안일이 단계별로 바뀌고, 연속 기록, 배지, 보상 상점도 있어요.",
+"c-goalsetter":"더 키워야 할 기술을 골라내고 그 기술을 키우는 진짜 가치를 찾아요 — 노력이 가장 중요한 곳에 쓰이도록.",
+"c-firststepsports":"새로운 운동을 쉽고 눈물 없이 시작해요 — 틀릴까 봐 걱정하지 않고 새로운 것에 도전하도록 도와줘요.",
+"c-conversation":"식탁이나 차 안에서 나누기 좋은 생각거리 질문 — 화면에서 벗어나 진짜 대화와 유대감을 만들어요.",
+"c-wouldyourather":"고르기 어려운 선택으로 즐기는 놀이 — 아이들이 이유를 생각하고, 토론하고, 자기 생각을 소리 내어 설명해요.",
+"c-friendship":"간단한 방법으로 친구를 사귀고 우정을 지키는 법 — 그리고 갈등이 생겼을 때 차분하고 분명하게 풀어 가는 법.",
+emptyP:"검색과 맞는 도구가 없어요.",emptyBtn:"모든 도구 보기",
+philo:"우리는 가장 강한 학습자는 화면이 아니라 <strong>진짜 책, 연필, 그리고 종이</strong>로 자란다고 믿어요. 여기 있는 모든 도구는 아이들을 실제 세상으로 돌려보내도록 만들어졌어요. 책을 손에 들고, 손으로 글을 쓰고, 실제 삶에 뿌리를 두었기에 오래가는 습관을 기르도록요.",
+footNote:"모든 도구는 학교 수업을 대신하는 것이 아니라, 보완하도록 만들어졌어요."},
+
 ja:{_title:"花見エデュケーション — 学びが花開く場所",skip:"ツールへ移動",approach:"わたしたちの考え方",h1:"学びが<em>花開く</em>場所",
 tagline:"先生と保護者のための、実用的なツールとガイド。おうちでの読書習慣と、自分で学ぶ力を育てます。",
 "sl-learn":"学ぶ","sl-grow":"育つ","sl-bloom":"咲く",searchLabel:"ツールを検索",searchPh:"ツールを検索 —「算数」「物語」「友だち」などで探せます",
@@ -1066,7 +1124,7 @@ emptyP:"一致するツールがありません。",emptyBtn:"すべてのツー
 philo:"わたしたちは、いちばん強い学び手は画面ではなく、<strong>本物の本、えんぴつ、そして紙</strong>によって育つと信じています。ここにあるツールはどれも、子どもたちを実際の世界へと送りかえすために作られています。本を手に取り、手で書き、毎日の暮らしに根ざしているからこそ長くつづく習慣を育てるために。",
 footNote:"すべてのツールは、学校での学びを補うためのもので、置きかえるものではありません。"}
 };
-var HTMLLANG={en:"en",zh:"zh-Hans",hi:"hi",es:"es-419",ja:"ja"};
+var HTMLLANG={en:"en",zh:"zh-Hans",hi:"hi",es:"es-419",ja:"ja",ko:"ko"};
 var EN={_title:document.title};
 var nodes=[].slice.call(document.querySelectorAll("[data-i18n]"));
 nodes.forEach(function(el){var k=el.getAttribute("data-i18n");if(!(k in EN))EN[k]=el.innerHTML});
@@ -1077,7 +1135,7 @@ EN.st=function(s,n){return s===n?n+" tools":s+" of "+n+" tools"};
 EN.bookCta="Read the book →";
 var cur="en";
 function d(){return cur==="en"?EN:T[cur]}
-function set(lang){
+function set(lang,first){
   if(lang!=="en"&&!T[lang])lang="en";cur=lang;var D=d();
   document.documentElement.lang=HTMLLANG[lang];document.title=D._title||EN._title;
   nodes.forEach(function(el){var k=el.getAttribute("data-i18n");var v=D[k]!=null?D[k]:EN[k];if(v!=null)el.innerHTML=v});
@@ -1085,16 +1143,15 @@ function set(lang){
   ar.forEach(function(el){var k=el.getAttribute("data-i18n-aria");el.setAttribute("aria-label",D[k]||EN[k])});
   [].forEach.call(document.querySelectorAll(".langs [data-lang]"),function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-lang")===lang))});
   if(window.__hanamiApply)window.__hanamiApply();
-  if(window.__bloomPick)window.__bloomPick(lang==="ja"?"ja":"en");
-  var cta=document.getElementById("bookCta");
-  if(cta&&cta.getAttribute("href")==="bloom.html")cta.textContent=D.bookCta||EN.bookCta;
+  if(window.__bloomPick&&!first)window.__bloomPick(lang);
   try{localStorage.setItem("hanami-lang",lang)}catch(e){}
 }
 window.HanamiI18n={status:function(s,n){return d().st(s,n)},set:set,get:function(){return cur}};
 document.addEventListener("click",function(e){var b=e.target.closest(".langs [data-lang]");if(b)set(b.getAttribute("data-lang"))});
 var start=null;try{start=localStorage.getItem("hanami-lang")}catch(e){}
-if(!start){var nl=(navigator.language||"en").toLowerCase();start=nl.indexOf("zh")===0?"zh":nl.indexOf("hi")===0?"hi":nl.indexOf("es")===0?"es":nl.indexOf("ja")===0?"ja":"en"}
-set(start);
+if(!start){var nl=(navigator.language||"en").toLowerCase();start=nl.indexOf("zh")===0?"zh":nl.indexOf("hi")===0?"hi":nl.indexOf("es")===0?"es":nl.indexOf("ja")===0?"ja":nl.indexOf("ko")===0?"ko":"en"}
+set(start,true);
+if(window.__bloomPick){var bl=null;try{bl=localStorage.getItem("bloom-lang")}catch(e){}if(!bl)window.__bloomPick(cur)}
 })();
 </script>
 </body>
