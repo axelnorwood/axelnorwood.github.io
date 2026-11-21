@@ -345,6 +345,15 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
 .card.is-book .card-icon svg{width:26px;height:26px}
 .card.is-book .card-title{font-size:1.6rem}
 .card.is-book .card-desc{font-size:.95rem;max-width:520px}
+.booktabs{display:inline-flex;gap:.3rem;margin-bottom:.7rem}
+.booktabs button{font-family:var(--sans);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:.4rem .8rem;min-height:34px;cursor:pointer;transition:all .2s ease}
+.booktabs button:hover{color:var(--accent-strong);border-color:rgba(194,123,106,.4);background:var(--accent-soft)}
+.booktabs button[aria-selected="true"]{color:#fff;background:var(--accent-strong);border-color:var(--accent-strong)}
+.booktabs button[lang="ja"]{letter-spacing:.05em;text-transform:none}
+a.book-cta{text-decoration:none;transition:background .2s ease}
+a.book-cta:hover{background:var(--accent)}
+.card.book-tabs:hover{transform:none}
+.group.books:not([hidden]){display:grid;gap:.75rem}
 .eyebrow{
   font-size:.7rem;
   letter-spacing:.2em;
@@ -519,19 +528,30 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
 
 <main class="container" id="tools">
 
-  <!-- Featured -->
-  <section class="group" aria-label="Featured book">
-    <a href="bloom.html" class="card is-book" data-cat="skills">
+  <!-- Featured: Bloom, one card with a tab for each language -->
+  <section class="group books" aria-label="Featured book">
+    <div class="card is-book book-tabs" data-cat="reading">
       <div class="card-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.3" cy="10.3" r="2.3"/><circle cx="15.3" cy="16.5" r="2.3"/><circle cx="8.7" cy="16.5" r="2.3"/><circle cx="6.7" cy="10.3" r="2.3"/><circle cx="12" cy="12" r="2.2"/></svg>
       </div>
       <div class="card-body">
-        <div class="eyebrow">Start here · Read-along book</div>
-        <div class="card-title">Bloom</div>
-        <div class="card-desc">A read-along book for children on how to fall in love with learning — growing, like a cherry blossom, one small step at a time.</div>
+        <div class="booktabs" role="tablist" aria-label="Book language">
+          <button type="button" role="tab" id="bt-en" aria-controls="bp-en" aria-selected="true" data-bl="en">English</button>
+          <button type="button" role="tab" id="bt-ja" aria-controls="bp-ja" aria-selected="false" data-bl="ja" lang="ja" tabindex="-1">日本語</button>
+        </div>
+        <div role="tabpanel" id="bp-en" aria-labelledby="bt-en">
+          <div class="eyebrow">Start here · Read-along book</div>
+          <div class="card-title">Bloom</div>
+          <div class="card-desc">A read-along book for children on how to fall in love with learning — growing, like a cherry blossom, one small step at a time.</div>
+        </div>
+        <div role="tabpanel" id="bp-ja" aria-labelledby="bt-ja" lang="ja" hidden>
+          <div class="eyebrow">ここから · 読み聞かせの本</div>
+          <div class="card-title">Bloom 日本語版</div>
+          <div class="card-desc">学ぶことを好きになるための本。桜の木のように、少しずつ育っていこう。</div>
+        </div>
       </div>
-      <span class="book-cta">Read the book →</span>
-    </a>
+      <a class="book-cta" id="bookCta" href="bloom.html">Read the book →</a>
+    </div>
   </section>
 
   <!-- Reading -->
@@ -681,6 +701,17 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
         <div class="card-body">
           <div class="card-title">The Project Maker</div>
           <div class="card-desc">Turns a child's own idea into a buildable plan — guiding them from concept to materials to finished project, one step at a time.</div>
+        </div>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a href="chorequest.html" class="card" data-cat="skills">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Chore Quest</div>
+          <div class="card-desc">A family quest board where kids earn stars for real jobs around the house — with chores that grow from age 2 to 12, streaks, badges and a reward shop.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -850,6 +881,34 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
   var initial = location.hash.replace('#', '');
   if (valid.indexOf(initial) !== -1) filter = initial;
   apply();
+})();
+
+// Bloom card: one card, a tab per language; the button opens that edition
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.booktabs [role=tab]'));
+  var cta=document.getElementById('bookCta');
+  if(!tabs.length||!cta) return;
+  var TEXT={en:['bloom.html','Read the book →'],ja:['bloom.html#ja','読む →']};
+  function pick(l,focus){
+    tabs.forEach(function(t){
+      var on=t.getAttribute('data-bl')===l;
+      t.setAttribute('aria-selected',String(on));
+      t.tabIndex=on?0:-1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden=!on;
+      if(on&&focus) t.focus();
+    });
+    cta.href=TEXT[l][0]; cta.textContent=TEXT[l][1]; cta.lang=l;
+    try{localStorage.setItem('bloom-lang',l)}catch(e){}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){pick(t.getAttribute('data-bl'))});
+    t.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();var n=tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];pick(n.getAttribute('data-bl'),true)}
+    });
+  });
+  var start='en';
+  try{start=localStorage.getItem('bloom-lang')||((navigator.language||'').indexOf('ja')===0?'ja':'en')}catch(e){}
+  pick(start==='ja'?'ja':'en');
 })();
 </script>
 </body>
