@@ -953,17 +953,22 @@ footer strong { color: #d6cebf; }
 body { background: #fbfaf8; color: #2c2a26; font-family: var(--f-body); }
 body::before { background: rgba(251,250,248,.94); }
 
-/* petals */
-.petals { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-.petal { position: absolute; top: 0; width: 12px; height: 10px; background: #f2d5cc; border-radius: 50% 0 50% 50%; opacity: 0; animation: drift linear infinite; }
-.petal:nth-child(1) { left: 6%; background: #e8bfb3; animation-duration: 19s; }
-.petal:nth-child(2) { left: 24%; width: 9px; height: 8px; animation-duration: 23s; animation-delay: 4s; }
-.petal:nth-child(3) { left: 47%; width: 8px; height: 7px; background: #f5e0d8; animation-duration: 21s; animation-delay: 8s; }
-.petal:nth-child(4) { left: 66%; background: #e8bfb3; animation-duration: 25s; animation-delay: 2s; }
-.petal:nth-child(5) { left: 84%; width: 9px; height: 8px; animation-duration: 20s; animation-delay: 10s; }
-.petal:nth-child(6) { left: 93%; width: 7px; height: 6px; background: #f5e0d8; animation-duration: 27s; animation-delay: 6s; }
-@keyframes drift { 0% { transform: translateY(-40px) rotate(0) translateX(0); opacity: 0 } 8% { opacity: .55 } 50% { transform: translateY(50vh) rotate(180deg) translateX(40px); opacity: .35 } 100% { transform: translateY(105vh) rotate(360deg) translateX(-20px); opacity: 0 } }
+/* petals: drift over the whole page (under the sticky header), never catch clicks */
+.petals { position: fixed; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; }
+.petal { position: absolute; top: 0; width: 12px; height: 10px; background: #f2d5cc; border-radius: 50% 0 50% 50%; opacity: 0; animation: drift linear infinite; box-shadow: 0 1px 2px rgba(169,96,79,.12); }
+.petal:nth-child(1)  { left: 4%;  background: #e8bfb3; animation-duration: 19s; animation-delay: -2s; }
+.petal:nth-child(2)  { left: 15%; width: 9px; height: 8px; animation-duration: 23s; animation-delay: -11s; }
+.petal:nth-child(3)  { left: 27%; width: 8px; height: 7px; background: #f5e0d8; animation-duration: 21s; animation-delay: -6s; }
+.petal:nth-child(4)  { left: 38%; background: #e8bfb3; animation-duration: 25s; animation-delay: -17s; }
+.petal:nth-child(5)  { left: 49%; width: 10px; height: 8px; animation-duration: 20s; animation-delay: -9s; }
+.petal:nth-child(6)  { left: 60%; width: 7px; height: 6px; background: #f5e0d8; animation-duration: 27s; animation-delay: -3s; }
+.petal:nth-child(7)  { left: 70%; width: 13px; height: 10px; animation-duration: 22s; animation-delay: -14s; }
+.petal:nth-child(8)  { left: 80%; width: 10px; height: 8px; background: #e8bfb3; animation-duration: 24s; animation-delay: -7s; }
+.petal:nth-child(9)  { left: 89%; width: 9px; height: 8px; background: #f5e0d8; animation-duration: 18s; animation-delay: -12s; }
+.petal:nth-child(10) { left: 96%; width: 11px; height: 9px; animation-duration: 26s; animation-delay: -20s; }
+@keyframes drift { 0% { transform: translateY(-40px) rotate(0) translateX(0); opacity: 0 } 8% { opacity: .75 } 50% { transform: translateY(50vh) rotate(180deg) translateX(40px); opacity: .55 } 100% { transform: translateY(105vh) rotate(360deg) translateX(-20px); opacity: 0 } }
 @media (prefers-reduced-motion: reduce) { .petals { display: none; } }
+@media print { .petals { display: none; } }
 .main-container, .hero-section, .hn-foot { position: relative; z-index: 1; }
 
 /* header */
@@ -1052,7 +1057,7 @@ body::before { background: rgba(251,250,248,.94); }
 </style>
 </head>
 <body>
-<div class="petals" aria-hidden="true"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div>
+<div class="petals" aria-hidden="true"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div>
 <header class="site-header gut">
   <div class="header-content">
     <a class="hn-logo" href="index.html" aria-label="Hanami Education home">
