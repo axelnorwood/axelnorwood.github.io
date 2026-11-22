@@ -351,6 +351,7 @@ main{padding:1rem 0 2rem;scroll-margin-top:var(--toolbar-h)}
 .booktabs button[aria-selected="true"]{color:#fff;background:var(--accent-strong);border-color:var(--accent-strong)}
 .booktabs button[lang="ja"]{letter-spacing:.05em;text-transform:none}
 a.book-cta{text-decoration:none;transition:background .2s ease}
+.card.is-book .card-body>.book-cta{display:inline-block;margin-top:1.25rem}
 a.book-cta:hover{background:var(--accent)}
 .card.book-tabs:hover{transform:none}
 .group.books:not([hidden]){display:grid;gap:.75rem}
@@ -605,6 +606,7 @@ html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
           <div class="card-desc">아이들이 배움을 사랑하게 되도록 돕는 함께 읽는 책. 벚꽃처럼, 한 걸음씩 자라요.</div>
         </div>
       <a class="book-cta" id="bookCta" href="bloom.html#en">Read the book →</a>
+      </div>
     </div>
   </section>
 
@@ -645,6 +647,18 @@ html:lang(hi) .slogan-word,html:lang(hi) .hero h1{letter-spacing:0}
         <div class="card-body">
           <div class="card-title">Reading Checklist Aid</div>
           <div class="card-desc" data-i18n="c-checklisttool">An interactive reading companion for home — with guided tips, built-in timers, and quicklists to build consistent reading routines and strong strategies.</div>
+        </div>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+
+
+      <a href="reading-time.html" class="card" data-cat="reading">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M10 8.5l4 2.5-4 2.5z"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Reading Time</div>
+          <div class="card-desc" data-i18n="c-reading-time">A calm, full-screen reading guide a child can use alone — big pictures, clue cards that open with a tap and read themselves aloud, and an optional timer to move through each step.</div>
         </div>
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
@@ -984,6 +998,7 @@ bookEyebrow:"从这里开始 · 亲子共读书",bookDesc:"一本陪孩子一起
 "c-reading-atlas":"精选 200 套适合 1–5 年级的小说与非虚构系列图书，可按年级、体裁和类别浏览。",
 "c-reading-checklist":"分步骤指南，帮助你在孩子阅读前、阅读中和阅读后给予支持——每个阶段都有具体可行的方法。",
 "c-checklisttool":"居家阅读的互动小助手——提供引导提示、内置计时器和快捷清单，帮助孩子养成稳定的阅读习惯和有效的阅读策略。",
+"c-reading-time":"一个孩子可以独立使用的全屏阅读引导——大图标、点一下就能打开并朗读的提示卡，还有可选的计时器，带着孩子一步步完成。",
 "c-story-generator":"一款适合孩子的应用：小作者从七种故事类型中选一种，点一下按钮，就能得到一个随机的故事灵感，马上动笔。",
 "c-promptgenerator":"为 1 到 6 年级生成简短的写作任务——选好年级和体裁，就能得到全新的写作题目和一句开头。",
 "c-mylife":"一项写日记活动，引导孩子思考自己是谁、来自哪里、什么对自己最重要——一次一个问题。",
@@ -1015,6 +1030,7 @@ bookEyebrow:"यहाँ से शुरू करें · साथ पढ�
 "c-reading-atlas":"कक्षा 1–5 के लिए 200 कथा और गैर-कथा सीरीज़ का चुना हुआ संग्रह, जिसे कक्षा, विधा और श्रेणी के अनुसार देखा जा सकता है।",
 "c-reading-checklist":"पढ़ने से पहले, पढ़ते समय और पढ़ने के बाद अपने बच्चे की मदद के लिए चरण-दर-चरण गाइड — हर चरण के लिए ठोस तरीकों के साथ।",
 "c-checklisttool":"घर पर पढ़ने का एक इंटरैक्टिव साथी — सुझावों, टाइमर और झटपट सूचियों के साथ, ताकि पढ़ने की नियमित आदत और अच्छी रणनीतियाँ बनें।",
+"c-reading-time":"एक शांत, फ़ुल-स्क्रीन पढ़ने की गाइड जिसे बच्चा खुद इस्तेमाल कर सकता है — बड़ी तस्वीरें, टैप करते ही खुलने और पढ़कर सुनाने वाले संकेत कार्ड, और हर चरण के लिए वैकल्पिक टाइमर।",
 "c-story-generator":"बच्चों के लिए एक आसान ऐप: नन्हे लेखक सात तरह की कहानियों में से एक चुनते हैं और एक बटन दबाते ही लिखने के लिए कहानी का नया विचार पाते हैं।",
 "c-promptgenerator":"कक्षा 1 से 6 तक के लिए छोटा लेखन मिशन — कक्षा और विधा चुनें, और शुरुआती वाक्य के साथ नया विषय पाएँ।",
 "c-mylife":"डायरी लिखने की एक गतिविधि, जो बच्चों को सोचने में मदद करती है कि वे कौन हैं, कहाँ से आए हैं और उनके लिए क्या मायने रखता है — एक-एक सवाल करके।",
@@ -1046,6 +1062,7 @@ bookEyebrow:"Empieza aquí · Libro para leer juntos",bookDesc:"Un libro para le
 "c-reading-atlas":"Una colección de 200 series de ficción y no ficción para 1.º a 5.º grado, que puedes explorar por grado, género y categoría.",
 "c-reading-checklist":"Una guía paso a paso para acompañar a tu lector antes, durante y después de leer, con estrategias concretas para cada etapa.",
 "c-checklisttool":"Un compañero de lectura interactivo para casa, con consejos guiados, temporizadores y listas rápidas para crear rutinas de lectura constantes y buenas estrategias.",
+"c-reading-time":"Una guía de lectura tranquila a pantalla completa que los niños pueden usar solos: imágenes grandes, tarjetas de pistas que se abren con un toque y se leen en voz alta, y un temporizador opcional para avanzar paso a paso.",
 "c-story-generator":"Una app pensada para niños: los pequeños escritores eligen uno de siete tipos de historia y, con solo tocar un botón, reciben una idea al azar lista para escribir.",
 "c-promptgenerator":"Crea una breve misión de escritura para cualquier grado de 1.º a 6.º: elige el grado y el género, y recibe una consigna nueva con una frase para empezar.",
 "c-mylife":"Una actividad de diario que ayuda a los niños a pensar en quiénes son, de dónde vienen y qué es importante para ellos, una pregunta a la vez.",
@@ -1076,6 +1093,7 @@ st:function(s,n){return s===n?"도구 "+n+"개":"도구 "+n+"개 중 "+s+"개"},
 "c-reading-atlas":"1~5학년을 위한 픽션·논픽션 시리즈 200개를 엄선했어요. 학년, 장르, 분류별로 둘러볼 수 있어요.",
 "c-reading-checklist":"읽기 전, 읽는 중, 읽은 후에 아이를 도와주는 단계별 가이드 — 단계마다 구체적인 방법이 담겨 있어요.",
 "c-checklisttool":"집에서 쓰는 대화형 독서 도우미 — 안내 팁, 타이머, 빠른 목록으로 꾸준한 독서 습관과 좋은 읽기 전략을 길러요.",
+"c-reading-time":"아이 혼자서도 쓸 수 있는 차분한 전체 화면 독서 가이드 — 큰 그림, 누르면 열리고 소리 내어 읽어 주는 힌트 카드, 그리고 단계마다 넘어가는 선택형 타이머.",
 "c-story-generator":"아이를 위한 앱: 어린 작가가 일곱 가지 이야기 유형 중 하나를 고르고 버튼만 누르면, 바로 쓸 수 있는 이야기 아이디어가 무작위로 나와요.",
 "c-promptgenerator":"1~6학년을 위한 짧은 글쓰기 미션 — 학년과 장르를 고르면 첫 문장과 함께 새로운 글감이 나와요.",
 "c-mylife":"내가 누구인지, 어디에서 왔는지, 무엇이 소중한지 한 번에 질문 하나씩 돌아보는 일기 활동.",
@@ -1107,6 +1125,7 @@ bookEyebrow:"ここから · 読み聞かせの本",bookDesc:"子どもたちが
 "c-reading-atlas":"1〜5年生向けの物語・ノンフィクションのシリーズ200を厳選。学年、ジャンル、カテゴリーで探せます。",
 "c-reading-checklist":"読む前・読んでいるとき・読んだあと、それぞれの段階で子どもを支えるためのステップごとのガイド。具体的な方法つき。",
 "c-checklisttool":"おうちでの読書をサポートするインタラクティブなツール。ヒント、タイマー、チェックリストで、読書の習慣と力を育てます。",
+"c-reading-time":"子どもがひとりで使える、落ち着いた全画面の読書ガイド。大きな絵、タップすると開いて読み上げてくれるヒントカード、そして必要なときだけ使えるタイマーで、一歩ずつ進めます。",
 "c-story-generator":"子ども向けのアプリ。7種類の物語から1つ選んでボタンを押すと、すぐに書きはじめられる物語のアイデアがランダムに出てきます。",
 "c-promptgenerator":"1〜6年生向けの短い作文ミッションを作ります。学年とジャンルを選ぶと、書き出しの一文つきの新しいお題が出てきます。",
 "c-mylife":"自分はだれか、どこから来たのか、何を大切にしているのかを、一つずつの問いに答えながら見つめる日記の活動。",
